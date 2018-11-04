@@ -282,7 +282,7 @@ const Audio = {
       delete Gibberish.memory.list[ memKeys[ i ] ]
     }
     
-    this.publish('clear')
+    Audio.publish('clear')
   },
 
   onload() {},
@@ -3679,7 +3679,7 @@ module.exports = {
   },
 
   dirty: { 
-    gain:.225,
+    gain:.325,
     filterType:2,
     attack:1/2048, 
     decay:1/4, 
@@ -4059,10 +4059,10 @@ module.exports = function( Audio ) {
 
   Seq.sequencers = []
   Seq.clear = function() {
-    //Seq.sequencers.forEach( seq => seq.clear() )
-    for( let i = Seq.sequencers.length - 1; i >= 0; i-- ) {
-      Seq.sequencers[ i ].clear()
-    }
+    Seq.sequencers.forEach( seq => seq.clear() )
+    //for( let i = Seq.sequencers.length - 1; i >= 0; i-- ) {
+    //  Seq.sequencers[ i ].clear()
+    //}
     Seq.sequencers = []
   }
 

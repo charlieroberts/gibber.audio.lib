@@ -146,7 +146,7 @@ const Audio = {
       delete Gibberish.memory.list[ memKeys[ i ] ]
     }
     
-    this.publish('clear')
+    Audio.publish('clear')
   },
 
   onload() {},
