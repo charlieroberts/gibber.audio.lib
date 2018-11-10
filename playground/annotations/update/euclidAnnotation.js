@@ -129,6 +129,8 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     patternObject.commentMarker.clear()
   }
 
+  Gibber.subscribe( 'clear', patternObject.clear )
+
   return update 
 }
 

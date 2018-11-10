@@ -192,18 +192,19 @@ const Audio = {
   },
 
   //init( workletPath = '../dist/workletCopy.js', workerPath = '../dist/gibberish_worker.js' ) {
-  init( workletPath = '../dist/gibberish_worklet.js' ) { 
+  init( workletPath = '../dist/gibberish_worklet.js', ctx=null, sac=null ) { 
     this.Gibberish = Gibberish
 
-    //Gibberish.workerPath = workerPath 
     Gibberish.workletPath = workletPath 
 
     this.createPubSub()
 
     const p = new Promise( (resolve, reject) => {
-      const ctx = new AudioContext({ latencyHint:.05 })
+      if( ctx === null ) {
+        ctx = new AudioContext({ latencyHint:.05 })
+      }
 
-      Gibberish.init( {}, ctx ).then( processorNode => {
+      Gibberish.init( {}, ctx, null, sac ).then( processorNode => {
         Audio.initialized = true
         Audio.node = processorNode
         Audio.Gen = Gen( Gibber )
@@ -4012,6 +4013,25 @@ module.exports = function( Audio ) {
       //}
     }
 
+    timings.output = { time, shouldExecute:0 }
+    timings.density = 1
+
+
+    //const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio ) {
+    timings.addFilter( ( args, ptrn ) => {
+      let time = args[0]
+      const densityValue = typeof ptrn.density === 'number' ? ptrn.density : ptrn.density
+      const val = Math.random() < densityValue ? 1 : 0
+
+      ptrn.output.time = Gibberish.Clock.time( args[0] )
+      ptrn.output.shouldExecute = val 
+
+      args[ 0 ] = ptrn.output 
+
+      return args
+    })
+
+
     timings.addFilter( function( args ) {
       if( !isNaN( args[0] ) ) {
         args[ 0 ] = Gibberish.Clock.time( args[0] )
@@ -4044,13 +4064,9 @@ module.exports = function( Audio ) {
     const seq = Gibberish.Sequencer2({ values, timings, target, key, priority, rate:Audio.Clock.audioClock, clear })
 
 
-
-    //Gibberish.worklet.port.postMessage({
-    //  address:'addiMethod',
-    //  properties:serilize( Clock ),
-    //  id:this.id,
-    //  post: 'store'    
-    //})
+    Gibberish.proxyEnabled = false
+    Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
+    Gibberish.proxyEnabled = true
 
     Seq.sequencers.push( seq )
 
@@ -4672,9 +4688,18 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             target[ target.length - 1 ].connect()
           }else if( target.length === 1 ) {
             // XXX need to store and reassign
+            console.log( 'wrapped:', __wrappedObject )
+            const connected = __wrappedObject.connected !== undefined ?__wrappedObject.connected.slice(0) : null
             __wrappedObject.disconnect()
             __wrappedObject.connect( target[ 0 ] )
-            target[0].connect( Audio.Master )
+
+            if( connected !== null ) {
+              for( let connection of connected ) {
+                target[0].connect( connection[0], connection[2] )
+              }
+            }else{
+              target[0].connect( Audio.Master )
+            }
           }
         }
 
@@ -15486,7 +15511,7 @@ let Gibberish = {
   },
 
   workletPath: './gibberish_worklet.js',
-  init( memAmount, ctx, mode ) {
+  init( memAmount, ctx, mode=null, sac=null ) {
 
     let numBytes = isNaN( memAmount ) ? 20 * 60 * 44100 : memAmount
 
@@ -15499,7 +15524,7 @@ let Gibberish = {
     this.memory = MemoryHelper.create( numBytes, Float64Array )
 
     this.mode = window.AudioWorklet !== undefined ? 'worklet' : 'scriptprocessor'
-    if( mode !== undefined ) this.mode = mode
+    if( mode !== null ) this.mode = mode
 
     this.hasWorklet = window.AudioWorklet !== undefined && typeof window.AudioWorklet === 'function'
 
@@ -15512,7 +15537,7 @@ let Gibberish = {
       const p = new Promise( (resolve, reject ) => {
 
         const pp = new Promise( (__resolve, __reject ) => {
-          this.utilities.createContext( ctx, startup.bind( this.utilities ), __resolve )
+          this.utilities.createContext( ctx, startup.bind( this.utilities ), __resolve, sac )
         }).then( ()=> {
           Gibberish.preventProxy = true
           Gibberish.load()
@@ -18276,10 +18301,12 @@ const genish = require( 'genish.js' )
 module.exports = function( Gibberish ) {
 
 let uid = 0
-
+let sac = null
 const utilities = {
-  createContext( ctx, cb, resolve ) {
+  createContext( ctx, cb, resolve, __sac=null ) {
     let AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
+
+    sac = __sac
 
     let start = () => {
       if( typeof AC !== 'undefined' ) {
@@ -18366,6 +18393,8 @@ const utilities = {
   createWorklet( resolve ) {
     Gibberish.ctx.audioWorklet.addModule( Gibberish.workletPath ).then( () => {
       Gibberish.worklet = new AudioWorkletNode( Gibberish.ctx, 'gibberish', { outputChannelCount:[2] } )
+        //: new sac.AudioWorkletNode( Gibberish.ctx, 'gibbersh', { outputChannelCount:[2] } )
+
       Gibberish.worklet.connect( Gibberish.ctx.destination )
       Gibberish.worklet.port.onmessage = event => {
         Gibberish.utilities.workletHandlers[ event.data.address ]( event )        

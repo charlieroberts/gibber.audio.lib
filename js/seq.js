@@ -49,6 +49,25 @@ module.exports = function( Audio ) {
       //}
     }
 
+    timings.output = { time, shouldExecute:0 }
+    timings.density = 1
+
+
+    //const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio ) {
+    timings.addFilter( ( args, ptrn ) => {
+      let time = args[0]
+      const densityValue = typeof ptrn.density === 'number' ? ptrn.density : ptrn.density
+      const val = Math.random() < densityValue ? 1 : 0
+
+      ptrn.output.time = Gibberish.Clock.time( args[0] )
+      ptrn.output.shouldExecute = val 
+
+      args[ 0 ] = ptrn.output 
+
+      return args
+    })
+
+
     timings.addFilter( function( args ) {
       if( !isNaN( args[0] ) ) {
         args[ 0 ] = Gibberish.Clock.time( args[0] )
@@ -81,13 +100,9 @@ module.exports = function( Audio ) {
     const seq = Gibberish.Sequencer2({ values, timings, target, key, priority, rate:Audio.Clock.audioClock, clear })
 
 
-
-    //Gibberish.worklet.port.postMessage({
-    //  address:'addiMethod',
-    //  properties:serilize( Clock ),
-    //  id:this.id,
-    //  post: 'store'    
-    //})
+    Gibberish.proxyEnabled = false
+    Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
+    Gibberish.proxyEnabled = true
 
     Seq.sequencers.push( seq )
 

@@ -334,9 +334,17 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             target[ target.length - 1 ].connect()
           }else if( target.length === 1 ) {
             // XXX need to store and reassign
+            const connected = __wrappedObject.connected !== undefined ?__wrappedObject.connected.slice(0) : null
             __wrappedObject.disconnect()
             __wrappedObject.connect( target[ 0 ] )
-            target[0].connect( Audio.Master )
+
+            if( connected !== null ) {
+              for( let connection of connected ) {
+                target[0].connect( connection[0], connection[2] )
+              }
+            }else{
+              target[0].connect( Audio.Master )
+            }
           }
         }
 

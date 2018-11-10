@@ -32,7 +32,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       pos.loc.start.ch += i
       pos.loc.end.ch = pos.loc.start.ch + 1
 
-      marker = cm.markText( pos.loc.start, pos.loc.end, { className:`step_${ patternObject.id }_${i} euclid` })
+      patternObject.marker = marker = cm.markText( pos.loc.start, pos.loc.end, { className:`step_${ patternObject.id }_${i} euclid` })
       track.markup.textMarkers.pattern[ i ] = marker
     }
   }
@@ -86,6 +86,13 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       patternObject.update()
     }
   })
+
+  patternObject.clear = () => {
+    track.markup.textMarkers.string = cm.markText( nodePosStart, nodePosEnd, { className:'euclid' })
+    patternObject.reset()
+  }
+
+  Gibber.subscribe( 'clear', patternObject.clear )
 
   Marker._addPatternFilter( patternObject )
 }  

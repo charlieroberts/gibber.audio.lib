@@ -236,6 +236,8 @@ const Marker = {
     patternObject.clear = () => {
       patternObject.marker.clear()
     }
+
+    Gibber.subscribe( 'clear', patternObject.clear )
   },
 
   // Patterns can have *filters* which are functions

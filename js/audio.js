@@ -56,18 +56,19 @@ const Audio = {
   },
 
   //init( workletPath = '../dist/workletCopy.js', workerPath = '../dist/gibberish_worker.js' ) {
-  init( workletPath = '../dist/gibberish_worklet.js' ) { 
+  init( workletPath = '../dist/gibberish_worklet.js', ctx=null, sac=null ) { 
     this.Gibberish = Gibberish
 
-    //Gibberish.workerPath = workerPath 
     Gibberish.workletPath = workletPath 
 
     this.createPubSub()
 
     const p = new Promise( (resolve, reject) => {
-      const ctx = new AudioContext({ latencyHint:.05 })
+      if( ctx === null ) {
+        ctx = new AudioContext({ latencyHint:.05 })
+      }
 
-      Gibberish.init( {}, ctx ).then( processorNode => {
+      Gibberish.init( {}, ctx, null, sac ).then( processorNode => {
         Audio.initialized = true
         Audio.node = processorNode
         Audio.Gen = Gen( Gibber )
