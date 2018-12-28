@@ -12,6 +12,8 @@ const Theory = {
   Tune:null,
   id:null,
   nogibberish:true,
+  quality:'minor',
+  baseNumber:60,
   __tuning:'et',
   __mode: 'aeolian',
   __root:440,
@@ -73,11 +75,11 @@ const Theory = {
       )
 
       Gibber.createProperty( this, 'mode', 'aeolian', null, 1 )
-
-
       Gibber.createProperty( this, 'offset', 0, null, 1 )
-
+      Gibber.createProperty( this, 'degree', 'i', null, 1 )
     }else{
+      this.__initDegrees()
+
       Object.defineProperty( this, 'root', {
         get() { return this.__root },
         set(v) {
@@ -104,6 +106,22 @@ const Theory = {
         set(v) { this.__offset = v }
       })
 
+      Object.defineProperty( this, 'degree', { 
+        get() { return this.__degree },
+        set( __degree ) {
+          if( typeof __degree  === 'string' ) {
+            const degree = this.__degrees[ this.quality ][ __degree ]
+        
+            this.__degree = degree
+            this.rootNumber = degree.offset + this.baseNumber
+            this.mode = degree.mode
+
+            //console.log( this.__degree, this.rootNumber, this.mode )
+          }
+        }
+      })
+
+      this.degree = 'i'
     }
   },
 
@@ -112,7 +130,7 @@ const Theory = {
   __initDegrees:function() {
     const base = [ 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii' ]
 
-    const scales = [ { name:'minor', values:Theory.modes.aeolian }, { name:'major', values:Theory.modes.ionian } ]
+    const scales = [ { name:'minor', values:this.modes.aeolian }, { name:'major', values:this.modes.ionian } ]
 
     for( let scale of scales ) {
       let name = scale.name
@@ -176,10 +194,12 @@ const Theory = {
       })
 
       this.initProperties()
-      this.__initDegrees()
 
       this.tuning = 'et'
     }
+    console.log( 'theory mode:', Gibberish.mode )
+    this.__initDegrees()
+
 
   },
 
@@ -222,6 +242,21 @@ const Theory = {
       this.Tune.loadScale( name )
     }
   },
+  /*
+       let mode   = this.modeNumbers,
+        isNegative = scaleDegree < 0,
+        octave = Math.floor( scaleDegree / mode.length ),
+        degree = isNegative ? mode[ Math.abs( mode.length + (scaleDegree % mode.length ) )   ] : mode[ scaleDegree % mode.length ],
+        out
+
+    if( degree === undefined ) degree = 0
+
+    out = isNegative ?
+        this.rootNumber + (octave * 12 ) + degree :
+        this.rootNumber + (octave * 12 ) + degree
+
+    return out
+  */
 
   note: function( idx ) {
     let finalIdx, octave = 0, mode = null
@@ -231,8 +266,14 @@ const Theory = {
 
       idx += Gibberish.Theory.__offset
       octave = Math.floor( idx / mode.length )
+
       // XXX this looks ugly but works with negative note numbers...
-      finalIdx = idx < 0 ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] : mode[ Math.abs( idx ) % mode.length ]
+      finalIdx = idx < 0 
+        ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
+        : mode[ Math.abs( idx ) % mode.length ]
+
+      finalIdx += idx >= 0 ? this.__degree.offset : this.__degree.offset * -1
+      //console.log( 'degree:', this.degree, this.__degree.offset, finalIdx )
     }else{
       finalIdx = idx
     }

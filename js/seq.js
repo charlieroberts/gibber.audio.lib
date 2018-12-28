@@ -54,18 +54,20 @@ module.exports = function( Audio ) {
 
 
     //const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio ) {
-    timings.addFilter( ( args, ptrn ) => {
-      let time = args[0]
-      const densityValue = typeof ptrn.density === 'number' ? ptrn.density : ptrn.density
-      const val = Math.random() < densityValue ? 1 : 0
+    if( timings.type !== 'Euclid' ) {
+      timings.addFilter( ( args, ptrn ) => {
+        let time = args[0]
+        const densityValue = typeof ptrn.density === 'number' ? ptrn.density : ptrn.density
+        const val = Math.random() < densityValue ? 1 : 0
 
-      ptrn.output.time = Gibberish.Clock.time( args[0] )
-      ptrn.output.shouldExecute = val 
+        ptrn.output.time = Gibberish.Clock.time( args[0] )
+        ptrn.output.shouldExecute = val 
 
-      args[ 0 ] = ptrn.output 
+        args[ 0 ] = ptrn.output 
 
-      return args
-    })
+        return args
+      })
+    }
 
 
     timings.addFilter( function( args ) {

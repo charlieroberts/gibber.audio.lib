@@ -333,13 +333,13 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             target[ target.length - 2 ].connect( target[ target.length - 1 ] )
             target[ target.length - 1 ].connect()
           }else if( target.length === 1 ) {
-            // XXX need to store and reassign
             const connected = __wrappedObject.connected !== undefined ?__wrappedObject.connected.slice(0) : null
             __wrappedObject.disconnect()
             __wrappedObject.connect( target[ 0 ] )
 
             if( connected !== null ) {
               for( let connection of connected ) {
+                // 0 is bus, 1 is ugen adding the fx, 2 is send amount
                 target[0].connect( connection[0], connection[2] )
               }
             }else{

@@ -19,6 +19,7 @@
     "watchify": "^3.11.0"
   },
   "dependencies": {
+    "acorn-walk": "^6.1.1",
     "gibberish-dsp": "~3.0.0"
   },
   "bugs": {
