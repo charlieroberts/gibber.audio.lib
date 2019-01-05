@@ -58,5 +58,6 @@ const Presets = {
 
 Presets.instruments.PolySynth = Presets.instruments.Synth
 Presets.instruments.PolyFM = Presets.instruments.FM
+Presets.instruments.PolyMono = Presets.instruments.Monosynth
 
 module.exports = Presets

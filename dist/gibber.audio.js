@@ -3444,6 +3444,7 @@ const Presets = {
 
 Presets.instruments.PolySynth = Presets.instruments.Synth
 Presets.instruments.PolyFM = Presets.instruments.FM
+Presets.instruments.PolyMono = Presets.instruments.Monosynth
 
 module.exports = Presets
 
@@ -3929,16 +3930,21 @@ module.exports = {
 
   shimmer: {
     attack:1/128, decay:2,
-    waveform:'square', 
+    waveform:'pwm',
     filterType:1,
     cutoff:10,
     filterMult:1,
     Q:.6,
     maxVoices:3,
     gain:.1,
+    antialias:false,
     presetInit: function( audio ) {
-      this.fx.add( audio.effects.Chorus() )
+      this.fx.add( audio.effects.Chorus('warbly') )
       //this.fx.add( audio.effects.Delay({ time:1/12, feedback:.65 }) )
+      //this.mod = audio.Gen.make( audio.Gen.ugens.abs( audio.Gen.ugens.cycle(4) ) ).connect( this.pulsewidth )
+      this.mod = audio.Gen.make( audio.Gen.ugens.add( .5, audio.Gen.ugens.mul( audio.Gen.ugens.cycle(8), .275 ) ) )
+      this.mod.connect( this.pulsewidth )
+
     }
   },
 
@@ -4364,7 +4370,8 @@ const Theory = {
         ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
         : mode[ Math.abs( idx ) % mode.length ]
 
-      finalIdx += idx >= 0 ? this.__degree.offset : this.__degree.offset * -1
+      finalIdx += this.__degree.offset
+      //finalIdx += idx >= 0 ? this.__degree.offset : this.__degree.offset * -1
       //console.log( 'degree:', this.degree, this.__degree.offset, finalIdx )
     }else{
       finalIdx = idx
@@ -4662,7 +4669,10 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
                 notesInOctave = Gibberish.Theory.__tunings[ tuning ].frequencies.length
               }
               const offset = octave * notesInOctave
-              const __note = Gibberish.Theory.note( note + offset );
+              let __note = Gibberish.Theory.note( note + offset );
+              //console.log( Gibberish.Theory.__degree )
+              //__note += note >= 0 ? Gibberish.Theory.__degree.offset : Gibberish.Theory.__degree.offset * -1
+              __note += Gibberish.Theory.__degree.offset
               this.___note( __note ) 
             }`
           })
@@ -4722,6 +4732,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       set( target, property, value, receiver ) {
 
         const lengthCheck = target.length
+        const old = target.slice(0)
         target[ property ] = value
         
         if( property === 'length' ) { 
@@ -4743,7 +4754,16 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             }else{
               target[0].connect( Audio.Master )
             }
+          }else if( value === 0 && lengthCheck !== 0 ) {
+            // ugh...
+            __wrappedObject.connect( 
+              __wrappedObject.connected[ 0 ][ 0 ].__wrapped__.connected[ 0 ][ 0 ], 
+              __wrappedObject.connected[ 0 ][ 0 ].__wrapped__.connected[ 0 ][ 2 ] 
+            )
+
+            __wrappedObject.connected[ 0 ][ 0 ].disconnect()
           }
+
         }
 
         return true

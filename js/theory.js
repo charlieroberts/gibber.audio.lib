@@ -272,7 +272,8 @@ const Theory = {
         ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
         : mode[ Math.abs( idx ) % mode.length ]
 
-      finalIdx += idx >= 0 ? this.__degree.offset : this.__degree.offset * -1
+      finalIdx += this.__degree.offset
+      //finalIdx += idx >= 0 ? this.__degree.offset : this.__degree.offset * -1
       //console.log( 'degree:', this.degree, this.__degree.offset, finalIdx )
     }else{
       finalIdx = idx

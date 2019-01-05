@@ -264,7 +264,10 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
                 notesInOctave = Gibberish.Theory.__tunings[ tuning ].frequencies.length
               }
               const offset = octave * notesInOctave
-              const __note = Gibberish.Theory.note( note + offset );
+              let __note = Gibberish.Theory.note( note + offset );
+              //console.log( Gibberish.Theory.__degree )
+              //__note += note >= 0 ? Gibberish.Theory.__degree.offset : Gibberish.Theory.__degree.offset * -1
+              __note += Gibberish.Theory.__degree.offset
               this.___note( __note ) 
             }`
           })
@@ -324,6 +327,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       set( target, property, value, receiver ) {
 
         const lengthCheck = target.length
+        const old = target.slice(0)
         target[ property ] = value
         
         if( property === 'length' ) { 
@@ -345,7 +349,16 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             }else{
               target[0].connect( Audio.Master )
             }
+          }else if( value === 0 && lengthCheck !== 0 ) {
+            // ugh...
+            __wrappedObject.connect( 
+              __wrappedObject.connected[ 0 ][ 0 ].__wrapped__.connected[ 0 ][ 0 ], 
+              __wrappedObject.connected[ 0 ][ 0 ].__wrapped__.connected[ 0 ][ 2 ] 
+            )
+
+            __wrappedObject.connected[ 0 ][ 0 ].disconnect()
           }
+
         }
 
         return true
