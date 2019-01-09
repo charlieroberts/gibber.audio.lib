@@ -69,7 +69,8 @@ module.exports = {
     filterMult:1.5,
     Q:.5,
     filterType:1,
-    filterMode:1
+    filterMode:1,
+    panVoices:true
   },
   bass : { 
     attack: audio => audio.Clock.ms(.1),

@@ -8300,11 +8300,13 @@ const createProxies = function( pre, post, proxiedObj ) {
           }
         }
 
-        if( ugen.clear !== undefined ) {
-          ugen.clear()
-        }else if( ugen.__onclear !== undefined ) {
-          // XXX does this condition ever happen?
-          ugen.__onclear()     
+        if( ugen !== undefined ) {
+          if( ugen.clear !== undefined ) {
+            ugen.clear()
+          }else if( ugen.__onclear !== undefined ) {
+            // XXX does this condition ever happen?
+            ugen.__onclear()     
+          }
         }
 
         ugen = value
