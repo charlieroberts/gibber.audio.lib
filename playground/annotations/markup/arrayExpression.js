@@ -165,7 +165,8 @@ module.exports = function( Marker ) {
 
         cycle.clear()
       }else{
-        cycle( Array.isArray( patternObject.value ) )
+        const values = isLookup === false ? patternObject.values : patternObject._values
+        cycle( Array.isArray( values ) )
       }
     }
 

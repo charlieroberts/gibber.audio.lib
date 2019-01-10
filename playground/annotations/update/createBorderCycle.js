@@ -6,7 +6,7 @@ module.exports = function( classNamePrefix, patternObject ) {
       lastBorder = null,
       lastClassName = null
 
-  const cycle = function( isArray = false ) {
+  const cycle = function( isArray=false ) {
     let className = '.' + classNamePrefix,
         border = 'top'
 
@@ -15,7 +15,7 @@ module.exports = function( classNamePrefix, patternObject ) {
       className += '_' + patternObject.update.currentIndex
     }
 
-    isArray = false 
+    //isArray = false 
 
     switch( modCount++ % 4 ) {
       case 1: border = 'right'; break;
@@ -90,7 +90,7 @@ module.exports = function( classNamePrefix, patternObject ) {
 
   // XXX need to delay timing annotations in case value annotations changes underlying text, in
   // which case the underlying CSS of the line gets all wonky.
-  const __cycle = patternObject.__delayAnnotations = true ? ()=> { setTimeout( cycle, 0 ) } : cycle
+  const __cycle = patternObject.__delayAnnotations = true ? isArray => { setTimeout( cycle(isArray), 0 ) } : cycle
 
   // must create reference to original clear function so that it can be called via the delayed wrapper
   // if needed... if not needed, the below assignment is a no-op.

@@ -147,9 +147,9 @@ module.exports = function( Marker ) {
           for( let i = tree.length - 2; i >= 1; i-=2 ) {
             let seqNumber = node.arguments.length > 2 ? node.arguments[2].raw : 0
 
-            try {
+            try{
               seq = obj[ tree[i] ][ seqNumber ]
-            }catch(e) {
+            }catch( e ) {
               console.log( e )
               //debugger
               cb( node.callee, state )

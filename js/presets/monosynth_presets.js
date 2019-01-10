@@ -206,6 +206,16 @@ module.exports = {
     filterMult:0 
   },
 
+  short: { 
+    attack:1/4096,
+    decay:1/16, 
+    maxVoices:3, 
+    cutoff:1.5, 
+    filterMult:0,
+    useADSR:false,
+    gain:.5
+  },
+
   noise: {
     resonance:20,
     decay:1/2,

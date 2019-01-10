@@ -4426,9 +4426,9 @@ const Audio = {
 
         Audio.export( window )
 
-        //let drums = Audio.Drums('x*o-')
-        //drums.disconnect()
-        //drums.stop()
+        let drums = Audio.Drums('x*o-')
+        drums.disconnect()
+        drums.stop()
 
         // store last location in memory... we can clear everything else in Gibber.clear9)
         const memIdx = Object.keys( Gibberish.memory.list ).reverse()[0]
@@ -7657,6 +7657,14 @@ module.exports = {
       this.time = this.fx.delay.time
     }
   },
+  'delay.1/3': {
+    presetInit: function( audio ) {
+      this.fx.delay = audio.effects.Delay({ time:1/3, feedback:.35, wetdry:1 })
+      this.fx.add( this.fx.delay )
+      this.feedback = this.fx.delay.feedback
+      this.time = this.fx.delay.time
+    }
+  },
   'delay.1/5': {
     presetInit: function( audio ) {
       this.fx.delay = audio.effects.Delay({ time:1/5, feedback:.35, wetdry:1 })
@@ -8044,6 +8052,16 @@ module.exports = {
     maxVoices:3, 
     cutoff:35, 
     filterMult:0 
+  },
+
+  short: { 
+    attack:1/4096,
+    decay:1/16, 
+    maxVoices:3, 
+    cutoff:1.5, 
+    filterMult:0,
+    useADSR:false,
+    gain:.5
   },
 
   noise: {
