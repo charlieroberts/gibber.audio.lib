@@ -55,11 +55,12 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 
     //if( currentValue !== Gibber.Seq.DO_NOT_OUTPUT ) {
     span.add( 'euclid0' )
-    //setTimeout( ()=> { 
-    //  span.remove( 'euclid1' ) 
-    //  span.add( 'euclid0' )
-    //}, 50 )
-    //}
+    span.add( 'euclid1' )
+    setTimeout( ()=> { 
+      span.remove( 'euclid1' ) 
+      span.add( 'euclid0' )
+    }, 50 )
+    
 
     //span.add( 'euclid0' )
   }

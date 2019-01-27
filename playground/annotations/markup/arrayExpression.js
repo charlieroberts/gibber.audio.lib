@@ -140,10 +140,11 @@ module.exports = function( Marker ) {
             if( $( highlighted.className + '_binop' ).length > 0 ) {
               $( highlighted.className + '_binop' ).remove( 'annotation-binop-border' )
             }
-
           }
         }
-
+      //$( className ).add( 'annotation-array' )
+      //$( className+'_start' ).add( 'annotation-border-left' )
+      //$( className+'_end' ).add( 'annotation-border-right' )
         // add annotation for current pattern element
         const values = isLookup === false ? patternObject.values : patternObject._values
 

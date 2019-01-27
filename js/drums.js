@@ -89,8 +89,8 @@ module.exports = function( Audio ) {
       }
     })
 
-    props = Presets.process( { name:'EDrums', category:'instruments' }, args, Audio )
-    if( props !== undefined ) {
+    props = Presets.process( { name:'Drums', category:'instruments' }, args, Audio )
+    if( props !== undefined && props.__presetInit__ !== undefined ) {
       Object.assign( drums, props )
       if( props.__presetInit__ !== undefined ) props.__presetInit__.call( drums, Audio )
     }

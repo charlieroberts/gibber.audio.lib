@@ -28,6 +28,12 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
   let mark = () => {
     // first time through, use the position given to us by the parser
     let range,start, end
+
+    // get new position in case the pattern has moved via inserted line breaks 
+    let pos = patternObject.commentMarker.find(),
+        memberAnnotationStart   = Object.assign( {}, pos.from ),
+        memberAnnotationEnd     = Object.assign( {}, pos.to )
+
     if( initialized === false ) {
       memberAnnotationStart.ch = annotationStartCh
       memberAnnotationEnd.ch   = annotationEndCh
@@ -100,17 +106,27 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     // markStart is a closure variable that will be used in the call
     // to mark()
     markStart = track.markup.textMarkers[ className ][ 0 ].find()
+    markEnd   = track.markup.textMarkers[ className ][ patternObject.values.length - 1  ].find()
 
-    //Gibber.Environment.animationScheduler.add( () => {
-      for( let i = 0; i < patternObject.values.length; i++ ) {
+    if( markStart !== undefined && markEnd !== undefined ) { 
+      marker.doc.replaceRange( '' + patternObject.values.join(''), markStart.from, markEnd.to )
+    }
 
-        let markerCh = track.markup.textMarkers[ className ][ i ],
-            pos = markerCh.find()
+    //for( let i = 0; i < patternObject.values.length; i++ ) {
 
-        marker.doc.replaceRange( '' + patternObject.values[ i ], pos.from, pos.to )
-      }
-      mark()
-    //}, delay ) 
+    //  let markerCh = track.markup.textMarkers[ className ][ i ],
+    //      pos = markerCh.find()
+
+    //  // break for loop and remark pattern if a character
+    //  // isn't found
+    //  if( pos === undefined ) {
+    //    break
+    //  }
+
+    //  marker.doc.replaceRange( '' + patternObject.values[ i ], pos.from, pos.to )
+    //}
+
+    mark()
   }
 
   patternObject.clear = () => {

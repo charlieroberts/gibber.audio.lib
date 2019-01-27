@@ -6127,10 +6127,11 @@ module.exports = function( Marker ) {
             if( $( highlighted.className + '_binop' ).length > 0 ) {
               $( highlighted.className + '_binop' ).remove( 'annotation-binop-border' )
             }
-
           }
         }
-
+      //$( className ).add( 'annotation-array' )
+      //$( className+'_start' ).add( 'annotation-border-left' )
+      //$( className+'_end' ).add( 'annotation-border-right' )
         // add annotation for current pattern element
         const values = isLookup === false ? patternObject.values : patternObject._values
 
@@ -6524,11 +6525,12 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 
     //if( currentValue !== Gibber.Seq.DO_NOT_OUTPUT ) {
     span.add( 'euclid0' )
-    //setTimeout( ()=> { 
-    //  span.remove( 'euclid1' ) 
-    //  span.add( 'euclid0' )
-    //}, 50 )
-    //}
+    span.add( 'euclid1' )
+    setTimeout( ()=> { 
+      span.remove( 'euclid1' ) 
+      span.add( 'euclid0' )
+    }, 50 )
+    
 
     //span.add( 'euclid0' )
   }
@@ -6834,11 +6836,14 @@ module.exports = function( classNamePrefix, patternObject ) {
 
     // for a pattern holding arrays... like for chord()
     if( isArray === true ) {
+      // make sure base border surrounds array before dealing with highlight
+      $( className ).add( 'annotation-array' )
+      $( className+'_start' ).add( 'annotation-border-left' )
+      $( className+'_end' ).add( 'annotation-border-right' ) 
       switch( border ) {
         case 'left':
           $( className ).remove( 'annotation-' + lastBorder + '-border-cycle' )
           $( className + '_start' ).add( 'annotation-left-border-cycle' )
-
           break;
         case 'right':
           $( className ).remove( 'annotation-' + lastBorder + '-border-cycle' ) 
@@ -6940,6 +6945,12 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
   let mark = () => {
     // first time through, use the position given to us by the parser
     let range,start, end
+
+    // get new position in case the pattern has moved via inserted line breaks 
+    let pos = patternObject.commentMarker.find(),
+        memberAnnotationStart   = Object.assign( {}, pos.from ),
+        memberAnnotationEnd     = Object.assign( {}, pos.to )
+
     if( initialized === false ) {
       memberAnnotationStart.ch = annotationStartCh
       memberAnnotationEnd.ch   = annotationEndCh
@@ -7012,17 +7023,27 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     // markStart is a closure variable that will be used in the call
     // to mark()
     markStart = track.markup.textMarkers[ className ][ 0 ].find()
+    markEnd   = track.markup.textMarkers[ className ][ patternObject.values.length - 1  ].find()
 
-    //Gibber.Environment.animationScheduler.add( () => {
-      for( let i = 0; i < patternObject.values.length; i++ ) {
+    if( markStart !== undefined && markEnd !== undefined ) { 
+      marker.doc.replaceRange( '' + patternObject.values.join(''), markStart.from, markEnd.to )
+    }
 
-        let markerCh = track.markup.textMarkers[ className ][ i ],
-            pos = markerCh.find()
+    //for( let i = 0; i < patternObject.values.length; i++ ) {
 
-        marker.doc.replaceRange( '' + patternObject.values[ i ], pos.from, pos.to )
-      }
-      mark()
-    //}, delay ) 
+    //  let markerCh = track.markup.textMarkers[ className ][ i ],
+    //      pos = markerCh.find()
+
+    //  // break for loop and remark pattern if a character
+    //  // isn't found
+    //  if( pos === undefined ) {
+    //    break
+    //  }
+
+    //  marker.doc.replaceRange( '' + patternObject.values[ i ], pos.from, pos.to )
+    //}
+
+    mark()
   }
 
   patternObject.clear = () => {
@@ -7331,7 +7352,7 @@ const Waveform = {
     if( widget.gen.from !== undefined ) {
       widget.min = widget.gen.from.value
       widget.max = widget.gen.to.value
-      isFade = true
+      widget.isFade = isFade = true
       widget.gen = widget.gen.__wrapped__
       widget.values = widget.gen.values
     }
@@ -7459,15 +7480,17 @@ const Waveform = {
       widget.storage.push( value )
     }
 
-    if( widget.storage.length > 240 ) {
-      widget.max = Math.max.apply( null, widget.storage )
-      widget.min = Math.min.apply( null, widget.storage )
-      widget.storage.length = 0
-    } else if( value > widget.max ) {
-      widget.max = value
-    }else if( value < widget.min ) {
-      widget.min = value
-    } 
+    if( widget.isFade !== true ) {
+      if( widget.storage.length > 240 ) {
+        widget.max = Math.max.apply( null, widget.storage )
+        widget.min = Math.min.apply( null, widget.storage )
+        widget.storage.length = 0
+      } else if( value > widget.max ) {
+        widget.max = value
+      }else if( value < widget.min ) {
+        widget.min = value
+      } 
+    }
 
     widget.values.shift()
 
@@ -7513,13 +7536,14 @@ const Waveform = {
         widget.ctx.beginPath()
         widget.ctx.moveTo( widget.padding,  widget.height / 2 + 1 )
 
-        const range = widget.max - widget.min
         const wHeight = (widget.height * .85 + .45) - 1
 
         // needed for fades
         let isReversed = false
 
         if( widget.isFade !== true ) {
+
+          const range = widget.max - widget.min
           for( let i = 0, len = widget.waveWidth; i < len; i++ ) {
             const data = widget.values[ i ]
             const shouldDrawDot = typeof data === 'object'
@@ -7537,6 +7561,7 @@ const Waveform = {
             }
           }
         }else{
+          const range = Math.abs( widget.gen.to - widget.gen.from )
           isReversed = ( widget.gen.from > widget.gen.to )
 
           if( !isReversed ) {
@@ -7549,7 +7574,7 @@ const Waveform = {
 
           const value = widget.values[0]
           if( !isNaN( value ) ) {
-            let percent = isReversed === true ? Math.abs( value / (range+widget.gen.from) ) : value / (range+widget.gen.from)
+            let percent = isReversed === true ? Math.abs( (value-widget.gen.to) / range ) : Math.abs( (value-widget.gen.from) / range ) 
 
             if( !isReversed ) {
               widget.ctx.moveTo( widget.padding + ( Math.abs( percent ) * widget.waveWidth ), widget.height )
@@ -7574,15 +7599,27 @@ const Waveform = {
         }
         widget.ctx.stroke()
 
-        const __min = isReversed === false ? widget.min.toFixed(2) : widget.max.toFixed(2)
-        const __max = isReversed === false ? widget.max.toFixed(2) : widget.min.toFixed(2)
+        //const __min = isReversed === false ? widget.min.toFixed(2) : widget.max.toFixed(2)
+        //const __max = isReversed === false ? widget.max.toFixed(2) : widget.min.toFixed(2)
+
+        let __min, __max
+        if( widget.isFade !== true ) {
+          __min = isReversed === false ? widget.min.toFixed(2) : widget.max.toFixed(2)
+          __max = isReversed === false ? widget.max.toFixed(2) : widget.min.toFixed(2)
+        }else{
+          __min = widget.gen.from.toFixed(2)//isReversed === false ? widget.gen.to.toFixed(2) : widget.gen.to.toFixed(2)
+          __max = widget.gen.to.toFixed(2)  //isReversed === false ? widget.gen.from.toFixed(2) : widget.gen.from.toFixed(2)
+        }
+
+
+        const reverseHeight = widget.isFade === true && __min > __max 
 
         // draw min/max
         widget.ctx.fillStyle = COLORS.STROKE
         widget.ctx.textAlign = 'right'
-        widget.ctx.fillText( __min, widget.padding - 2, widget.height )
+        widget.ctx.fillText( __min, widget.padding - 2, reverseHeight === false ? widget.height : widget.height / 2 )
         widget.ctx.textAlign = 'left'
-        widget.ctx.fillText( __max, widget.waveWidth + widget.padding + 2, widget.height / 2 )
+        widget.ctx.fillText( __max, widget.waveWidth + widget.padding + 2, reverseHeight === false ? widget.height / 2 : widget.height )
 
         // draw corners
         widget.ctx.beginPath()
@@ -8110,6 +8147,8 @@ window.onload = function() {
     //hintOptions:{ hint:CodeMirror.hint.javascript }
   })
 
+  Babel.registerPlugin( 'jsdsp', jsdsp )
+
   cm.setSize( null, '100%' )
 
   /*
@@ -8146,7 +8185,7 @@ window.onload = function() {
 
   environment.Annotations = environment.codeMarkup 
   Gibber.Environment = environment
-
+/*
   let select = document.querySelector( 'select' ),
     files = [
     ]
@@ -8165,7 +8204,7 @@ window.onload = function() {
 
     req.send()
   }
-
+*/
   //loadexample( 'deepnote.js' )
 
   //setupSplit()
@@ -8318,6 +8357,8 @@ const createProxies = function( pre, post, proxiedObj ) {
   }
 }
 
+const shouldUseJSDSP = true
+
 CodeMirror.keyMap.playground =  {
   fallthrough:'default',
 
@@ -8325,9 +8366,17 @@ CodeMirror.keyMap.playground =  {
     try {
       const selectedCode = getSelectionCodeColumn( cm, false )
 
+      window.genish = Gibber.Gen.ugens
+      //var code = shouldUseJSDSP ? Babel.transform(selectedCode.code, { presets: [], plugins:['jsdsp'] }).code : selectedCode.code
+      let code = `{
+  'use jsdsp'
+  ${selectedCode.code}
+}`
+      code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
+
       flash( cm, selectedCode.selection )
 
-      const func = new Function( selectedCode.code )
+      const func = new Function( code )
 
       Gibber.shouldDelay = true
 
@@ -8371,9 +8420,16 @@ CodeMirror.keyMap.playground =  {
     try {
       var selectedCode = getSelectionCodeColumn( cm, true )
 
+      window.genish = Gibber.Gen.ugens
+      //var code = shouldUseJSDSP ? Babel.transform(selectedCode.code, { presets: [], plugins:['jsdsp'] }).code : selectedCode.code
+      let code = `{
+  'use jsdsp'
+  ${selectedCode.code}
+}`
+
       flash( cm, selectedCode.selection )
 
-      var func = new Function( selectedCode.code )
+      var func = new Function( code )
 
       Gibber.shouldDelay = true
       const preWindowMembers = Object.keys( window )

@@ -25,11 +25,14 @@ module.exports = function( classNamePrefix, patternObject ) {
 
     // for a pattern holding arrays... like for chord()
     if( isArray === true ) {
+      // make sure base border surrounds array before dealing with highlight
+      $( className ).add( 'annotation-array' )
+      $( className+'_start' ).add( 'annotation-border-left' )
+      $( className+'_end' ).add( 'annotation-border-right' ) 
       switch( border ) {
         case 'left':
           $( className ).remove( 'annotation-' + lastBorder + '-border-cycle' )
           $( className + '_start' ).add( 'annotation-left-border-cycle' )
-
           break;
         case 'right':
           $( className ).remove( 'annotation-' + lastBorder + '-border-cycle' ) 

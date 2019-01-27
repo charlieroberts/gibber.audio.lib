@@ -354,11 +354,14 @@ const Gen  = {
       return fade
     },
     
-    beats( num ) {
-      return Gen.ugens.rate( num )
-      // beat( n ) => rate(in1, n)
-      // final string should be rate( in1, num )
-    }
+    //beats( num ) {
+    //  return Gen.ugens.rate( num )
+    //  // beat( n ) => rate(in1, n)
+    //  // final string should be rate( in1, num )
+    //}
+    beats( b ) {
+      return Gen.ugens.phasor( Gibber.Utilities.btof( b ), 0, { min:0 } )
+    },   //
   },
 
   ugens:{},

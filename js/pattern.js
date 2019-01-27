@@ -495,6 +495,10 @@ const patternWrapper = function( Gibber ) {
 
       if( isGen === true ) {
         fnc.waveformPoint = val => {
+          // accounts for annoying edge case where wave pattern is
+          // inlined to a call to .seq
+          // XXX fix in parsing or somehow figure out how to only do this once
+          if( fnc.widget !== undefined ) fnc.values[0].widget = fnc.widget
           fnc.values[0].widget.values[ fnc.values[0].widget.values.length - 1 ] = { value:val } 
         }
       }

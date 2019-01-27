@@ -121,7 +121,8 @@ h1 {
 
 #header span { font-size: .8em; }
 
-#editor { width:100%; box-sizing:border-box; display:inline-block; height:calc( 100% - 3em); /*border-right:1px solid #666;*/ padding-left:1em  }
+/*#editor { width:100%; box-sizing:border-box; display:inline-block; height:calc( 100% - 3em); [>border-right:1px solid #666;<] padding-left:1em  }*/
+#editor { width:100%; box-sizing:border-box; display:inline-block; height:calc( 100%); /*border-right:1px solid #666;*/ padding-left:1em  }
 #console{ width:40%; box-sizing:border-box; display:inline-block; position:absolute; height:calc( 100% - 3em ); }
 
 .dg { z-index:100 !important }
@@ -275,8 +276,8 @@ img {
   background: rgba(66,70,73,1)
 }
 .euclid1 {
-  /*border-color:#ddd !important; */
-  /*background-color:#666*/
+  border-color:#eee !important; 
+  background-color:#666
 }
 
 .euclid0 {

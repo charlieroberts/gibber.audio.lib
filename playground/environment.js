@@ -19,6 +19,8 @@ window.onload = function() {
     //hintOptions:{ hint:CodeMirror.hint.javascript }
   })
 
+  Babel.registerPlugin( 'jsdsp', jsdsp )
+
   cm.setSize( null, '100%' )
 
   /*
@@ -55,7 +57,7 @@ window.onload = function() {
 
   environment.Annotations = environment.codeMarkup 
   Gibber.Environment = environment
-
+/*
   let select = document.querySelector( 'select' ),
     files = [
     ]
@@ -74,7 +76,7 @@ window.onload = function() {
 
     req.send()
   }
-
+*/
   //loadexample( 'deepnote.js' )
 
   //setupSplit()
@@ -227,6 +229,8 @@ const createProxies = function( pre, post, proxiedObj ) {
   }
 }
 
+const shouldUseJSDSP = true
+
 CodeMirror.keyMap.playground =  {
   fallthrough:'default',
 
@@ -234,9 +238,17 @@ CodeMirror.keyMap.playground =  {
     try {
       const selectedCode = getSelectionCodeColumn( cm, false )
 
+      window.genish = Gibber.Gen.ugens
+      //var code = shouldUseJSDSP ? Babel.transform(selectedCode.code, { presets: [], plugins:['jsdsp'] }).code : selectedCode.code
+      let code = `{
+  'use jsdsp'
+  ${selectedCode.code}
+}`
+      code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
+
       flash( cm, selectedCode.selection )
 
-      const func = new Function( selectedCode.code )
+      const func = new Function( code )
 
       Gibber.shouldDelay = true
 
@@ -280,9 +292,16 @@ CodeMirror.keyMap.playground =  {
     try {
       var selectedCode = getSelectionCodeColumn( cm, true )
 
+      window.genish = Gibber.Gen.ugens
+      //var code = shouldUseJSDSP ? Babel.transform(selectedCode.code, { presets: [], plugins:['jsdsp'] }).code : selectedCode.code
+      let code = `{
+  'use jsdsp'
+  ${selectedCode.code}
+}`
+
       flash( cm, selectedCode.selection )
 
-      var func = new Function( selectedCode.code )
+      var func = new Function( code )
 
       Gibber.shouldDelay = true
       const preWindowMembers = Object.keys( window )

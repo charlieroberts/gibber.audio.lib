@@ -114,7 +114,8 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
 
         // XXX I can't quite figure out why I have to wait to reset the property
         // value here... if I don't, then the fade ugen stays assigned in the worklet processor.
-        setTimeout( ()=> obj[ propertyName ] = store.to.value, 0 )
+        // and 0 doesn't work!
+        setTimeout( ()=> obj[ propertyName ] = store.to.value === 0 ? .000001 : store.to.value, 0 )
         store.__wrapped__.widget.clear()
       }
 
@@ -203,7 +204,11 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         //console.log( Gibberish.mode, __wrappedObject.connected )
         if( __wrappedObject.connected !== undefined ) {
           for( let connection of __wrappedObject.connected ) {
-            this.disconnect( connection[ 0 ] )
+            if( this.fx.indexOf( connection[ 0 ] ) === -1 ) {
+              this.disconnect( connection[ 0 ] )
+            }else{
+              this.disconnect()
+            }
           }
         }
         if( this.__onclear !== undefined ) {
@@ -257,17 +262,17 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
               const octave = this.octave || 0
               let notesInOctave = 7
               const mode = Gibberish.Theory.mode
+
               if( mode !== null ) {
                 notesInOctave = Gibberish.Theory.modes[ mode ].length
               }else{
                 const tuning = Gibberish.Theory.tuning
                 notesInOctave = Gibberish.Theory.__tunings[ tuning ].frequencies.length
               }
+
               const offset = octave * notesInOctave
               let __note = Gibberish.Theory.note( note + offset );
-              //console.log( Gibberish.Theory.__degree )
-              //__note += note >= 0 ? Gibberish.Theory.__degree.offset : Gibberish.Theory.__degree.offset * -1
-              __note += Gibberish.Theory.__degree.offset
+
               this.___note( __note ) 
             }`
           })
@@ -351,12 +356,16 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             }
           }else if( value === 0 && lengthCheck !== 0 ) {
             // ugh...
-            __wrappedObject.connect( 
-              __wrappedObject.connected[ 0 ][ 0 ].__wrapped__.connected[ 0 ][ 0 ], 
-              __wrappedObject.connected[ 0 ][ 0 ].__wrapped__.connected[ 0 ][ 2 ] 
-            )
+            if( __wrappedObject.connected !== undefined ) {
+              if( __wrappedObject.connected[0] !== undefined ) {
+                __wrappedObject.connect( 
+                  __wrappedObject.connected[ 0 ][ 0 ].__wrapped__.connected[ 0 ][ 0 ], 
+                  __wrappedObject.connected[ 0 ][ 0 ].__wrapped__.connected[ 0 ][ 2 ] 
+                )
 
-            __wrappedObject.connected[ 0 ][ 0 ].disconnect()
+                __wrappedObject.connected[ 0 ][ 0 ].disconnect()
+              }
+            }
           }
 
         }

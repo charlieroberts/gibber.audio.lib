@@ -21,6 +21,18 @@ module.exports = {
       this.feedback = this.fx.delay.feedback
       this.time = this.fx.delay.time
     }
+  }, 
+  'delay.1/6.fb': {
+    presetInit: function( audio ) {
+      this.delay = audio.effects.Delay({ time:1/6, feedback:.825, wetdry:1 })
+      this.fx.add( this.delay ) 
+    }
+  },
+  'delay.1/3.fb': {
+    presetInit: function( audio ) {
+      this.delay = audio.effects.Delay({ time:1/3, feedback:.825, wetdry:1 })
+      this.fx.add( this.delay )
+    }
   },
   'delay.1/5': {
     presetInit: function( audio ) {

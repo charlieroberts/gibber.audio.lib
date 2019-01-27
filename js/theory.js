@@ -21,6 +21,8 @@ const Theory = {
   __degree:'i',
   __tunings:{
     et: {
+      root:'60',
+      mode:'absolute',
       frequencies:[
         261.62558,
         277.182617,
@@ -113,8 +115,9 @@ const Theory = {
             const degree = this.__degrees[ this.quality ][ __degree ]
         
             this.__degree = degree
-            this.rootNumber = degree.offset + this.baseNumber
+            //this.rootNumber = degree.offset + this.baseNumber
             this.mode = degree.mode
+            
 
             //console.log( this.__degree, this.rootNumber, this.mode )
           }
@@ -139,31 +142,55 @@ const Theory = {
       for( let i = 0; i < base.length; i++ ) {
         const chord = base[ i ]
         this.__degrees[ name ][ chord ] = { mode:'aeolian', offset: values[i] }
+        this.__degrees[ name ][ '-'+chord ] = { mode:'aeolian', offset: values[i] - 12 }
+        this.__degrees[ name ][ '--'+chord ] = { mode:'aeolian', offset: values[i] - 24 }
+        this.__degrees[ name ][ '+'+chord ] = { mode:'aeolian', offset: values[i] + 12 }
+        this.__degrees[ name ][ '++'+chord ] = { mode:'aeolian', offset: values[i] + 24 }
       }
 
       for( let i = 0; i < base.length; i++ ) {
         const chord = base[ i ].toUpperCase()
         this.__degrees[ name ][ chord ] = { mode:'ionian', offset: values[i] }
+        this.__degrees[ name ][ '-'+chord ] = { mode:'ionian', offset: values[i] - 12 }
+        this.__degrees[ name ][ '--'+chord ] = { mode:'ionian', offset: values[i] - 24 }
+        this.__degrees[ name ][ '+'+chord ] = { mode:'ionian', offset: values[i] + 12 }
+        this.__degrees[ name ][ '++'+chord ] = { mode:'ionian', offset: values[i] + 24 }
       }
 
       for( let i = 0; i < base.length; i++ ) {
         const chord = base[ i ] + '7'
         this.__degrees[ name ][ chord ] = { mode:'dorian', offset: values[i] }
+        this.__degrees[ name ][ '-'+chord ] = { mode:'dorian', offset: values[i] - 12 }
+        this.__degrees[ name ][ '--'+chord ] = { mode:'dorian', offset: values[i] - 24 }
+        this.__degrees[ name ][ '+'+chord ] = { mode:'dorian', offset: values[i] + 12 }
+        this.__degrees[ name ][ '++'+chord ] = { mode:'dorian', offset: values[i] + 24 }
       }
 
       for( let i = 0; i < base.length; i++ ) {
         const chord = base[ i ].toUpperCase() + '7'
         this.__degrees[ name ][ chord ] = { mode:'mixolydian', offset: values[i] }
+        this.__degrees[ name ][ '-'+chord ] = { mode:'mixolydian', offset: values[i] - 12 }
+        this.__degrees[ name ][ '--'+chord ] = { mode:'mixolydian', offset: values[i] - 24 }
+        this.__degrees[ name ][ '+'+chord ] = { mode:'mixolydian', offset: values[i] + 12 }
+        this.__degrees[ name ][ '++'+chord ] = { mode:'mixolydian', offset: values[i] + 24 }
       }
 
       for( let i = 0; i < base.length; i++ ) {
         const chord = base[ i ] + 'o'
         this.__degrees[ name ][ chord ] = { mode:'locrian', offset: values[i] }
+        this.__degrees[ name ][ '-'+chord ] = { mode:'locrian', offset: values[i] - 12 }
+        this.__degrees[ name ][ '--'+chord ] = { mode:'locrian', offset: values[i] - 24 }
+        this.__degrees[ name ][ '+'+chord ] = { mode:'locrian', offset: values[i] + 12 }
+        this.__degrees[ name ][ '++'+chord ] = { mode:'locrian', offset: values[i] + 24 }
       }
 
       for( let i = 0; i < base.length; i++ ) {
         const chord = base[ i ] + 'M7'
         this.__degrees[ name ][ chord ] = { mode:'melodicminor', offset: values[i] }
+        this.__degrees[ name ][ '-'+chord ] = { mode:'melodicminor', offset: values[i] - 12 }
+        this.__degrees[ name ][ '--'+chord ] = { mode:'melodicminor', offset: values[i] - 24 }
+        this.__degrees[ name ][ '+'+chord ] = { mode:'melodicminor', offset: values[i] + 12 }
+        this.__degrees[ name ][ '++'+chord ] = { mode:'melodicminor', offset: values[i] + 24 }
       }
     }
   },
@@ -197,7 +224,6 @@ const Theory = {
 
       this.tuning = 'et'
     }
-    console.log( 'theory mode:', Gibberish.mode )
     this.__initDegrees()
 
 
@@ -258,8 +284,8 @@ const Theory = {
     return out
   */
 
-  note: function( idx ) {
-    let finalIdx, octave = 0, mode = null
+  note: function( idx, octave=0 ) {
+    let finalIdx, mode = null
 
     if( Gibberish.Theory.mode !== null ) {
       mode = Gibberish.Theory.modes[ Gibberish.Theory.mode ]
@@ -273,8 +299,6 @@ const Theory = {
         : mode[ Math.abs( idx ) % mode.length ]
 
       finalIdx += this.__degree.offset
-      //finalIdx += idx >= 0 ? this.__degree.offset : this.__degree.offset * -1
-      //console.log( 'degree:', this.degree, this.__degree.offset, finalIdx )
     }else{
       finalIdx = idx
     }

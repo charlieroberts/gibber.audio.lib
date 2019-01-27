@@ -3,9 +3,9 @@ const Presets = {
     let output
 
     // if the constructor arugment is not a string then no preset is being used
-    if( typeof args[ 0 ] !== 'string' ) {
+    if( typeof args[0] === 'object' ) {
       output = args[ 0 ]  
-    }else{
+    }else if( typeof args[0] === 'string' ){
       output = {}
       const preset = Presets[ description.category ][ description.name ][ args[0] ]
 
@@ -24,11 +24,17 @@ const Presets = {
         if( args.length > 1 ) {
           Object.assign( output, args[1] )
         }
-
+        
         if( preset.presetInit !== undefined ) {
           output.__presetInit__ = preset.presetInit 
         } 
       }
+    }else{
+      output = {}
+    }
+    
+    if( description.__defaults__ !== undefined ) {
+      Object.assign( output, description.__defaults__ )
     }
 
     return output
@@ -43,6 +49,7 @@ const Presets = {
     Kick: require( './presets/kick_presets.js' ),
 
     EDrums: require( './presets/edrums_presets.js' ),
+    Drums:  require( './presets/drums_presets.js' )
   },
 
   effects: {

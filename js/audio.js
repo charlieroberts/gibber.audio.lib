@@ -3,6 +3,7 @@ const Ugen        = require( './ugen.js' )
 const Instruments = require( './instruments.js' )
 const Oscillators = require( './oscillators.js' )
 const Effects     = require( './effects.js' )
+const Filters     = require( './filters.js' )
 const Binops      = require( './binops.js' )
 const Envelopes   = require( './envelopes.js' )
 const Busses      = require( './busses.js' )
@@ -32,7 +33,7 @@ const Audio = {
 
   export( obj ) {
     if( Audio.initialized ){ 
-      Object.assign( obj, this.instruments, this.oscillators, this.effects, this.busses, this.envelopes, this.waveObjects, this.binops )
+      Object.assign( obj, this.instruments, this.oscillators, this.effects, this.filters, this.busses, this.envelopes, this.waveObjects, this.binops )
       
       Utility.export( obj )
       this.Gen.export( obj )
@@ -65,7 +66,7 @@ const Audio = {
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AudioContext({ latencyHint:.05 })
+        ctx = new AudioContext({ latencyHint:.075 })
       }
 
       Gibberish.init( {}, ctx, null, sac ).then( processorNode => {
@@ -124,6 +125,7 @@ const Audio = {
   clear() { 
     Gibberish.clear() 
     Audio.Clock.init( Audio.Gen )
+
     Audio.Seq.clear()
 
     // the idea is that we only clear memory that was filled after
@@ -158,6 +160,7 @@ const Audio = {
     this.oscillators = Oscillators.create( this )
     this.instruments = Instruments.create( this ) 
     this.envelopes   = Envelopes.create( this )
+    this.filters     = Filters.create( this )
     this.effects = Effects.create( this )
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
@@ -239,7 +242,7 @@ const Audio = {
   // property, sequencers for the properyt, and modulations for the property.
   // Alternative getter/setter methods can be passed as arguments.
   createProperty( obj, name, value, post=null, priority=0 ) {
-    obj['__'+name] = { 
+    obj[ '__' + name ] = { 
       value,
       isProperty:true,
       sequencers:[],
@@ -247,11 +250,13 @@ const Audio = {
       name,
 
       seq( values, timings, number = 0, delay = 0 ) {
-        let prevSeq = obj['__'+name].sequencers[ number ] 
-        if( prevSeq !== undefined ) { prevSeq.stop(); prevSeq.clear(); }
+        let prevSeq = obj[ '__' + name ].sequencers[ number ] 
+        if( prevSeq !== undefined ) { 
+          prevSeq.clear();
+        }
 
         // XXX you have to add a method that does all this shit on the worklet. crap.
-        obj['__'+name].sequencers[ number ] = obj[ '__'+name ][ number ] = Audio.Seq({ 
+        obj[ '__' + name ].sequencers[ number ] = obj[ '__'+name ][ number ] = Audio.Seq({ 
           values, 
           timings, 
           target:obj,

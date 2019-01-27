@@ -69,6 +69,22 @@ module.exports = {
       this.fx.add( this.fx.chorus  )
     }
   },
+
+  cry: {
+    attack:1/2, decay:1.5, gain:.045,
+    presetInit: function( audio ) {
+      this.chorus = audio.effects.Chorus('lush')
+      this.fx.add( this.chorus  )
+      this.bitCrusher = audio.effects.BitCrusher({ bitDepth:.5 })
+      this.fx.add( this.bitCrusher )
+      // gen( .5 + cycle( btof(16) ) * .35
+      this.srmod = audio.Gen.make( audio.Gen.ugens.add( .5, audio.Gen.ugens.mul( audio.Gen.ugens.cycle(.125/2), .35 ) ) )
+      this.bitCrusher.sampleRate = this.srmod
+      this.delay = audio.effects.Delay({ time:1/6, feedback:.75 })
+      this.fx.add( this.delay )
+    }
+  },
+
   brass: {
     attack:1/6, decay:1.5, gain:.05,
     filterType:1, Q:.5575, cutoff:2,

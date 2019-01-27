@@ -66,7 +66,7 @@ module.exports = {
     decay: 1/16, 
     octave3:0,
     cutoff:1,
-    filterMult:1.5,
+    filterMult:2,
     Q:.5,
     filterType:1,
     filterMode:1,

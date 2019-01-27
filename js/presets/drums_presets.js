@@ -11,25 +11,21 @@ module.exports = {
     // must be performed after initialization. 
     presetInit( audio ) {
       this.fx.add( audio.effects.Distortion('earshred') )
-
-      this.kick.frequency = 55
-      this.kick.decay = .975
-
-      this.snare.tune = .25
-      this.snare.snappy = 1.5
     }
   },
 
   hpf: {
     presetInit( audio ) {
-      const hpf = audio.filters.Filter12Biquad({ input:this, mode:1, cutoff:.35, isStereo:true })
+      // XXX have to specify input because of filter errors...
+      const hpf = audio.filters.Filter12Biquad({ input:this, mode:1, cutoff:.5, Q:.75, isStereo:true })
       this.fx.add( hpf )
       this.hpf = hpf
    }
   },
   lpf: {
     presetInit( audio ) {
-      const lpf = audio.filters.Filter24Moog({ input:this, mode:1, cutoff:.35, isStereo:true })
+      // XXX have to specify input because of filter errors...
+      const lpf = audio.filters.Filter24Moog({ input:this, mode:1, cutoff:.5, Q:.75, isStereo:true })
       this.fx.add( lpf )
       this.lpf = lpf
     }

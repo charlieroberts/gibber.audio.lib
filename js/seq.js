@@ -10,6 +10,7 @@ module.exports = function( Audio ) {
     const key       = props.key
     const priority  = props.priority
     let   rate      = props.rate || 1
+    let   density   = props.density || 1
 
     let values
     if( Array.isArray( __values ) ) {
@@ -54,20 +55,20 @@ module.exports = function( Audio ) {
 
 
     //const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio ) {
-    if( timings.type !== 'Euclid' ) {
-      timings.addFilter( ( args, ptrn ) => {
-        let time = args[0]
-        const densityValue = typeof ptrn.density === 'number' ? ptrn.density : ptrn.density
-        const val = Math.random() < densityValue ? 1 : 0
+    //if( timings.type !== 'Euclid' ) {
+    //  timings.addFilter( ( args, ptrn ) => {
+    //    let time = args[0]
+    //    const densityValue = typeof ptrn.density === 'number' ? ptrn.density : ptrn.density.output.value
+    //    const val = Math.random() < densityValue ? 1 : 0
 
-        ptrn.output.time = Gibberish.Clock.time( args[0] )
-        ptrn.output.shouldExecute = val 
+    //    ptrn.output.time = Gibberish.Clock.time( args[0] )
+    //    ptrn.output.shouldExecute = val 
 
-        args[ 0 ] = ptrn.output 
+    //    args[ 0 ] = ptrn.output 
 
-        return args
-      })
-    }
+    //    return args
+    //  })
+    //}
 
 
     timings.addFilter( function( args ) {
@@ -99,12 +100,12 @@ module.exports = function( Audio ) {
     // XXX we need to add priority to Sequencer2; this priority will determine the order
     // that sequencers are added to the callback, ensuring that sequencers with higher
     // priority will fire first.
-    const seq = Gibberish.Sequencer2({ values, timings, target, key, priority, rate:Audio.Clock.audioClock, clear })
+    const seq = Gibberish.Sequencer2({ values, timings, density, target, key, priority, rate:Audio.Clock.audioClock, clear })
 
 
-    Gibberish.proxyEnabled = false
-    Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
-    Gibberish.proxyEnabled = true
+    //Gibberish.proxyEnabled = false
+    //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
+    //Gibberish.proxyEnabled = true
 
     Seq.sequencers.push( seq )
 

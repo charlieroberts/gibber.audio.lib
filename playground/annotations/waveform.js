@@ -49,7 +49,7 @@ const Waveform = {
     if( widget.gen.from !== undefined ) {
       widget.min = widget.gen.from.value
       widget.max = widget.gen.to.value
-      isFade = true
+      widget.isFade = isFade = true
       widget.gen = widget.gen.__wrapped__
       widget.values = widget.gen.values
     }
@@ -177,15 +177,17 @@ const Waveform = {
       widget.storage.push( value )
     }
 
-    if( widget.storage.length > 240 ) {
-      widget.max = Math.max.apply( null, widget.storage )
-      widget.min = Math.min.apply( null, widget.storage )
-      widget.storage.length = 0
-    } else if( value > widget.max ) {
-      widget.max = value
-    }else if( value < widget.min ) {
-      widget.min = value
-    } 
+    if( widget.isFade !== true ) {
+      if( widget.storage.length > 240 ) {
+        widget.max = Math.max.apply( null, widget.storage )
+        widget.min = Math.min.apply( null, widget.storage )
+        widget.storage.length = 0
+      } else if( value > widget.max ) {
+        widget.max = value
+      }else if( value < widget.min ) {
+        widget.min = value
+      } 
+    }
 
     widget.values.shift()
 
@@ -231,13 +233,14 @@ const Waveform = {
         widget.ctx.beginPath()
         widget.ctx.moveTo( widget.padding,  widget.height / 2 + 1 )
 
-        const range = widget.max - widget.min
         const wHeight = (widget.height * .85 + .45) - 1
 
         // needed for fades
         let isReversed = false
 
         if( widget.isFade !== true ) {
+
+          const range = widget.max - widget.min
           for( let i = 0, len = widget.waveWidth; i < len; i++ ) {
             const data = widget.values[ i ]
             const shouldDrawDot = typeof data === 'object'
@@ -255,6 +258,7 @@ const Waveform = {
             }
           }
         }else{
+          const range = Math.abs( widget.gen.to - widget.gen.from )
           isReversed = ( widget.gen.from > widget.gen.to )
 
           if( !isReversed ) {
@@ -267,7 +271,7 @@ const Waveform = {
 
           const value = widget.values[0]
           if( !isNaN( value ) ) {
-            let percent = isReversed === true ? Math.abs( value / (range+widget.gen.from) ) : value / (range+widget.gen.from)
+            let percent = isReversed === true ? Math.abs( (value-widget.gen.to) / range ) : Math.abs( (value-widget.gen.from) / range ) 
 
             if( !isReversed ) {
               widget.ctx.moveTo( widget.padding + ( Math.abs( percent ) * widget.waveWidth ), widget.height )
@@ -292,15 +296,27 @@ const Waveform = {
         }
         widget.ctx.stroke()
 
-        const __min = isReversed === false ? widget.min.toFixed(2) : widget.max.toFixed(2)
-        const __max = isReversed === false ? widget.max.toFixed(2) : widget.min.toFixed(2)
+        //const __min = isReversed === false ? widget.min.toFixed(2) : widget.max.toFixed(2)
+        //const __max = isReversed === false ? widget.max.toFixed(2) : widget.min.toFixed(2)
+
+        let __min, __max
+        if( widget.isFade !== true ) {
+          __min = isReversed === false ? widget.min.toFixed(2) : widget.max.toFixed(2)
+          __max = isReversed === false ? widget.max.toFixed(2) : widget.min.toFixed(2)
+        }else{
+          __min = widget.gen.from.toFixed(2)//isReversed === false ? widget.gen.to.toFixed(2) : widget.gen.to.toFixed(2)
+          __max = widget.gen.to.toFixed(2)  //isReversed === false ? widget.gen.from.toFixed(2) : widget.gen.from.toFixed(2)
+        }
+
+
+        const reverseHeight = widget.isFade === true && __min > __max 
 
         // draw min/max
         widget.ctx.fillStyle = COLORS.STROKE
         widget.ctx.textAlign = 'right'
-        widget.ctx.fillText( __min, widget.padding - 2, widget.height )
+        widget.ctx.fillText( __min, widget.padding - 2, reverseHeight === false ? widget.height : widget.height / 2 )
         widget.ctx.textAlign = 'left'
-        widget.ctx.fillText( __max, widget.waveWidth + widget.padding + 2, widget.height / 2 )
+        widget.ctx.fillText( __max, widget.waveWidth + widget.padding + 2, reverseHeight === false ? widget.height / 2 : widget.height )
 
         // draw corners
         widget.ctx.beginPath()
