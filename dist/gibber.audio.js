@@ -4409,6 +4409,7 @@ const Audio = {
         Audio.Ugen = Ugen
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Gibber )
+        Audio.ctx = ctx
 
         // must wait for Gen to be initialized
         Audio.Clock.init( Audio.Gen )
@@ -4763,7 +4764,17 @@ const Busses = {
       category:'misc'
     }
 
-    busses.Bus = Ugen( Gibberish.Bus, busDescription, Audio )
+    busses.__Bus = Ugen( Gibberish.Bus, busDescription, Audio )
+    busses.Bus = function( ...args ) {
+      let props
+      if( args.length > 1 || args.length === 1 && typeof args[0] !== 'string' ) {
+        props = { inputs:args }
+      }else if( args.length === 1 ) {
+        props = args[0]
+      }
+      
+      return props !== undefined ? busses.__Bus( props ) : busses.__Bus()
+    }
 
     const bus2Description = { 
       properties:Gibberish.Bus2.defaults,
@@ -4772,7 +4783,18 @@ const Busses = {
       category:'misc'
     }
 
-    busses.Bus2 = Ugen( Gibberish.Bus2, bus2Description, Audio )
+    busses.__Bus2 = Ugen( Gibberish.Bus2, bus2Description, Audio )
+    busses.Bus2 = function( ...args ) {
+      let props
+      if( args.length > 1 || (args.length === 1 && typeof args[0] !== 'string' && args[0].type !== 'ensemble' )) {
+        props = { inputs:args }
+      }else if( args.length === 1 ) {
+        props = args[0]
+      }
+      
+      return props !== undefined ? busses.__Bus2( props ) : busses.__Bus2()
+    }
+
     return busses
   }
 }
@@ -5130,7 +5152,8 @@ module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
   const Ensemble = function( props ) {
     const cp = {
-      shouldAddToUgen:true 
+      shouldAddToUgen:true,
+      type:'ensemble' 
     }
 
     for( let key in props ) {
@@ -7062,10 +7085,10 @@ const patternWrapper = function( Gibber ) {
 
       // XXX why is this one off from the worlet-side pattern id?
       if( Gibberish.mode === 'processor' ) {
-        Gibberish.processor.messages.push( this.id, 'update.value', args[0] )
+        Gibberish.processor.messages.push( this.id, 'update.value', args.override === undefined ? args[0] : args.override )
         Gibberish.processor.messages.push( this.id, 'update.currentIndex', args[2] )
         if( this.isGen === true ) {
-          Gibberish.processor.messages.push( this.id, 'waveformPoint', args[0] )
+          Gibberish.processor.messages.push( this.id, 'waveformPoint', args.override === undefined ? args[0] : args.override )
         }
       }
 
@@ -7572,6 +7595,12 @@ const patternWrapper = function( Gibber ) {
     // using the spread operator to the constructor. 
     const out = Gibberish.Proxy( 'pattern', { inputs:fnc.values, isPattern:true, filters:fnc.filters, id:fnc.id }, fnc )  
 
+    if( args.filters ) {
+      args.filters.forEach( f => out.addFilter( f ) )
+    }else if( args[0].filters ) {
+      args[0].filters.forEach( f => out.addFilter( f ) )
+    }
+
     return out
   }
 
@@ -7839,7 +7868,7 @@ module.exports = {
   hpf: {
     presetInit( audio ) {
       // XXX have to specify input because of filter errors...
-      const hpf = audio.filters.Filter12Biquad({ input:this, mode:1, cutoff:.5, Q:.75, isStereo:true })
+      const hpf = audio.filters.Filter12Biquad({ input:this, mode:1, cutoff:.275, Q:.25, isStereo:true })
       this.fx.add( hpf )
       this.hpf = hpf
    }
@@ -8056,24 +8085,14 @@ module.exports = {
     filterMode:1,
     panVoices:true
   },
-  bass : { 
-    attack: audio => audio.Clock.ms(.1),
-    decay: 1/8,	
-    octave: -2,
-    octave2 : -1,
-    cutoff: .8,
-    filterMult:3,
-    Q:.75,
-    detune2:.0275,
-    detune3:-.0275
-  },
+
   bassPad : { 
     attack: audio => audio.Clock.ms(.1),
     decay: 2,	
     octave:-4,
-    cutoff: .8,
-    filterMult:4.5,
-    Q:.725,
+    cutoff: .225,
+    filterMult:3.5,
+    Q:.5,
     detune2:1.0125,
     detune3:1-.0125
   },
@@ -8105,7 +8124,7 @@ module.exports = {
     decay: 1/4,	
     octave: -3,
     octave2 : -1,
-    cutoff: 1.5,
+    cutoff: .35,
     filterMult:3,
     Q:.15,
     glide:1250,
@@ -8246,10 +8265,10 @@ module.exports = {
   },
 
   acidBass2: {
-    Q:.78625,
+    Q:.7,
     filterType:2,
-    filterMult:5.5,
-    cutoff:1.25,
+    filterMult:2,
+    cutoff:.35,
     saturation:10,
     attack:1/8192,
     decay:1/10,
@@ -8325,6 +8344,17 @@ module.exports = {
       this.fx.add( audio.effects.Chorus('lush') )
       this.chorus = this.fx[0]
     }
+  },
+
+  'brass.short':{
+    gain:.75,
+    filterType:1,
+    antialias:true,
+    attack:1/32,
+    decay:1/16,
+    filterMult:3,
+    cutoff:.175,
+    Q:.6
   },
 
   chirp: { maxVoices:1, filterType:2, cutoff:.325, decay:1/16 } 
@@ -8918,6 +8948,7 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
     ugen:obj
   }
 
+  prop.mods.clear = ()=> prop.mods.length = 0
 
   Object.defineProperty( obj, propertyName, {
     get() { return obj[ '__' + propertyName ] },
@@ -9210,6 +9241,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       return obj 
     } 
 
+    Object.defineProperty( obj, '_', { get() { obj.disconnect(); return obj } })
+
     // presetInit is a function in presets that triggers actions after the ugen
     // has been instantiated... it is primarily used to add effects and modulations
     // to a preset.
@@ -9419,12 +9452,22 @@ const Utility = {
     return arr
   },
 
+  chord( ptrn, offsets ) {
+    ptrn.filters = [ args => {
+      args.override = args[0]
+      args[0] = [ args[0] - 3, args[0], args[0] + 3 ]
+      return args
+    }]
+    return ptrn
+  },
+
   export( obj ) {
     obj.rndi = this.rndi
     obj.rndf = this.rndf
     obj.Rndi = this.Rndi
     obj.Rndf = this.Rndf
     obj.btof = this.btof
+    obj.chord = this.chord
 
     Array.prototype.rnd = this.random
   }
@@ -18125,142 +18168,161 @@ let allPass = function( _input, length=500, feedback=.5 ) {
 module.exports = allPass
 
 },{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/biquad.js":[function(require,module,exports){
-let g = require( 'genish.js' ),
-    filter = require( './filter.js' )
+let g = require('genish.js'),
+    filter = require('./filter.js');
 
-module.exports = function( Gibberish ) {
+module.exports = function (Gibberish) {
 
-  Gibberish.genish.biquad = ( input, cutoff, _Q, mode, isStereo ) => {
-    let a0,a1,a2,c,b1,b2,
-        in1a0,x1a1,x2a2,y1b1,y2b2,
-        in1a0_1,x1a1_1,x2a2_1,y1b1_1,y2b2_1
+  const genish = g;
+  Gibberish.genish.biquad = (input, __cutoff, __Q, mode, isStereo) => {
+    'use jsdsp';
 
-    let returnValue
-    
-    const Q = g.memo( g.add( .5, g.mul( _Q, 22 ) ) )
-    let x1 = g.history(), x2 = g.history(), y1 = g.history(), y2 = g.history()
-    
-    let w0 = g.memo( g.mul( 2 * Math.PI, g.div( cutoff,  g.gen.samplerate ) ) ),
-        sinw0 = g.sin( w0 ),
-        cosw0 = g.cos( w0 ),
-        alpha = g.memo( g.div( sinw0, g.mul( 2, Q ) ) )
+    let in1a0, x0a1, x1a2, y0b0, y1b1, in1a0_r, x0a1_r, x1a2_r, y0b0_r, y1b1_r, c;
 
-    let oneMinusCosW = g.sub( 1, cosw0 )
+    let returnValue;
 
-    switch( mode ) {
+    const x = genish.data([0, 0], 1, { meta: true });
+    const y = genish.data([0, 0], 1, { meta: true });
+    const a = genish.data([0, 0, 0], 1, { meta: true });
+    const b = genish.data([0, 0], 1, { meta: true });
+
+    const Q = g.max(genish.add(.5, genish.mul(__Q, 22)), 22.5);
+    const cutoff = g.max(.005, g.min(__cutoff, .995));
+    //let w0 = g.memo( g.mul( 2 * Math.PI, g.div( g.max(.005, g.min(cutoff,.995)),  g.gen.samplerate ) ) ),
+    let w0 = genish.mul(genish.mul(2, Math.PI), genish.div(cutoff, g.gen.samplerate)),
+        sinw0 = g.sin(w0),
+        cosw0 = g.cos(w0),
+        alpha = genish.div(sinw0, genish.mul(2, Q));
+
+    //let w0 = g.memo( g.mul( 2 * Math.PI, g.div( cutoff,  g.gen.samplerate ) ) ),
+
+    let oneMinusCosW = genish.sub(1, cosw0);
+
+    /******** process coefficients ********/
+    switch (mode) {
       case 1:
-        a0 = g.memo( g.div( g.add( 1, cosw0) , 2) )
-        a1 = g.mul( g.add( 1, cosw0 ), -1 )
-        a2 = a0
-        c  = g.add( 1, alpha )
-        b1 = g.mul( -2 , cosw0 )
-        b2 = g.sub( 1, alpha )
+        a[0] = genish.div(genish.add(1, cosw0), 2);
+        a[1] = genish.mul(genish.add(1, cosw0), -1);
+        a[2] = a[0];
+        c = genish.add(1, alpha);
+        b[0] = genish.mul(-2, cosw0);
+        b[1] = genish.sub(1, alpha);
         break;
       case 2:
-        a0 = g.mul( Q, alpha )
-        a1 = 0
-        a2 = g.mul( a0, -1 )
-        c  = g.add( 1, alpha )
-        b1 = g.mul( -2 , cosw0 )
-        b2 = g.sub( 1, alpha )
+        a[0] = genish.mul(Q, alpha);
+        a[1] = 0;
+        a[2] = genish.mul(a[0], -1);
+        c = genish.add(1, alpha);
+        b[0] = genish.mul(-2, cosw0);
+        b[1] = genish.sub(1, alpha);
         break;
-      default: // LP
-        a0 = g.memo( g.div( oneMinusCosW, 2) )
-        a1 = oneMinusCosW
-        a2 = a0
-        c  = g.add( 1, alpha )
-        b1 = g.mul( -2 , cosw0 )
-        b2 = g.sub( 1, alpha )
+      default:
+        // LP
+        a[0] = genish.div(oneMinusCosW, 2);
+        a[1] = oneMinusCosW;
+        a[2] = a[0];
+        c = genish.add(1, alpha);
+        b[0] = genish.mul(-2, cosw0);
+        b[1] = genish.sub(1, alpha);
     }
 
-    a0 = g.div( a0, c ); a1 = g.div( a1, c ); a2 = g.div( a2, c )
-    b1 = g.div( b1, c ); b2 = g.div( b2, c )
+    a[0] = genish.div(a[0], c);a[1] = genish.div(a[1], c);a[2] = genish.div(a[2], c);
+    b[0] = genish.div(b[0], c);b[1] = genish.div(b[1], c);
 
-    in1a0 = g.mul( x1.in( isStereo ? input[0] : input ), a0 )
-    x1a1  = g.mul( x2.in( x1.out ), a1 )
-    x2a2  = g.mul( x2.out,          a2 )
+    /******** end coefficients ********/
 
-    let sumLeft = g.add( in1a0, x1a1, x2a2 )
+    /****** left / mono output ********/
 
-    y1b1 = g.mul( y2.in( y1.out ), b1 )
-    y2b2 = g.mul( y2.out, b2 )
+    let l = isStereo === true ? input[0] : input;
+    in1a0 = genish.mul(l, a[0]);
+    x0a1 = genish.mul(x[0], a[1]);
+    x1a2 = genish.mul(x[1], a[2]);
 
-    let sumRight = g.add( y1b1, y2b2 )
+    x[1] = x[0];
+    x[0] = l;
 
-    let diff = g.sub( sumLeft, sumRight )
+    let sumLeft = genish.add(genish.add(in1a0, x0a1), x1a2);
 
-    y1.in( diff )
+    y0b0 = genish.mul(y[0], b[0]);
+    y1b1 = genish.mul(y[1], b[1]);
+    y[1] = y[0];
 
-    if( isStereo ) {
-      let x1_1 = g.history(), x2_1 = g.history(), y1_1 = g.history(), y2_1 = g.history()
+    let sumRight = genish.add(y0b0, y1b1);
 
-      in1a0_1 = g.mul( x1_1.in( input[1] ), a0 )
-      x1a1_1  = g.mul( x2_1.in( x1_1.out ), a1 )
-      x2a2_1  = g.mul( x2_1.out,            a2 )
+    let diff = genish.sub(sumLeft, sumRight);
 
-      let sumLeft_1 = g.add( in1a0_1, x1a1_1, x2a2_1 )
+    y[0] = diff;
 
-      y1b1_1 = g.mul( y2_1.in( y1_1.out ), b1 )
-      y2b2_1 = g.mul( y2_1.out, b2 )
+    /******** end left/mono **********/
 
-      let sumRight_1 = g.add( y1b1_1, y2b2_1 )
+    if (isStereo) {
+      const xr = genish.data([0, 0], 1, { meta: true });
+      const yr = genish.data([0, 0], 1, { meta: true });
+      //let x1_1 = g.history(), x2_1 = g.history(), y1_1 = g.history(), y2_1 = g.history()
 
-      let diff_1 = g.sub( sumLeft_1, sumRight_1 )
+      const r = input[1];
+      in1a0_r = genish.mul(r, a[0]); //g.mul( x1_1.in( input[1] ), a0 )
+      x0a1_r = genish.mul(xr[1], a[1]); //g.mul( x2_1.in( x1_1.out ), a1 )
+      x1a2_r = genish.mul(xr[1], a[2]); //g.mul( x2_1.out,            a2 )
 
-      y1_1.in( diff_1 )
-      
-      returnValue = [ diff, diff_1 ]
-    }else{
-      returnValue = diff
+      xr[1] = xr[0];
+      xr[0] = r;
+
+      const sumLeft_r = genish.add(genish.add(in1a0_r, x0a1_r), x1a2_r);
+
+      yr[1] = yr[0];
+      y0b0_r = genish.mul(yr[1], b[0]); //g.mul( y2_1.in( y1_1.out ), b1 )
+      y1b1_r = genish.mul(yr[1], b[1]); //g.mul( y2_1.out, b2 )
+
+      const sumRight_r = genish.add(y0b0_r, y1b1_r);
+
+      const diff_r = genish.sub(sumLeft_r, sumRight_r);
+
+      yr[0] = diff_r;
+
+      returnValue = [diff, diff_r];
+    } else {
+      returnValue = diff;
     }
 
-    return returnValue
-  }
+    return returnValue;
+  };
 
   let Biquad = inputProps => {
-    const biquad = Object.create( filter )
-    const props = Object.assign( {}, Biquad.defaults, inputProps ) 
-    let __out
+    const biquad = Object.create(filter);
+    const props = Object.assign({}, Biquad.defaults, inputProps);
+    let __out;
 
-    Object.assign( biquad, props )
+    Object.assign(biquad, props);
 
-    biquad.__createGraph = function() {
-      let isStereo = false
-      if( __out === undefined ) {
-        isStereo = props.input !== undefined && props.input.isStereo !== undefined ? props.input.isStereo : false 
-      }else{
-        isStereo = __out.input.isStereo
-        __out.isStereo = isStereo
+    biquad.__createGraph = function () {
+      let isStereo = false;
+      if (__out === undefined) {
+        isStereo = props.input !== undefined && props.input.isStereo !== undefined ? props.input.isStereo : false;
+      } else {
+        isStereo = __out.input.isStereo;
+        __out.isStereo = isStereo;
       }
-      console.log( 'stereo:', isStereo )
-      biquad.graph = Gibberish.genish.biquad( g.in('input'), g.mul( g.in('cutoff'), g.gen.samplerate / 4 ),  g.in('Q'), biquad.mode, isStereo )
-    }
+      biquad.graph = Gibberish.genish.biquad(g.in('input'), g.in('cutoff'), g.in('Q'), biquad.mode, isStereo);
+    };
 
-    biquad.__createGraph()
-    biquad.__requiresRecompilation = [ 'mode', 'input' ]
+    biquad.__createGraph();
+    biquad.__requiresRecompilation = ['mode', 'input'];
 
-    __out = Gibberish.factory(
-      biquad,
-      biquad.graph,
-      ['filters','Filter12Biquad'], 
-      props
-    )
+    __out = Gibberish.factory(biquad, biquad.graph, ['filters', 'Filter12Biquad'], props);
 
-    return __out
-  }
+    return __out;
+  };
 
   Biquad.defaults = {
-    input:0,
+    input: 0,
     Q: .15,
-    cutoff:.05,
-    mode:0
-  }
+    cutoff: .05,
+    mode: 0
+  };
 
-  return Biquad
-
-}
-
-
+  return Biquad;
+};
 },{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js":[function(require,module,exports){
 let g = require( 'genish.js' )
 
@@ -18300,7 +18362,7 @@ module.exports = function( Gibberish ) {
           kindx = 0   
 
 
-    let __freq = g.mul( freq,  genish.gen.samplerate / 2 )
+    let __freq = g.mul( g.min(.005, g.max( freq, .995)),  genish.gen.samplerate / 2 )
 
     // XXX this is where the magic number hapens for Q...
     const Q = g.memo( g.add( .5, g.mul( _Q, g.add( 5, g.sub( 5, g.mul( g.div( __freq, 20000  ), 5 ) ) ) ) ) )
@@ -18608,7 +18670,7 @@ module.exports = function( Gibberish ) {
           filteredOsc = g.zd24( input, g.min( g.in('Q'), .9999 ), cutoff ) // g.max(.005, g.min( cutoff, 1 ) ) )
           break;
         case 2:
-          filteredOsc = g.diodeZDF( input, g.min( g.in('Q'), .9999 ), g.min( cutoff, 20000 ), g.in('saturation'), isStereo ) 
+          filteredOsc = g.diodeZDF( input, g.min( g.in('Q'), .9999 ), cutoff, g.in('saturation'), isStereo ) 
           break;
         case 3:
           filteredOsc = g.svf( input, cutoff, g.sub( 1, g.in('Q')), props.filterMode, isStereo ) 
@@ -21389,7 +21451,7 @@ module.exports = function (Gibberish) {
 
         // 16 is an unfortunate empirically derived magic number...
         const baseCutoffFreq = genish.mul(g.in('cutoff'), genish.div(frequency, genish.div(g.gen.samplerate, 16)));
-        const cutoff = genish.mul(genish.mul(baseCutoffFreq, g.pow(2, genish.mul(g.in('filterMult'), loudness))), env);
+        const cutoff = g.min(genish.mul(genish.mul(baseCutoffFreq, g.pow(2, genish.mul(g.in('filterMult'), loudness))), env), .995);
         const filteredOsc = Gibberish.filters.factory(oscWithEnv, cutoff, g.in('Q'), g.in('saturation'), props);
 
         let synthWithGain = genish.mul(filteredOsc, g.in('gain'));

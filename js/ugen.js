@@ -125,6 +125,7 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
     ugen:obj
   }
 
+  prop.mods.clear = ()=> prop.mods.length = 0
 
   Object.defineProperty( obj, propertyName, {
     get() { return obj[ '__' + propertyName ] },
@@ -416,6 +417,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       
       return obj 
     } 
+
+    Object.defineProperty( obj, '_', { get() { obj.disconnect(); return obj } })
 
     // presetInit is a function in presets that triggers actions after the ugen
     // has been instantiated... it is primarily used to add effects and modulations

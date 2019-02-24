@@ -55,8 +55,15 @@ module.exports = function( Marker ) {
           // annotations when appropriate.
           const left = expression.left
           const right= expression.right
+
+          let leftName = left.name
+          if( leftName === undefined ) {
+            if( left.type === 'MemberExpression' ) {
+              leftName = left.object.name + '.' + left.property.name
+            }
+          }
           
-          Marker.globalIdentifiers[ left.name ] = right
+          Marker.globalIdentifiers[ leftName ] = right
 
           let righthandName
           if( right.callee.object === undefined ) {
@@ -73,10 +80,13 @@ module.exports = function( Marker ) {
 
           if( righthandName !== undefined ) {
             state.containsGen = Marker.Gibber.Gen.names.indexOf( righthandName ) > -1
-            state.gen = window[ left.name ]
+
+            state.gen = leftName.indexOf('.') === -1 
+              ? window[ leftName ] 
+              : window[ leftName.split('.')[0] ][ leftName.split('.')[1] ].value
 
             // XXX does this need a track object? passing null...
-            if( state.containsGen ) Marker.processGen( expression, state.cm, null )
+            if( state.containsGen ) Marker.processGen( expression, state.cm, null, null, null, 0, state )
           }
 
           cb( right, state )

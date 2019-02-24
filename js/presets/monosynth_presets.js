@@ -72,24 +72,14 @@ module.exports = {
     filterMode:1,
     panVoices:true
   },
-  bass : { 
-    attack: audio => audio.Clock.ms(.1),
-    decay: 1/8,	
-    octave: -2,
-    octave2 : -1,
-    cutoff: .8,
-    filterMult:3,
-    Q:.75,
-    detune2:.0275,
-    detune3:-.0275
-  },
+
   bassPad : { 
     attack: audio => audio.Clock.ms(.1),
     decay: 2,	
     octave:-4,
-    cutoff: .8,
-    filterMult:4.5,
-    Q:.725,
+    cutoff: .225,
+    filterMult:3.5,
+    Q:.5,
     detune2:1.0125,
     detune3:1-.0125
   },
@@ -121,7 +111,7 @@ module.exports = {
     decay: 1/4,	
     octave: -3,
     octave2 : -1,
-    cutoff: 1.5,
+    cutoff: .35,
     filterMult:3,
     Q:.15,
     glide:1250,

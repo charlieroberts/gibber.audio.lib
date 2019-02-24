@@ -166,12 +166,22 @@ const Utility = {
     return arr
   },
 
+  chord( ptrn, offsets ) {
+    ptrn.filters = [ args => {
+      args.override = args[0]
+      args[0] = [ args[0] - 3, args[0], args[0] + 3 ]
+      return args
+    }]
+    return ptrn
+  },
+
   export( obj ) {
     obj.rndi = this.rndi
     obj.rndf = this.rndf
     obj.Rndi = this.Rndi
     obj.Rndf = this.Rndf
     obj.btof = this.btof
+    obj.chord = this.chord
 
     Array.prototype.rnd = this.random
   }

@@ -13,10 +13,10 @@ module.exports = {
   },
 
   acidBass2: {
-    Q:.78625,
+    Q:.7,
     filterType:2,
-    filterMult:5.5,
-    cutoff:1.25,
+    filterMult:2,
+    cutoff:.35,
     saturation:10,
     attack:1/8192,
     decay:1/10,
@@ -92,6 +92,17 @@ module.exports = {
       this.fx.add( audio.effects.Chorus('lush') )
       this.chorus = this.fx[0]
     }
+  },
+
+  'brass.short':{
+    gain:.75,
+    filterType:1,
+    antialias:true,
+    attack:1/32,
+    decay:1/16,
+    filterMult:3,
+    cutoff:.175,
+    Q:.6
   },
 
   chirp: { maxVoices:1, filterType:2, cutoff:.325, decay:1/16 } 

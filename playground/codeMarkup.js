@@ -127,8 +127,10 @@ const Marker = {
     // check to see if a given object is a proxy that already has
     // a widget created; if so, don't make another one!
     if( node.type === 'AssignmentExpression' ) {
-      const __obj = window[ node.left.name ]
-
+      const __obj = window[ node.left.name ] || state.gen
+      
+      // node.left.name will be undefined if assignment is to a property
+      // of an object...
       if( __obj !== undefined ) {
         if( __obj.widget !== undefined ) {
           return

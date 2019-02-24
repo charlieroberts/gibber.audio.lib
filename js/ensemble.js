@@ -2,7 +2,8 @@ module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
   const Ensemble = function( props ) {
     const cp = {
-      shouldAddToUgen:true 
+      shouldAddToUgen:true,
+      type:'ensemble' 
     }
 
     for( let key in props ) {

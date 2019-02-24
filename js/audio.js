@@ -81,6 +81,7 @@ const Audio = {
         Audio.Ugen = Ugen
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Gibber )
+        Audio.ctx = ctx
 
         // must wait for Gen to be initialized
         Audio.Clock.init( Audio.Gen )

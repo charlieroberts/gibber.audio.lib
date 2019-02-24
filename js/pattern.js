@@ -37,10 +37,10 @@ const patternWrapper = function( Gibber ) {
 
       // XXX why is this one off from the worlet-side pattern id?
       if( Gibberish.mode === 'processor' ) {
-        Gibberish.processor.messages.push( this.id, 'update.value', args[0] )
+        Gibberish.processor.messages.push( this.id, 'update.value', args.override === undefined ? args[0] : args.override )
         Gibberish.processor.messages.push( this.id, 'update.currentIndex', args[2] )
         if( this.isGen === true ) {
-          Gibberish.processor.messages.push( this.id, 'waveformPoint', args[0] )
+          Gibberish.processor.messages.push( this.id, 'waveformPoint', args.override === undefined ? args[0] : args.override )
         }
       }
 
@@ -546,6 +546,12 @@ const patternWrapper = function( Gibber ) {
     // looks for an 'inputs' property and then passes its value (assumed to be an array)
     // using the spread operator to the constructor. 
     const out = Gibberish.Proxy( 'pattern', { inputs:fnc.values, isPattern:true, filters:fnc.filters, id:fnc.id }, fnc )  
+
+    if( args.filters ) {
+      args.filters.forEach( f => out.addFilter( f ) )
+    }else if( args[0].filters ) {
+      args[0].filters.forEach( f => out.addFilter( f ) )
+    }
 
     return out
   }

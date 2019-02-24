@@ -167,12 +167,22 @@ const Utility = {
     return arr
   },
 
+  chord( ptrn, offsets ) {
+    ptrn.filters = [ args => {
+      args.override = args[0]
+      args[0] = [ args[0] - 3, args[0], args[0] + 3 ]
+      return args
+    }]
+    return ptrn
+  },
+
   export( obj ) {
     obj.rndi = this.rndi
     obj.rndf = this.rndf
     obj.Rndi = this.Rndi
     obj.Rndf = this.Rndf
     obj.btof = this.btof
+    obj.chord = this.chord
 
     Array.prototype.rnd = this.random
   }
@@ -7144,8 +7154,15 @@ module.exports = function( Marker ) {
           // annotations when appropriate.
           const left = expression.left
           const right= expression.right
+
+          let leftName = left.name
+          if( leftName === undefined ) {
+            if( left.type === 'MemberExpression' ) {
+              leftName = left.object.name + '.' + left.property.name
+            }
+          }
           
-          Marker.globalIdentifiers[ left.name ] = right
+          Marker.globalIdentifiers[ leftName ] = right
 
           let righthandName
           if( right.callee.object === undefined ) {
@@ -7162,10 +7179,13 @@ module.exports = function( Marker ) {
 
           if( righthandName !== undefined ) {
             state.containsGen = Marker.Gibber.Gen.names.indexOf( righthandName ) > -1
-            state.gen = window[ left.name ]
+
+            state.gen = leftName.indexOf('.') === -1 
+              ? window[ leftName ] 
+              : window[ leftName.split('.')[0] ][ leftName.split('.')[1] ].value
 
             // XXX does this need a track object? passing null...
-            if( state.containsGen ) Marker.processGen( expression, state.cm, null )
+            if( state.containsGen ) Marker.processGen( expression, state.cm, null, null, null, 0, state )
           }
 
           cb( right, state )
@@ -7783,8 +7803,10 @@ const Marker = {
     // check to see if a given object is a proxy that already has
     // a widget created; if so, don't make another one!
     if( node.type === 'AssignmentExpression' ) {
-      const __obj = window[ node.left.name ]
-
+      const __obj = window[ node.left.name ] || state.gen
+      
+      // node.left.name will be undefined if assignment is to a property
+      // of an object...
       if( __obj !== undefined ) {
         if( __obj.widget !== undefined ) {
           return
@@ -8427,6 +8449,7 @@ CodeMirror.keyMap.playground =  {
   ${selectedCode.code}
 }`
 
+      code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
       flash( cm, selectedCode.selection )
 
       var func = new Function( code )
