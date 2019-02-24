@@ -299,6 +299,7 @@ CodeMirror.keyMap.playground =  {
   ${selectedCode.code}
 }`
 
+      code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
       flash( cm, selectedCode.selection )
 
       var func = new Function( code )
