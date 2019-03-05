@@ -6186,7 +6186,7 @@ module.exports = function( Marker ) {
       if( highlighted.className !== null ) { $( highlighted.className ).remove( 'annotation-border' ) }
       cycle.clear()
       patternObject.markers.forEach( marker => marker.clear() )
-      if( __clear !== null ) __clear()
+      if( __clear !== null ) __clear.call( patternObject )
     }
 
     Marker._addPatternFilter( patternObject )
@@ -6568,9 +6568,12 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
     }
   })
 
+  const __clear = patternObject.clear
+
   patternObject.clear = () => {
     track.markup.textMarkers.string = cm.markText( nodePosStart, nodePosEnd, { className:'euclid' })
     patternObject.reset()
+    if( typeof __clear === 'function' ) __clear.call( patternObject )
   }
 
   Gibber.subscribe( 'clear', patternObject.clear )
@@ -7158,7 +7161,11 @@ module.exports = function( Marker ) {
           let leftName = left.name
           if( leftName === undefined ) {
             if( left.type === 'MemberExpression' ) {
-              leftName = left.object.name + '.' + left.property.name
+              if( left.object.object === undefined ) {
+                leftName = left.object.name + '.' + left.property.name
+              }else{
+                leftName = left.object.object.name + '.' + left.object.property.name + '.' + left.property.name
+              }
             }
           }
           
@@ -7180,12 +7187,20 @@ module.exports = function( Marker ) {
           if( righthandName !== undefined ) {
             state.containsGen = Marker.Gibber.Gen.names.indexOf( righthandName ) > -1
 
-            state.gen = leftName.indexOf('.') === -1 
-              ? window[ leftName ] 
-              : window[ leftName.split('.')[0] ][ leftName.split('.')[1] ].value
-
+            // if assigning to a global variable...
+            if( leftName.indexOf('.') === -1 ) {
+              state.gen = window[ leftName ]
+            }else{
+              // else if assigning to a property... accommodates any depth
+              let obj = window
+              leftName.split('.').forEach( next => { obj = obj[ next ] })
+              state.gen = obj.value
+            }
             // XXX does this need a track object? passing null...
-            if( state.containsGen ) Marker.processGen( expression, state.cm, null, null, null, 0, state )
+            if( state.containsGen ) {
+              const w = Marker.processGen( expression, state.cm, null, null, null, 0, state )
+              //w.target = leftName
+            }
           }
 
           cb( right, state )
@@ -7329,8 +7344,25 @@ const COLORS = {
 
 let Gibber = null
 
+const findByName = name => {
+  let targetWidget = null
+  for( let key in Waveform.widgets ) {
+    if( key === 'dirty' || key === 'findByObj' ) continue
+    const widget = Waveform.widgets[ key ]
+    if( widget === undefined ) continue
+    if( widget.target === name ) {
+      targetWidget = widget
+      break
+    }
+  }
+  return targetWidget
+}
+
 const Waveform = {
-  widgets: { dirty:false },
+  widgets: { 
+    dirty:false,
+    findByName
+  },
 
   // we use this flag to start the animation clock if needed.
   initialized: false,
@@ -7339,7 +7371,7 @@ const Waveform = {
   // a reference to the genish object that should be tied to the widge we are
   // creating.
 
-  // XXX there's a bucnh of arguments  that could probably be removed from this function. 
+  // XXX there's a bunch of arguments  that could probably be removed from this function. 
   // Definitely closeParenStart, probably also isAssignment, maybe track & patternObject.
   createWaveformWidget( line, closeParenStart, ch, isAssignment, node, cm, patternObject=null, track, isSeq=true, walkState ) {
     let widget = document.createElement( 'canvas' )
@@ -7413,6 +7445,8 @@ const Waveform = {
       if( widget.gen.widget !== undefined && widget.gen.widget !== widget ) {
         isAssignment = true
         //widget.gen = window[ node.expression.left.name ]
+      }else{
+        //widget.gen.widget = widget
       }
     }
 
@@ -7461,6 +7495,8 @@ const Waveform = {
     }
 
     widget.isFade = isFade
+
+    return widget
   },
 
   clear() {
@@ -7472,7 +7508,7 @@ const Waveform = {
       }
     }
 
-    Waveform.widgets = { dirty:false }
+    Waveform.widgets = { dirty:false, findByName }
   },
 
   startAnimationClock() {
@@ -7525,7 +7561,7 @@ const Waveform = {
     const drawn = []
 
     for( let key in Waveform.widgets ) {
-      if( key === 'dirty' ) continue
+      if( key === 'dirty' || key === 'findByObj' ) continue
 
       const widget = Waveform.widgets[ key ]
 
@@ -7626,7 +7662,7 @@ const Waveform = {
         if( widget.isFade !== true ) {
           __min = isReversed === false ? widget.min.toFixed(2) : widget.max.toFixed(2)
           __max = isReversed === false ? widget.max.toFixed(2) : widget.min.toFixed(2)
-        }else{
+          }else{
           __min = widget.gen.from.toFixed(2)//isReversed === false ? widget.gen.to.toFixed(2) : widget.gen.to.toFixed(2)
           __max = widget.gen.to.toFixed(2)  //isReversed === false ? widget.gen.from.toFixed(2) : widget.gen.from.toFixed(2)
         }
@@ -7668,13 +7704,13 @@ const Waveform = {
   }
 }
 
+
 module.exports = function( __Gibber ) {
   Gibber = __Gibber
   return Waveform
 }
 
 },{}],20:[function(require,module,exports){
-
 const acorn = require( 'acorn' )
 const walk  = require( 'acorn-walk' )
 //const Utility = require( '../js/utility.js' )
@@ -7808,12 +7844,39 @@ const Marker = {
       // node.left.name will be undefined if assignment is to a property
       // of an object...
       if( __obj !== undefined ) {
-        if( __obj.widget !== undefined ) {
+
+        /* check to see if widget needs to be replaced
+         * 1. create "name" of assignment property
+         * 2. check to see if a widget has already been assigned to the property
+         * 3. if so, reuse widget
+         */
+        // create name
+        let leftName = ''
+        if( node.left.type === 'MemberExpression' ) {
+          if( node.left.object.object === undefined ) {
+            leftName = node.left.object.name + '.' + node.left.property.name
+          }else{
+            leftName = node.left.object.object.name + '.' + node.left.object.property.name + '.' + node.left.property.name
+          }
+        }
+
+        // check for existing widget assigned to property
+        const oldWidget = Marker.waveform.widgets.findByName( leftName )
+
+        if( oldWidget !== null ) {
+          // re-assign existing widget
+          __obj.widget = oldWidget
+          // leave function so that a new widget isn't created
+          return
+        }else if( __obj.widget !== undefined ) {
           return
         }
 
         const characterStart = node.loc.start.line === 0 ? ch - 1 : ch - (node.loc.start.line)
-        Marker.waveform.createWaveformWidget( line - 1, closeParenStart, ch-1, isAssignment, node, cm, __obj, track, false )
+        const w = Marker.waveform.createWaveformWidget( line - 1, closeParenStart, ch-1, isAssignment, node, cm, __obj, track, false )
+        // assign "target" value so that the object/property the widget is assigned to can
+        // be identified later, for proxy-ish behaviors
+        w.target = leftName
       }
     }else if( node.type === 'CallExpression' ) {
       const seqExpression = node
@@ -7840,7 +7903,7 @@ const Marker = {
           isAssignment = false
           node.processed = true
           //debugger
-          Marker.waveform.createWaveformWidget( line, closeParenStart, ch, isAssignment, node, cm, patternObject, track, lineMod === 0, state )
+          const w = Marker.waveform.createWaveformWidget( line, closeParenStart, ch, isAssignment, node, cm, patternObject, track, lineMod === 0, state )
         } else if( seqArgument.type === 'ArrayExpression' ) {
           //console.log( 'WavePattern array' )
         }else if( seqArgument.type === 'Identifier' ) {
@@ -7911,8 +7974,11 @@ const Marker = {
       Marker._updatePatternContents( patternObject, className, seqTarget ) 
     }
 
+    const __clear = patternObject.clear
+
     patternObject.clear = () => {
       patternObject.marker.clear()
+      if( typeof __clear === 'function' ) __clear.call( patternObject )
     }
 
     Gibber.subscribe( 'clear', patternObject.clear )

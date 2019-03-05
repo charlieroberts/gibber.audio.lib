@@ -146,7 +146,8 @@ const patternWrapper = function( Gibber ) {
 
       return val
     }
-     
+
+    let out 
     Object.assign( fnc, {
       start : 0,
       end   : 0,
@@ -475,16 +476,20 @@ const patternWrapper = function( Gibber ) {
       clear() {
         if( Gibberish.mode === 'worklet' ) {
           for( let key of PatternProto.__methodNames ) {
-            const sequences = fnc.sequences[ key ]
+            for( let i = 0; i < out[ key ].sequencers.length; i++ ) {
+              // this can most certainly be optimized, but I had real problems
+              // getting this clearing to work, perhaps related to proxy behaviors?
+              const __seq = Gibber.Seq.sequencers.find( s => s.id === out[ key ][ i ].id )
+              if( __seq !== undefined ) {
+                Gibber.Gibberish.worklet.port.postMessage({ address:'method', object:__seq.id, name:'stop', args:[] })
+              }
+              __seq.stop()
+              __seq.clear()
 
-            if( sequences !== undefined ) {
-              sequences.forEach( seq => {
-                seq.stop()
-                seq.clear()
-              })
+              const idx = Gibber.Seq.sequencers.indexOf( __seq )
+              Gibber.Seq.sequencers.splice( idx, 1 )
+              __seq.target[ __seq.key ][0].stop()
             }
-            //else
-              //console.log( 'a seqence!', key, sequences )
           } 
         }
       }
@@ -499,7 +504,9 @@ const patternWrapper = function( Gibber ) {
           // inlined to a call to .seq
           // XXX fix in parsing or somehow figure out how to only do this once
           if( fnc.widget !== undefined ) fnc.values[0].widget = fnc.widget
-          fnc.values[0].widget.values[ fnc.values[0].widget.values.length - 1 ] = { value:val } 
+          if( fnc.values[0].widget !== undefined ) {
+            fnc.values[0].widget.values[ fnc.values[0].widget.values.length - 1 ] = { value:val } 
+          }
         }
       }
     }
@@ -526,7 +533,6 @@ const patternWrapper = function( Gibber ) {
     fnc.storage[ 0 ] = fnc.original.slice( 0 )
     fnc.integersOnly = fnc.values.every( function( n ) { return n === +n && n === (n|0); })
     
-
     fnc.listeners = {}
     fnc.sequences = {}
 
@@ -545,7 +551,7 @@ const patternWrapper = function( Gibber ) {
     // a list, instead of in a property dictionary. When 'isPattern' is true, gibberish
     // looks for an 'inputs' property and then passes its value (assumed to be an array)
     // using the spread operator to the constructor. 
-    const out = Gibberish.Proxy( 'pattern', { inputs:fnc.values, isPattern:true, filters:fnc.filters, id:fnc.id }, fnc )  
+    out = Gibberish.Proxy( 'pattern', { inputs:fnc.values, isPattern:true, filters:fnc.filters, id:fnc.id }, fnc )  
 
     if( args.filters ) {
       args.filters.forEach( f => out.addFilter( f ) )

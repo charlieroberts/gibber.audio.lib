@@ -86,13 +86,19 @@ module.exports = function( Audio ) {
 
     const clear = function() {
       this.stop()
-
-      if( this.values  !== undefined && this.values.clear !== undefined  ) this.values.clear()
+      
+      if( this.values !== undefined && this.values.clear !== undefined  ) {
+        this.values.clear()
+      }
       if( this.timings !== undefined && this.timings.clear !== undefined ) this.timings.clear()
 
       if( Gibberish.mode === 'worklet' ) {
-        const idx = Seq.sequencers.indexOf( this )
-        const seq = Seq.sequencers.splice( idx, 1 )[0]
+        const idx = Seq.sequencers.indexOf( seq )
+        seq.stop()
+        const __seq = Seq.sequencers.splice( idx, 1 )[0]
+        if( __seq !== undefined ) {
+          __seq.stop()
+        }
       }
 
     }

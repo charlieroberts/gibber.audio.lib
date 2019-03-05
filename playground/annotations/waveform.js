@@ -6,8 +6,25 @@ const COLORS = {
 
 let Gibber = null
 
+const findByName = name => {
+  let targetWidget = null
+  for( let key in Waveform.widgets ) {
+    if( key === 'dirty' || key === 'findByObj' ) continue
+    const widget = Waveform.widgets[ key ]
+    if( widget === undefined ) continue
+    if( widget.target === name ) {
+      targetWidget = widget
+      break
+    }
+  }
+  return targetWidget
+}
+
 const Waveform = {
-  widgets: { dirty:false },
+  widgets: { 
+    dirty:false,
+    findByName
+  },
 
   // we use this flag to start the animation clock if needed.
   initialized: false,
@@ -16,7 +33,7 @@ const Waveform = {
   // a reference to the genish object that should be tied to the widge we are
   // creating.
 
-  // XXX there's a bucnh of arguments  that could probably be removed from this function. 
+  // XXX there's a bunch of arguments  that could probably be removed from this function. 
   // Definitely closeParenStart, probably also isAssignment, maybe track & patternObject.
   createWaveformWidget( line, closeParenStart, ch, isAssignment, node, cm, patternObject=null, track, isSeq=true, walkState ) {
     let widget = document.createElement( 'canvas' )
@@ -90,6 +107,8 @@ const Waveform = {
       if( widget.gen.widget !== undefined && widget.gen.widget !== widget ) {
         isAssignment = true
         //widget.gen = window[ node.expression.left.name ]
+      }else{
+        //widget.gen.widget = widget
       }
     }
 
@@ -138,6 +157,8 @@ const Waveform = {
     }
 
     widget.isFade = isFade
+
+    return widget
   },
 
   clear() {
@@ -149,7 +170,7 @@ const Waveform = {
       }
     }
 
-    Waveform.widgets = { dirty:false }
+    Waveform.widgets = { dirty:false, findByName }
   },
 
   startAnimationClock() {
@@ -202,7 +223,7 @@ const Waveform = {
     const drawn = []
 
     for( let key in Waveform.widgets ) {
-      if( key === 'dirty' ) continue
+      if( key === 'dirty' || key === 'findByObj' ) continue
 
       const widget = Waveform.widgets[ key ]
 
@@ -303,7 +324,7 @@ const Waveform = {
         if( widget.isFade !== true ) {
           __min = isReversed === false ? widget.min.toFixed(2) : widget.max.toFixed(2)
           __max = isReversed === false ? widget.max.toFixed(2) : widget.min.toFixed(2)
-        }else{
+          }else{
           __min = widget.gen.from.toFixed(2)//isReversed === false ? widget.gen.to.toFixed(2) : widget.gen.to.toFixed(2)
           __max = widget.gen.to.toFixed(2)  //isReversed === false ? widget.gen.from.toFixed(2) : widget.gen.from.toFixed(2)
         }
@@ -344,6 +365,7 @@ const Waveform = {
     }
   }
 }
+
 
 module.exports = function( __Gibber ) {
   Gibber = __Gibber

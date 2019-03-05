@@ -307,7 +307,7 @@ const Theory = {
 
     // clamp maximum frequency to avoid filter havoc and mayhem
     // XXX is this still necessary????
-    if( freq > 4000 ) freq = 4000
+    //if( freq > 4000 ) freq = 4000
 
     //console.log( idx, finalIdx, mode, mode.length, note, octave )
 

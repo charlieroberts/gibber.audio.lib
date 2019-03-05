@@ -29,6 +29,9 @@ const Instruments = {
     Conga:{
       methods:[ 'note','trigger' ],
     },
+    Clave:{
+      methods:[ 'note','trigger' ],
+    },
     Cowbell:{
       methods:[ 'note','trigger' ],
     },

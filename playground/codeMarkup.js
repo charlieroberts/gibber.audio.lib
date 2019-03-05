@@ -1,4 +1,3 @@
-
 const acorn = require( 'acorn' )
 const walk  = require( 'acorn-walk' )
 //const Utility = require( '../js/utility.js' )
@@ -132,12 +131,39 @@ const Marker = {
       // node.left.name will be undefined if assignment is to a property
       // of an object...
       if( __obj !== undefined ) {
-        if( __obj.widget !== undefined ) {
+
+        /* check to see if widget needs to be replaced
+         * 1. create "name" of assignment property
+         * 2. check to see if a widget has already been assigned to the property
+         * 3. if so, reuse widget
+         */
+        // create name
+        let leftName = ''
+        if( node.left.type === 'MemberExpression' ) {
+          if( node.left.object.object === undefined ) {
+            leftName = node.left.object.name + '.' + node.left.property.name
+          }else{
+            leftName = node.left.object.object.name + '.' + node.left.object.property.name + '.' + node.left.property.name
+          }
+        }
+
+        // check for existing widget assigned to property
+        const oldWidget = Marker.waveform.widgets.findByName( leftName )
+
+        if( oldWidget !== null ) {
+          // re-assign existing widget
+          __obj.widget = oldWidget
+          // leave function so that a new widget isn't created
+          return
+        }else if( __obj.widget !== undefined ) {
           return
         }
 
         const characterStart = node.loc.start.line === 0 ? ch - 1 : ch - (node.loc.start.line)
-        Marker.waveform.createWaveformWidget( line - 1, closeParenStart, ch-1, isAssignment, node, cm, __obj, track, false )
+        const w = Marker.waveform.createWaveformWidget( line - 1, closeParenStart, ch-1, isAssignment, node, cm, __obj, track, false )
+        // assign "target" value so that the object/property the widget is assigned to can
+        // be identified later, for proxy-ish behaviors
+        w.target = leftName
       }
     }else if( node.type === 'CallExpression' ) {
       const seqExpression = node
@@ -164,7 +190,7 @@ const Marker = {
           isAssignment = false
           node.processed = true
           //debugger
-          Marker.waveform.createWaveformWidget( line, closeParenStart, ch, isAssignment, node, cm, patternObject, track, lineMod === 0, state )
+          const w = Marker.waveform.createWaveformWidget( line, closeParenStart, ch, isAssignment, node, cm, patternObject, track, lineMod === 0, state )
         } else if( seqArgument.type === 'ArrayExpression' ) {
           //console.log( 'WavePattern array' )
         }else if( seqArgument.type === 'Identifier' ) {
@@ -235,8 +261,11 @@ const Marker = {
       Marker._updatePatternContents( patternObject, className, seqTarget ) 
     }
 
+    const __clear = patternObject.clear
+
     patternObject.clear = () => {
       patternObject.marker.clear()
+      if( typeof __clear === 'function' ) __clear.call( patternObject )
     }
 
     Gibber.subscribe( 'clear', patternObject.clear )

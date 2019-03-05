@@ -12,8 +12,8 @@ const Busses = {
       category:'misc'
     }
 
-    busses.__Bus = Ugen( Gibberish.Bus, busDescription, Audio )
-    busses.Bus = function( ...args ) {
+    busses.Bus = Ugen( Gibberish.Bus, busDescription, Audio )
+    busses.__Bus = function( ...args ) {
       let props
       if( args.length > 1 || args.length === 1 && typeof args[0] !== 'string' ) {
         props = { inputs:args }
@@ -31,8 +31,8 @@ const Busses = {
       category:'misc'
     }
 
-    busses.__Bus2 = Ugen( Gibberish.Bus2, bus2Description, Audio )
-    busses.Bus2 = function( ...args ) {
+    busses.Bus2 = Ugen( Gibberish.Bus2, bus2Description, Audio )
+    busses.__Bus2 = function( ...args ) {
       let props
       if( args.length > 1 || (args.length === 1 && typeof args[0] !== 'string' && args[0].type !== 'ensemble' )) {
         props = { inputs:args }

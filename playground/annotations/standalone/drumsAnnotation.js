@@ -88,9 +88,12 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
     }
   })
 
+  const __clear = patternObject.clear
+
   patternObject.clear = () => {
     track.markup.textMarkers.string = cm.markText( nodePosStart, nodePosEnd, { className:'euclid' })
     patternObject.reset()
+    if( typeof __clear === 'function' ) __clear.call( patternObject )
   }
 
   Gibber.subscribe( 'clear', patternObject.clear )

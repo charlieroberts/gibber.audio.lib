@@ -17,7 +17,7 @@ module.exports = {
   hpf: {
     presetInit( audio ) {
       // XXX have to specify input because of filter errors...
-      const hpf = audio.filters.Filter12Biquad({ input:this, mode:1, cutoff:.275, Q:.25, isStereo:true })
+      const hpf = audio.filters.Filter12Biquad({ input:this, mode:1, cutoff:.25, Q:.5, isStereo:true })
       this.fx.add( hpf )
       this.hpf = hpf
    }
@@ -25,7 +25,7 @@ module.exports = {
   lpf: {
     presetInit( audio ) {
       // XXX have to specify input because of filter errors...
-      const lpf = audio.filters.Filter24Moog({ input:this, mode:1, cutoff:.5, Q:.75, isStereo:true })
+      const lpf = audio.filters.Filter24Moog({ input:this, mode:0, cutoff:.25, Q:.75, isStereo:true })
       this.fx.add( lpf )
       this.lpf = lpf
     }

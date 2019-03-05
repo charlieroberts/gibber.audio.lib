@@ -1,9 +1,9 @@
 module.exports = {
 
   acidBass: {
-    Q:.925,
+    Q:.9,
     filterType:2,
-    filterMult:5.5,
+    filterMult:4,
     cutoff:1.25,
     saturation:3.5,
     attack:1/8192,
@@ -15,8 +15,8 @@ module.exports = {
   acidBass2: {
     Q:.7,
     filterType:2,
-    filterMult:2,
-    cutoff:.35,
+    filterMult:3.5,
+    cutoff:.5,
     saturation:10,
     attack:1/8192,
     decay:1/10,
