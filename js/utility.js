@@ -167,11 +167,20 @@ const Utility = {
   },
 
   chord( ptrn, offsets ) {
-    ptrn.filters = [ args => {
-      args.override = args[0]
-      args[0] = [ args[0] - 3, args[0], args[0] + 3 ]
-      return args
-    }]
+    // gotta codegen function for worklet processor... similar to Rndi etc.
+    let fncstr = `args.override = args[0]
+    const values = []\n`
+
+    for( let i = 0; i < offsets.length; i++ ) {
+      fncstr += `values[${i}] = args[0] + ${offsets[i]}\n`
+    }
+
+    fncstr += `args[0] = values\n  return args`
+
+    const fnc = new Function( 'args', fncstr )
+
+    ptrn.filters = [ fnc ]
+
     return ptrn
   },
 
