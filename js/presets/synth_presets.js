@@ -46,7 +46,7 @@ module.exports = {
     attack:1/128, decay:2,
     waveform:'pwm',
     filterType:1,
-    cutoff:10,
+    cutoff:1,
     filterMult:1,
     Q:.6,
     maxVoices:3,
@@ -103,6 +103,17 @@ module.exports = {
     filterMult:3,
     cutoff:.175,
     Q:.6
+  },
+
+  'pwm.squeak':{
+    waveform:'pwm',
+    attack:1/4096,
+    decay:1/16,
+    Q:.8,
+    cutoff:.65,
+    saturation:5,
+    filterType:2,
+    glide:500
   },
 
   chirp: { maxVoices:1, filterType:2, cutoff:.325, decay:1/16 } 
