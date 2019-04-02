@@ -44,7 +44,7 @@ module.exports = {
     Q:.225, 
     detune2:-.505,
     detune3:-.5075,
-    octave:-3,
+    octave:-2,
     waveform:'pwm', 
     pulsewidth:.15 
   },
@@ -110,7 +110,6 @@ module.exports = {
     attack: audio => audio.Clock.ms(1),
     decay: 1/4,	
     octave: -3,
-    octave2 : -1,
     cutoff: .35,
     filterMult:3,
     Q:.15,
@@ -193,7 +192,21 @@ module.exports = {
     release:1/1024,  
     maxVoices:3, 
     cutoff:35, 
-    filterMult:0 
+    filterMult:0,
+    detune2:.01,
+    detune3:-.01 
+  },
+
+  shinybass: {
+    Q:.125,
+    cutoff:35,
+    useADSR:true,
+    decay:1/10,
+    sustain:1/4,
+    filterMult:0,
+    release:1/1024,
+    octave:-3,
+    panVoices:true
   },
 
   short: { 
