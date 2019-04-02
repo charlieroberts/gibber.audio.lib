@@ -482,15 +482,27 @@ const patternWrapper = function( Gibber ) {
               const __seq = Gibber.Seq.sequencers.find( s => s.id === out[ key ][ i ].id )
               if( __seq !== undefined ) {
                 Gibber.Gibberish.worklet.port.postMessage({ address:'method', object:__seq.id, name:'stop', args:[] })
-              }
-              __seq.stop()
-              __seq.clear()
+              
+                __seq.stop()
+                __seq.clear()
 
-              const idx = Gibber.Seq.sequencers.indexOf( __seq )
-              Gibber.Seq.sequencers.splice( idx, 1 )
-              __seq.target[ __seq.key ][0].stop()
+                const idx = Gibber.Seq.sequencers.indexOf( __seq )
+                Gibber.Seq.sequencers.splice( idx, 1 )
+                __seq.target[ __seq.key ][0].stop()
+              }
             }
           } 
+        }else{
+          // genish-based patterns are connected as analyzers so that they
+          // don't have to feed into a bus to get rendered. we must remove them
+          // from the analysis array to finalize clearing.
+          if( out.isGen === true ) {
+            const idx = Gibberish.analyzers.indexOf( args[0] )
+            if( idx !== -1 ) {
+              Gibberish.analyzers.splice( idx, 1 )
+              Gibberish.analyzers.dirty = true
+            }
+          }
         }
       }
     })
