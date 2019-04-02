@@ -72,6 +72,7 @@ module.exports = {
 
   cry: {
     attack:1/2, decay:1.5, gain:.045,
+    panVoices:true,
     presetInit: function( audio ) {
       this.chorus = audio.effects.Chorus('lush')
       this.fx.add( this.chorus  )
@@ -116,6 +117,7 @@ module.exports = {
     glide:500
   },
 
-  chirp: { maxVoices:1, filterType:2, cutoff:.325, decay:1/16 } 
+  chirp: { filterType:2, cutoff:.325, decay:1/16 }, 
 
+  'square.perc': { waveform:'square', shape:'exponential', antialias:true, filterType:2, cutoff:.25, decay:1/8 },
 }
