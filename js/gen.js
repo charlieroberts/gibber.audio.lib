@@ -176,7 +176,7 @@ const Gen  = {
     scale:  { properties: ['0', '1', '2', '3'], str:'scale' },
     sah:    { properties: ['0', '1', '2'], str:'sah' },
     clamp:  { properties: ['0', '1', '2'], str:'clamp' },
-    ternary:{ properties: ['0', '1', '2'], str:'ternary' },
+    ternary:{ properties: ['0', '1', '2'], str:'switch' },
     selector:{ properties: ['0', '1', '2'], str:'selector' },
   },
 
@@ -361,7 +361,13 @@ const Gen  = {
     //}
     beats( b ) {
       return Gen.ugens.phasor( Gibber.Utilities.btof( b ), 0, { min:0 } )
-    },   //
+    }, 
+    beats2( b ) {
+      return Gen.ugens.phasor( 
+        Gibber.Utilities.btof( b ), 
+        0, 
+        { min:0 } )
+    }, 
   },
 
   ugens:{},
@@ -457,7 +463,7 @@ const Gen  = {
     if( Array.isArray( propertyNames )) {
       for( let i = 0; i < propertyNames.length; i++ ){
         const propertyName = propertyNames[ i ]
-        if( out[ 'p'+i ] !== undefined ){
+        if( out[ 'p'+i ] !== undefined && propertyName !== null && propertyName !== undefined ){
           out[ '__'+propertyName ] = out[ 'p'+i ]
           Object.defineProperty( out, propertyName, {
             get() { return out[ '__' + propertyName ] },
