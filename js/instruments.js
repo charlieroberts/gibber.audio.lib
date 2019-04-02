@@ -4,7 +4,7 @@ const Ugen      = require( './ugen.js' )
 const Instruments = {
   create( Audio ) {
     const instruments = {}
-    const pooledInstruments = ['Synth','Monosynth','FM']
+    //const pooledInstruments = ['Synth','Monosynth','FM']
     for( let instrumentName in Gibberish.instruments ) {
       const gibberishConstructor = Gibberish.instruments[ instrumentName ]
       if( typeof gibberishConstructor.defaults === 'object' ) gibberishConstructor.defaults.octave = 0
@@ -17,15 +17,17 @@ const Instruments = {
         category:'instruments'
       }
 
-      const shouldPool = pooledInstruments.indexOf( instrumentName ) > -1
-      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, shouldPool )
+      //const shouldPool = pooledInstruments.indexOf( instrumentName ) > -1
+      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false )//shouldPool )
 
     }
     return instruments
   },
 
   descriptions: {
-    
+    Clap:{
+      methods:[ 'trigger' ],
+    },   
     Conga:{
       methods:[ 'note','trigger' ],
     },
@@ -74,7 +76,12 @@ const Instruments = {
     PolyMono:{
       methods:[ 'chord','note','trigger' ],
     },
-
+    PolyConga:{
+      methods:[ 'note','trigger' ],
+    },
+    PolyTom:{
+      methods:[ 'note','trigger' ],
+    },
   },
   
 }
