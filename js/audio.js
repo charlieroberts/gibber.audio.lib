@@ -51,6 +51,7 @@ const Audio = {
       obj.Master = this.Master
       obj.Arp = this.Arp
       obj.Automata = this.Automata
+      obj.Main = this.Main
     }else{
       Audio.exportTarget = obj
     } 
@@ -82,6 +83,7 @@ const Audio = {
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Gibber )
         Audio.ctx = ctx
+        Audio.Main = Gibberish.output
 
         // must wait for Gen to be initialized
         Audio.Clock.init( Audio.Gen )
