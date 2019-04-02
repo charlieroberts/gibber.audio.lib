@@ -265,10 +265,9 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
               const mode = Gibberish.Theory.mode
 
               if( mode !== null ) {
-                notesInOctave = Gibberish.Theory.modes[ mode ].length
+                notesInOctave = mode !== 'chromatic' ? Gibberish.Theory.modes[ mode ].length : Gibberish.Theory.Tune.scale.length
               }else{
-                const tuning = Gibberish.Theory.tuning
-                notesInOctave = Gibberish.Theory.__tunings[ tuning ].frequencies.length
+                notesInOctave = Gibberish.Theory.Tune.scale.length
               }
 
               const offset = octave * notesInOctave

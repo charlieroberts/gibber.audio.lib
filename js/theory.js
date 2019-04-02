@@ -100,7 +100,9 @@ const Theory = {
 
       Object.defineProperty( this, 'mode', {
         get()  { return this.__mode },
-        set(v) { this.__mode = v }
+        set(v) { 
+          this.__mode = v 
+        }
       })
 
       Object.defineProperty( this, 'offset', {
@@ -284,19 +286,36 @@ const Theory = {
     return out
   */
 
+  // REMEMBER THAT THE .note METHOD IS ALSO MONKEY-PATCHED
+  // IN ugen.js, THIS IS WHERE MOST OF THE AWPROCESSOR NOTE
+  // METHOD IS IMPLEMENTED.
   note: function( idx, octave=0 ) {
     let finalIdx, mode = null
 
     if( Gibberish.Theory.mode !== null ) {
       mode = Gibberish.Theory.modes[ Gibberish.Theory.mode ]
 
-      idx += Gibberish.Theory.__offset
-      octave = Math.floor( idx / mode.length )
+      if( idx % 1 !== 0 ) {
+        idx = Math.round( idx )
+      }
 
-      // XXX this looks ugly but works with negative note numbers...
-      finalIdx = idx < 0 
-        ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
-        : mode[ Math.abs( idx ) % mode.length ]
+      idx += Gibberish.Theory.__offset
+      if( Gibberish.Theory.mode !== 'chromatic' ) {
+        octave = Math.floor( idx / mode.length )
+          //: 0 //Math.floor( idx / Gibberish.Theory.Tune.scale.length )
+
+        // XXX this looks ugly but works with negative note numbers...
+        finalIdx = idx < 0 
+          ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
+          : mode[ Math.abs( idx ) % mode.length ]
+
+      }else{
+        const l = Gibberish.Theory.Tune.scale.length 
+        octave = Math.floor( idx / l )
+        finalIdx = idx < 0 
+          ? mode[ (l - (Math.abs(idx) % l)) % l ] 
+          : mode[ Math.abs( idx ) % l ]
+      }
 
       finalIdx += this.__degree.offset
     }else{
@@ -304,12 +323,6 @@ const Theory = {
     }
 
     let freq = Gibberish.Theory.Tune.note( finalIdx, octave )
-
-    // clamp maximum frequency to avoid filter havoc and mayhem
-    // XXX is this still necessary????
-    //if( freq > 4000 ) freq = 4000
-
-    //console.log( idx, finalIdx, mode, mode.length, note, octave )
 
     return freq
   },
