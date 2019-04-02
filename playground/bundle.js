@@ -168,11 +168,20 @@ const Utility = {
   },
 
   chord( ptrn, offsets ) {
-    ptrn.filters = [ args => {
-      args.override = args[0]
-      args[0] = [ args[0] - 3, args[0], args[0] + 3 ]
-      return args
-    }]
+    // gotta codegen function for worklet processor... similar to Rndi etc.
+    let fncstr = `args.override = args[0]
+    const values = []\n`
+
+    for( let i = 0; i < offsets.length; i++ ) {
+      fncstr += `values[${i}] = args[0] + ${offsets[i]}\n`
+    }
+
+    fncstr += `args[0] = values\n  return args`
+
+    const fnc = new Function( 'args', fncstr )
+
+    ptrn.filters = [ fnc ]
+
     return ptrn
   },
 
@@ -6960,9 +6969,10 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     let range,start, end
 
     // get new position in case the pattern has moved via inserted line breaks 
-    let pos = patternObject.commentMarker.find(),
-        memberAnnotationStart   = Object.assign( {}, pos.from ),
-        memberAnnotationEnd     = Object.assign( {}, pos.to )
+    const pos = patternObject.commentMarker.find()
+    if( pos === undefined ) return
+    let memberAnnotationStart   = Object.assign( {}, pos.from ),
+          memberAnnotationEnd     = Object.assign( {}, pos.to )
 
     if( initialized === false ) {
       memberAnnotationStart.ch = annotationStartCh
@@ -7565,7 +7575,7 @@ const Waveform = {
 
       const widget = Waveform.widgets[ key ]
 
-      if( widget === undefined ) continue
+      if( widget === undefined || widget === null ) continue
 
       // ensure that a widget does not get drawn more
       // than once per frame
@@ -7850,6 +7860,7 @@ const Marker = {
          * 2. check to see if a widget has already been assigned to the property
          * 3. if so, reuse widget
          */
+
         // create name
         let leftName = ''
         if( node.left.type === 'MemberExpression' ) {
@@ -7858,14 +7869,18 @@ const Marker = {
           }else{
             leftName = node.left.object.object.name + '.' + node.left.object.property.name + '.' + node.left.property.name
           }
+        }else{
+          leftName = node.left.name
         }
 
         // check for existing widget assigned to property
         const oldWidget = Marker.waveform.widgets.findByName( leftName )
 
         if( oldWidget !== null ) {
+          console.log( 'found old widget', oldWidget.gen.id )
           // re-assign existing widget
           __obj.widget = oldWidget
+          delete Marker.waveform.widgets[ oldWidget.gen.id ]
           // leave function so that a new widget isn't created
           return
         }else if( __obj.widget !== undefined ) {
@@ -7875,8 +7890,15 @@ const Marker = {
         const characterStart = node.loc.start.line === 0 ? ch - 1 : ch - (node.loc.start.line)
         const w = Marker.waveform.createWaveformWidget( line - 1, closeParenStart, ch-1, isAssignment, node, cm, __obj, track, false )
         // assign "target" value so that the object/property the widget is assigned to can
-        // be identified later, for proxy-ish behaviors
-        w.target = leftName
+        // be identified later, for proxy-ish behaviors... but don't store for non-member expressions
+        if( node.left.type === 'MemberExpression' ) {
+          w.target = leftName
+        }else{
+          w.target = node.left.name
+          console.log( 'hmmm' )
+          //w.gen.widget = w
+          //Marker.waveform.widgets[ __obj.id ] = w
+        }
       }
     }else if( node.type === 'CallExpression' ) {
       const seqExpression = node
@@ -8383,6 +8405,8 @@ const createProxies = function( pre, post, proxiedObj ) {
                     value.connect( connection[ 0 ] )
                   } 
                 }
+
+                member.disconnect()
               }
               // check for effects input to copy.
               // XXX should we do this for busses with connected ugens as well???
@@ -8430,7 +8454,7 @@ const createProxies = function( pre, post, proxiedObj ) {
 
         if( ugen !== undefined ) {
           if( ugen.clear !== undefined ) {
-            ugen.clear()
+            //ugen.clear()
           }else if( ugen.__onclear !== undefined ) {
             // XXX does this condition ever happen?
             ugen.__onclear()     

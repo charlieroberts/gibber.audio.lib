@@ -167,6 +167,8 @@ const createProxies = function( pre, post, proxiedObj ) {
                     value.connect( connection[ 0 ] )
                   } 
                 }
+
+                member.disconnect()
               }
               // check for effects input to copy.
               // XXX should we do this for busses with connected ugens as well???
@@ -214,7 +216,7 @@ const createProxies = function( pre, post, proxiedObj ) {
 
         if( ugen !== undefined ) {
           if( ugen.clear !== undefined ) {
-            ugen.clear()
+            //ugen.clear()
           }else if( ugen.__onclear !== undefined ) {
             // XXX does this condition ever happen?
             ugen.__onclear()     

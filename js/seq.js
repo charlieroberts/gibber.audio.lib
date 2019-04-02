@@ -92,6 +92,7 @@ module.exports = function( Audio ) {
       }
       if( this.timings !== undefined && this.timings.clear !== undefined ) this.timings.clear()
 
+      
       if( Gibberish.mode === 'worklet' ) {
         const idx = Seq.sequencers.indexOf( seq )
         seq.stop()
@@ -100,6 +101,7 @@ module.exports = function( Audio ) {
           __seq.stop()
         }
       }
+      
 
     }
     //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )

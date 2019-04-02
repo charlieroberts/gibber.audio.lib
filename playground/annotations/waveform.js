@@ -227,7 +227,7 @@ const Waveform = {
 
       const widget = Waveform.widgets[ key ]
 
-      if( widget === undefined ) continue
+      if( widget === undefined || widget === null ) continue
 
       // ensure that a widget does not get drawn more
       // than once per frame

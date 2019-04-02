@@ -30,9 +30,10 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     let range,start, end
 
     // get new position in case the pattern has moved via inserted line breaks 
-    let pos = patternObject.commentMarker.find(),
-        memberAnnotationStart   = Object.assign( {}, pos.from ),
-        memberAnnotationEnd     = Object.assign( {}, pos.to )
+    const pos = patternObject.commentMarker.find()
+    if( pos === undefined ) return
+    let memberAnnotationStart   = Object.assign( {}, pos.from ),
+          memberAnnotationEnd     = Object.assign( {}, pos.to )
 
     if( initialized === false ) {
       memberAnnotationStart.ch = annotationStartCh

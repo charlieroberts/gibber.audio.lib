@@ -137,6 +137,7 @@ const Marker = {
          * 2. check to see if a widget has already been assigned to the property
          * 3. if so, reuse widget
          */
+
         // create name
         let leftName = ''
         if( node.left.type === 'MemberExpression' ) {
@@ -145,14 +146,18 @@ const Marker = {
           }else{
             leftName = node.left.object.object.name + '.' + node.left.object.property.name + '.' + node.left.property.name
           }
+        }else{
+          leftName = node.left.name
         }
 
         // check for existing widget assigned to property
         const oldWidget = Marker.waveform.widgets.findByName( leftName )
 
         if( oldWidget !== null ) {
+          console.log( 'found old widget', oldWidget.gen.id )
           // re-assign existing widget
           __obj.widget = oldWidget
+          delete Marker.waveform.widgets[ oldWidget.gen.id ]
           // leave function so that a new widget isn't created
           return
         }else if( __obj.widget !== undefined ) {
@@ -162,8 +167,15 @@ const Marker = {
         const characterStart = node.loc.start.line === 0 ? ch - 1 : ch - (node.loc.start.line)
         const w = Marker.waveform.createWaveformWidget( line - 1, closeParenStart, ch-1, isAssignment, node, cm, __obj, track, false )
         // assign "target" value so that the object/property the widget is assigned to can
-        // be identified later, for proxy-ish behaviors
-        w.target = leftName
+        // be identified later, for proxy-ish behaviors... but don't store for non-member expressions
+        if( node.left.type === 'MemberExpression' ) {
+          w.target = leftName
+        }else{
+          w.target = node.left.name
+          console.log( 'hmmm' )
+          //w.gen.widget = w
+          //Marker.waveform.widgets[ __obj.id ] = w
+        }
       }
     }else if( node.type === 'CallExpression' ) {
       const seqExpression = node
