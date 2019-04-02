@@ -1,7 +1,67 @@
 const Ugen = require( './ugen.js' )
 const Presets = require( './presets.js' )
 
-module.exports = function( Audio ) {
+let Audio = null
+
+const addMethod = ( obj, name, __value = 1, propOverrideName ) => {
+  if( propOverrideName === undefined ) propOverrideName = name
+
+  obj[ '__' + name ] = { 
+    value: __value,
+    isProperty:true,
+    sequencers:[],
+    mods:[],
+    name,
+
+    seq( values, timings, number = 0, delay = 0 ) {
+      let prevSeq = obj['__'+name].sequencers[ number ] 
+      if( prevSeq !== undefined ) { 
+        prevSeq.stop(); prevSeq.clear(); 
+        let idx = obj.__sequencers.indexOf( prevSeq )
+        obj.__sequencers.splice( idx, 1 )
+      }
+
+      // XXX you have to add a method that does all this shit on the worklet. crap.
+      obj['__'+name].sequencers[ number ] = obj['__'+name][ number ] = Audio.Seq({ 
+        values, 
+        timings, 
+        target:obj.__wrapped__, 
+        key:name,
+        rate:Audio.Clock.audioClock
+      })
+      .start( Audio.Clock.time( delay ) )
+
+      obj.__sequencers.push( obj['__'+name][ number ] )
+
+      // return object for method chaining
+      return obj
+    },
+  }
+
+  Audio.Gibberish.worklet.port.postMessage({
+    address:'addMethod',
+    key:name,
+    function:`function( ${name} ) {
+        for( let input of this.inputs ) {
+          if( typeof input === 'object' ) input[ '${propOverrideName}' ] = ${name}
+        }
+      }`,
+    id:obj.id,
+    delay:Audio.shouldDelay
+  })
+
+  Object.defineProperty( obj, name, {
+    configurable:true,
+    get() { return this[ '__' + name ] },
+    set(v){ 
+      this[ '__' + name ].value = v
+      for( let sampler of this.samplers ) sampler[ propOverrideName ] = this[ '__' + name ].value 
+    }
+  })
+}
+
+module.exports = function( __Audio ) {
+  Audio = __Audio
 
   const Drums = function( score, time, ...args ) { 
     // XXX what url prefix should I be using?
@@ -30,64 +90,16 @@ module.exports = function( Audio ) {
       timings:time === undefined ? 1 / score.length : time
     }).start()
 
+    drums.values = drums.seq.values
+    drums.timings = drums.seq.timings
+
     drums.samplers = [ k,s,ch,oh ]
 
     drums.__sequencers = [ drums.seq ]
 
-    const obj = drums
-    let __value = 1
-    drums.__pitch = { 
-      value: __value,
-      isProperty:true,
-      sequencers:[],
-      mods:[],
-      name:'pitch',
-
-      seq( values, timings, number = 0, delay = 0 ) {
-        let prevSeq = obj.__pitch.sequencers[ number ] 
-        if( prevSeq !== undefined ) { 
-          prevSeq.stop(); prevSeq.clear(); 
-          let idx = obj.__sequencers.indexOf( prevSeq )
-          obj.__sequencers.splice( idx, 1 )
-        }
-
-        // XXX you have to add a method that does all this shit on the worklet. crap.
-        obj.__pitch.sequencers[ number ] = obj.__pitch[ number ] = Audio.Seq({ 
-          values, 
-          timings, 
-          target:drums.__wrapped__, 
-          key:'pitch',
-          rate:Audio.Clock.audioClock
-        })
-        .start( Audio.Clock.time( delay ) )
-
-        obj.__sequencers.push( obj.__pitch[ number ] )
-
-        // return object for method chaining
-        return obj
-      },
-    }
-
-    Audio.Gibberish.worklet.port.postMessage({
-      address:'addMethod',
-      key:'pitch',
-      function:`function( pitch ) {
-        for( let input of this.inputs ) {
-          if( typeof input === 'object' ) input.rate = pitch
-        }
-      }`,
-      id:drums.id,
-      delay:Audio.shouldDelay
-    })
-
-    Object.defineProperty( drums, 'pitch', {
-      configurable:true,
-      get() { return this.__pitch },
-      set(v){ 
-        this.__pitch.value = v
-        for( let sampler of this.samplers ) sampler.rate = this.__pitch.value 
-      }
-    })
+    addMethod( drums, 'pitch', 1, 'rate' )
+    addMethod( drums, 'start', 0 )
+    addMethod( drums, 'end', 1 )
 
     props = Presets.process( { name:'Drums', category:'instruments' }, args, Audio )
     if( props !== undefined && props.__presetInit__ !== undefined ) {
@@ -123,6 +135,9 @@ module.exports = function( Audio ) {
       timings:time === undefined ? 1 / score.length : time,
       rate:Audio.Clock.audioClock
     }).start()
+
+    drums.values = drums.seq.values
+    drums.timings = drums.seq.timings
 
     if( Audio.autoConnect === true ) drums.connect()
 
