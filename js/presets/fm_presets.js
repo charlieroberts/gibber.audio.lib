@@ -8,11 +8,32 @@ module.exports = {
     octave:-2
   },
 
+  'bass.electro' : {
+    cmRatio:1,
+    index:3,
+    attack:1/256,
+    decay:1/16,
+    octave:-2,
+    filterType:2,
+    saturation:200,
+    Q:.25,
+    cutoff:.6835
+  },
+
   glockenspiel : {
     cmRatio	: 3.5307,
     index 	: 1,
     attack	: audio => audio.Clock.ms( 1 ),
     decay	: audio => audio.Clock.ms( 1000 ),
+  },
+
+  'glockenspiel.short' : {
+    cmRatio	: 3.5307,
+    index 	: 1,
+    attack	: audio => audio.Clock.ms( 1 ),
+    decay	  : 1/12,
+    octave  : 1,
+    gain    :.05 
   },
 
   frog : { //ljp
