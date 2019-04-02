@@ -55,6 +55,7 @@ const Presets = {
   effects: {
     Chorus: require( './presets/chorus_presets.js' ),
     Distortion: require( './presets/distortion_presets.js' ),
+    Flanger: require( './presets/flanger_presets.js' ),
   },
 
   misc: {
