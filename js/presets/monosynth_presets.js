@@ -209,6 +209,19 @@ module.exports = {
     panVoices:true
   },
 
+  'bass.muted': {
+    Q:.45,
+    cutoff:.5,
+    useADSR:true,
+    shape:'exponential',
+    decay:1/8,
+    sustain:1/4,
+    release:1/1024,
+    octave:-3,
+    panVoices:true,
+    filterMult:.5
+  },
+
   short: { 
     attack:1/4096,
     decay:1/16, 

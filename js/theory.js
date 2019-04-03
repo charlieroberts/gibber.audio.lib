@@ -270,21 +270,6 @@ const Theory = {
       this.Tune.loadScale( name )
     }
   },
-  /*
-       let mode   = this.modeNumbers,
-        isNegative = scaleDegree < 0,
-        octave = Math.floor( scaleDegree / mode.length ),
-        degree = isNegative ? mode[ Math.abs( mode.length + (scaleDegree % mode.length ) )   ] : mode[ scaleDegree % mode.length ],
-        out
-
-    if( degree === undefined ) degree = 0
-
-    out = isNegative ?
-        this.rootNumber + (octave * 12 ) + degree :
-        this.rootNumber + (octave * 12 ) + degree
-
-    return out
-  */
 
   // REMEMBER THAT THE .note METHOD IS ALSO MONKEY-PATCHED
   // IN ugen.js, THIS IS WHERE MOST OF THE AWPROCESSOR NOTE
@@ -292,51 +277,38 @@ const Theory = {
   note: function( idx, octave=0 ) {
     let finalIdx, mode = null
 
-    if( Gibberish.Theory.mode !== null ) {
-      mode = Gibberish.Theory.modes[ Gibberish.Theory.mode ]
 
-      if( idx % 1 !== 0 ) {
-        idx = Math.round( idx )
-      }
-
-      idx += Gibberish.Theory.__offset
-      if( Gibberish.Theory.mode !== 'chromatic' ) {
-        octave = Math.floor( idx / mode.length )
-          //: 0 //Math.floor( idx / Gibberish.Theory.Tune.scale.length )
-
-        // XXX this looks ugly but works with negative note numbers...
-        finalIdx = idx < 0 
-          ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
-          : mode[ Math.abs( idx ) % mode.length ]
-
-      }else{
-        const l = Gibberish.Theory.Tune.scale.length 
-        octave = Math.floor( idx / l )
-        finalIdx = idx < 0 
-          ? mode[ (l - (Math.abs(idx) % l)) % l ] 
-          : mode[ Math.abs( idx ) % l ]
-      }
-
-      finalIdx += this.__degree.offset
-    }else{
-      finalIdx = idx
+    if( idx % 1 !== 0 ) {
+      idx = Math.round( idx )
     }
 
-    let freq = Gibberish.Theory.Tune.note( finalIdx, octave )
+    idx += Gibberish.Theory.__offset
+
+    if( Gibberish.Theory.mode !== 'chromatic' && Gibberish.Theory.mode !== null ) {
+      mode = Gibberish.Theory.modes[ Gibberish.Theory.mode ]
+      octave = Math.floor( idx / mode.length )
+
+      // XXX this looks crazy ugly but works with negative note numbers...
+      finalIdx = idx < 0 
+        ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
+        : mode[ Math.abs( idx ) % mode.length ]
+
+    }else{
+      // null mode also means to use 'chromatic' mode
+      mode = Gibberish.Theory.modes[ 'chromatic' ]
+      const l = Gibberish.Theory.Tune.scale.length 
+      octave = Math.floor( idx / l )
+      finalIdx = idx < 0 
+        ? mode[ (l - (Math.abs(idx) % l)) % l ] 
+        : mode[ Math.abs( idx ) % l ]
+    }
+
+    finalIdx += this.__degree.offset
+
+    const freq = Gibberish.Theory.Tune.note( finalIdx, octave )
 
     return freq
   },
-
-  //tuning: function( tuning ) {
-  //  if( tuning !== undefined ) {
-  //    this.__tuning = tuning
-  //    this.loadScale( this.__tuning )
-  //  }else{
-  //    return this.__tuning
-  //  }
-
-  //  return this
-  //}
 }
 
 module.exports = Theory

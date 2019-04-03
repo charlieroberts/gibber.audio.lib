@@ -8310,6 +8310,19 @@ module.exports = {
     panVoices:true
   },
 
+  'bass.muted': {
+    Q:.45,
+    cutoff:.5,
+    useADSR:true,
+    shape:'exponential',
+    decay:1/8,
+    sustain:1/4,
+    release:1/1024,
+    octave:-3,
+    panVoices:true,
+    filterMult:.5
+  },
+
   short: { 
     attack:1/4096,
     decay:1/16, 
@@ -8906,35 +8919,33 @@ const Theory = {
   note: function( idx, octave=0 ) {
     let finalIdx, mode = null
 
-    if( Gibberish.Theory.mode !== null ) {
-      mode = Gibberish.Theory.modes[ Gibberish.Theory.mode ]
 
-      if( idx % 1 !== 0 ) {
-        idx = Math.round( idx )
-      }
-
-      idx += Gibberish.Theory.__offset
-      if( Gibberish.Theory.mode !== 'chromatic' ) {
-        octave = Math.floor( idx / mode.length )
-          //: 0 //Math.floor( idx / Gibberish.Theory.Tune.scale.length )
-
-        // XXX this looks ugly but works with negative note numbers...
-        finalIdx = idx < 0 
-          ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
-          : mode[ Math.abs( idx ) % mode.length ]
-
-      }else{
-        const l = Gibberish.Theory.Tune.scale.length 
-        octave = Math.floor( idx / l )
-        finalIdx = idx < 0 
-          ? mode[ (l - (Math.abs(idx) % l)) % l ] 
-          : mode[ Math.abs( idx ) % l ]
-      }
-
-      finalIdx += this.__degree.offset
-    }else{
-      finalIdx = idx
+    if( idx % 1 !== 0 ) {
+      idx = Math.round( idx )
     }
+
+    console.log( 'mode:', mode )
+    idx += Gibberish.Theory.__offset
+    if( Gibberish.Theory.mode !== 'chromatic' && Gibberish.Theory.mode !== null ) {
+      mode = Gibberish.Theory.modes[ Gibberish.Theory.mode ]
+      octave = Math.floor( idx / mode.length )
+        //: 0 //Math.floor( idx / Gibberish.Theory.Tune.scale.length )
+
+      // XXX this looks ugly but works with negative note numbers...
+      finalIdx = idx < 0 
+        ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
+        : mode[ Math.abs( idx ) % mode.length ]
+
+    }else{
+      mode = Gibberish.Theory.modes[ 'chromatic' ]
+      const l = Gibberish.Theory.Tune.scale.length 
+      octave = Math.floor( idx / l )
+      finalIdx = idx < 0 
+        ? mode[ (l - (Math.abs(idx) % l)) % l ] 
+        : mode[ Math.abs( idx ) % l ]
+    }
+
+    finalIdx += this.__degree.offset
 
     let freq = Gibberish.Theory.Tune.note( finalIdx, octave )
 
@@ -20486,10 +20497,12 @@ module.exports = function (Gibberish) {
 
     const clap = Object.create(instrument),
           decay = g.in('decay'),
-          scaledDecay = genish.mul(decay, genish.mul(g.gen.samplerate, 2)),
+          // 0-1 input value
+    scaledDecay = genish.mul(decay, genish.mul(g.gen.samplerate, 2)),
           gain = g.in('gain'),
           spacing = g.in('spacing'),
-          loudness = g.in('loudness'),
+          // spacing between clap, in Hzs
+    loudness = g.in('loudness'),
           cutoff = g.in('cutoff'),
           Q = g.in('Q');
 
@@ -21113,7 +21126,7 @@ module.exports = {
       //Object.assign( voice, this.properties )
       if( gain === undefined ) gain = this.gain
       voice.gain = gain
-      voice.note( freq )
+      voice.note( freq, this.loudness )
       this.__runVoice__( voice, this )
       this.triggerNote = freq
     }
@@ -21121,25 +21134,23 @@ module.exports = {
 
   // XXX this is not particularly satisfying...
   // must check for both notes and chords
-  trigger( gain ) {
+  trigger( loudness ) {
     if( this.triggerChord !== null ) {
       this.triggerChord.forEach( v => {
         let voice = this.__getVoice__()
         Object.assign( voice, this.properties )
-        voice.note( v )
-        voice.gain = gain
+        voice.note( v, loudness )
         this.__runVoice__( voice, this )
       })
     }else if( this.triggerNote !== null ) {
       let voice = this.__getVoice__()
       Object.assign( voice, this.properties )
-      voice.note( this.triggerNote )
-      voice.gain = gain
+      voice.note( this.triggerNote, loudness )
       this.__runVoice__( voice, this )
     }else{
       let voice = this.__getVoice__()
       Object.assign( voice, this.properties )
-      voice.trigger( gain )
+      voice.trigger( loudness )
       this.__runVoice__( voice, this )
     }
   },
