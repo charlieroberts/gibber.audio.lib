@@ -110,6 +110,8 @@ module.exports = function( Audio ) {
     // priority will fire first.
     const seq = Gibberish.Sequencer2({ values, timings, density, target, key, priority, rate:Audio.Clock.audioClock, clear })
 
+    values.setSeq( seq )
+    timings.setSeq( seq )
 
     //Gibberish.proxyEnabled = false
     //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )

@@ -72,13 +72,17 @@ const Theory = {
 
       Gibber.createProperty( 
         this, 'tuning', 'et', 
-        function() { this.loadScale( this.tuning.value ) },
+        function() { // XXX why doesn't this work??? duplicated below... 
+          this.loadScale( 'et' ) 
+        },
         1
       )
 
       Gibber.createProperty( this, 'mode', 'aeolian', null, 1 )
       Gibber.createProperty( this, 'offset', 0, null, 1 )
       Gibber.createProperty( this, 'degree', 'i', null, 1 )
+
+      this.loadScale('et')
     }else{
       this.__initDegrees()
 
@@ -94,7 +98,7 @@ const Theory = {
         get() { return this.__tuning },
         set(v) {
           this.__tuning = v
-          this.loadScale( this.__tuning )
+          //this.loadScale( v )
         }
       })
 
@@ -119,9 +123,6 @@ const Theory = {
             this.__degree = degree
             //this.rootNumber = degree.offset + this.baseNumber
             this.mode = degree.mode
-            
-
-            //console.log( this.__degree, this.rootNumber, this.mode )
           }
         }
       })
@@ -223,8 +224,6 @@ const Theory = {
       })
 
       this.initProperties()
-
-      this.tuning = 'et'
     }
     this.__initDegrees()
 
@@ -235,6 +234,7 @@ const Theory = {
     if( Gibberish.mode === 'worklet' ) {
       // if the scale is already loaded...
       if( this.__tunings[ name ] !== undefined ) {
+        this.__tuning = name
         this.Tune.loadScale( name )
         Gibberish.worklet.port.postMessage({
           address:'method',
@@ -246,8 +246,10 @@ const Theory = {
       }
 
       fetch( 'js/external/tune.json/' + name + '.js' )
+        .catch( err => console.error( err ) )
         .then( data => data.json() )
         .then( json => {
+          this.__tuning = name
           Gibberish.worklet.port.postMessage({
             address:'addToProperty',
             object:this.id,
@@ -276,7 +278,6 @@ const Theory = {
   // METHOD IS IMPLEMENTED.
   note: function( idx, octave=0 ) {
     let finalIdx, mode = null
-
 
     if( idx % 1 !== 0 ) {
       idx = Math.round( idx )

@@ -7877,7 +7877,6 @@ const Marker = {
         const oldWidget = Marker.waveform.widgets.findByName( leftName )
 
         if( oldWidget !== null ) {
-          console.log( 'found old widget', oldWidget.gen.id )
           // re-assign existing widget
           __obj.widget = oldWidget
           delete Marker.waveform.widgets[ oldWidget.gen.id ]
@@ -7895,7 +7894,6 @@ const Marker = {
           w.target = leftName
         }else{
           w.target = node.left.name
-          console.log( 'hmmm' )
           //w.gen.widget = w
           //Marker.waveform.widgets[ __obj.id ] = w
         }

@@ -208,6 +208,16 @@ module.exports = {
     octave:-3,
     panVoices:true
   },
+  shinybass2: {
+    Q:.125,
+    cutoff:5,
+    useADSR:false,
+    attack:1/1024,
+    decay:1/10,
+    filterMult:0,
+    octave:-3,
+    panVoices:true
+  },
 
   'bass.muted': {
     Q:.45,

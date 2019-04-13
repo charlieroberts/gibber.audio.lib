@@ -52,6 +52,8 @@ const Audio = {
       obj.Arp = this.Arp
       obj.Automata = this.Automata
       obj.Main = this.Main
+      obj.Steps = this.Steps
+      obj.Seq = this.Seq
     }else{
       Audio.exportTarget = obj
     } 
@@ -168,6 +170,7 @@ const Audio = {
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
     this.Seq = require( './seq.js' )( this )
+    this.Steps = require( './steps.js' )( this )
     this.waveObjects = WaveObjects( this )
     const Pattern = require( './pattern.js' )
     Pattern.transfer( this, Pattern.toString() )

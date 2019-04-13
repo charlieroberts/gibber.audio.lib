@@ -141,8 +141,8 @@ const patternWrapper = function( Gibber ) {
       }
       */
 
-      
-      if( val === fnc.DNR ) val = null
+      //XXX is this needed? Adding it interferes with Steps
+      //if( val === fnc.DNR ) val = null
 
       return val
     }
@@ -166,6 +166,10 @@ const patternWrapper = function( Gibber ) {
       onchange : null,
       isop:true,
       isGen,
+
+      setSeq( seq ) {
+        this.seq = seq
+      },
 
       range() {
         let start, end
