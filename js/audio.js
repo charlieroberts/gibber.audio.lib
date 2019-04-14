@@ -10,7 +10,6 @@ const Busses      = require( './busses.js' )
 const Ensemble    = require( './ensemble.js' )
 const Utility     = require( './utility.js' )
 const Euclid      = require( './euclid.js' )
-const Hex         = require( './hex.js' )
 const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
@@ -44,7 +43,6 @@ const Audio = {
       obj.EDrums = this.EDrums
       obj.Theory = this.Theory
       obj.Euclid = Euclid( this )
-      obj.Hex = Hex( this )
       obj.Freesound = this.Freesound
       obj.Clock = this.Clock
       obj.WavePattern = this.WavePattern
@@ -53,6 +51,8 @@ const Audio = {
       obj.Automata = this.Automata
       obj.Main = this.Main
       obj.Steps = this.Steps
+      obj.HexSteps = this.HexSteps
+      obj.Hex = this.Hex
       obj.Seq = this.Seq
     }else{
       Audio.exportTarget = obj
@@ -171,10 +171,12 @@ const Audio = {
     this.Ensemble = Ensemble( this )
     this.Seq = require( './seq.js' )( this )
     this.Steps = require( './steps.js' )( this )
+    this.HexSteps = require( './hexSteps.js' )( this )
     this.waveObjects = WaveObjects( this )
     const Pattern = require( './pattern.js' )
     Pattern.transfer( this, Pattern.toString() )
     this.Pattern = Pattern( this )
+    this.Hex = require( './hex.js' )( Gibber )
     this.Automata = __Automata( this )
     
     //const Arp = require( './arp.js' )

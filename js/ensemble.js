@@ -26,6 +26,7 @@ module.exports = function( Audio ) {
     }
 
     const ens = Audio.busses.Bus2( cp )
+    ens.__isEnsemble = true
 
     for( let key in props ) {
       props[ key ].target.connect( ens )

@@ -86,16 +86,16 @@ const __Identifier = function( Marker ) {
     }
 
     if( patternObject.update !== undefined ) {
-      let currentIndex = 0
-      Object.defineProperty( patternObject.update, 'currentIndex', {
-        get() { return currentIndex },
-        set(v){ 
-          if( currentIndex !== v ) {
-            currentIndex = v; 
-            patternObject.update()
-          }
-        }
-      })
+      //let currentIndex = 0
+      //Object.defineProperty( patternObject.update, 'currentIndex', {
+      //  get() { return currentIndex },
+      //  set(v){ 
+      //    if( currentIndex !== v ) {
+      //      currentIndex = v; 
+      //      patternObject.update()
+      //    }
+      //  }
+      //})
 
       // XXX why was this commented out? without it, annotations for anonymous functions
       // don't work.

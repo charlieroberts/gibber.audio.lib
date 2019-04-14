@@ -35,28 +35,41 @@ window.onload = function() {
   cmconsole.setSize( null, '100%' )
 */
   const workletPath = '../dist/gibberish_worklet.js' 
-  Gibber.init( workletPath ).then( ()=> {
+
+  const start = () => {
     cm.setValue('')
-  })
+    Gibber.init( workletPath ).then( ()=> {
+      
+    })
+  
 
-  environment.editor = cm
-  //environment.console = cmconsole
-  window.Environment = environment
-  environment.annotations = true
+    environment.editor = cm
+    //environment.console = cmconsole
+    window.Environment = environment
+    environment.annotations = true
 
-  // XXX this should not be in 'debug' mode...
-  environment.debug = true
-  environment.codeMarkup = codeMarkup( Gibber )
-  environment.codeMarkup.init()
+    // XXX this should not be in 'debug' mode...
+    environment.debug = true
+    environment.codeMarkup = codeMarkup( Gibber )
+    environment.codeMarkup.init()
 
-  environment.displayCallbackUpdates = function() {
-    Gibberish.oncallback = function( cb ) {
-      environment.console.setValue( cb.toString() )
+    environment.displayCallbackUpdates = function() {
+      Gibberish.oncallback = function( cb ) {
+        environment.console.setValue( cb.toString() )
+      }
     }
-  }
 
-  environment.Annotations = environment.codeMarkup 
-  Gibber.Environment = environment
+    environment.Annotations = environment.codeMarkup 
+    Gibber.Environment = environment
+
+    window.onclick = null
+    window.onkeypress = null
+  }
+  
+  window.onclick = start
+  window.onkeypress = start
+
+ 
 /*
   let select = document.querySelector( 'select' ),
     files = [

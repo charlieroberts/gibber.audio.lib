@@ -15,7 +15,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       Object.assign( pos.loc.end  , _step.loc.end   )
       pos.loc.start.ch += i
       pos.loc.end.ch = pos.loc.start.ch + 1
-      let posMark = _cm.markText( pos.loc.start, pos.loc.end, { className:`step_${_key}_${i}` })
+      let posMark = _cm.markText( pos.loc.start, pos.loc.end, { className:`step_${_key}_${i} euclid` })
       _track.markup.textMarkers.step[ _key ].pattern[ i ] = posMark
     }
   }
@@ -36,9 +36,10 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 
       mark( step, key, cm, track )
 
-      let count = 0, span, update,
-        _key = steps[ key ].key.value,
-        patternObject = window[ objectName ].seqs[ _key ].values
+      let count = 0, span, update
+
+      const _key = steps[ key ].key.value,
+            patternObject = window[ objectName ].seqs[ _key ].values
 
       update = () => {
         let currentIdx = update.currentIndex // count++ % step.value.length
@@ -48,17 +49,19 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
           span.remove( 'euclid1' )
         }
 
-        let spanName = `.step_${key}_${currentIdx}`,
-          currentValue = patternObject.update.value.pop() //step.value[ currentIdx ]
+        let spanName = `.step_${key}_${currentIdx}`
+            //currentValue = patternObject.update.value.pop() //step.value[ currentIdx ]
 
         span = $( spanName )
 
-        if( currentValue !== Gibber.Seq.DO_NOT_OUTPUT ) {
-          span.add( 'euclid1' )
-          setTimeout( ()=> { span.remove( 'euclid1' ) }, 50 )
-        }
-
+        //if( currentValue !== Gibber.Seq.DO_NOT_OUTPUT ) {
         span.add( 'euclid0' )
+        span.add( 'euclid1' )
+
+        setTimeout( ()=> { 
+          span.remove( 'euclid1' ) 
+          span.add( 'euclid0' )
+        }, 50 )
       }
 
       patternObject._onchange = () => {
@@ -71,6 +74,15 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 
       patternObject.update = update
       patternObject.update.value = []
+      
+      let currentIndex = 0
+      Object.defineProperty( patternObject.update, 'currentIndex', {
+        get() { return currentIndex },
+        set(v){ 
+          currentIndex = v; 
+          patternObject.update()
+        }
+      })
 
       Marker._addPatternFilter( patternObject )
     }

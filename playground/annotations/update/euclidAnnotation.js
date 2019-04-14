@@ -75,7 +75,8 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
   update = () => {
     // XXX what happened??? this should be incremented by 1, and there
     // should be no need for Math.floor
-    count += .5
+    // works with 1 increment in HexSteps but not in Hex... :(
+    count += 1
     let currentIdx = Math.floor( count ) % patternObject.values.length
 
     if( span !== undefined ) {

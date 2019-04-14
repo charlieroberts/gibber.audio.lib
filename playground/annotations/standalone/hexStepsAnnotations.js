@@ -1,4 +1,3 @@
-
 const Utility = require( '../../../js/utility.js' )
 const $ = Utility.create
 const EuclidAnnotation = require( '../update/euclidAnnotation.js' )
@@ -57,7 +56,16 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       pattern.patternName = className
 
       // store value changes in array and then pop them every time the annotation is updated
-      pattern.update.value = []
+      //pattern.update.value = []
+      
+      let currentIndex = 0
+      Object.defineProperty( pattern.update, 'currentIndex', {
+        get() { return currentIndex },
+        set(v){ 
+          currentIndex = v; 
+          pattern.update()
+        }
+      })
 
       Marker._addPatternFilter( pattern )
 

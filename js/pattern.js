@@ -35,7 +35,7 @@ const patternWrapper = function( Gibber ) {
         args = filter( args, this ) 
       }
 
-      // XXX why is this one off from the worlet-side pattern id?
+      // XXX why is this one off from the worklet-side pattern id?
       if( Gibberish.mode === 'processor' ) {
         Gibberish.processor.messages.push( this.id, 'update.value', args.override === undefined ? args[0] : args.override )
         Gibberish.processor.messages.push( this.id, 'update.currentIndex', args[2] )
