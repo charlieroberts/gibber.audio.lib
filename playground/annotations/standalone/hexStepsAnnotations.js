@@ -70,6 +70,16 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       Marker._addPatternFilter( pattern )
 
       pattern.marker = marker
+      
+      const __clear = pattern.clear
+
+      pattern.clear = () => {
+        //track.markup.textMarkers.string = cm.markText( nodePosStart, nodePosEnd, { className:'euclid' })
+        pattern.reset()
+        if( typeof __clear === 'function' ) __clear.call( pattern )
+      }
+
+      Gibber.subscribe( 'clear', pattern.clear )
       /*
 
       patternObject._onchange = () => {

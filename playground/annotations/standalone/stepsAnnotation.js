@@ -36,7 +36,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 
       mark( step, key, cm, track )
 
-      let count = 0, span, update
+      let count = 0, span, update, tm
 
       const _key = steps[ key ].key.value,
             patternObject = window[ objectName ].seqs[ _key ].values
@@ -58,18 +58,18 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
         span.add( 'euclid0' )
         span.add( 'euclid1' )
 
-        setTimeout( ()=> { 
+        tm = setTimeout( ()=> { 
           span.remove( 'euclid1' ) 
           span.add( 'euclid0' )
         }, 50 )
       }
 
       patternObject._onchange = () => {
-        let delay = Utility.beatsToMs( 1,  Gibber.Scheduler.bpm )
-        Gibber.Environment.animationScheduler.add( () => {
-          marker.doc.replaceRange( patternObject.values.join(''), step.loc.start, step.loc.end )
-          mark( step, key, cm, track )
-        }, delay ) 
+        //let delay = Gibber.Clock.btoms( 1,  Gibber.Clock.bpm )
+        //Gibber.Environment.animationScheduler.add( () => {
+        //  marker.doc.replaceRange( patternObject.values.join(''), step.loc.start, step.loc.end )
+        //  mark( step, key, cm, track )
+        //}, delay ) 
       }
 
       patternObject.update = update
@@ -85,6 +85,22 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       })
 
       Marker._addPatternFilter( patternObject )
+
+      const __clear = patternObject.clear
+
+      patternObject.clear = () => {
+        if( span !== undefined ) {
+          span.remove( 'euclid0' )
+          span.remove( 'euclid1' )
+        }
+        if( tm !== undefined ) clearTimeout( tm )
+
+        //track.markup.textMarkers.string = cm.markText( nodePosStart, nodePosEnd, { className:'euclid' })
+        patternObject.reset()
+        if( typeof __clear === 'function' ) __clear.call( patternObject )
+      }
+
+      Gibber.subscribe( 'clear', patternObject.clear )
     }
   }
 
