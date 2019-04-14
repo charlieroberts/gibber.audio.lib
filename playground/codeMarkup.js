@@ -457,10 +457,12 @@ const Marker = {
      expr = /\ /gi
      className = className.replace( expr, '_' )
 
-     start.line += patternNode.offset.vertical - 1
-     end.line   += patternNode.offset.vertical - 1
-     start.ch   = start.column + patternNode.offset.horizontal 
-     end.ch     = end.column + patternNode.offset.horizontal 
+     if( patternNode.offset !== undefined ) {
+       start.line += patternNode.offset.vertical - 1
+       end.line   += patternNode.offset.vertical - 1
+       start.ch   = start.column + patternNode.offset.horizontal 
+       end.ch     = end.column + patternNode.offset.horizontal 
+     }
 
      return [ className, start, end ]
   },

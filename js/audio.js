@@ -53,6 +53,7 @@ const Audio = {
       obj.Steps = this.Steps
       obj.HexSteps = this.HexSteps
       obj.Hex = this.Hex
+      obj.Triggers = this.Triggers
       obj.Seq = this.Seq
     }else{
       Audio.exportTarget = obj
@@ -114,10 +115,8 @@ const Audio = {
 
         // XXX this forces the gibberish scheduler to start
         // running, but it's about as hacky as it can get...
-        let __start = Gibber.instruments.Synth().connect()
+        const __start = Gibber.instruments.Synth().connect()
         __start.disconnect()
-
-        //Gibberish.worklet.port.postMessage({ address:'initialize' })
 
         resolve()
       })
@@ -177,6 +176,7 @@ const Audio = {
     Pattern.transfer( this, Pattern.toString() )
     this.Pattern = Pattern( this )
     this.Hex = require( './hex.js' )( Gibber )
+    this.Triggers = require( './triggers.js' )( Gibber )
     this.Automata = __Automata( this )
     
     //const Arp = require( './arp.js' )

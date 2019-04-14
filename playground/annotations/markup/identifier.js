@@ -61,6 +61,12 @@ const __Identifier = function( Marker ) {
         patternObject.update = Marker.patternUpdates.anonymousFunction( patternObject, marker, className, cm, track, Marker )
       }
     }else{
+      if( patternObject.type === 'Triggers' ) {
+        //module.exports = function( node, cm, track, objectName, state, cb ) {
+        Marker.prepareObject( track )
+        Marker.standalone.Drums( patternNode, cm, track, patternObject )
+        return
+      }
       let updateName = typeof patternNode.callee !== 'undefined' ? patternNode.callee.name : patternNode.name
       
       // this doesn't work for variables storing lookups, as there's no array to highlight

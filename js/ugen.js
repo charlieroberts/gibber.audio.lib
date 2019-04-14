@@ -273,7 +273,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
               const offset = octave * notesInOctave
               let __note = Gibberish.Theory.note( note + offset );
 
-              this.___note( __note ) 
+              this.___note( __note, this.__triggerLoudness ) 
             }`
           })
           

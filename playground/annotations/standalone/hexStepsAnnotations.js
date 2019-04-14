@@ -31,6 +31,9 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       // comma (otherwise an error would occur).
       const useComma = count++ != steps.length - 1 && steps.length > 1
 
+      // subtle differences here... without the useComma condition
+      // the comment winds up being inserted before the comma, which
+      // I don't like the look of, even if it sort of makes sense?
       if( useComma === true ) {
         // move off of end quote to comma
         step.loc.start.ch += 1
@@ -42,8 +45,9 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
         step.loc.start.ch += 1
         step.loc.end.ch += 1
       }else{
-        // replace end quote with a quote and a space
-        cm.replaceRange( "' ", step.loc.start, step.loc.end )
+        // replace end char with char and a space
+        const end = cm.getRange( step.loc.start, step.loc.end )
+        cm.replaceRange( `${end} `, step.loc.start, step.loc.end )
 
         step.loc.start.ch += 1
         step.loc.end.ch += 1

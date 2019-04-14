@@ -6,19 +6,24 @@ let Hex = function( hexString, time = 1/16, rotation ) {
   let count = 0,
       onesAndZeros = ''
 
-  for( let chr of hexString ) {
-    let num = Number( '0x'+chr )
+  if( typeof hexString === 'string' ) {
+    for( let chr of hexString ) {
+      let num = Number( '0x'+chr )
 
-    onesAndZeros += (num & 8) > 0 ? 1 : 0
-    onesAndZeros += (num & 4) > 0 ? 1 : 0
-    onesAndZeros += (num & 2) > 0 ? 1 : 0
-    onesAndZeros += (num & 1) > 0 ? 1 : 0
-  } 
+      onesAndZeros += (num & 8) > 0 ? 1 : 0
+      onesAndZeros += (num & 4) > 0 ? 1 : 0
+      onesAndZeros += (num & 2) > 0 ? 1 : 0
+      onesAndZeros += (num & 1) > 0 ? 1 : 0
+    }
+  }else{
+    onesAndZeros = hexString.toString(2)
+  }
 
   let __onesAndZeros = onesAndZeros.split('') 
 
   let pattern = Pattern( ...__onesAndZeros ) 
   pattern.isPattern = true
+  pattern.type = 'Hex'
 
   pattern.time = time
 

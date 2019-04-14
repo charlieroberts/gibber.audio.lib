@@ -73,7 +73,7 @@ const Theory = {
       Gibber.createProperty( 
         this, 'tuning', 'et', 
         function() { // XXX why doesn't this work??? duplicated below... 
-          this.loadScale( 'et' ) 
+          this.loadScale( this.__tuning.value ) 
         },
         1
       )
@@ -82,7 +82,9 @@ const Theory = {
       Gibber.createProperty( this, 'offset', 0, null, 1 )
       Gibber.createProperty( this, 'degree', 'i', null, 1 )
 
-      this.loadScale('et')
+      //setTimeout( ()=> Theory.tuning = 'et', 250 )
+      this.tuning = 'et'
+      //this.loadScale('et')
     }else{
       this.__initDegrees()
 
@@ -234,7 +236,7 @@ const Theory = {
     if( Gibberish.mode === 'worklet' ) {
       // if the scale is already loaded...
       if( this.__tunings[ name ] !== undefined ) {
-        this.__tuning = name
+        this.__tuning.value = name
         this.Tune.loadScale( name )
         Gibberish.worklet.port.postMessage({
           address:'method',
@@ -249,7 +251,7 @@ const Theory = {
         .catch( err => console.error( err ) )
         .then( data => data.json() )
         .then( json => {
-          this.__tuning = name
+          this.__tuning.value = name
           Gibberish.worklet.port.postMessage({
             address:'addToProperty',
             object:this.id,

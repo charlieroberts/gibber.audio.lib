@@ -3,7 +3,9 @@ const $ = Utility.create
 
 module.exports = function( node, cm, track, objectName, state, cb ) {
   const Marker = Environment.codeMarkup // tsk tsk tsk global...
-  const patternObject = window[ objectName ].seq.values
+
+  // accomodate directly passing pattern for annotation instead of name, for Triggers
+  const patternObject = typeof objectName === 'string' ? window[ objectName ].seq.values : objectName
 
   // the location of the node containing the drums sequence depends on whether
   // or not a call to .connect() is added to the Drums constructor. 
