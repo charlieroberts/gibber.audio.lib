@@ -218,6 +218,19 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       }
     }
 
+    // add poly methods
+    if( description.name.indexOf('Poly') > -1 ) {
+      obj.spread = function( amt=1 ) {
+        if( amt === 0 ) {
+          children.forEach( c => c.pan = .5 )
+          return
+        }
+        const children = this.__wrapped__.voices
+        const incr = 1/children.length * amt
+        children.forEach( (c,i) => c.pan = (.5 - amt/2) + i * incr )
+      }
+    }
+
     // wrap properties and add sequencing to them
     for( let propertyName in description.properties ) {
       // XXX we have to pass id in the values dictionary under 
