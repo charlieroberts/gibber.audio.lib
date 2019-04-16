@@ -275,9 +275,10 @@ img {
   /*font-weight:bold !important*/
   background: rgba(66,70,73,1)
 }
+
 .euclid1 {
   border-color:#eee !important; 
-  background-color:#666
+  background-color:#ccc
 }
 
 .euclid0 {

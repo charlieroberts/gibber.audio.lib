@@ -50,19 +50,20 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       //span.remove( 'euclid1' )
     }
 
-    let spanName = `.step_${patternObject.id}_${currentIdx}`
-        //currentValue = patternObject.update.value.pop() //step.value[ currentIdx ]
+    let spanName = `.step_${patternObject.id}_${currentIdx}`,
+        currentValue = patternObject.update.value
 
     span = $( spanName )
 
-    //if( currentValue !== Gibber.Seq.DO_NOT_OUTPUT ) {
     span.add( 'euclid0' )
-    span.add( 'euclid1' )
+    if( currentValue !== Gibber.Seq.DNR && ( typeof currentValue === 'object' && currentValue.shouldExecute !== 0 ) ) {
+      span.add( 'euclid1' )
 
-    setTimeout( ()=> { 
-      span.remove( 'euclid1' ) 
-      span.add( 'euclid0' )
-    }, 50 )
+      setTimeout( ()=> { 
+        span.remove( 'euclid1' ) 
+        span.add( 'euclid0' )
+      }, 50 )
+    }
     
 
     //span.add( 'euclid0' )
