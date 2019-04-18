@@ -226,9 +226,10 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           return
         }
         const children = this.__wrapped__.voices
-        const incr = 1/children.length * amt
+        const incr = 1/(children.length-1) * amt
         children.forEach( (c,i) => c.pan = (.5 - amt/2) + i * incr )
       }
+      obj.voices = obj.__wrapped__.voices
     }
 
     // wrap properties and add sequencing to them
