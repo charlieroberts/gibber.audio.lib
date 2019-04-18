@@ -28,7 +28,10 @@ const removeSeq = function( obj, seq ) {
   seq.clear()
 }
 
-const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio ) {
+const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio, isPoly=false ) {
+  const namestore = propertyName 
+  if( isPoly === true ) propertyName += 'V'
+
   const prop =  obj[ '__' + propertyName ] = {
     isProperty:true,
     sequencers:[],
@@ -40,7 +43,13 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
     },
     set value(v) {
       if( v !== undefined ) {
-        __wrappedObject[ propertyName ] = timeProps.indexOf( propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
+        const value = timeProps.indexOf( propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
+
+        if( isPoly === true ) {
+          __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ][ namestore ] = value
+        }else{
+          __wrappedObject[ propertyName ] = value
+        }
       }
     },
 
@@ -239,6 +248,19 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       // want .id to be sequencable!
       if( propertyName !== 'id' ){
         createProperty( obj, propertyName, __wrappedObject, timeProps, Audio )
+
+        // create per-voice version of property... what properties should be excluded?
+        if( description.name.indexOf('Poly') > -1 ) {
+          createProperty( obj, propertyName, __wrappedObject, timeProps, Audio, true )
+          // we don't have a way to add properties to objects in the processor thread
+          // so we'll just add a method... sequencing will still work the same.
+          Gibberish.worklet.port.postMessage({
+            address:'addMethod',
+            id:__wrappedObject.id,
+            key:propertyName+'V',
+            function:`function( v ) {this.voices[ this.voiceCount % this.voices.length ][ '${propertyName}' ] = v }`
+          })
+        }
       }
     }
 
