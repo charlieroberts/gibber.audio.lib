@@ -49,6 +49,13 @@ const Marker = {
           key = key.slice(1,-1)
         }
         obj = obj[ key ]
+        if( findSeq === true && obj !== undefined ){
+          if( obj[ seqNumber ] !== undefined && obj[ seqNumber ].type === 'seq' ) {
+            obj = obj[ seqNumber ]
+            findSeq = false
+            break;
+          }
+        }
       }else{
         break;
       }

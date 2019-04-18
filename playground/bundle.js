@@ -6216,6 +6216,7 @@ module.exports = function( Marker ) {
     const cm = state.cm
     const seqTarget = seq.target //XXX in gibberwocky this was seq.object
     const patternObject = seq[ patternType ]
+    if( patternObject === null ) return 
     const [ className, start, end ] = Marker._getNamesAndPosition( patternNode, state, patternType, index )
     const cssName = className
 
@@ -6418,6 +6419,7 @@ module.exports = function( Marker ) {
     const cm = state.cm
     const seqTarget = seq.target // XXX seq.object for gibberwocky
     const patternObject = seq[ patternType ]
+    if( patternObject === null || patternObject == undefined ) return
 
     const [ className, start, end ] = Marker._getNamesAndPosition( patternNode, state, patternType, index )
     const cssName = className
@@ -7398,6 +7400,11 @@ module.exports = function( Marker ) {
     },
     
     CallExpression( node, state, cb, obj, objName ) {
+      if( state.nodes === undefined ) {
+        state.nodes = [ node ]
+      }else{
+        state.nodes.push( node )
+      }
       // this one is a doozy. The first thing to note is that this can either be called
       // during a recursive walk whenever a CallExpression is found, or it can be called
       // directly from the AssignmentExpression visitor, which will often have a
@@ -7447,15 +7454,41 @@ module.exports = function( Marker ) {
 
         if( obj === undefined ) {
           // assume default sequencer ID of 0, but check for alternative argument value
-          let seqNumber = node.arguments.length > 2 ? node.arguments[2].raw : 0
+          const seqNumber = node.arguments.length > 2 ? node.arguments[2].raw : 0
+          
+          // this nightmare is to account for calls to .seq that might be chained
+          // e.g. syn.note.seq( 0, 1/4 ).pan.seq( Rndf() )
+          // we isolate all callexpression nodes in the our state's .nodes array,
+          // and then pass each call expression individually to be marked as a
+          // sequencer. 
+          
+          // first, count the number of calls to .seq in this expression
+          const seqCount = state.reduce( (count, value) => count + (value==='seq'? 1 : 0 ), 0 )
 
-          seq = Marker.getObj( state.slice( 0, endIdx ), true, seqNumber )
-          Marker.markPatternsForSeq( seq, node.arguments, state, cb, node, seqNumber )
+          // next, loop through our call expressions and pass in the appropriate note. the
+          // nodes are added in reverse order to the listing of objects/properties/seq in state,
+          // so we pop each node out of our node stack.
+          let i = 0;
+          const callNodes = state.nodes.filter( v => v.type === 'CallExpression' )
+          while( i < seqCount ) {
+            const nextSeqIdx = state.indexOf('seq')
+            if( nextSeqIdx > -1 ) {
+              // create a path like [ 'a', 'note', 'seq' ] by slicing to the next instance of .seq
+              let tmp = [ state[0] ]
+              tmp = tmp.concat( state.splice( 1, nextSeqIdx ) )
+              seq = Marker.getObj( tmp, true, seqNumber )
+              const callExpressionNode = callNodes.pop()
+              tmp.cm = state.cm
+              Marker.markPatternsForSeq( seq, callExpressionNode.arguments, tmp, cb, callExpressionNode, seqNumber )
+            }
+
+            i++
+          }
         }else{
           // as top most level of AST is the last call to .seq, we must work our way
           // from the top on down. Here we look up the name of each property being
           // sequence from the faux-AST we created earlier. We then pass in the 
-          // MemberExpression nod ethat was used to sequence this property. 
+          // MemberExpression node that was used to sequence this property. 
           for( let i = tree.length - 2; i >= 1; i-=2 ) {
             let seqNumber = node.arguments.length > 2 ? node.arguments[2].raw : 0
 
@@ -7499,7 +7532,11 @@ module.exports = function( Marker ) {
     MemberExpression( node, state, cb ) {
       // XXX why was this here?
       //if( node.object.name === 'tracks' ) state.length = 0
-
+      if( state.nodes === undefined ) {
+        state.nodes = [ node ]
+      }else{
+        state.nodes.push( node )
+      }
       // for any member name, make sure to get rid of potential quotes surrounding it using
       // the strip function.
       
@@ -7515,7 +7552,7 @@ module.exports = function( Marker ) {
         }
         state.unshift( strip( node.object.name ) )
 
-        //cb( node.object, state )
+        cb( node.object, state )
       }
     },
   }
@@ -7950,6 +7987,13 @@ const Marker = {
           key = key.slice(1,-1)
         }
         obj = obj[ key ]
+        if( findSeq === true && obj !== undefined ){
+          if( obj[ seqNumber ] !== undefined && obj[ seqNumber ].type === 'seq' ) {
+            obj = obj[ seqNumber ]
+            findSeq = false
+            break;
+          }
+        }
       }else{
         break;
       }
