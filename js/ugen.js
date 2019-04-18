@@ -37,13 +37,14 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
     sequencers:[],
     mods:[],
     name:propertyName,
+    __isPoly:isPoly,
 
     get value() {
       return __wrappedObject[ propertyName ]
     },
     set value(v) {
       if( v !== undefined ) {
-        const value = timeProps.indexOf( propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
+        const value = timeProps.indexOf( isPoly===true ? namestore : propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
 
         if( isPoly === true ) {
           __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ][ namestore ] = value
@@ -71,7 +72,7 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
         key:propertyName,
       })
 
-      if( timeProps.indexOf( propertyName ) !== -1  ) {
+      if( timeProps.indexOf( isPoly === true ? namestore : propertyName ) !== -1  ) {
         s.values.addFilter( (args,ptrn) => {
           if( Gibberish.mode === 'processor' ) {
             args[0] = Gibberish.Clock.time( args[0] )
