@@ -149,6 +149,11 @@ const Clock = {
     return samplesPerBeat * beats 
   },
 
+  // convert samples to beats (for pattern visualizations)
+  stob: function( samples ) {
+    const samplesPerBeat = Gibberish.ctx.sampleRate / (this.bpm / 60 )
+    return (samples / samplesPerBeat) * .25 // XXX magic number should be denominator of time signature 
+  },
   // convert beats to milliseconds
   btoms: function( beats ) {
     const samplesPerMs = Gibberish.ctx.sampleRate / 1000
