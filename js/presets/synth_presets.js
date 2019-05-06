@@ -117,6 +117,13 @@ module.exports = {
     glide:500
   },
 
+  'pwm.short':{
+    attack:1/1024,
+    decay:1/8,
+    antialias:true,
+    waveform:'pwm'
+  },
+
   chirp: { filterType:2, cutoff:.325, decay:1/16 }, 
 
   'square.perc': { waveform:'square', shape:'exponential', antialias:true, filterType:2, cutoff:.25, decay:1/8 },
