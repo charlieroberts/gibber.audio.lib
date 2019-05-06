@@ -5,6 +5,7 @@ const Oscillators = require( './oscillators.js' )
 const Effects     = require( './effects.js' )
 const Filters     = require( './filters.js' )
 const Binops      = require( './binops.js' )
+const Analysis    = require( './analysis.js' )
 const Envelopes   = require( './envelopes.js' )
 const Busses      = require( './busses.js' )
 const Ensemble    = require( './ensemble.js' )
@@ -32,7 +33,7 @@ const Audio = {
 
   export( obj ) {
     if( Audio.initialized ){ 
-      Object.assign( obj, this.instruments, this.oscillators, this.effects, this.filters, this.busses, this.envelopes, this.waveObjects, this.binops )
+      Object.assign( obj, this.instruments, this.oscillators, this.effects, this.filters, this.busses, this.envelopes, this.waveObjects, this.binops, this.analysis )
       
       Utility.export( obj )
       this.Gen.export( obj )
@@ -161,6 +162,7 @@ const Audio = {
   createUgens() {
     this.Freesound = Freesound( this )
     this.binops = Binops.create( this )
+    this.analysis = Analysis.create( this )
     this.oscillators = Oscillators.create( this )
     this.instruments = Instruments.create( this ) 
     this.envelopes   = Envelopes.create( this )
@@ -179,11 +181,6 @@ const Audio = {
     this.Triggers = require( './triggers.js' )( Gibber )
     this.Automata = __Automata( this )
     
-    //const Arp = require( './arp.js' )
-    //Arp.transfer( this, Arp.toString() )
-    //this.Arp = Arp( this )
-    //console.log( 'pattern string:', Pattern.toString() )
-
     const drums = require( './drums.js' )( this )
     Object.assign( this, drums )
   },
