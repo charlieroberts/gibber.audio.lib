@@ -129,7 +129,6 @@ module.exports = function({ types: t }) {
       if( path.node.callee.name === 'gen' ) state.usejsdsp = true
     },
     ExpressionStatement( path, state ) {
-      console.log( path )
       if( path.node.expression.value === 'use jsdsp' ) {
         //state.usejsdsp = true
         //path.traverse( innerVisitor, state )
