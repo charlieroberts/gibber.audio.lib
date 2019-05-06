@@ -521,6 +521,11 @@ const patternWrapper = function( Gibber ) {
           // XXX fix in parsing or somehow figure out how to only do this once
           if( fnc.widget !== undefined ) fnc.values[0].widget = fnc.widget
           if( fnc.values[0].widget !== undefined ) {
+
+            // convert samples to beats
+            if( fnc.__patternType === 'timings' ) {
+              val = Gibber.Clock.stob( val )
+            }
             fnc.values[0].widget.values[ fnc.values[0].widget.values.length - 1 ] = { value:val } 
           }
         }

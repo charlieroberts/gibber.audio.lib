@@ -54,8 +54,6 @@ module.exports = function( Audio ) {
       autotrig = true
     }
 
-
-
     if( autotrig === false ) {
       if( __timings.randomFlag ) {
         timings.addFilter( ( args,ptrn ) => {
@@ -104,6 +102,9 @@ module.exports = function( Audio ) {
       
 
     }
+
+    values.__patternType = 'values'
+    timings.__patternType = 'timings'
     //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
     // XXX we need to add priority to Sequencer2; this priority will determine the order
     // that sequencers are added to the callback, ensuring that sequencers with higher
