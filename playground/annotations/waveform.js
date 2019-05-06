@@ -70,7 +70,7 @@ const Waveform = {
       widget.gen = widget.gen.__wrapped__
       widget.values = widget.gen.values
     }
-
+    
     if( widget.gen === null || widget.gen === undefined ) {
       if( node.expression !== undefined && node.expression.type === 'AssignmentExpression' ) {
         isAssignment = true

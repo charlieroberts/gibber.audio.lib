@@ -60,7 +60,7 @@ module.exports = function( Marker ) {
           if( leftName === undefined ) {
             if( left.type === 'MemberExpression' ) {
               if( left.object.object === undefined ) {
-                leftName = left.object.name + '.' + left.property.name
+                leftName = left.object.name + '.' + (left.property.type === 'Literal' ? left.property.raw : left.property.name )
               }else{
                 leftName = left.object.object.name + '.' + left.object.property.name + '.' + left.property.name
               }

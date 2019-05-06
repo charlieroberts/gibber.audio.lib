@@ -6339,7 +6339,7 @@ const __Identifier = function( Marker ) {
     if( patternObject.type === 'WavePattern' || patternObject.isGen ) { //|| patternObject.type === 'Lookup' ) {
 
       if( patternObject.widget === undefined ) { // if wavepattern is inlined to .seq 
-        Marker.processGen( containerNode, cm, track, patternObject, seq )
+        Marker.processGen( patternNode, cm, track, patternObject, seq, 0, state )
       }else{
         patternObject.update = Marker.patternUpdates.anonymousFunction( patternObject, marker, className, cm, track, Marker )
       }
@@ -7352,7 +7352,7 @@ module.exports = function( Marker ) {
           if( leftName === undefined ) {
             if( left.type === 'MemberExpression' ) {
               if( left.object.object === undefined ) {
-                leftName = left.object.name + '.' + left.property.name
+                leftName = left.object.name + '.' + (left.property.type === 'Literal' ? left.property.raw : left.property.name )
               }else{
                 leftName = left.object.object.name + '.' + left.object.property.name + '.' + left.property.name
               }
@@ -7633,7 +7633,7 @@ const Waveform = {
       widget.gen = widget.gen.__wrapped__
       widget.values = widget.gen.values
     }
-
+    
     if( widget.gen === null || widget.gen === undefined ) {
       if( node.expression !== undefined && node.expression.type === 'AssignmentExpression' ) {
         isAssignment = true
@@ -8068,6 +8068,7 @@ const Marker = {
         end = node.end,
         isAssignment = true 
 
+      //console.log( Marker.offset.vertical, node.loc.start.line )
     // check to see if a given object is a proxy that already has
     // a widget created; if so, don't make another one!
     if( node.type === 'AssignmentExpression' ) {
@@ -8122,8 +8123,10 @@ const Marker = {
       }
     }else if( node.type === 'CallExpression' ) {
       const seqExpression = node
+      const seqArgument = node
+      if( node.processed === true ) return
 
-      seqExpression.arguments.forEach( function( seqArgument ) {
+      //seqExpression.arguments.forEach( function( seqArgument ) {
         if( seqArgument.type === 'CallExpression' ) {
           const idx = Gibber.Gen.names.indexOf( seqArgument.callee.name )
           
@@ -8133,18 +8136,20 @@ const Marker = {
           
           ch = seqArgument.loc.end.ch || seqArgument.loc.end.column
           // XXX why don't I need the Marker offset here?
-          line = seqArgument.loc.end.line + lineMod
+          //line = seqArgument.loc.end.line + lineMod
 
           // for some reason arguments to .seq() include the offset,
           // so we only want to add the offset in if we this is a gen~
-          // assignment via function call. lineMod will !== 0 if this
+          // assignment via function call. lineMod will === 0 if this
           // is the case.
-          if( lineMod !== 0 ) line += Marker.offset.vertical
+          if( lineMod === 0 ) line -= Marker.offset.vertical
+
+          //line += lineMod
+          //line += Marker.offset.vertical
 
           closeParenStart = ch - 1
           isAssignment = false
           node.processed = true
-          //debugger
           const w = Marker.waveform.createWaveformWidget( line, closeParenStart, ch, isAssignment, node, cm, patternObject, track, lineMod === 0, state )
         } else if( seqArgument.type === 'ArrayExpression' ) {
           //console.log( 'WavePattern array' )
@@ -8160,7 +8165,7 @@ const Marker = {
             Marker.waveform.createWaveformWidget( line, closeParenStart, ch, isAssignment, node, cm, patternObject, track, lineMod === 0 )
           }
         }
-      })
+      //})
 
     }
     
