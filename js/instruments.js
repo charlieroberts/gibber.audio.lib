@@ -18,7 +18,7 @@ const Instruments = {
       }
 
       //const shouldPool = pooledInstruments.indexOf( instrumentName ) > -1
-      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false )//shouldPool )
+      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false )
 
     }
     return instruments
@@ -61,10 +61,16 @@ const Instruments = {
     Synth:{
       methods:[ 'note','trigger' ],
     },
+    Complex:{
+      methods:[ 'note','trigger' ],
+    },
     Tom:{
       methods:[ 'note','trigger' ],
     },
     PolySynth:{
+      methods:[ 'chord','note','trigger' ],
+    },
+    PolyComplex:{
       methods:[ 'chord','note','trigger' ],
     },
     PolyFM:{
