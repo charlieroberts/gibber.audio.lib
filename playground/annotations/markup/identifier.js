@@ -56,7 +56,7 @@ const __Identifier = function( Marker ) {
     if( patternObject.type === 'WavePattern' || patternObject.isGen ) { //|| patternObject.type === 'Lookup' ) {
 
       if( patternObject.widget === undefined ) { // if wavepattern is inlined to .seq 
-        Marker.processGen( containerNode, cm, track, patternObject, seq )
+        Marker.processGen( patternNode, cm, track, patternObject, seq, 0, state )
       }else{
         patternObject.update = Marker.patternUpdates.anonymousFunction( patternObject, marker, className, cm, track, Marker )
       }

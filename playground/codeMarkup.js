@@ -130,7 +130,6 @@ const Marker = {
         end = node.end,
         isAssignment = true 
 
-      //console.log( Marker.offset.vertical, node.loc.start.line )
     // check to see if a given object is a proxy that already has
     // a widget created; if so, don't make another one!
     if( node.type === 'AssignmentExpression' ) {
