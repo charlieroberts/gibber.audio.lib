@@ -5,39 +5,7 @@ module.exports = function( Audio ) {
 
   const Freesound = function( query ) {
     const sampler = Audio.instruments.Sampler()
-
-    //sampler.done = function(func) {
-    //  callback = func
-    //}
-
-    //var onload = function(request) {
-    //  //Audio.log('Freesound file ' + filename + " loaded." )
-    //  Audio.Audio.Core.context.decodeAudioData(request.response, function(buffer) {
-    //    Freesound.loaded[filename] = buffer.getChannelData(0)
-    //    sampler.buffer = Freesound.loaded[filename];
-    //    sampler.bufferLength = sampler.buffer.length;
-    //    sampler.isLoaded = true;
-    //    //sampler.end = sampler.bufferLength;
-    //    sampler.setBuffer(sampler.buffer);
-    //    sampler.setPhase(sampler.bufferLength);
-    //    sampler.filename = filename;
-    //    sampler.length = sampler.bufferLength;
-    //    //self.setPhase( self.length )
-    //    //self.setBuffer( buffer )
-    //    sampler.isPlaying = true;
-    //    //self.buffers[ filename ] = buffer;
-    //    Audio.Audio.Core.audioFiles[sampler.filename] = buffer;
-    //    sampler.buffers[ sampler.filename ] = buffer;       //
-    //    sampler.file = filename
-    //    sampler.send( Master, 1 )
-    //    if (callback) {
-    //      callback()
-    //    }
-    //  }, function(e) {
-    //    console.log("Error with decoding audio data" + e.err)
-    //  })
-    //}
-
+    
     // freesound query api http://www.freesound.org/docs/api/resources.html
     if( typeof query === 'string' ) {
 
