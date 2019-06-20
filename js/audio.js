@@ -106,7 +106,7 @@ const Audio = {
 
         Audio.export( window )
 
-        let drums = Audio.Drums('x*o-')
+        const drums = Audio.Drums('x*o-')
         drums.disconnect()
         drums.stop()
 
@@ -171,6 +171,7 @@ const Audio = {
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
     this.Seq = require( './seq.js' )( this )
+    this.Tidal = require( './tidal.js' )( this )
     this.Steps = require( './steps.js' )( this )
     this.HexSteps = require( './hexSteps.js' )( this )
     this.waveObjects = WaveObjects( this )

@@ -83,19 +83,25 @@ module.exports = function( __Audio ) {
 
     if( Audio.autoConnect === true ) drums.connect()
 
-    drums.seq = Audio.Seq({
-      target:drums,
-      key:'play',
-      values:score.split(''),
-      timings:time === undefined ? 1 / score.length : time
-    }).start()
+    drums.__sequencers = [ ]
+    if( typeof score === 'string' ) {
+      drums.seq = Audio.Seq({
+        target:drums,
+        key:'play',
+        values:score.split(''),
+        timings:time === undefined ? 1 / score.length : time
+      }).start()
+    
 
-    drums.values = drums.seq.values
-    drums.timings = drums.seq.timings
+      drums.values = drums.seq.values
+      drums.timings = drums.seq.timings
+
+      drums.__sequencers.push( drums.seq )
+    }else{
+      Gibber.addSequencing( drums, 'play', 0 )
+    }
 
     drums.samplers = [ k,s,ch,oh ]
-
-    drums.__sequencers = [ drums.seq ]
 
     addMethod( drums, 'pitch', 1, 'rate' )
     addMethod( drums, 'start', 0 )
@@ -114,30 +120,36 @@ module.exports = function( __Audio ) {
     const temp = Audio.autoConnect
     Audio.autoConnect = false
     
-    const k = Audio.instruments.Kick()
-    const s = Audio.instruments.Snare()
+    const kd = Audio.instruments.Kick()
+    const sd = Audio.instruments.Snare()
     const ch = Audio.instruments.Hat({ decay:.1, gain:.2 })
     const oh = Audio.instruments.Hat({ decay:.5, gain:.2 })
+    const cp = Audio.instruments.Clap()
+    const cb = Audio.instruments.Cowbell()
     
     Audio.autoConnect = temp
     
     const drums = Audio.Ensemble({
-      'x': { target:k, method:'trigger', args:[1], name:'kick' },
-      'o': { target:s, method:'trigger', args:[1], name:'snare' },
-      '*': { target:ch, method:'trigger', args:[.2], name:'closedHat' },
-      '-': { target:oh, method:'trigger', args:[.2], name:'openHat' },
+      'kd': { target:kd, method:'trigger', args:[1], name:'kick' },
+      'sd': { target:sd, method:'trigger', args:[1], name:'snare' },
+      'ch': { target:ch, method:'trigger', args:[.2], name:'closedHat' },
+      'oh': { target:oh, method:'trigger', args:[.2], name:'openHat' },
+      'cp': { target:cp, method:'trigger', args:[.5], name:'clap' },
+      'cb': { target:cb, method:'trigger', args:[.5], name:'cowbell' },
     })
 
-    drums.seq = Audio.Seq({
-      target:drums,
-      key:'play',
-      values:score.split(''),
-      timings:time === undefined ? 1 / score.length : time,
-      rate:Audio.Clock.audioClock
-    }).start()
+    if( typeof score === 'string' ) {
+      drums.seq = Audio.Seq({
+        target:drums,
+        key:'play',
+        values:score.split(''),
+        timings:time === undefined ? 1 / score.length : time,
+        rate:Audio.Clock.audioClock
+      }).start()
 
-    drums.values = drums.seq.values
-    drums.timings = drums.seq.timings
+      drums.values = drums.seq.values
+      drums.timings = drums.seq.timings
+    }
 
     if( Audio.autoConnect === true ) drums.connect()
 
@@ -145,6 +157,18 @@ module.exports = function( __Audio ) {
     if( props !== undefined && props.__presetInit__ !== undefined ) {
       props.__presetInit__.call( drums, Audio )
     }
+
+    //drums.tidal = pattern => {
+    //  if( drums.__tidal !== undefined ) drums.__tidal.stop()
+
+    //  drums.__tidal = Audio.Tidal({
+    //    target:drums,
+    //    key:'play',
+    //    pattern
+    //  }).start()
+
+    //  return drums
+    //}
 
     return drums
   }

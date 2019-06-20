@@ -22,7 +22,11 @@ module.exports = function( Audio ) {
     }
 
     cp.play = function( key ) {
-      Gibberish.worklet.ugens.get( this[ key ].target )[ this[ key ].method ]( ...this[ key ].args )
+      if( Gibberish.mode === 'processor' ) {
+        Gibberish.worklet.ugens.get( this[ key ].target )[ this[ key ].method ]( ...this[ key ].args )
+      }else{
+        props[ key ].target[ this[ key ].method ]( ...this[ key ].args )
+      }
     }
 
     const ens = Audio.busses.Bus2( cp )
@@ -31,7 +35,19 @@ module.exports = function( Audio ) {
     for( let key in props ) {
       props[ key ].target.connect( ens )
     }
-    
+
+    ens.tidal = pattern => {
+      if( ens.__tidal !== undefined ) ens.__tidal.stop()
+
+      ens.__tidal = Audio.Tidal({
+        target:ens,
+        key:'play',
+        pattern
+      }).start()
+
+      return ens
+    }
+
     return ens
   }
 
