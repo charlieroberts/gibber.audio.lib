@@ -7,6 +7,8 @@ const Gibberish = require( 'gibberish-dsp' )
 const __timeProps = {
   Synth:[ 'attack', 'decay', 'sustain', 'release' ],
   PolySynth:[ 'attack', 'decay', 'sustain', 'release' ],
+  Complex:[ 'attack', 'decay', 'sustain', 'release' ],
+  PolyComplex:[ 'attack', 'decay', 'sustain', 'release' ],
   FM:[ 'attack', 'decay', 'sustain', 'release' ],
   PolyFM:[ 'attack', 'decay', 'sustain', 'release' ],
   Monosynth:[ 'attack', 'decay', 'sustain', 'release' ],
@@ -80,6 +82,32 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
           }
         })
       }
+
+      s.start( Audio.Clock.time( delay ) )
+
+      obj[ propertyName ].sequencers[ number ] = obj[ propertyName ][ number ] = s
+      obj.__sequencers.push( s )
+
+      // return object for method chaining
+      return obj
+    },
+
+    tidal( pattern,  number = 0, delay = 0 ) {
+      let prevSeq = obj[ propertyName ].sequencers[ number ] 
+      if( prevSeq !== undefined ) {
+        const idx = obj.__sequencers.indexOf( prevSeq )
+        obj.__sequencers.splice( idx, 1 )
+        // XXX stop() destroys an extra sequencer for some reason????
+        prevSeq.stop()
+        prevSeq.clear()
+        //removeSeq( obj, prevSeq )
+      }
+
+      const s = Audio.Tidal({ 
+        pattern, 
+        target:__wrappedObject, 
+        key:propertyName,
+      })
 
       s.start( Audio.Clock.time( delay ) )
 
@@ -329,6 +357,25 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           }
 
           let s = Audio.Seq({ values, timings, target:__wrappedObject, key:methodName })
+          
+          s.start( Audio.Clock.time( delay ) )
+          obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
+          obj.__sequencers.push( s )
+
+          // return object for method chaining
+          return obj
+        }
+        obj[ methodName ].tidal= function( pattern, number=0, delay=0 ) {
+          let prevSeq = obj[ methodName ].sequencers[ number ] 
+          if( prevSeq !== undefined ) { 
+            const idx = obj.__sequencers.indexOf( prevSeq )
+            obj.__sequencers.splice( idx, 1 )
+            prevSeq.stop()
+            prevSeq.clear()
+            // removeSeq( obj, prevSeq )
+          }
+
+          let s = Audio.Tidal({ pattern, target:__wrappedObject, key:methodName })
           
           s.start( Audio.Clock.time( delay ) )
           obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
