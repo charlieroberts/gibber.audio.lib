@@ -6447,6 +6447,131 @@ module.exports = function( Marker ) {
 }
 
 },{}],9:[function(require,module,exports){
+const Utility = require( '../../../js/utility.js' )
+const $ = Utility.create
+
+module.exports = function( Marker ) {
+  // Marker.patternMarkupFunctions.tidal( tidalNode, state, tidalObj, container, seqNumber )
+  const trimmers = ['string']
+  const shouldTrim = type => trimmers.indexOf( type ) > -1
+  const Tidal = function( node, state, tidal, container=null, index=0 ) {
+    if( node.processed === true ) return 
+
+    const cm = state.cm
+    const target = tidal.target // XXX seq.object for gibberwocky
+    const pattern = tidal.__pattern.__data
+    
+    const markers = {}
+
+    const line  = node.offset.vertical
+    const start = node.start
+    const end   = node.end
+
+    console.log( 'start:', start, 'end:', end )
+
+    const marker = cm.markText( 
+      { line, ch:start }, 
+      { line, ch:end }, 
+      { 
+        className:  'annotation' // annotation-full',
+        //startStyle: 'annotation-no-right-border',
+        //endStyle:   'annotation-no-left-border',
+        //inclusiveLeft:true, inclusiveRight:true
+      }
+    )
+
+    const markPattern = pattern => {
+      if( pattern.values !== undefined ) {
+        pattern.values.forEach( markPattern )
+      }else if( pattern.value !== undefined ) {
+        let val = pattern.value //typeof pattern.value === 'string' ? pattern.value.trim() : pattern.value
+
+        while( typeof val !== 'string' && typeof val !== 'number' ) {
+          val = val.values || val.value
+        }
+        if( typeof val === 'string' ) val = val.trim()
+
+        const loc = pattern.location
+        if( loc === undefined ) console.log( 'pattern:', pattern )
+        if( shouldTrim( pattern.type ) ) {
+          const len = typeof val === 'string' ? val.length : (''+val).length
+          
+          // check for whitespace and trim accordingly
+          if( len < loc.end.offset - loc.start.offset ){
+            loc.end.offset = loc.start.offset + len
+          }
+        }
+        let className = 'tidal-'+val
+        
+        cm.markText( 
+          { line, ch:start + 1 + loc.start.offset }, 
+          { line, ch:start + 1 + loc.end.offset }, 
+          { className }
+        )
+
+        markers[ val ] = pattern
+        pattern.cycle = Marker._createBorderCycleFunction( className, pattern )
+        pattern.type = 'tidal'
+      }
+    }
+
+    markPattern( pattern )
+
+    const clearCycle = val => {
+      let cycle = markers[ val ].cycle
+      cycle.tm = setTimeout( function() {
+        cycle.clear()
+        $('.tidal-'+val).remove( 'annotation-full' )
+      }, 250 )
+    }
+
+    tidal.update = function( val ) {
+      $( '.tidal-'+val ).add( 'annotation-full' ) 
+      const cycle = markers[ val ].cycle
+      if( cycle.tm !== undefined ) clearTimeout( cycle.tm )
+      cycle() 
+      clearCycle( val )
+    }
+
+    let value = null
+    Object.defineProperty( tidal.update, 'value', {
+      get() { return value },
+      set(v){ 
+        value = v.trim() 
+        tidal.update( value )
+      }
+    })
+
+    /*
+    const [ className, start, end ] = Marker._getNamesAndPosition( patternNode, state, patternType, index )
+    const cssName = className
+
+    const marker = cm.markText( start, end, { 
+      'className': cssName + ' annotation-border', 
+      //inclusiveLeft: true,
+      //inclusiveRight: true
+    })
+
+    if( seqTarget.markup === undefined ) Marker.prepareObject( seqTarget )
+
+    seqTarget.markup.textMarkers[ className ] = marker
+
+    if( seqTarget.markup.cssClasses[ className ] === undefined ) seqTarget.markup.cssClasses[ className ] = []
+
+    seqTarget.markup.cssClasses[ className ][ index ] = cssName    
+    
+    patternObject.marker = marker
+    Marker.finalizePatternAnnotation( patternObject, className, seqTarget, marker )
+  }
+  */
+
+
+  }
+
+  return Tidal 
+}
+
+},{"../../../js/utility.js":1}],10:[function(require,module,exports){
 module.exports = function( Marker ) {
   
   // for negative literals e.g. -10
@@ -6494,7 +6619,7 @@ module.exports = function( Marker ) {
 
 }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 const Utility = require( '../../../js/utility.js' )
 const $ = Utility.create
 
@@ -6603,7 +6728,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 }  
 
 
-},{"../../../js/utility.js":1}],11:[function(require,module,exports){
+},{"../../../js/utility.js":1}],12:[function(require,module,exports){
 const Utility = require( '../../../js/utility.js' )
 const $ = Utility.create
 const EuclidAnnotation = require( '../update/euclidAnnotation.js' )
@@ -6706,7 +6831,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 }  
 
 
-},{"../../../js/utility.js":1,"../update/euclidAnnotation.js":16}],12:[function(require,module,exports){
+},{"../../../js/utility.js":1,"../update/euclidAnnotation.js":17}],13:[function(require,module,exports){
 
 const Utility = require( '../../../js/utility.js' )
 const $ = Utility.create
@@ -6741,7 +6866,7 @@ module.exports = function( node, cm, track, objectName, vOffset=0 ) {
   }
 }
 
-},{"../../../js/utility.js":1}],13:[function(require,module,exports){
+},{"../../../js/utility.js":1}],14:[function(require,module,exports){
 const Utility = require( '../../../js/utility.js' )
 const $ = Utility.create
 const EuclidAnnotation = require( '../update/euclidAnnotation.js' )
@@ -6968,7 +7093,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 //}  
 
 
-},{"../../../js/utility.js":1,"../update/euclidAnnotation.js":16}],14:[function(require,module,exports){
+},{"../../../js/utility.js":1,"../update/euclidAnnotation.js":17}],15:[function(require,module,exports){
 module.exports = ( patternObject, marker, className, cm ) => {
   patternObject.commentMarker = marker
   let update = () => {
@@ -7009,7 +7134,7 @@ module.exports = ( patternObject, marker, className, cm ) => {
 }
 
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 const Utility = require( '../../../js/utility.js' )
 const $ = Utility.create
 
@@ -7023,8 +7148,10 @@ module.exports = function( classNamePrefix, patternObject ) {
         border = 'top'
 
     // accommodate arrays
-    if( patternObject.values.length > 1 || patternObject.type === 'Lookup' || isArray === true ) {
-      className += '_' + patternObject.update.currentIndex
+    if( patternObject.type !== 'tidal' ) { 
+      if(  patternObject.values.length > 1 || patternObject.type === 'Lookup' || isArray === true ) {
+        className += '_' + patternObject.update.currentIndex
+      }
     }
 
     //isArray = false 
@@ -7115,7 +7242,7 @@ module.exports = function( classNamePrefix, patternObject ) {
 }
 
 
-},{"../../../js/utility.js":1}],16:[function(require,module,exports){
+},{"../../../js/utility.js":1}],17:[function(require,module,exports){
 const Utility = require( '../../../js/utility.js' )
 const $ = Utility.create
 
@@ -7271,7 +7398,7 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
 }
 
 
-},{"../../../js/utility.js":1}],17:[function(require,module,exports){
+},{"../../../js/utility.js":1}],18:[function(require,module,exports){
 module.exports = ( patternObject, marker, className, cm, track, patternNode, patternType, seqNumber ) => {
   Gibber.Environment.codeMarkup.processGen( patternNode, cm, null, patternObject, null, -1 )
 
@@ -7289,7 +7416,7 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, pat
 }
 
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function( Marker ) {
 
   const strip = function( unstripped ) {
@@ -7423,12 +7550,29 @@ module.exports = function( Marker ) {
       const endIdx = state.length - 1
       const end = state[ endIdx ]
       let foundSequence = end === 'seq'
+      let foundTidal    = end === 'tidal'
 
       if( node.callee.property !== undefined ) {
         foundSequence = node.callee.property.name === 'seq'
+        foundTidal    = node.callee.property.name === 'tidal'
       }
 
-      if( foundSequence === true ){
+      if( foundTidal === true ) {
+        const seqNumber = node.arguments.length > 2 ? node.arguments[2].raw : 0
+          
+        // this nightmare is to account for calls to .seq that might be chained
+        // e.g. syn.note.seq( 0, 1/4 ).pan.seq( Rndf() )
+        // we isolate all callexpression nodes in the our state's .nodes array,
+        // and then pass each call expression individually to be marked as a
+        // sequencer. 
+
+        const tidalIdx = state.indexOf( 'tidal' )
+        obj = window[ state[ 0 ] ]
+        const tidal = obj.__tidal
+
+        Marker.markPatternsForTidal( tidal, node.arguments, state, cb, node, 0 )
+
+      } else if( foundSequence === true ){
         // check if a gen ugen is stored in the state variable, if so
         // use it as the obj varibale.
         if( state.containsGen === true ) obj = state.gen
@@ -7560,7 +7704,7 @@ module.exports = function( Marker ) {
   return visitors
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 const COLORS = {
   FILL:'rgba(46,50,53,1)',
   STROKE:'#aaa',
@@ -7935,7 +8079,7 @@ module.exports = function( __Gibber ) {
   return Waveform
 }
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 const acorn = require( 'acorn' )
 const walk  = require( 'acorn-walk' )
 //const Utility = require( '../js/utility.js' )
@@ -8060,7 +8204,13 @@ const Marker = {
     Marker.patternMarkupFunctions[ valuesNode.type ]( valuesNode, state, seq, 'values', container, seqNumber )
   },
 
-  
+  markPatternsForTidal( tidalObj, nodes, state, cb, container, seqNumber = 0 ) {
+    const tidalNode = nodes[0]
+    tidalNode.offset = Marker.offset
+    
+    Marker.patternMarkupFunctions.Tidal( tidalNode, state, tidalObj, container, seqNumber )
+  },
+
   processGen( node, cm, track, patternObject=null, seq=null, lineMod=0, state ) {
     let ch = node.loc.end.column, 
         line = Marker.offset.vertical + node.loc.start.line, 
@@ -8276,8 +8426,9 @@ const Marker = {
   // pattern markup functions are in their own files.
   patternMarkupFunctions: {
 
+    __Tidal:            require( './annotations/markup/tidal.js' ),
     __Literal:          require( './annotations/markup/literal.js' ),
-    __Identifier:       require( './annotations/markup/identifier.js'   ),
+    __Identifier:       require( './annotations/markup/identifier.js' ),
     __UnaryExpression:  require( './annotations/markup/unaryExpression.js'  ),
     __BinaryExpression: require( './annotations/markup/binaryExpression.js' ),
     __ArrayExpression:  require( './annotations/markup/arrayExpression.js'  ),
@@ -8461,7 +8612,7 @@ return Marker
 
 
 
-},{"./annotations/markup/arrayExpression.js":4,"./annotations/markup/binaryExpression.js":5,"./annotations/markup/callExpression.js":6,"./annotations/markup/identifier.js":7,"./annotations/markup/literal.js":8,"./annotations/markup/unaryExpression.js":9,"./annotations/standalone/drumsAnnotation.js":10,"./annotations/standalone/hexStepsAnnotations.js":11,"./annotations/standalone/scoreAnnotation.js":12,"./annotations/standalone/stepsAnnotation.js":13,"./annotations/update/anonymousAnnotation.js":14,"./annotations/update/createBorderCycle.js":15,"./annotations/update/euclidAnnotation.js":16,"./annotations/update/lookupAnnotation.js":17,"./annotations/visitors.js":18,"./annotations/waveform.js":19,"acorn":3,"acorn-walk":2}],21:[function(require,module,exports){
+},{"./annotations/markup/arrayExpression.js":4,"./annotations/markup/binaryExpression.js":5,"./annotations/markup/callExpression.js":6,"./annotations/markup/identifier.js":7,"./annotations/markup/literal.js":8,"./annotations/markup/tidal.js":9,"./annotations/markup/unaryExpression.js":10,"./annotations/standalone/drumsAnnotation.js":11,"./annotations/standalone/hexStepsAnnotations.js":12,"./annotations/standalone/scoreAnnotation.js":13,"./annotations/standalone/stepsAnnotation.js":14,"./annotations/update/anonymousAnnotation.js":15,"./annotations/update/createBorderCycle.js":16,"./annotations/update/euclidAnnotation.js":17,"./annotations/update/lookupAnnotation.js":18,"./annotations/visitors.js":19,"./annotations/waveform.js":20,"acorn":3,"acorn-walk":2}],22:[function(require,module,exports){
 const codeMarkup = require( './codeMarkup.js' )
 
 let cm, cmconsole, exampleCode, 
@@ -8916,4 +9067,4 @@ var flash = function(cm, pos) {
   window.setTimeout(cb, 250);
 }
 
-},{"./codeMarkup.js":20}]},{},[21]);
+},{"./codeMarkup.js":21}]},{},[22]);

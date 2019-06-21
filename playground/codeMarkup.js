@@ -122,7 +122,13 @@ const Marker = {
     Marker.patternMarkupFunctions[ valuesNode.type ]( valuesNode, state, seq, 'values', container, seqNumber )
   },
 
-  
+  markPatternsForTidal( tidalObj, nodes, state, cb, container, seqNumber = 0 ) {
+    const tidalNode = nodes[0]
+    tidalNode.offset = Marker.offset
+    
+    Marker.patternMarkupFunctions.Tidal( tidalNode, state, tidalObj, container, seqNumber )
+  },
+
   processGen( node, cm, track, patternObject=null, seq=null, lineMod=0, state ) {
     let ch = node.loc.end.column, 
         line = Marker.offset.vertical + node.loc.start.line, 
@@ -338,8 +344,9 @@ const Marker = {
   // pattern markup functions are in their own files.
   patternMarkupFunctions: {
 
+    __Tidal:            require( './annotations/markup/tidal.js' ),
     __Literal:          require( './annotations/markup/literal.js' ),
-    __Identifier:       require( './annotations/markup/identifier.js'   ),
+    __Identifier:       require( './annotations/markup/identifier.js' ),
     __UnaryExpression:  require( './annotations/markup/unaryExpression.js'  ),
     __BinaryExpression: require( './annotations/markup/binaryExpression.js' ),
     __ArrayExpression:  require( './annotations/markup/arrayExpression.js'  ),

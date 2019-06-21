@@ -11,8 +11,10 @@ module.exports = function( classNamePrefix, patternObject ) {
         border = 'top'
 
     // accommodate arrays
-    if( patternObject.values.length > 1 || patternObject.type === 'Lookup' || isArray === true ) {
-      className += '_' + patternObject.update.currentIndex
+    if( patternObject.type !== 'tidal' ) { 
+      if(  patternObject.values.length > 1 || patternObject.type === 'Lookup' || isArray === true ) {
+        className += '_' + patternObject.update.currentIndex
+      }
     }
 
     //isArray = false 

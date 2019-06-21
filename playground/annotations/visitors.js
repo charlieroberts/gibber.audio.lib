@@ -131,12 +131,29 @@ module.exports = function( Marker ) {
       const endIdx = state.length - 1
       const end = state[ endIdx ]
       let foundSequence = end === 'seq'
+      let foundTidal    = end === 'tidal'
 
       if( node.callee.property !== undefined ) {
         foundSequence = node.callee.property.name === 'seq'
+        foundTidal    = node.callee.property.name === 'tidal'
       }
 
-      if( foundSequence === true ){
+      if( foundTidal === true ) {
+        const seqNumber = node.arguments.length > 2 ? node.arguments[2].raw : 0
+          
+        // this nightmare is to account for calls to .seq that might be chained
+        // e.g. syn.note.seq( 0, 1/4 ).pan.seq( Rndf() )
+        // we isolate all callexpression nodes in the our state's .nodes array,
+        // and then pass each call expression individually to be marked as a
+        // sequencer. 
+
+        const tidalIdx = state.indexOf( 'tidal' )
+        obj = window[ state[ 0 ] ]
+        const tidal = obj.__tidal
+
+        Marker.markPatternsForTidal( tidal, node.arguments, state, cb, node, 0 )
+
+      } else if( foundSequence === true ){
         // check if a gen ugen is stored in the state variable, if so
         // use it as the obj varibale.
         if( state.containsGen === true ) obj = state.gen

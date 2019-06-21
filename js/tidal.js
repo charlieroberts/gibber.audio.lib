@@ -7,7 +7,6 @@ module.exports = function( Audio ) {
     const target    = props.target
     const key       = props.key
     const priority  = props.priority
-    const filters   = []
     let   rate      = props.rate || 1
     let   density   = props.density || 1
     let   autotrig  = false
@@ -27,12 +26,6 @@ module.exports = function( Audio ) {
     const clear = function() {
       this.stop()
       
-      if( this.values !== undefined && this.values.clear !== undefined  ) {
-        this.values.clear()
-      }
-      if( this.timings !== undefined && this.timings !== null && this.timings.clear !== undefined ) this.timings.clear()
-
-      
       if( Gibberish.mode === 'worklet' ) {
         const idx = Seq.sequencers.indexOf( seq )
         seq.stop()
@@ -43,12 +36,21 @@ module.exports = function( Audio ) {
       }
     }
 
+    const filters = [
+      function( val, tidal ) {
+        if( Gibberish.mode === 'processor' ) {
+          Gibberish.processor.messages.push( tidal.id, 'update.value', val )   
+        }
+        return val
+      } 
+    ]
     //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
     // XXX we need to add priority to Sequencer2; this priority will determine the order
     // that sequencers are added to the callback, ensuring that sequencers with higher
     // priority will fire first.
-    const seq = Gibberish.Tidal({ pattern, target, key, priority })
+    const seq = Gibberish.Tidal({ pattern, target, key, priority, filters })
     seq.clear = clear
+
 
     //values.setSeq( seq )
 
