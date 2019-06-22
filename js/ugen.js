@@ -381,6 +381,10 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
           obj.__sequencers.push( s )
 
+          // XXX need to clean this up! this is solely here for annotations, and to 
+          // match what I did for ensembles... 
+          obj[ methodName ].__tidal = s
+
           // return object for method chaining
           return obj
         }

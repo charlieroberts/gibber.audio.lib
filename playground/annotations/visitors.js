@@ -148,7 +148,13 @@ module.exports = function( Marker ) {
         // sequencer. 
 
         const tidalIdx = state.indexOf( 'tidal' )
-        obj = window[ state[ 0 ] ]
+        let count = 1
+        obj = window[ state[0] ]
+        while( state[ count ] !== 'tidal' ) {
+          obj = obj[ state[ count++ ] ]
+        }
+
+        console.log( 'final obj:', obj )
         const tidal = obj.__tidal
 
         Marker.markPatternsForTidal( tidal, node.arguments, state, cb, node, 0 )

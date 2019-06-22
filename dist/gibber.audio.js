@@ -9437,22 +9437,18 @@ module.exports = function( Audio ) {
     }
 
     const filters = [
-      function( val, tidal ) {
+      // report back triggered tokens for annotations
+      function( val, tidal, uid ) {
         if( Gibberish.mode === 'processor' ) {
+          Gibberish.processor.messages.push( tidal.id, 'update.uid', uid )   
           Gibberish.processor.messages.push( tidal.id, 'update.value', val )   
         }
         return val
       } 
     ]
-    //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
-    // XXX we need to add priority to Sequencer2; this priority will determine the order
-    // that sequencers are added to the callback, ensuring that sequencers with higher
-    // priority will fire first.
+
     const seq = Gibberish.Tidal({ pattern, target, key, priority, filters })
     seq.clear = clear
-
-
-    //values.setSeq( seq )
 
     //Gibberish.proxyEnabled = false
     //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
@@ -9900,6 +9896,10 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           s.start( Audio.Clock.time( delay ) )
           obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
           obj.__sequencers.push( s )
+
+          // XXX need to clean this up! this is solely here for annotations, and to 
+          // match what I did for ensembles... 
+          obj[ methodName ].__tidal = s
 
           // return object for method chaining
           return obj
@@ -24367,7 +24367,7 @@ const Sequencer = props => {
 
     __phase:  0,
     __type:'seq',
-    __pattern: Pattern( props.pattern ),
+    __pattern: Pattern( props.pattern, { addLocations:true, addUID:true }),
     __events: null,
 
     tick( priority ) {
@@ -24381,9 +24381,10 @@ const Sequencer = props => {
       while( seq.__events.length > 0 && startTime.valueOf() === seq.__events[0].arc.start.valueOf() ) {
         let event  = seq.__events.shift(),
             value  = event.value,
+            uid    = event.uid,
             shouldRun = true
 
-        if( seq.filters !== null ) value = seq.filters.reduce( (currentValue, filter) => filter( currentValue, seq ), value )  
+        if( seq.filters !== null ) value = seq.filters.reduce( (currentValue, filter) => filter( currentValue, seq, uid ), value )  
      
         if( shouldRun ) {
          if( typeof seq.target[ seq.key ] === 'function' ) {
@@ -26595,14 +26596,15 @@ function peg$parse(input, options) {
           // getting nested arrays with feet...
           out = {
             values:Array.isArray( values[0] ) ? values[0] : values,
-            type:'group', location:location()
+            type:'group' 
           }
         }else{
           out = values
           out.type = 'group'
-          out.location = location()
         }
        
+        addLoc( out, location() )
+
         return out
       },
       peg$c1 = peg$otherExpectation("group"),
@@ -26641,12 +26643,13 @@ function peg$parse(input, options) {
       peg$c17 = "?",
       peg$c18 = peg$literalExpectation("?", false),
       peg$c19 = function(value) {
-        return { type:'degrade', value, location:location() }
+        const out = { type:'degrade', value }
+        return addLoc( out, location() )
       },
       peg$c20 = function(value, operator, rate) {
         const r =  { type:'repeat', operator, rate, value }
 
-        if( options.useLocations === true ) {
+        if( options.addLocations === true ) {
           r.location = {
             start:value.location.start,
             end: rate.location.end
@@ -26703,7 +26706,9 @@ function peg$parse(input, options) {
         
         result.push( __end )
 
-        return { type:'group', values:result, location:location() } 
+        const out = { type:'group', values:result } 
+
+        return addLoc( out, location() )
       },
       peg$c30 = function(value) {
         //value.type = 'group'
@@ -26735,10 +26740,10 @@ function peg$parse(input, options) {
 
         const result = {
           type: 'layers',
-          values, location:location()
+          values
         }
 
-        return result
+        return addLoc( result, location() )
       },
       peg$c32 = "<",
       peg$c33 = peg$literalExpectation("<", false),
@@ -26747,28 +26752,28 @@ function peg$parse(input, options) {
       peg$c36 = function(body, end) {
         const onestep = {
           type:'onestep',
-          values:[body], location:location()
+          values:[body]
         }
 
         if( end !== null ) {
           onestep.values.push( end )
         }
 
-        return onestep 
+        return addLoc( onestep, location() )
       },
       peg$c37 = peg$otherExpectation("word"),
       peg$c38 = /^[letter number]/,
       peg$c39 = peg$classExpectation(["l", "e", "t", "t", "e", "r", " ", "n", "u", "m", "b", "e", "r"], false, false),
       peg$c40 = function(value) { 
-        return { type:typeof value, value, location:location() }
+        return addLoc( { type:typeof value, value, }, location() )
       },
       peg$c41 = function(l) {
-        return { type:'string', value:text().trim() , location:location()}
+        return addLoc( { type:'string', value:text().trim() }, location() )
       },
       peg$c42 = /^[^ [\] {} () \t\n\r '*' '\/' '.' '~' '?' ',' '>' '<' ]/,
       peg$c43 = peg$classExpectation([" ", "[", "]", " ", "{", "}", " ", "(", ")", " ", "\t", "\n", "\r", " ", "'", "*", "'", " ", "'", "/", "'", " ", "'", ".", "'", " ", "'", "~", "'", " ", "'", "?", "'", " ", "'", ",", "'", " ", "'", ">", "'", " ", "'", "<", "'", " "], true, false),
       peg$c44 = function(value) {
-        return { type:'string', value }
+        return addLoc( {type:'string', value }, location() )
       },
       peg$c45 = "*",
       peg$c46 = peg$literalExpectation("*", false),
@@ -26781,7 +26786,7 @@ function peg$parse(input, options) {
       peg$c53 = /^[0-9]/,
       peg$c54 = peg$classExpectation([["0", "9"]], false, false),
       peg$c55 = function() {
-        return addLoc( { type:'number', value:text().trim() }, location() )
+        return addLoc( { type:'number', value:+text().trim() }, location() )
       },
       peg$c56 = peg$otherExpectation("whitespace"),
       peg$c57 = /^[ \t\n\r ]/,
@@ -28399,13 +28404,18 @@ function peg$parse(input, options) {
   }
 
 
-    const useLocations = options.useLocations 
-
+    const addLocations = options.addLocations
+   
+    let uid = 0
     const addLoc = function( value, location ) {
-      if( useLocations === true ) {
+      if( addLocations === true ) {
         value.location = location
       }
       
+      if( options.addUID === true ) {
+        value.uid = uid++
+      }
+
       return value
     }
 
@@ -29321,13 +29331,13 @@ const Fraction = require( 'fraction.js' )
  * different start and end times for each query. A priority
  * queue is used to sort the events... 
 */
-const Pattern = patternString => {
+const Pattern = ( patternString, opts ) => {
   if( typeof patternString !== 'string' )
     throw 'You must provide a string to generate the pattern from'
 
   let __data
   try{
-    __data = parse( patternString, { useLocations:true } )
+    __data = parse( patternString, opts )
   }catch( e ) {
     throw `We were unable to parse the pattern ${patternString}. ${e.toString()}`
   }
@@ -29599,10 +29609,12 @@ const handlers = {
 
         eventList = eventList.concat( events )
       }else{
+        // XXX shouldn't we just process all patterns???
         // member does not need further processing, so add to event list
         eventList.push({ 
           value:member.value, 
           arc:Arc( phase, phase.add( dur ) ),
+          uid:member.uid
         })
       }
 
@@ -29708,12 +29720,12 @@ const handlers = {
   },
 
   number( state, pattern, phase, duration ) {
-    state.push({ arc:Arc( phase, phase.add( duration ) ), value:pattern.value })
+    state.push({ arc:Arc( phase, phase.add( duration ) ), value:pattern.value, uid:pattern.uid })
     return state 
   },
 
   string( state, pattern, phase, duration ) {
-    state.push({ arc:Arc( phase, phase.add( duration ) ), value:pattern.value })
+    state.push({ arc:Arc( phase, phase.add( duration ) ), value:pattern.value, uid:pattern.uid })
     return state 
   },
 
@@ -29721,7 +29733,8 @@ const handlers = {
     if( Math.random() > .5 ) {
       state.push({ 
         arc:Arc( phase, phase.add( duration ) ), 
-        value:pattern.value 
+        value:pattern.value,
+        uid:pattern.uid
       })
     }
 

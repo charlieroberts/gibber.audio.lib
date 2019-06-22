@@ -37,22 +37,18 @@ module.exports = function( Audio ) {
     }
 
     const filters = [
-      function( val, tidal ) {
+      // report back triggered tokens for annotations
+      function( val, tidal, uid ) {
         if( Gibberish.mode === 'processor' ) {
+          Gibberish.processor.messages.push( tidal.id, 'update.uid', uid )   
           Gibberish.processor.messages.push( tidal.id, 'update.value', val )   
         }
         return val
       } 
     ]
-    //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
-    // XXX we need to add priority to Sequencer2; this priority will determine the order
-    // that sequencers are added to the callback, ensuring that sequencers with higher
-    // priority will fire first.
+
     const seq = Gibberish.Tidal({ pattern, target, key, priority, filters })
     seq.clear = clear
-
-
-    //values.setSeq( seq )
 
     //Gibberish.proxyEnabled = false
     //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )

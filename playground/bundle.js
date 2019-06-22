@@ -6452,8 +6452,10 @@ const $ = Utility.create
 
 module.exports = function( Marker ) {
   // Marker.patternMarkupFunctions.tidal( tidalNode, state, tidalObj, container, seqNumber )
-  const trimmers = ['string']
+
+  const trimmers = [ 'string' ]
   const shouldTrim = type => trimmers.indexOf( type ) > -1
+
   const Tidal = function( node, state, tidal, container=null, index=0 ) {
     if( node.processed === true ) return 
 
@@ -6467,32 +6469,29 @@ module.exports = function( Marker ) {
     const start = node.start
     const end   = node.end
 
-    console.log( 'start:', start, 'end:', end )
-
     const marker = cm.markText( 
       { line, ch:start }, 
       { line, ch:end }, 
-      { 
-        className:  'annotation' // annotation-full',
-        //startStyle: 'annotation-no-right-border',
-        //endStyle:   'annotation-no-left-border',
-        //inclusiveLeft:true, inclusiveRight:true
-      }
+      { className:  'annotation' }
     )
 
+    // this function recursively marks each number or string token in the pattern
     const markPattern = pattern => {
       if( pattern.values !== undefined ) {
+        // recursively mark patterns
         pattern.values.forEach( markPattern )
       }else if( pattern.value !== undefined ) {
         let val = pattern.value //typeof pattern.value === 'string' ? pattern.value.trim() : pattern.value
+        let uid = pattern.uid
 
         while( typeof val !== 'string' && typeof val !== 'number' ) {
+          // get, for example, uids of values in repeat patterns
+          uid = val.uid
           val = val.values || val.value
         }
         if( typeof val === 'string' ) val = val.trim()
 
         const loc = pattern.location
-        if( loc === undefined ) console.log( 'pattern:', pattern )
         if( shouldTrim( pattern.type ) ) {
           const len = typeof val === 'string' ? val.length : (''+val).length
           
@@ -6501,7 +6500,9 @@ module.exports = function( Marker ) {
             loc.end.offset = loc.start.offset + len
           }
         }
-        let className = 'tidal-'+val
+
+        // XXX FIX THIS MUST BE UNIQUE
+        let className = `tidal-${uid}`
         
         cm.markText( 
           { line, ch:start + 1 + loc.start.offset }, 
@@ -6509,7 +6510,7 @@ module.exports = function( Marker ) {
           { className }
         )
 
-        markers[ val ] = pattern
+        markers[ className ] = pattern
         pattern.cycle = Marker._createBorderCycleFunction( className, pattern )
         pattern.type = 'tidal'
       }
@@ -6517,54 +6518,36 @@ module.exports = function( Marker ) {
 
     markPattern( pattern )
 
-    const clearCycle = val => {
-      let cycle = markers[ val ].cycle
+    const clearCycle = name => {
+      let cycle = markers[ name ].cycle
       cycle.tm = setTimeout( function() {
         cycle.clear()
-        $('.tidal-'+val).remove( 'annotation-full' )
+        $( '.' + name ).remove( 'annotation-full' )
       }, 250 )
     }
 
     tidal.update = function( val ) {
-      $( '.tidal-'+val ).add( 'annotation-full' ) 
-      const cycle = markers[ val ].cycle
+      const name = `tidal-${tidal.update.uid}`
+
+      $( '.' + name ).add( 'annotation-full' ) 
+
+      const cycle = markers[ name ].cycle
+
       if( cycle.tm !== undefined ) clearTimeout( cycle.tm )
+
       cycle() 
-      clearCycle( val )
+      clearCycle( name )
     }
 
     let value = null
     Object.defineProperty( tidal.update, 'value', {
       get() { return value },
       set(v){ 
-        value = v.trim() 
+        if( typeof v === 'string' ) v = v.trim()
+        value = v
         tidal.update( value )
       }
     })
-
-    /*
-    const [ className, start, end ] = Marker._getNamesAndPosition( patternNode, state, patternType, index )
-    const cssName = className
-
-    const marker = cm.markText( start, end, { 
-      'className': cssName + ' annotation-border', 
-      //inclusiveLeft: true,
-      //inclusiveRight: true
-    })
-
-    if( seqTarget.markup === undefined ) Marker.prepareObject( seqTarget )
-
-    seqTarget.markup.textMarkers[ className ] = marker
-
-    if( seqTarget.markup.cssClasses[ className ] === undefined ) seqTarget.markup.cssClasses[ className ] = []
-
-    seqTarget.markup.cssClasses[ className ][ index ] = cssName    
-    
-    patternObject.marker = marker
-    Marker.finalizePatternAnnotation( patternObject, className, seqTarget, marker )
-  }
-  */
-
 
   }
 
@@ -7567,7 +7550,13 @@ module.exports = function( Marker ) {
         // sequencer. 
 
         const tidalIdx = state.indexOf( 'tidal' )
-        obj = window[ state[ 0 ] ]
+        let count = 1
+        obj = window[ state[0] ]
+        while( state[ count ] !== 'tidal' ) {
+          obj = obj[ state[ count++ ] ]
+        }
+
+        console.log( 'final obj:', obj )
         const tidal = obj.__tidal
 
         Marker.markPatternsForTidal( tidal, node.arguments, state, cb, node, 0 )
