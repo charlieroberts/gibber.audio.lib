@@ -56,6 +56,7 @@ const Audio = {
       obj.Hex = this.Hex
       obj.Triggers = this.Triggers
       obj.Seq = this.Seq
+      obj.Tidal = this.Tidal
     }else{
       Audio.exportTarget = obj
     } 
@@ -270,6 +271,30 @@ const Audio = {
           priority
         })
         .start( Audio.Clock.time( delay ) )
+
+        // return object for method chaining
+        return obj
+      },
+      tidal( pattern,  number = 0, delay = 0 ) {
+        let prevSeq = obj[ '__' + name ].sequencers[ number ] 
+        if( prevSeq !== undefined ) {
+          const idx = obj.__sequencers.indexOf( prevSeq )
+          obj.__sequencers.splice( idx, 1 )
+          // XXX stop() destroys an extra sequencer for some reason????
+          prevSeq.stop()
+          prevSeq.clear()
+          //removeSeq( obj, prevSeq )
+        }
+
+        const s = Audio.Tidal({ 
+          pattern, 
+          target:obj, 
+          key:name,
+        })
+
+        s.start( Audio.Clock.time( delay ) )
+
+        obj[ '__' + name ].sequencers[ number ] = obj[ '__' + name ][ number ] = s
 
         // return object for method chaining
         return obj

@@ -139,23 +139,15 @@ module.exports = function( Marker ) {
       }
 
       if( foundTidal === true ) {
-        const seqNumber = node.arguments.length > 2 ? node.arguments[2].raw : 0
+        const seqNumber = node.arguments.length > 1 ? node.arguments[1].raw : 0
           
-        // this nightmare is to account for calls to .seq that might be chained
-        // e.g. syn.note.seq( 0, 1/4 ).pan.seq( Rndf() )
-        // we isolate all callexpression nodes in the our state's .nodes array,
-        // and then pass each call expression individually to be marked as a
-        // sequencer. 
-
-        const tidalIdx = state.indexOf( 'tidal' )
         let count = 1
         obj = window[ state[0] ]
         while( state[ count ] !== 'tidal' ) {
           obj = obj[ state[ count++ ] ]
         }
 
-        console.log( 'final obj:', obj )
-        const tidal = obj.__tidal
+        const tidal = obj.tidals[ seqNumber ]
 
         Marker.markPatternsForTidal( tidal, node.arguments, state, cb, node, 0 )
 

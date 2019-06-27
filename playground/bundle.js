@@ -6470,24 +6470,37 @@ module.exports = function( Marker ) {
     const end   = node.end
 
     const marker = cm.markText( 
-      { line, ch:start }, 
-      { line, ch:end }, 
-      { className:  'annotation' }
+      { line: node.offset.vertical, ch:start }, 
+      { line: node.offset.vertical + (node.loc.end.line - node.loc.start.line), ch:end }, 
+      { className: 'annotation' }
     )
 
     // this function recursively marks each number or string token in the pattern
     const markPattern = pattern => {
-      if( pattern.values !== undefined ) {
+      if( pattern.type === 'repeat' ) {
+        markPattern( pattern.value )
+      }else if( pattern.values !== undefined ) {
         // recursively mark patterns
         pattern.values.forEach( markPattern )
       }else if( pattern.value !== undefined ) {
         let val = pattern.value //typeof pattern.value === 'string' ? pattern.value.trim() : pattern.value
         let uid = pattern.uid
 
-        while( typeof val !== 'string' && typeof val !== 'number' ) {
+        while( typeof val !== 'string' && typeof val !== 'number' && val !== undefined ) {
+          const __store = val
+
           // get, for example, uids of values in repeat patterns
           uid = val.uid
           val = val.values || val.value
+          
+          if( val === undefined ) console.warn( 'tidal annotation leads to undefined:', __store )
+
+          if( typeof val === 'function' ) {
+            if( Array.isArray( __store ) ) {
+              __store.forEach( markPattern )
+              return
+            }
+          }
         }
         if( typeof val === 'string' ) val = val.trim()
 
@@ -6501,12 +6514,17 @@ module.exports = function( Marker ) {
           }
         }
 
-        // XXX FIX THIS MUST BE UNIQUE
-        let className = `tidal-${uid}`
+        const className = `tidal-${tidal.uid}-${uid}`
         
+        const lineModY = node.loc.start.line === node.loc.end.line ? -1 : 0
+        const lineModX = node.loc.start.line === node.loc.end.line ? node.loc.start.column : -1
+
+        const tokenStart = { line:line + loc.start.line + lineModY, ch:lineModX + loc.start.column }
+        const tokenEnd   = { line:line + loc.end.line   + lineModY, ch:lineModX + loc.end.column } 
+
         cm.markText( 
-          { line, ch:start + 1 + loc.start.offset }, 
-          { line, ch:start + 1 + loc.end.offset }, 
+          tokenStart, 
+          tokenEnd,  
           { className }
         )
 
@@ -6527,7 +6545,7 @@ module.exports = function( Marker ) {
     }
 
     tidal.update = function( val ) {
-      const name = `tidal-${tidal.update.uid}`
+      const name = `tidal-${tidal.uid}-${tidal.update.uid}`
 
       $( '.' + name ).add( 'annotation-full' ) 
 
@@ -7541,23 +7559,15 @@ module.exports = function( Marker ) {
       }
 
       if( foundTidal === true ) {
-        const seqNumber = node.arguments.length > 2 ? node.arguments[2].raw : 0
+        const seqNumber = node.arguments.length > 1 ? node.arguments[1].raw : 0
           
-        // this nightmare is to account for calls to .seq that might be chained
-        // e.g. syn.note.seq( 0, 1/4 ).pan.seq( Rndf() )
-        // we isolate all callexpression nodes in the our state's .nodes array,
-        // and then pass each call expression individually to be marked as a
-        // sequencer. 
-
-        const tidalIdx = state.indexOf( 'tidal' )
         let count = 1
         obj = window[ state[0] ]
         while( state[ count ] !== 'tidal' ) {
           obj = obj[ state[ count++ ] ]
         }
 
-        console.log( 'final obj:', obj )
-        const tidal = obj.__tidal
+        const tidal = obj.tidals[ seqNumber ]
 
         Marker.markPatternsForTidal( tidal, node.arguments, state, cb, node, 0 )
 

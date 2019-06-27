@@ -37,6 +37,7 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
   const prop =  obj[ '__' + propertyName ] = {
     isProperty:true,
     sequencers:[],
+    tidals:[],
     mods:[],
     name:propertyName,
     __isPoly:isPoly,
@@ -93,10 +94,10 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
     },
 
     tidal( pattern,  number = 0, delay = 0 ) {
-      let prevSeq = obj[ propertyName ].sequencers[ number ] 
+      let prevSeq = obj[ propertyName ].tidals[ number ] 
       if( prevSeq !== undefined ) {
-        const idx = obj.__sequencers.indexOf( prevSeq )
-        obj.__sequencers.splice( idx, 1 )
+        const idx = obj.__tidals.indexOf( prevSeq )
+        obj.__tidals.splice( idx, 1 )
         // XXX stop() destroys an extra sequencer for some reason????
         prevSeq.stop()
         prevSeq.clear()
@@ -111,8 +112,8 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
 
       s.start( Audio.Clock.time( delay ) )
 
-      obj[ propertyName ].sequencers[ number ] = obj[ propertyName ][ number ] = s
-      obj.__sequencers.push( s )
+      obj[ propertyName ].tidals[ number ] = obj[ propertyName ][ number ] = s
+      obj.__tidals.push( s )
 
       // return object for method chaining
       return obj
@@ -229,15 +230,21 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     const obj = { 
       __wrapped__ :__wrappedObject,
       __sequencers : [], 
+      __tidals: [],
 
       stop() {
         for( let seq of this.__sequencers ) seq.stop()
+        for( let seq of this.__tidals ) seq.stop()
       },
       start() {
         for( let seq of this.__sequencers ) seq.start()
+        for( let seq of this.__tidals ) seq.start()
       },
       clear() {
         for( let seq of this.__sequencers ) {
+          seq.clear()
+        }
+        for( let seq of this.__tidals ) {
           seq.clear()
         }
         //console.log( Gibberish.mode, __wrappedObject.connected )
@@ -345,6 +352,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }
 
         obj[ methodName ].sequencers = []
+        obj[ methodName ].tidals = []
 
         obj[ methodName ].seq = function( values, timings, number=0, delay=0 ) {
           let prevSeq = obj[ methodName ].sequencers[ number ] 
@@ -366,10 +374,10 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           return obj
         }
         obj[ methodName ].tidal= function( pattern, number=0, delay=0 ) {
-          let prevSeq = obj[ methodName ].sequencers[ number ] 
+          let prevSeq = obj[ methodName ].tidals[ number ] 
           if( prevSeq !== undefined ) { 
-            const idx = obj.__sequencers.indexOf( prevSeq )
-            obj.__sequencers.splice( idx, 1 )
+            const idx = obj.__tidals.indexOf( prevSeq )
+            obj.__tidals.splice( idx, 1 )
             prevSeq.stop()
             prevSeq.clear()
             // removeSeq( obj, prevSeq )
@@ -378,8 +386,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           let s = Audio.Tidal({ pattern, target:__wrappedObject, key:methodName })
           
           s.start( Audio.Clock.time( delay ) )
-          obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
-          obj.__sequencers.push( s )
+          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
+          obj.__tidals.push( s )
 
           // XXX need to clean this up! this is solely here for annotations, and to 
           // match what I did for ensembles... 

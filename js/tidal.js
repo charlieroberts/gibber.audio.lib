@@ -49,6 +49,7 @@ module.exports = function( Audio ) {
 
     const seq = Gibberish.Tidal({ pattern, target, key, priority, filters })
     seq.clear = clear
+    seq.uid = Gibberish.Tidal.getUID()
 
     //Gibberish.proxyEnabled = false
     //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
@@ -68,6 +69,15 @@ module.exports = function( Audio ) {
     Seq.sequencers = []
   }
   Seq.DNR = -987654321
+
+  let val = 1 
+  Object.defineProperty( Seq, 'cps', {
+    get() { return val },
+    set(v) {
+      val = v
+      Gibber.Gibberish.Tidal.cps = v
+    }
+  })
 
   return Seq
 

@@ -122,10 +122,10 @@ module.exports = function( __Audio ) {
     
     const kd = Audio.instruments.Kick()
     const sd = Audio.instruments.Snare()
-    const ch = Audio.instruments.Hat({ decay:.1, gain:.2 })
-    const oh = Audio.instruments.Hat({ decay:.5, gain:.2 })
+    const ch = Audio.instruments.Hat({ decay:.1, gain:.3 })
+    const oh = Audio.instruments.Hat({ decay:.5, gain:.3 })
     const cp = Audio.instruments.Clap()
-    const cb = Audio.instruments.Cowbell()
+    const cb = Audio.instruments.Cowbell({ gain:.65 })
     
     Audio.autoConnect = temp
     

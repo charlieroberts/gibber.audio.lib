@@ -4477,6 +4477,7 @@ const Audio = {
       obj.Hex = this.Hex
       obj.Triggers = this.Triggers
       obj.Seq = this.Seq
+      obj.Tidal = this.Tidal
     }else{
       Audio.exportTarget = obj
     } 
@@ -4691,6 +4692,30 @@ const Audio = {
           priority
         })
         .start( Audio.Clock.time( delay ) )
+
+        // return object for method chaining
+        return obj
+      },
+      tidal( pattern,  number = 0, delay = 0 ) {
+        let prevSeq = obj[ '__' + name ].sequencers[ number ] 
+        if( prevSeq !== undefined ) {
+          const idx = obj.__sequencers.indexOf( prevSeq )
+          obj.__sequencers.splice( idx, 1 )
+          // XXX stop() destroys an extra sequencer for some reason????
+          prevSeq.stop()
+          prevSeq.clear()
+          //removeSeq( obj, prevSeq )
+        }
+
+        const s = Audio.Tidal({ 
+          pattern, 
+          target:obj, 
+          key:name,
+        })
+
+        s.start( Audio.Clock.time( delay ) )
+
+        obj[ '__' + name ].sequencers[ number ] = obj[ '__' + name ][ number ] = s
 
         // return object for method chaining
         return obj
@@ -5205,10 +5230,10 @@ module.exports = function( __Audio ) {
     
     const kd = Audio.instruments.Kick()
     const sd = Audio.instruments.Snare()
-    const ch = Audio.instruments.Hat({ decay:.1, gain:.2 })
-    const oh = Audio.instruments.Hat({ decay:.5, gain:.2 })
+    const ch = Audio.instruments.Hat({ decay:.1, gain:.3 })
+    const oh = Audio.instruments.Hat({ decay:.5, gain:.3 })
     const cp = Audio.instruments.Clap()
-    const cb = Audio.instruments.Cowbell()
+    const cb = Audio.instruments.Cowbell({ gain:.65 })
     
     Audio.autoConnect = temp
     
@@ -5334,11 +5359,13 @@ module.exports = function( Audio ) {
     for( let key in props ) {
       props[ key ].target.connect( ens )
     }
+    
+    ens.tidals = []
 
-    ens.tidal = pattern => {
-      if( ens.__tidal !== undefined ) ens.__tidal.stop()
+    ens.tidal = (pattern,num=0) => {
+      if( ens.tidals[ num ] !== undefined ) ens.tidals[ num ].stop()
 
-      ens.__tidal = Audio.Tidal({
+      ens.tidals[ num ] = Audio.Tidal({
         target:ens,
         key:'play',
         pattern
@@ -9449,6 +9476,7 @@ module.exports = function( Audio ) {
 
     const seq = Gibberish.Tidal({ pattern, target, key, priority, filters })
     seq.clear = clear
+    seq.uid = Gibberish.Tidal.getUID()
 
     //Gibberish.proxyEnabled = false
     //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
@@ -9468,6 +9496,15 @@ module.exports = function( Audio ) {
     Seq.sequencers = []
   }
   Seq.DNR = -987654321
+
+  let val = 1 
+  Object.defineProperty( Seq, 'cps', {
+    get() { return val },
+    set(v) {
+      val = v
+      Gibber.Gibberish.Tidal.cps = v
+    }
+  })
 
   return Seq
 
@@ -9553,6 +9590,7 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
   const prop =  obj[ '__' + propertyName ] = {
     isProperty:true,
     sequencers:[],
+    tidals:[],
     mods:[],
     name:propertyName,
     __isPoly:isPoly,
@@ -9609,10 +9647,10 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
     },
 
     tidal( pattern,  number = 0, delay = 0 ) {
-      let prevSeq = obj[ propertyName ].sequencers[ number ] 
+      let prevSeq = obj[ propertyName ].tidals[ number ] 
       if( prevSeq !== undefined ) {
-        const idx = obj.__sequencers.indexOf( prevSeq )
-        obj.__sequencers.splice( idx, 1 )
+        const idx = obj.__tidals.indexOf( prevSeq )
+        obj.__tidals.splice( idx, 1 )
         // XXX stop() destroys an extra sequencer for some reason????
         prevSeq.stop()
         prevSeq.clear()
@@ -9627,8 +9665,8 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
 
       s.start( Audio.Clock.time( delay ) )
 
-      obj[ propertyName ].sequencers[ number ] = obj[ propertyName ][ number ] = s
-      obj.__sequencers.push( s )
+      obj[ propertyName ].tidals[ number ] = obj[ propertyName ][ number ] = s
+      obj.__tidals.push( s )
 
       // return object for method chaining
       return obj
@@ -9745,15 +9783,21 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     const obj = { 
       __wrapped__ :__wrappedObject,
       __sequencers : [], 
+      __tidals: [],
 
       stop() {
         for( let seq of this.__sequencers ) seq.stop()
+        for( let seq of this.__tidals ) seq.stop()
       },
       start() {
         for( let seq of this.__sequencers ) seq.start()
+        for( let seq of this.__tidals ) seq.start()
       },
       clear() {
         for( let seq of this.__sequencers ) {
+          seq.clear()
+        }
+        for( let seq of this.__tidals ) {
           seq.clear()
         }
         //console.log( Gibberish.mode, __wrappedObject.connected )
@@ -9861,6 +9905,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }
 
         obj[ methodName ].sequencers = []
+        obj[ methodName ].tidals = []
 
         obj[ methodName ].seq = function( values, timings, number=0, delay=0 ) {
           let prevSeq = obj[ methodName ].sequencers[ number ] 
@@ -9882,10 +9927,10 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           return obj
         }
         obj[ methodName ].tidal= function( pattern, number=0, delay=0 ) {
-          let prevSeq = obj[ methodName ].sequencers[ number ] 
+          let prevSeq = obj[ methodName ].tidals[ number ] 
           if( prevSeq !== undefined ) { 
-            const idx = obj.__sequencers.indexOf( prevSeq )
-            obj.__sequencers.splice( idx, 1 )
+            const idx = obj.__tidals.indexOf( prevSeq )
+            obj.__tidals.splice( idx, 1 )
             prevSeq.stop()
             prevSeq.clear()
             // removeSeq( obj, prevSeq )
@@ -9894,8 +9939,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           let s = Audio.Tidal({ pattern, target:__wrappedObject, key:methodName })
           
           s.start( Audio.Clock.time( delay ) )
-          obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
-          obj.__sequencers.push( s )
+          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
+          obj.__tidals.push( s )
 
           // XXX need to clean this up! this is solely here for annotations, and to 
           // match what I did for ensembles... 
@@ -24358,8 +24403,6 @@ module.exports = function( Gibberish ) {
 
 const proxy = __proxy( Gibberish )
 
-const cps = .5
-
 const Sequencer = props => {
   let __seq
   const seq = {
@@ -24372,46 +24415,74 @@ const Sequencer = props => {
 
     tick( priority ) {
       // running for first time, perform a query
-      if( seq.__events === null ) {
+      if( seq.__events === null || seq.__events.length === 0 ) {
         seq.__events = seq.__pattern.query( seq.__phase++, 1 )
+      }
+
+      // used when scheduling events that are very far apart
+      if( seq.__events.length <= 0 ) {
+        if( Gibberish.mode === 'processor' ) {
+          if( seq.__isRunning === true  ) {
+            Gibberish.scheduler.add( Gibberish.ctx.sampleRate / Sequencer.clock.cps, seq.tick, seq.priority )
+          }
+
+        }
+
+        return
       }
 
       const startTime = seq.__events[ 0 ].arc.start
 
-      while( seq.__events.length > 0 && startTime.valueOf() === seq.__events[0].arc.start.valueOf() ) {
-        let event  = seq.__events.shift(),
-            value  = event.value,
-            uid    = event.uid,
-            shouldRun = true
+      if( seq.key !== 'chord' ) {
+        while( seq.__events.length > 0 && startTime.valueOf() === seq.__events[0].arc.start.valueOf() ) {
+          let event  = seq.__events.shift(),
+              value  = event.value,
+              uid    = event.uid
 
-        if( seq.filters !== null ) value = seq.filters.reduce( (currentValue, filter) => filter( currentValue, seq, uid ), value )  
-     
-        if( shouldRun ) {
-         if( typeof seq.target[ seq.key ] === 'function' ) {
+          if( seq.filters !== null ) value = seq.filters.reduce( (currentValue, filter) => filter( currentValue, seq, uid ), value )  
+       
+          if( typeof seq.target[ seq.key ] === 'function' ) {
             seq.target[ seq.key ]( value )
           }else{
             seq.target[ seq.key ] = value
           }
+        }
+      }else{
+        let value = seq.__events.filter( evt => startTime.valueOf() === evt.arc.start.valueOf() ).map( evt => evt.value )
+        let uid = seq.__events[0].uid
+
+        seq.__events.splice( 0, value.length )
+
+        if( seq.filters !== null ) value = seq.filters.reduce( (currentValue, filter) => filter( currentValue, seq, uid ), value )  
+
+        if( typeof seq.target[ seq.key ] === 'function' ) {
+          seq.target[ seq.key ]( value )
+        }else{
+          seq.target[ seq.key ] = value
         }
       }
 
       if( Gibberish.mode === 'processor' ) {
         let timing
         if( seq.__events.length <= 0 ) {
-          seq.__events = seq.__pattern.query( seq.__phase++, 1 )
+          let time = 0
+          while( seq.__events.length <= 0 ) {
+            seq.__events = seq.__pattern.query( seq.__phase++, 1 )
+            time++
+          }
           //seq.__events.forEach( evt => {
           //  evt.arc.start = evt.arc.start.add( 1 ).sub( startTime ) 
           //  evt.arc.end   = evt.arc.end.add( 1 ).sub( startTime )
           //})
 
-          timing = 1 - startTime.valueOf() 
+          timing = time - startTime.valueOf() 
         }else{
           timing = seq.__events[0].arc.start.sub( startTime ).valueOf() 
         }
         
-        timing *= Gibberish.ctx.sampleRate / cps
+        timing *= Gibberish.ctx.sampleRate / Sequencer.clock.cps
 
-        if( seq.__isRunning === true && !isNaN( timing ) ) {
+        if( seq.__isRunning === true && !isNaN( timing ) && timing > 0 ) {
           // XXX this supports an edge case in Gibber, where patterns like Euclid / Hex return
           // objects indicating both whether or not they should should trigger values as well
           // as the next time they should run. perhaps this could be made more generalizable?
@@ -24462,6 +24533,38 @@ Sequencer.defaults = { priority:100000, pattern:'', rate:1, filters:null }
 
 Sequencer.make = function( values, timings, target, key, priority ) {
   return Sequencer({ values, timings, target, key, priority })
+}
+
+let __uid = 0
+Sequencer.getUID = ()=> {
+  return __uid++
+}
+
+Sequencer.clock = { cps: 1 }
+
+if( Gibberish.mode === 'worklet' ) {
+  Sequencer.id = Gibberish.utilities.getUID()
+  
+  Gibberish.worklet.port.postMessage({
+    address:'eval',
+    code:`Gibberish.Tidal.clock.id = ${Sequencer.id}; Gibberish.ugens.set( ${Sequencer.id}, Gibberish.Tidal.clock )`
+  })
+  
+  let cps = 1
+  Object.defineProperty( Sequencer, 'cps', {
+    get() { return cps },
+    set(v){ 
+      cps = v
+      if( Gibberish.mode === 'worklet' ) {
+        Gibberish.worklet.port.postMessage({
+          address:'set',
+          object:Sequencer.id,
+          name:'cps',
+          value:cps 
+        }) 
+      }
+    }
+  })
 }
 
 return Sequencer
@@ -26646,8 +26749,10 @@ function peg$parse(input, options) {
         const out = { type:'degrade', value }
         return addLoc( out, location() )
       },
-      peg$c20 = function(value, operator, rate) {
-        const r =  { type:'repeat', operator, rate, value }
+      peg$c20 = "*",
+      peg$c21 = peg$literalExpectation("*", false),
+      peg$c22 = function(value, rate) {
+        const r =  { type:'speed', rate, value }
 
         if( options.addLocations === true ) {
           r.location = {
@@ -26656,17 +26761,27 @@ function peg$parse(input, options) {
           }
         }
         
-        // not needed anymore
-        if( value.location !== undefined ) delete value.location
-        if( rate.location !== undefined )  delete rate.location
-
         return r 
       },
-      peg$c21 = "{",
-      peg$c22 = peg$literalExpectation("{", false),
-      peg$c23 = "}",
-      peg$c24 = peg$literalExpectation("}", false),
-      peg$c25 = function(left, right) {
+      peg$c23 = "/",
+      peg$c24 = peg$literalExpectation("/", false),
+      peg$c25 = function(value, rate) {
+        const r =  { type:'slow', rate, value }
+
+        if( options.addLocations === true ) {
+          r.location = {
+            start:value.location.start,
+            end: rate.location.end
+          }
+        }
+        
+        return r 
+      },
+      peg$c26 = "{",
+      peg$c27 = peg$literalExpectation("{", false),
+      peg$c28 = "}",
+      peg$c29 = peg$literalExpectation("}", false),
+      peg$c30 = function(left, right) {
         const result = { 
           'left':{
             type:'group',
@@ -26683,58 +26798,25 @@ function peg$parse(input, options) {
 
         return result
       },
-      peg$c26 = "~",
-      peg$c27 = peg$literalExpectation("~", false),
-      peg$c28 = function() {
+      peg$c31 = "~",
+      peg$c32 = peg$literalExpectation("~", false),
+      peg$c33 = function() {
        return { type:'rest' }
       },
-      peg$c29 = function(start, end) {
-        const __end = {
-          values:end,
-          type:'group'
+      peg$c34 = function(start, end) {
+        const out = {
+          type:'group',
+          values: start.map( grp => grp[0] )
         }
-
-        // some different wrangling for two feet vs. more than two feet...
-        let values = start.length > 1 ? start.slice(0) : start[0],
-            result
-        
-        if( start.length > 1 ) {
-          result = values.map( v => ({ type: 'group', values:v }) )
-        }else{
-          result = [ { values, type:'group' } ]
-        }
-        
-        result.push( __end )
-
-        const out = { type:'group', values:result } 
+        out.values.push( end )
 
         return addLoc( out, location() )
       },
-      peg$c30 = function(value) {
-        //value.type = 'group'
+      peg$c35 = function(value) {
         return value
       },
-      peg$c31 = function(body, end) {
-        const values = []
-
-        for( let i = 0; i < body.length; i++ ) {
-          let value = body[ i ][ 0 ]
-          if( value.type === 'number' || value.type === 'string' ) {
-            value = {
-              type:'group',
-              values:[ value ]
-            }
-          }else{
-            /*value.type = 'group'*/
-          }
-        	values.push( value )
-        }
-
-        if( end.type === 'number' || end.type === 'string' ) {
-          end = { type:'group', values:[ end ] }
-        }else{
-          /*end.type = 'group'*/
-        }
+      peg$c36 = function(body, end) {
+        const values = body.map( val => val[0] )
 
         values.push( end )
 
@@ -26745,11 +26827,11 @@ function peg$parse(input, options) {
 
         return addLoc( result, location() )
       },
-      peg$c32 = "<",
-      peg$c33 = peg$literalExpectation("<", false),
-      peg$c34 = ">",
-      peg$c35 = peg$literalExpectation(">", false),
-      peg$c36 = function(body, end) {
+      peg$c37 = "<",
+      peg$c38 = peg$literalExpectation("<", false),
+      peg$c39 = ">",
+      peg$c40 = peg$literalExpectation(">", false),
+      peg$c41 = function(body, end) {
         const onestep = {
           type:'onestep',
           values:[body]
@@ -26761,36 +26843,32 @@ function peg$parse(input, options) {
 
         return addLoc( onestep, location() )
       },
-      peg$c37 = peg$otherExpectation("word"),
-      peg$c38 = /^[letter number]/,
-      peg$c39 = peg$classExpectation(["l", "e", "t", "t", "e", "r", " ", "n", "u", "m", "b", "e", "r"], false, false),
-      peg$c40 = function(value) { 
+      peg$c42 = peg$otherExpectation("word"),
+      peg$c43 = /^[letter number]/,
+      peg$c44 = peg$classExpectation(["l", "e", "t", "t", "e", "r", " ", "n", "u", "m", "b", "e", "r"], false, false),
+      peg$c45 = function(value) { 
         return addLoc( { type:typeof value, value, }, location() )
       },
-      peg$c41 = function(l) {
+      peg$c46 = function(l) {
         return addLoc( { type:'string', value:text().trim() }, location() )
       },
-      peg$c42 = /^[^ [\] {} () \t\n\r '*' '\/' '.' '~' '?' ',' '>' '<' ]/,
-      peg$c43 = peg$classExpectation([" ", "[", "]", " ", "{", "}", " ", "(", ")", " ", "\t", "\n", "\r", " ", "'", "*", "'", " ", "'", "/", "'", " ", "'", ".", "'", " ", "'", "~", "'", " ", "'", "?", "'", " ", "'", ",", "'", " ", "'", ">", "'", " ", "'", "<", "'", " "], true, false),
-      peg$c44 = function(value) {
+      peg$c47 = /^[^ [\] {} () \t\n\r '*' '\/' '.' '~' '?' ',' '>' '<' ]/,
+      peg$c48 = peg$classExpectation([" ", "[", "]", " ", "{", "}", " ", "(", ")", " ", "\t", "\n", "\r", " ", "'", "*", "'", " ", "'", "/", "'", " ", "'", ".", "'", " ", "'", "~", "'", " ", "'", "?", "'", " ", "'", ",", "'", " ", "'", ">", "'", " ", "'", "<", "'", " "], true, false),
+      peg$c49 = function(value) {
         return addLoc( {type:'string', value }, location() )
       },
-      peg$c45 = "*",
-      peg$c46 = peg$literalExpectation("*", false),
-      peg$c47 = "/",
-      peg$c48 = peg$literalExpectation("/", false),
-      peg$c49 = ".",
-      peg$c50 = peg$literalExpectation(".", false),
-      peg$c51 = "-",
-      peg$c52 = peg$literalExpectation("-", false),
-      peg$c53 = /^[0-9]/,
-      peg$c54 = peg$classExpectation([["0", "9"]], false, false),
-      peg$c55 = function() {
+      peg$c50 = ".",
+      peg$c51 = peg$literalExpectation(".", false),
+      peg$c52 = "-",
+      peg$c53 = peg$literalExpectation("-", false),
+      peg$c54 = /^[0-9]/,
+      peg$c55 = peg$classExpectation([["0", "9"]], false, false),
+      peg$c56 = function() {
         return addLoc( { type:'number', value:+text().trim() }, location() )
       },
-      peg$c56 = peg$otherExpectation("whitespace"),
-      peg$c57 = /^[ \t\n\r ]/,
-      peg$c58 = peg$classExpectation([" ", "\t", "\n", "\r", " "], false, false),
+      peg$c57 = peg$otherExpectation("whitespace"),
+      peg$c58 = /^[ \t\n\r ]/,
+      peg$c59 = peg$classExpectation([" ", "\t", "\n", "\r", " "], false, false),
 
       peg$currPos          = 0,
       peg$savedPos         = 0,
@@ -26798,6 +26876,8 @@ function peg$parse(input, options) {
       peg$maxFailPos       = 0,
       peg$maxFailExpected  = [],
       peg$silentFails      = 0,
+
+      peg$resultsCache = {},
 
       peg$result;
 
@@ -26931,34 +27011,39 @@ function peg$parse(input, options) {
   function peg$parsepattern() {
     var s0;
 
-    s0 = peg$parselist();
+    var key    = peg$currPos * 28 + 0,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
+    s0 = peg$parsefeet();
     if (s0 === peg$FAILED) {
-      s0 = peg$parselayer();
+      s0 = peg$parselist();
       if (s0 === peg$FAILED) {
-        s0 = peg$parseeuclid();
-        if (s0 === peg$FAILED) {
-          s0 = peg$parserepeat();
-          if (s0 === peg$FAILED) {
-            s0 = peg$parsegroup();
-            if (s0 === peg$FAILED) {
-              s0 = peg$parseonestep();
-              if (s0 === peg$FAILED) {
-                s0 = peg$parsepolymeter();
-                if (s0 === peg$FAILED) {
-                  s0 = peg$parseterm();
-                }
-              }
-            }
-          }
-        }
+        s0 = peg$parseterm();
       }
     }
+
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
 
     return s0;
   }
 
   function peg$parselist() {
     var s0, s1, s2, s3, s4, s5;
+
+    var key    = peg$currPos * 28 + 1,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = peg$parse_();
@@ -27004,11 +27089,22 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsegroup() {
     var s0, s1, s2, s3, s4, s5, s6, s7;
+
+    var key    = peg$currPos * 28 + 2,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     peg$silentFails++;
     s0 = peg$currPos;
@@ -27084,40 +27180,48 @@ function peg$parse(input, options) {
       if (peg$silentFails === 0) { peg$fail(peg$c1); }
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parseterm() {
     var s0, s1, s2;
 
+    var key    = peg$currPos * 28 + 3,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     peg$silentFails++;
     s0 = peg$currPos;
-    s1 = peg$parserepeat();
+    s1 = peg$parseeuclid();
     if (s1 === peg$FAILED) {
-      s1 = peg$parsedegrade();
+      s1 = peg$parsespeed();
       if (s1 === peg$FAILED) {
-        s1 = peg$parsefeet();
+        s1 = peg$parseslow();
         if (s1 === peg$FAILED) {
-          s1 = peg$parselayer();
+          s1 = peg$parsedegrade();
           if (s1 === peg$FAILED) {
-            s1 = peg$parsenumber();
+            s1 = peg$parselayer();
             if (s1 === peg$FAILED) {
-              s1 = peg$parseletters();
+              s1 = peg$parsenumber();
               if (s1 === peg$FAILED) {
-                s1 = peg$parseword();
+                s1 = peg$parseletters();
                 if (s1 === peg$FAILED) {
                   s1 = peg$parsepolymeter();
                   if (s1 === peg$FAILED) {
                     s1 = peg$parsegroup();
                     if (s1 === peg$FAILED) {
-                      s1 = peg$parseeuclid();
+                      s1 = peg$parseletter();
                       if (s1 === peg$FAILED) {
-                        s1 = peg$parseletter();
+                        s1 = peg$parserest();
                         if (s1 === peg$FAILED) {
-                          s1 = peg$parserest();
-                          if (s1 === peg$FAILED) {
-                            s1 = peg$parseonestep();
-                          }
+                          s1 = peg$parseonestep();
                         }
                       }
                     }
@@ -27149,11 +27253,22 @@ function peg$parse(input, options) {
       if (peg$silentFails === 0) { peg$fail(peg$c7); }
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parseeuclid() {
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15;
+
+    var key    = peg$currPos * 28 + 4,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = peg$parse_();
@@ -27294,11 +27409,22 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsenoteuclid() {
     var s0, s1, s2;
+
+    var key    = peg$currPos * 28 + 5,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = peg$parsegroup();
@@ -27332,11 +27458,22 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsedegrade() {
     var s0, s1, s2;
+
+    var key    = peg$currPos * 28 + 6,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = peg$parsenotdegrade();
@@ -27361,65 +27498,81 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsenotdegrade() {
-    var s0, s1, s2;
+    var s0;
 
-    s0 = peg$currPos;
-    s1 = peg$parsenumber();
-    if (s1 === peg$FAILED) {
-      s1 = peg$parserepeat();
-      if (s1 === peg$FAILED) {
-        s1 = peg$parseeuclid();
-        if (s1 === peg$FAILED) {
-          s1 = peg$parsegroup();
-          if (s1 === peg$FAILED) {
-            s1 = peg$parseletter();
-            if (s1 === peg$FAILED) {
-              s1 = peg$parseonestep();
+    var key    = peg$currPos * 28 + 7,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
+    s0 = peg$parsenumber();
+    if (s0 === peg$FAILED) {
+      s0 = peg$parsespeed();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseslow();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseeuclid();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parsegroup();
+            if (s0 === peg$FAILED) {
+              s0 = peg$parseletter();
+              if (s0 === peg$FAILED) {
+                s0 = peg$parseonestep();
+              }
             }
           }
         }
       }
     }
-    if (s1 !== peg$FAILED) {
-      s2 = peg$parse_();
-      if (s2 !== peg$FAILED) {
-        peg$savedPos = s0;
-        s1 = peg$c16(s1);
-        s0 = s1;
-      } else {
-        peg$currPos = s0;
-        s0 = peg$FAILED;
-      }
-    } else {
-      peg$currPos = s0;
-      s0 = peg$FAILED;
-    }
+
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
 
     return s0;
   }
 
-  function peg$parserepeat() {
+  function peg$parsespeed() {
     var s0, s1, s2, s3, s4, s5, s6;
 
+    var key    = peg$currPos * 28 + 8,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     s0 = peg$currPos;
-    s1 = peg$parsenotrepeat();
+    s1 = peg$parsenotspeed();
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
       if (s2 !== peg$FAILED) {
-        s3 = peg$parseop();
+        if (input.charCodeAt(peg$currPos) === 42) {
+          s3 = peg$c20;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c21); }
+        }
         if (s3 !== peg$FAILED) {
           s4 = peg$parse_();
           if (s4 !== peg$FAILED) {
-            s5 = peg$parsenotrepeat();
+            s5 = peg$parsenotspeed();
             if (s5 !== peg$FAILED) {
               s6 = peg$parse_();
               if (s6 !== peg$FAILED) {
                 peg$savedPos = s0;
-                s1 = peg$c20(s1, s3, s5);
+                s1 = peg$c22(s1, s5);
                 s0 = s1;
               } else {
                 peg$currPos = s0;
@@ -27446,11 +27599,22 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
-  function peg$parsenotrepeat() {
+  function peg$parsenotspeed() {
     var s0, s1, s2;
+
+    var key    = peg$currPos * 28 + 9,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = peg$parseeuclid();
@@ -27459,15 +27623,18 @@ function peg$parse(input, options) {
       if (s1 === peg$FAILED) {
         s1 = peg$parsenumber();
         if (s1 === peg$FAILED) {
-          s1 = peg$parseletters();
+          s1 = peg$parselayer();
           if (s1 === peg$FAILED) {
-            s1 = peg$parsegroup();
+            s1 = peg$parseletters();
             if (s1 === peg$FAILED) {
-              s1 = peg$parseletter();
+              s1 = peg$parsegroup();
               if (s1 === peg$FAILED) {
-                s1 = peg$parserest();
+                s1 = peg$parseletter();
                 if (s1 === peg$FAILED) {
-                  s1 = peg$parseonestep();
+                  s1 = peg$parserest();
+                  if (s1 === peg$FAILED) {
+                    s1 = peg$parseonestep();
+                  }
                 }
               }
             }
@@ -27490,21 +27657,154 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
+    return s0;
+  }
+
+  function peg$parseslow() {
+    var s0, s1, s2, s3, s4, s5, s6;
+
+    var key    = peg$currPos * 28 + 10,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
+    s0 = peg$currPos;
+    s1 = peg$parsenotslow();
+    if (s1 !== peg$FAILED) {
+      s2 = peg$parse_();
+      if (s2 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 47) {
+          s3 = peg$c23;
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c24); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parse_();
+          if (s4 !== peg$FAILED) {
+            s5 = peg$parsenotslow();
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parse_();
+              if (s6 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c25(s1, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$FAILED;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
+    }
+
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
+    return s0;
+  }
+
+  function peg$parsenotslow() {
+    var s0, s1, s2;
+
+    var key    = peg$currPos * 28 + 11,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
+    s0 = peg$currPos;
+    s1 = peg$parseeuclid();
+    if (s1 === peg$FAILED) {
+      s1 = peg$parsepolymeter();
+      if (s1 === peg$FAILED) {
+        s1 = peg$parsenumber();
+        if (s1 === peg$FAILED) {
+          s1 = peg$parselayer();
+          if (s1 === peg$FAILED) {
+            s1 = peg$parseletters();
+            if (s1 === peg$FAILED) {
+              s1 = peg$parsegroup();
+              if (s1 === peg$FAILED) {
+                s1 = peg$parseletter();
+                if (s1 === peg$FAILED) {
+                  s1 = peg$parserest();
+                  if (s1 === peg$FAILED) {
+                    s1 = peg$parseonestep();
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    if (s1 !== peg$FAILED) {
+      s2 = peg$parse_();
+      if (s2 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s1 = peg$c16(s1);
+        s0 = s1;
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
+    }
+
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsepolymeter() {
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
 
+    var key    = peg$currPos * 28 + 12,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     s0 = peg$currPos;
     s1 = peg$parse_();
     if (s1 !== peg$FAILED) {
       if (input.charCodeAt(peg$currPos) === 123) {
-        s2 = peg$c21;
+        s2 = peg$c26;
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c22); }
+        if (peg$silentFails === 0) { peg$fail(peg$c27); }
       }
       if (s2 !== peg$FAILED) {
         s3 = peg$parse_();
@@ -27544,17 +27844,17 @@ function peg$parse(input, options) {
                   s8 = peg$parse_();
                   if (s8 !== peg$FAILED) {
                     if (input.charCodeAt(peg$currPos) === 125) {
-                      s9 = peg$c23;
+                      s9 = peg$c28;
                       peg$currPos++;
                     } else {
                       s9 = peg$FAILED;
-                      if (peg$silentFails === 0) { peg$fail(peg$c24); }
+                      if (peg$silentFails === 0) { peg$fail(peg$c29); }
                     }
                     if (s9 !== peg$FAILED) {
                       s10 = peg$parse_();
                       if (s10 !== peg$FAILED) {
                         peg$savedPos = s0;
-                        s1 = peg$c25(s4, s7);
+                        s1 = peg$c30(s4, s7);
                         s0 = s1;
                       } else {
                         peg$currPos = s0;
@@ -27597,31 +27897,53 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parserest() {
     var s0, s1;
 
+    var key    = peg$currPos * 28 + 13,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 126) {
-      s1 = peg$c26;
+      s1 = peg$c31;
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c27); }
+      if (peg$silentFails === 0) { peg$fail(peg$c32); }
     }
     if (s1 !== peg$FAILED) {
       peg$savedPos = s0;
-      s1 = peg$c28();
+      s1 = peg$c33();
     }
     s0 = s1;
+
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
 
     return s0;
   }
 
   function peg$parsefeet() {
-    var s0, s1, s2, s3;
+    var s0, s1, s2;
+
+    var key    = peg$currPos * 28 + 14,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = [];
@@ -27635,19 +27957,10 @@ function peg$parse(input, options) {
       s1 = peg$FAILED;
     }
     if (s1 !== peg$FAILED) {
-      s2 = [];
-      s3 = peg$parsenotfoot();
-      if (s3 !== peg$FAILED) {
-        while (s3 !== peg$FAILED) {
-          s2.push(s3);
-          s3 = peg$parsenotfoot();
-        }
-      } else {
-        s2 = peg$FAILED;
-      }
+      s2 = peg$parsenotfoot();
       if (s2 !== peg$FAILED) {
         peg$savedPos = s0;
-        s1 = peg$c29(s1, s2);
+        s1 = peg$c34(s1, s2);
         s0 = s1;
       } else {
         peg$currPos = s0;
@@ -27658,11 +27971,22 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsefoot() {
     var s0, s1, s2, s3;
+
+    var key    = peg$currPos * 28 + 15,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = [];
@@ -27681,7 +28005,7 @@ function peg$parse(input, options) {
         s3 = peg$parse_();
         if (s3 !== peg$FAILED) {
           peg$savedPos = s0;
-          s1 = peg$c30(s1);
+          s1 = peg$c35(s1);
           s0 = s1;
         } else {
           peg$currPos = s0;
@@ -27696,31 +28020,48 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsenotfoot() {
     var s0;
 
-    s0 = peg$parsedegrade();
+    var key    = peg$currPos * 28 + 16,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
+    s0 = peg$parselist();
     if (s0 === peg$FAILED) {
-      s0 = peg$parsepolymeter();
+      s0 = peg$parsedegrade();
       if (s0 === peg$FAILED) {
-        s0 = peg$parserest();
+        s0 = peg$parsepolymeter();
         if (s0 === peg$FAILED) {
-          s0 = peg$parserepeat();
+          s0 = peg$parserest();
           if (s0 === peg$FAILED) {
-            s0 = peg$parseeuclid();
+            s0 = peg$parsespeed();
             if (s0 === peg$FAILED) {
-              s0 = peg$parsegroup();
+              s0 = peg$parseslow();
               if (s0 === peg$FAILED) {
-                s0 = peg$parsenumber();
+                s0 = peg$parseeuclid();
                 if (s0 === peg$FAILED) {
-                  s0 = peg$parseletter();
+                  s0 = peg$parsenumber();
                   if (s0 === peg$FAILED) {
-                    s0 = peg$parseword();
+                    s0 = peg$parseletter();
                     if (s0 === peg$FAILED) {
-                      s0 = peg$parseonestep();
+                      s0 = peg$parseletters();
+                      if (s0 === peg$FAILED) {
+                        s0 = peg$parseword();
+                        if (s0 === peg$FAILED) {
+                          s0 = peg$parseonestep();
+                        }
+                      }
                     }
                   }
                 }
@@ -27731,11 +28072,22 @@ function peg$parse(input, options) {
       }
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parselayer() {
     var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+
+    var key    = peg$currPos * 28 + 17,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = peg$parse_();
@@ -27840,7 +28192,7 @@ function peg$parse(input, options) {
                   s8 = peg$parse_();
                   if (s8 !== peg$FAILED) {
                     peg$savedPos = s0;
-                    s1 = peg$c31(s4, s5);
+                    s1 = peg$c36(s4, s5);
                     s0 = s1;
                   } else {
                     peg$currPos = s0;
@@ -27875,32 +28227,46 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsenotlayer() {
     var s0, s1, s2;
 
+    var key    = peg$currPos * 28 + 18,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     s0 = peg$currPos;
-    s1 = peg$parserepeat();
+    s1 = peg$parsespeed();
     if (s1 === peg$FAILED) {
-      s1 = peg$parselist();
+      s1 = peg$parseslow();
       if (s1 === peg$FAILED) {
-        s1 = peg$parsenumber();
+        s1 = peg$parselist();
         if (s1 === peg$FAILED) {
-          s1 = peg$parseletters();
+          s1 = peg$parsenumber();
           if (s1 === peg$FAILED) {
-            s1 = peg$parseeuclid();
+            s1 = peg$parseletters();
             if (s1 === peg$FAILED) {
-              s1 = peg$parsepolymeter();
+              s1 = peg$parseeuclid();
               if (s1 === peg$FAILED) {
-                s1 = peg$parsegroup();
+                s1 = peg$parsepolymeter();
                 if (s1 === peg$FAILED) {
-                  s1 = peg$parseletter();
+                  s1 = peg$parsegroup();
                   if (s1 === peg$FAILED) {
-                    s1 = peg$parserest();
+                    s1 = peg$parseletter();
                     if (s1 === peg$FAILED) {
-                      s1 = peg$parseonestep();
+                      s1 = peg$parserest();
+                      if (s1 === peg$FAILED) {
+                        s1 = peg$parseonestep();
+                      }
                     }
                   }
                 }
@@ -27925,19 +28291,30 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parseonestep() {
     var s0, s1, s2, s3, s4, s5, s6, s7;
 
+    var key    = peg$currPos * 28 + 19,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 60) {
-      s1 = peg$c32;
+      s1 = peg$c37;
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c33); }
+      if (peg$silentFails === 0) { peg$fail(peg$c38); }
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
@@ -27963,15 +28340,15 @@ function peg$parse(input, options) {
               s6 = peg$parse_();
               if (s6 !== peg$FAILED) {
                 if (input.charCodeAt(peg$currPos) === 62) {
-                  s7 = peg$c34;
+                  s7 = peg$c39;
                   peg$currPos++;
                 } else {
                   s7 = peg$FAILED;
-                  if (peg$silentFails === 0) { peg$fail(peg$c35); }
+                  if (peg$silentFails === 0) { peg$fail(peg$c40); }
                 }
                 if (s7 !== peg$FAILED) {
                   peg$savedPos = s0;
-                  s1 = peg$c36(s3, s5);
+                  s1 = peg$c41(s3, s5);
                   s0 = s1;
                 } else {
                   peg$currPos = s0;
@@ -28002,11 +28379,22 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsenotonestep() {
     var s0, s1, s2;
+
+    var key    = peg$currPos * 28 + 20,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = peg$parselist();
@@ -28049,11 +28437,22 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parseword() {
     var s0, s1, s2, s3, s4;
+
+    var key    = peg$currPos * 28 + 21,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     peg$silentFails++;
     s0 = peg$currPos;
@@ -28061,22 +28460,22 @@ function peg$parse(input, options) {
     if (s1 !== peg$FAILED) {
       s2 = peg$currPos;
       s3 = [];
-      if (peg$c38.test(input.charAt(peg$currPos))) {
+      if (peg$c43.test(input.charAt(peg$currPos))) {
         s4 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s4 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c39); }
+        if (peg$silentFails === 0) { peg$fail(peg$c44); }
       }
       if (s4 !== peg$FAILED) {
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c38.test(input.charAt(peg$currPos))) {
+          if (peg$c43.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c39); }
+            if (peg$silentFails === 0) { peg$fail(peg$c44); }
           }
         }
       } else {
@@ -28091,7 +28490,7 @@ function peg$parse(input, options) {
         s3 = peg$parse_();
         if (s3 !== peg$FAILED) {
           peg$savedPos = s0;
-          s1 = peg$c40(s2);
+          s1 = peg$c45(s2);
           s0 = s1;
         } else {
           peg$currPos = s0;
@@ -28108,14 +28507,25 @@ function peg$parse(input, options) {
     peg$silentFails--;
     if (s0 === peg$FAILED) {
       s1 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c37); }
+      if (peg$silentFails === 0) { peg$fail(peg$c42); }
     }
+
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
 
     return s0;
   }
 
   function peg$parseletters() {
     var s0, s1, s2, s3;
+
+    var key    = peg$currPos * 28 + 22,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     s0 = peg$currPos;
     s1 = peg$parse_();
@@ -28134,7 +28544,7 @@ function peg$parse(input, options) {
         s3 = peg$parse_();
         if (s3 !== peg$FAILED) {
           peg$savedPos = s0;
-          s1 = peg$c41(s2);
+          s1 = peg$c46(s2);
           s0 = s1;
         } else {
           peg$currPos = s0;
@@ -28149,20 +28559,31 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parseletter() {
     var s0, s1, s2;
 
+    var key    = peg$currPos * 28 + 23,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     s0 = peg$currPos;
     s1 = peg$currPos;
-    if (peg$c42.test(input.charAt(peg$currPos))) {
+    if (peg$c47.test(input.charAt(peg$currPos))) {
       s2 = input.charAt(peg$currPos);
       peg$currPos++;
     } else {
       s2 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c43); }
+      if (peg$silentFails === 0) { peg$fail(peg$c48); }
     }
     if (s2 !== peg$FAILED) {
       s1 = input.substring(s1, peg$currPos);
@@ -28171,32 +28592,11 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       peg$savedPos = s0;
-      s1 = peg$c44(s1);
+      s1 = peg$c49(s1);
     }
     s0 = s1;
 
-    return s0;
-  }
-
-  function peg$parseop() {
-    var s0;
-
-    if (input.charCodeAt(peg$currPos) === 42) {
-      s0 = peg$c45;
-      peg$currPos++;
-    } else {
-      s0 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c46); }
-    }
-    if (s0 === peg$FAILED) {
-      if (input.charCodeAt(peg$currPos) === 47) {
-        s0 = peg$c47;
-        peg$currPos++;
-      } else {
-        s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c48); }
-      }
-    }
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
 
     return s0;
   }
@@ -28204,19 +28604,39 @@ function peg$parse(input, options) {
   function peg$parsedot() {
     var s0;
 
+    var key    = peg$currPos * 28 + 24,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     if (input.charCodeAt(peg$currPos) === 46) {
-      s0 = peg$c49;
+      s0 = peg$c50;
       peg$currPos++;
     } else {
       s0 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c50); }
+      if (peg$silentFails === 0) { peg$fail(peg$c51); }
     }
+
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
 
     return s0;
   }
 
   function peg$parsequestion() {
     var s0;
+
+    var key    = peg$currPos * 28 + 25,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
 
     if (input.charCodeAt(peg$currPos) === 63) {
       s0 = peg$c17;
@@ -28226,19 +28646,30 @@ function peg$parse(input, options) {
       if (peg$silentFails === 0) { peg$fail(peg$c18); }
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parsenumber() {
     var s0, s1, s2, s3, s4, s5, s6;
 
+    var key    = peg$currPos * 28 + 26,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 45) {
-      s1 = peg$c51;
+      s1 = peg$c52;
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c52); }
+      if (peg$silentFails === 0) { peg$fail(peg$c53); }
     }
     if (s1 === peg$FAILED) {
       s1 = null;
@@ -28246,22 +28677,22 @@ function peg$parse(input, options) {
     if (s1 !== peg$FAILED) {
       s2 = peg$currPos;
       s3 = [];
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c54.test(input.charAt(peg$currPos))) {
         s4 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s4 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c55); }
       }
       if (s4 !== peg$FAILED) {
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c53.test(input.charAt(peg$currPos))) {
+          if (peg$c54.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c54); }
+            if (peg$silentFails === 0) { peg$fail(peg$c55); }
           }
         }
       } else {
@@ -28269,29 +28700,29 @@ function peg$parse(input, options) {
       }
       if (s3 !== peg$FAILED) {
         if (input.charCodeAt(peg$currPos) === 46) {
-          s4 = peg$c49;
+          s4 = peg$c50;
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c50); }
+          if (peg$silentFails === 0) { peg$fail(peg$c51); }
         }
         if (s4 !== peg$FAILED) {
           s5 = [];
-          if (peg$c53.test(input.charAt(peg$currPos))) {
+          if (peg$c54.test(input.charAt(peg$currPos))) {
             s6 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s6 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c54); }
+            if (peg$silentFails === 0) { peg$fail(peg$c55); }
           }
           while (s6 !== peg$FAILED) {
             s5.push(s6);
-            if (peg$c53.test(input.charAt(peg$currPos))) {
+            if (peg$c54.test(input.charAt(peg$currPos))) {
               s6 = input.charAt(peg$currPos);
               peg$currPos++;
             } else {
               s6 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c54); }
+              if (peg$silentFails === 0) { peg$fail(peg$c55); }
             }
           }
           if (s5 !== peg$FAILED) {
@@ -28312,33 +28743,33 @@ function peg$parse(input, options) {
       if (s2 === peg$FAILED) {
         s2 = peg$currPos;
         if (input.charCodeAt(peg$currPos) === 46) {
-          s3 = peg$c49;
+          s3 = peg$c50;
           peg$currPos++;
         } else {
           s3 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c50); }
+          if (peg$silentFails === 0) { peg$fail(peg$c51); }
         }
         if (s3 === peg$FAILED) {
           s3 = null;
         }
         if (s3 !== peg$FAILED) {
           s4 = [];
-          if (peg$c53.test(input.charAt(peg$currPos))) {
+          if (peg$c54.test(input.charAt(peg$currPos))) {
             s5 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s5 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c54); }
+            if (peg$silentFails === 0) { peg$fail(peg$c55); }
           }
           if (s5 !== peg$FAILED) {
             while (s5 !== peg$FAILED) {
               s4.push(s5);
-              if (peg$c53.test(input.charAt(peg$currPos))) {
+              if (peg$c54.test(input.charAt(peg$currPos))) {
                 s5 = input.charAt(peg$currPos);
                 peg$currPos++;
               } else {
                 s5 = peg$FAILED;
-                if (peg$silentFails === 0) { peg$fail(peg$c54); }
+                if (peg$silentFails === 0) { peg$fail(peg$c55); }
               }
             }
           } else {
@@ -28358,7 +28789,7 @@ function peg$parse(input, options) {
       }
       if (s2 !== peg$FAILED) {
         peg$savedPos = s0;
-        s1 = peg$c55();
+        s1 = peg$c56();
         s0 = s1;
       } else {
         peg$currPos = s0;
@@ -28369,36 +28800,49 @@ function peg$parse(input, options) {
       s0 = peg$FAILED;
     }
 
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
+
     return s0;
   }
 
   function peg$parse_() {
     var s0, s1;
 
+    var key    = peg$currPos * 28 + 27,
+        cached = peg$resultsCache[key];
+
+    if (cached) {
+      peg$currPos = cached.nextPos;
+
+      return cached.result;
+    }
+
     peg$silentFails++;
     s0 = [];
-    if (peg$c57.test(input.charAt(peg$currPos))) {
+    if (peg$c58.test(input.charAt(peg$currPos))) {
       s1 = input.charAt(peg$currPos);
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c58); }
+      if (peg$silentFails === 0) { peg$fail(peg$c59); }
     }
     while (s1 !== peg$FAILED) {
       s0.push(s1);
-      if (peg$c57.test(input.charAt(peg$currPos))) {
+      if (peg$c58.test(input.charAt(peg$currPos))) {
         s1 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c58); }
+        if (peg$silentFails === 0) { peg$fail(peg$c59); }
       }
     }
     peg$silentFails--;
     if (s0 === peg$FAILED) {
       s1 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c56); }
+      if (peg$silentFails === 0) { peg$fail(peg$c57); }
     }
+
+    peg$resultsCache[key] = { nextPos: peg$currPos, result: s0 };
 
     return s0;
   }
@@ -29433,8 +29877,8 @@ const queryArc = function( pattern, phase, duration ) {
 
   // prune any events that fall before our start phase or after our end phase
   eventList = eventList.filter( evt => {
-    return evt.arc.start.valueOf() >= start.valueOf() 
-        && evt.arc.start.valueOf() <  end.valueOf()
+    return (evt.arc.start.valueOf() >= start.valueOf() 
+        && evt.arc.start.valueOf()  <  end.valueOf() ) 
   })
   // remap events to make their arcs relative to initial phase argument
   .map( evt => {
@@ -29449,12 +29893,12 @@ const queryArc = function( pattern, phase, duration ) {
 
 // if an event is found that represents a pattern (as opposed to a constant) this function
 // is called to query the pattern and map any generated events to the appropriate timespan
-const processPattern = ( pattern, duration, phase, phaseIncr=null, override = null, shouldRemapArcs=true ) => {
+const processPattern = ( pattern, duration, phase, phaseIncr=null, override = null, shouldRemapArcs=false ) => {
   //if( phaseIncr !== null ) debugger
   let events = handlers[ pattern.type ]( 
     [], 
     pattern, 
-    shouldReset( pattern ) === true ? Fraction(0) : phase.clone(), 
+    /*shouldReset( pattern ) === true ? Fraction(0) :*/ phase.clone(), 
     // XXX this is confusing. we are getting around a problem
     // with polymeters where duplicate events are generated by
     // not passing a phaseIncr... it's not needed since there's an
@@ -29591,12 +30035,11 @@ const handlers = {
       if( member === undefined || (isNaN( member.value ) && typeof member.value !== 'string') ) {
         // query the pattern and remap time values appropriately 
         if( member !== undefined ) member.parent = pattern
-        //const events = processPattern( member, dur, phase.clone(), getPhaseIncr( member ), null, shouldRemap( member ) )
         //console.log( 'processing ', pattern.type, member.type, dur.toFraction(),  phaseIncr.toFraction() )
         const events = processPattern( 
           member, 
           Fraction(1), 
-          Fraction(0), 
+          member.type !== 'slow' ? Fraction(0) : phase.clone(), 
           null, //getPhaseIncr(member), 
           null, 
           false//shouldRemap( member )
@@ -29611,11 +30054,13 @@ const handlers = {
       }else{
         // XXX shouldn't we just process all patterns???
         // member does not need further processing, so add to event list
-        eventList.push({ 
+        const evt = { 
           value:member.value, 
           arc:Arc( phase, phase.add( dur ) ),
-          uid:member.uid
-        })
+        }
+        if( member.uid !== undefined ) evt.uid = member.uid 
+
+        eventList.push( evt )
       }
 
       // assuming we are starting / ending at a regular phase increment value...
@@ -29720,22 +30165,31 @@ const handlers = {
   },
 
   number( state, pattern, phase, duration ) {
-    state.push({ arc:Arc( phase, phase.add( duration ) ), value:pattern.value, uid:pattern.uid })
+    //if( phase.valueOf() === 0 ) {
+      const evt = { arc:Arc( phase, phase.add( duration ) ), value:pattern.value }
+      if( pattern.uid !== undefined ) evt.uid = pattern.uid
+      state.push(evt)
+    //}
     return state 
   },
 
   string( state, pattern, phase, duration ) {
-    state.push({ arc:Arc( phase, phase.add( duration ) ), value:pattern.value, uid:pattern.uid })
+    const evt = { arc:Arc( phase, phase.add( duration ) ), value:pattern.value }
+    if( pattern.uid !== undefined ) evt.uid = pattern.uid
+    state.push(evt)
     return state 
   },
 
   degrade( state, pattern, phase, duration ) {
     if( Math.random() > .5 ) {
-      state.push({ 
+      const evt = { 
         arc:Arc( phase, phase.add( duration ) ), 
-        value:pattern.value,
-        uid:pattern.uid
-      })
+        value:pattern.value
+      }
+
+      if( pattern.uid !== undefined ) evt.uid = pattern.uid
+
+      state.push( evt )
     }
 
     return state 
@@ -29772,8 +30226,55 @@ const handlers = {
     return state
   },
 
+  slow( state, pattern, phase, duration ) {
+    const speed = pattern.rate.value
+
+    let events
+    if( phase.valueOf() % speed === 0 ) {
+      // XXX why do we need this edge case?
+      const phaseDiff = phase.sub( phase.div( speed ) )
+
+      if( pattern.value.type !== 'layers' ) {
+        //events = queryArc(
+        //  pattern.value,
+        //  phase.div( speed ),
+        //  duration.div( speed )
+        //)
+        events = processPattern(
+          pattern.value,
+          duration,//.div( speed ),
+          phase.div( speed )
+        )       
+      }else{
+        events = handlers.layers( state, pattern.value, phase.div( speed ), duration.div( speed ) )
+      }
+
+      //console.log( log( events, { depth:3 }), phase.add( duration ).toFraction() )
+      //if( pattern.value.type === 'group' ) {
+      //  events = events.map( evt => {
+      //    evt.arc.start = evt.arc.start.mul( speed )
+      //    evt.arc.end   = evt.arc.end.mul( speed )
+      //    return evt
+      //  })
+      //}
+      events = events.map( evt => {
+        evt.arc.start = evt.arc.start.add( phaseDiff )
+        evt.arc.end   = evt.arc.end.add( phaseDiff )
+        //evt.arc.start = evt.arc.start.add( phase )
+        //evt.arc.end   = evt.arc.end.add( phase )
+        return evt
+      })
+      //.filter( evt => evt.arc.start.valueOf() < phase.add( duration ).valueOf() )
+    }
+    //console.log( 'slow:', log( events, { depth:3 }), phase.add( duration ).toFraction() )
+
+    if( events !== undefined ) state = state.concat( events )
+
+    return state
+  },
+
 //const processPattern = ( pattern, duration, phase, phaseIncr=null, override = null, shouldRemapArcs=true ) => {
-  repeat( state, pattern, phase, duration ) {
+  speed( state, pattern, phase, duration ) {
     // the general process of increasing the speed of a pattern is to query
     // for a longer duration according to the speed, and the scale the resulting
     // events.
@@ -29788,14 +30289,15 @@ const handlers = {
     
     const speed = pattern.rate.value
     const events = queryArc(
-        pattern.value,
-        Fraction(0),
-        duration.mul( speed ) 
-      ).map( evt => {
-        evt.arc.start = evt.arc.start.div( speed ).add( phase )
-        evt.arc.end   = evt.arc.end.div( speed ).add( phase )
-        return evt
-      })
+      pattern.value,
+      Fraction(0),
+      duration.mul( speed ) 
+    ).map( evt => {
+      evt.arc.start = evt.arc.start.div( speed ).add( phase )
+      evt.arc.end   = evt.arc.end.div( speed ).add( phase )
+      return evt
+    })
+
     // XXX account for having a speeds pattern!!!!
     /*
     
@@ -29864,6 +30366,7 @@ const handlers = {
       }
     }*/
 
+    //console.log( 'events:', log( events, { depth:4 }) )
     return state.concat( events )
   },
 }

@@ -35,11 +35,13 @@ module.exports = function( Audio ) {
     for( let key in props ) {
       props[ key ].target.connect( ens )
     }
+    
+    ens.tidals = []
 
-    ens.tidal = pattern => {
-      if( ens.__tidal !== undefined ) ens.__tidal.stop()
+    ens.tidal = (pattern,num=0) => {
+      if( ens.tidals[ num ] !== undefined ) ens.tidals[ num ].stop()
 
-      ens.__tidal = Audio.Tidal({
+      ens.tidals[ num ] = Audio.Tidal({
         target:ens,
         key:'play',
         pattern
