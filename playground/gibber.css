@@ -296,6 +296,19 @@ img {
   text-decoration:underline;
 }
 
+.tidal {
+  border-color: #666;
+  padding:0 2px
+}
+
+.tidal-bright {
+  border-color:#aaa
+}
+
+span.tidalblock {
+  color:#bbb !important
+}
+
 .vtree-leaf-label { 	
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */

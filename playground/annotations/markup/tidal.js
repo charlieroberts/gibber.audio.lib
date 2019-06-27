@@ -23,7 +23,7 @@ module.exports = function( Marker ) {
     const marker = cm.markText( 
       { line: node.offset.vertical, ch:start }, 
       { line: node.offset.vertical + (node.loc.end.line - node.loc.start.line), ch:end }, 
-      { className: 'annotation' }
+      { className: 'annotation tidalblock' }
     )
 
     // this function recursively marks each number or string token in the pattern
@@ -76,10 +76,17 @@ module.exports = function( Marker ) {
         cm.markText( 
           tokenStart, 
           tokenEnd,  
-          { className }
+          { className } 
         )
 
+        setTimeout( ()=> {
+          const node = $( '.'+className )
+          node.add( 'cm-number' )
+          node.add( 'tidal' )  
+        }, 250 )
+
         markers[ className ] = pattern
+        
         pattern.cycle = Marker._createBorderCycleFunction( className, pattern )
         pattern.type = 'tidal'
       }
@@ -91,14 +98,14 @@ module.exports = function( Marker ) {
       let cycle = markers[ name ].cycle
       cycle.tm = setTimeout( function() {
         cycle.clear()
-        $( '.' + name ).remove( 'annotation-full' )
+        $( '.' + name ).remove( 'tidal-bright' )
       }, 250 )
     }
 
     tidal.update = function( val ) {
       const name = `tidal-${tidal.uid}-${tidal.update.uid}`
 
-      $( '.' + name ).add( 'annotation-full' ) 
+      $( '.' + name ).add( 'tidal-bright' ) 
 
       const cycle = markers[ name ].cycle
 
