@@ -53,6 +53,7 @@ module.exports = function( Marker ) {
             }
           }
         }
+
         if( typeof val === 'string' ) val = val.trim()
 
         const loc = pattern.location
@@ -60,8 +61,8 @@ module.exports = function( Marker ) {
           const len = typeof val === 'string' ? val.length : (''+val).length
           
           // check for whitespace and trim accordingly
-          if( len < loc.end.offset - loc.start.offset ){
-            loc.end.offset = loc.start.offset + len
+          if( len < loc.end.column - loc.start.column ){
+            loc.end.column = loc.start.column + len
           }
         }
 
@@ -73,33 +74,30 @@ module.exports = function( Marker ) {
         const tokenStart = { line:line + loc.start.line + lineModY, ch:lineModX + loc.start.column }
         const tokenEnd   = { line:line + loc.end.line   + lineModY, ch:lineModX + loc.end.column } 
 
-        cm.markText( 
+        const marker = cm.markText( 
           tokenStart, 
           tokenEnd,  
-          { className } 
+          { className: className+' cm-number tidal' } 
         )
-
-        setTimeout( ()=> {
-          const node = $( '.'+className )
-          node.add( 'cm-number' )
-          node.add( 'tidal' )  
-        }, 250 )
 
         markers[ className ] = pattern
         
         pattern.cycle = Marker._createBorderCycleFunction( className, pattern )
         pattern.type = 'tidal'
+        pattern.marker = marker
       }
     }
 
     markPattern( pattern )
 
     const clearCycle = name => {
-      let cycle = markers[ name ].cycle
-      cycle.tm = setTimeout( function() {
-        cycle.clear()
-        $( '.' + name ).remove( 'tidal-bright' )
-      }, 250 )
+      if( markers[ name ] ) {
+        let cycle = markers[ name ].cycle
+        cycle.tm = setTimeout( function() {
+          cycle.clear()
+          $( '.' + name ).remove( 'tidal-bright' )
+        }, 250 )
+      }
     }
 
     tidal.update = function( val ) {
@@ -124,6 +122,13 @@ module.exports = function( Marker ) {
         tidal.update( value )
       }
     })
+
+    tidal.update.clear = function() {
+      clearCycle()
+      for( let key in markers ) {
+        markers[ key ].marker.clear()
+      }
+    }
 
   }
 
