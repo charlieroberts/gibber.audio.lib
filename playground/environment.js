@@ -11,7 +11,7 @@ window.onload = function() {
     value:  '// click in the editor to begin',
     keyMap: 'playground',
     autofocus: true,
-    matchBrackets:true,
+    //matchBrackets:true,
     indentUnit:2,
     autoCloseBrackets:true,
     tabSize:2,
