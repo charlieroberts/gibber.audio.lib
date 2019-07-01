@@ -75,31 +75,31 @@ module.exports = function( __Audio ) {
     Audio.autoConnect = temp
 
     const drums = Audio.Ensemble({
-      'x': { target:k,  method:'trigger', args:[1], name:'kick' },
-      'o': { target:s,  method:'trigger', args:[1], name:'snare' },
-      '*': { target:ch, method:'trigger', args:[1], name:'closedHat' },
-      '-': { target:oh, method:'trigger', args:[1], name:'openHat' },
+      'kd': { target:k,  method:'trigger', args:[1], name:'kick' },
+      'sd': { target:s,  method:'trigger', args:[1], name:'snare' },
+      'ch': { target:ch, method:'trigger', args:[1], name:'closedHat' },
+      'oh': { target:oh, method:'trigger', args:[1], name:'openHat' },
     })
 
     if( Audio.autoConnect === true ) drums.connect()
 
     drums.__sequencers = [ ]
-    if( typeof score === 'string' ) {
-      drums.seq = Audio.Seq({
-        target:drums,
-        key:'play',
-        values:score.split(''),
-        timings:time === undefined ? 1 / score.length : time
-      }).start()
+    //if( typeof score === 'string' ) {
+    //  drums.seq = Audio.Seq({
+    //    target:drums,
+    //    key:'play',
+    //    values:score.split(''),
+    //    timings:time === undefined ? 1 / score.length : time
+    //  }).start()
     
 
-      drums.values = drums.seq.values
-      drums.timings = drums.seq.timings
+    //  drums.values = drums.seq.values
+    //  drums.timings = drums.seq.timings
 
-      drums.__sequencers.push( drums.seq )
-    }else{
-      Gibber.addSequencing( drums, 'play', 0 )
-    }
+    //  drums.__sequencers.push( drums.seq )
+    //}else{
+    //  Gibber.addSequencing( drums, 'play', 0 )
+    //}
 
     drums.samplers = [ k,s,ch,oh ]
 
@@ -116,7 +116,7 @@ module.exports = function( __Audio ) {
     return drums
   }
 
-  const EDrums = function( score, time, ...args ) {
+  const EDrums = function(  ...args ) {
     const temp = Audio.autoConnect
     Audio.autoConnect = false
     
@@ -138,18 +138,18 @@ module.exports = function( __Audio ) {
       'cb': { target:cb, method:'trigger', args:[.5], name:'cowbell' },
     })
 
-    if( typeof score === 'string' ) {
-      drums.seq = Audio.Seq({
-        target:drums,
-        key:'play',
-        values:score.split(''),
-        timings:time === undefined ? 1 / score.length : time,
-        rate:Audio.Clock.audioClock
-      }).start()
+    //if( typeof score === 'string' ) {
+    //  drums.seq = Audio.Seq({
+    //    target:drums,
+    //    key:'play',
+    //    values:score.split(''),
+    //    timings:time === undefined ? 1 / score.length : time,
+    //    rate:Audio.Clock.audioClock
+    //  }).start()
 
-      drums.values = drums.seq.values
-      drums.timings = drums.seq.timings
-    }
+    //  drums.values = drums.seq.values
+    //  drums.timings = drums.seq.timings
+    //}
 
     if( Audio.autoConnect === true ) drums.connect()
 
