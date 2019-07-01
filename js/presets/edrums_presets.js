@@ -33,6 +33,14 @@ module.exports = {
       this.fx.add( lpf )
       this.lpf = lpf
     }
+  },
+  short: {
+    presetInit( audio ) {
+      this.kick.decay = .8
+      this.snare.decay = .05
+      this.closedHat.decay = .05
+      this.openHat.decay = .2
+    }
   }
 
 }
