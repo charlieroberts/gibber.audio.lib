@@ -376,8 +376,8 @@ const Marker = {
     Score: require( './annotations/standalone/scoreAnnotation.js' ),
     Steps: require( './annotations/standalone/stepsAnnotation.js' ),
     HexSteps: require( './annotations/standalone/hexStepsAnnotations.js' ),
-    Drums:  require( './annotations/standalone/drumsAnnotation.js' ),
-    EDrums: require( './annotations/standalone/drumsAnnotation.js' )
+    //Drums:  require( './annotations/standalone/drumsAnnotation.js' ),
+    //EDrums: require( './annotations/standalone/drumsAnnotation.js' )
   },
 
 
