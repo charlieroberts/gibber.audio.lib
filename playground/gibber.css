@@ -297,12 +297,12 @@ img {
 }
 
 .tidal {
-  border-color: #666;
-  padding:0 2px
+  border-color: #666 !important;
+  padding:0 2px !important
 }
 
 .tidal-bright {
-  border-color:#aaa
+  border-color:#aaa !important
 }
 
 span.tidalblock {
