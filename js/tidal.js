@@ -33,6 +33,9 @@ module.exports = function( Audio ) {
         if( __seq !== undefined ) {
           __seq.stop()
         }
+        if( seq.update && seq.update.clear ) {
+          seq.update.clear()
+        }
       }
     }
 
@@ -55,7 +58,11 @@ module.exports = function( Audio ) {
     //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
     //Gibberish.proxyEnabled = true
 
+    Audio.addSequencing( seq, 'rotate', 1 )
+
     Seq.sequencers.push( seq )
+
+    Audio.subscribe( 'clear', ()=> seq.clear() )
 
     return seq
   }
