@@ -4,7 +4,7 @@ module.exports = function( Audio ) {
   freesound.setToken( '6a00f80ba02b2755a044cc4ef004febfc4ccd476' )
 
   const Freesound = function( query ) {
-    const sampler = Audio.instruments.Sampler()
+    const sampler = Audio.instruments.Sampler({ panVoices:true })
     
     // freesound query api http://www.freesound.org/docs/api/resources.html
     if( typeof query === 'string' ) {
