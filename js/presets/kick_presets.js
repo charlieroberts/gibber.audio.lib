@@ -11,6 +11,11 @@ module.exports = {
     tone:.5
   },
 
+  long: {
+    frequency:80,
+    decay:.975,
+  },
+
   boom: {
     frequency:55,
     decay:.99,

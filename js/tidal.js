@@ -50,7 +50,7 @@ module.exports = function( Audio ) {
       } 
     ]
 
-    const seq = Gibberish.Tidal({ pattern, target, key, priority, filters })
+    const seq = Gibberish.Tidal({ pattern, target, key, priority, filters, mainthreadonly:props.mainthreadonly })
     seq.clear = clear
     seq.uid = Gibberish.Tidal.getUID()
 

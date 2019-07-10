@@ -41,6 +41,14 @@ module.exports = {
       this.closedHat.decay = .05
       this.openHat.decay = .2
     }
+  },
+  long: {
+    presetInit( audio ) {
+      this.kick.decay = .975
+      this.snare.decay = .1
+      this.closedHat.decay = .1
+      this.openHat.decay = .25
+    }
   }
 
 }

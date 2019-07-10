@@ -22,7 +22,7 @@ const Audio = {
   Clock: require( './clock.js' ),
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
-
+  Graphics: require( './graphics.js' ),
   initialized:false,
   autoConnect:true,
   shouldDelay:false,
@@ -37,6 +37,7 @@ const Audio = {
       
       Utility.export( obj )
       this.Gen.export( obj )
+      this.Graphics.export( obj )
 
       obj.gen = this.Gen.make
       obj.Ensemble = this.Ensemble
@@ -57,6 +58,7 @@ const Audio = {
       obj.Triggers = this.Triggers
       obj.Seq = this.Seq
       obj.Tidal = this.Tidal
+      obj.Graphics = this.Graphics
     }else{
       Audio.exportTarget = obj
     } 
@@ -70,9 +72,13 @@ const Audio = {
 
     this.createPubSub()
 
+    this.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
+
+
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AudioContext({ latencyHint:.075 })
+        //ctx = new AudioContext({ latencyHint:.075 })
+        ctx = new AudioContext()
       }
 
       Gibberish.init( {}, ctx, null, sac ).then( processorNode => {
@@ -246,7 +252,7 @@ const Audio = {
   },
   // When a property is created, a proxy-ish object is made that is
   // prefaced by a double underscore. This object holds the value of the 
-  // property, sequencers for the properyt, and modulations for the property.
+  // property, sequencers for the property, and modulations for the property.
   // Alternative getter/setter methods can be passed as arguments.
   createProperty( obj, name, value, post=null, priority=0 ) {
     obj[ '__' + name ] = { 

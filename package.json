@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "acorn-walk": "^6.1.1",
-    "gibberish-dsp": "~3.0.0"
+    "gibberish-dsp": "~3.0.0",
+    "glslify": "^7.0.0"
   },
   "bugs": {
     "url": "https://github.com/charlieroberts/gibber.audio.lib/issues"

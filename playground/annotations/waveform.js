@@ -236,7 +236,7 @@ const Waveform = {
       if( typeof widget === 'object' && widget.ctx !== undefined ) {
 
         widget.ctx.fillStyle = COLORS.FILL
-        widget.ctx.fillRect( 0,0, widget.width, widget.height )
+        widget.ctx.clearRect( 0,0, widget.width, widget.height )
 
         // draw left border
         widget.ctx.beginPath()

@@ -109,7 +109,7 @@ module.exports = function( Audio ) {
     // XXX we need to add priority to Sequencer2; this priority will determine the order
     // that sequencers are added to the callback, ensuring that sequencers with higher
     // priority will fire first.
-    const seq = Gibberish.Sequencer2({ values, timings, density, target, key, priority, rate:Audio.Clock.audioClock, clear, autotrig })
+    const seq = Gibberish.Sequencer2({ values, timings, density, target, key, priority, rate:Audio.Clock.audioClock, clear, autotrig, mainthreadonly:props.mainthreadonly })
 
     values.setSeq( seq )
 

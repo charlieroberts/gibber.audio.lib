@@ -6,18 +6,13 @@ const gulp = require( 'gulp' ),
       watchify = require( 'watchify' ),
       browserify = require( 'browserify' ),
       source = require('vinyl-source-stream'),
-      rename = require( 'gulp-rename' );
+      rename = require( 'gulp-rename' )
 
 gulp.task( 'client', function(){
   //var out = gulp.src( './js/audio.js' )//gulp.src( './node_modules/gibber.core.lib/scripts/gibber.js')
-  const out = browserify({ standalone:'Gibber' })
+  const out = browserify({ standalone:'Gibber', transform:['glslify'] })
     .require( './js/audio.js', { entry: true })
     .bundle()
-    //ignore:[
-    //  'gibber.graphics.lib/scripts/gibber/graphics/graphics',
-    //  'gibber.interface.lib/scripts/gibber/interface/interface',
-    //  'gibber.audio.lib/scripts/gibber/audio'
-    //]
     .pipe( source('gibber.audio.js' ) )
     .pipe( gulp.dest('./dist/') )
 /*    .pipe( buffer() )
@@ -48,10 +43,6 @@ gulp.task('watch', function() {
 
   return rebundle();
 });
-/*
-Gibber.Graphics  = require( 'gibber.graphics.lib/scripts/gibber/graphics/graphics' )( Gibber )
-Gibber.Interface = require( 'gibber.interface.lib/scripts/gibber/interface/interface' )( Gibber )
-*/
 
 gulp.task( 'p5', ['client'], function() {
   var out = gulp.src( './build/gibber.audio.lib.js'  )
