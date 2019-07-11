@@ -7795,7 +7795,9 @@ const Waveform = {
   // needs to also be called for wavepatterns.
   updateWidget( id, __value, isFromMax = true ) {
     const widget = typeof id !== 'object' ? Waveform.widgets[ id ] : id
-    if( widget === undefined ) return 
+    if( widget === undefined ) { 
+      return 
+    }
 
     let value = parseFloat( __value )
 

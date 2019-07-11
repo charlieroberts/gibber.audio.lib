@@ -30,6 +30,29 @@ const removeSeq = function( obj, seq ) {
   seq.clear()
 }
 
+const createMapping = function( from, to, name, wrappedTo ) {
+  if( from.type === 'audio' ) {
+    const f = to[ '__' + name ].follow = Follow({ input: from })
+
+    let m = f.multiplier
+    Object.defineProperty( to[ name ], 'multiplier', {
+      get() { return m },
+      set(v) { m = v; f.multiplier = m }
+    })
+
+    let o = f.offset
+    Object.defineProperty( to[ name ], 'offset', {
+      get() { return o },
+      set(v) { o = v; f.offset = o }
+    })
+
+    wrappedTo[ name ] = f
+  }else if( from.type === 'gen' ) {
+    const gen = from.render()
+
+    wrappedTo[ name ] = gen
+  }
+}
 const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio, isPoly=false ) {
   const namestore = propertyName 
   if( isPoly === true ) propertyName += 'V'
@@ -37,6 +60,7 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
   const prop =  obj[ '__' + propertyName ] = {
     isProperty:true,
     sequencers:[],
+    type:'audio',
     tidals:[],
     mods:[],
     name:propertyName,
@@ -47,12 +71,16 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
     },
     set value(v) {
       if( v !== undefined ) {
-        const value = timeProps.indexOf( isPoly===true ? namestore : propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
+        if( typeof v === 'number' || typeof v === 'string' ) {
+          const value = timeProps.indexOf( isPoly===true ? namestore : propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
 
-        if( isPoly === true ) {
-          __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ][ namestore ] = value
+          if( isPoly === true ) {
+            __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ][ namestore ] = value
+          }else{
+            __wrappedObject[ propertyName ] = value
+          }
         }else{
-          __wrappedObject[ propertyName ] = value
+          createMapping( v, obj, propertyName, __wrappedObject )
         }
       }
     },
@@ -231,6 +259,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       __wrapped__ :__wrappedObject,
       __sequencers : [], 
       __tidals: [],
+      type:'audio',
 
       stop() {
         for( let seq of this.__sequencers ) seq.stop()

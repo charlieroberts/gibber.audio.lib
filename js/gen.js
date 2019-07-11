@@ -386,7 +386,53 @@ const Gen  = {
     this.ugens.in = __in
   },
 
+  // defer creating genish object until we know whether
+  // this will be used by an audio or visual object
   make( graph, propertyNames ) {
+    const defer = { 
+      graph, 
+      propertyNames,
+      type:'gen',
+      id: Gen.getUID(),
+      rendered:null,
+
+      render( samplerate=44100, type='audio' ) {
+        if( type === 'audio' ) {
+          if( this.rendered === null ) { 
+            this.rendered = Gen.__make( this.graph, this.propertyNames )
+          }
+
+          return this.rendered
+        }
+
+        const store = Gibber.Gibberish.genish.samplerate
+        const g = Gibber.Gibberish.genish
+
+        Gibber.Gibberish.genish.gen.samplerate = samplerate
+        const params = []
+        const __graph = eval( graph.gen( params ) )
+        const callback = g.gen.createCallback( __graph, 4096 )
+        Gibber.Gibberish.genish.gen.samplerate = store      
+
+        return callback.bind( null, ...params.map( v => v[1] ), g.memory )
+      },
+
+      // XXX connecting gen objects to audio properties no longer seems
+      // to work... must be assigned. FIX
+      connect( target ) {
+        if( target.type === 'audio' ) {
+          if( this.rendered === null ) { 
+            this.rendered = Gen.__make( this.graph, this.propertyNames )
+          }
+          this.rendered.connect( target )
+        }
+      }
+    }
+
+    return defer
+  },
+
+  __make( graph, propertyNames ) {
     const ugen = Gibber.Gibberish.prototypes.Ugen
     const g = Gibber.Gibberish.genish
 
@@ -406,6 +452,7 @@ const Gen  = {
     const id = Gen.getUID()
 
     params.id = Gibber.Gibberish.utilities.getUID()
+
     // pass a constructor to our worklet processor
     Gibber.Gibberish.worklet.port.postMessage({ 
       address:'addMethod', 
@@ -492,6 +539,7 @@ const Gen  = {
 
     out.id = temp
     out.__isGen = out.__wrapped__.__isGen = true
+    out.type = 'gen'
     return out
   }
 }

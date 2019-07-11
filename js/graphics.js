@@ -11,46 +11,46 @@ const Graphics = {
   animate:true,
   camera:null,
   __doNotExport: ['export', 'init', 'run', 'make' ],
-  __running: false,
-  __scene:[],
-  __fogColor:Marching.vectors.Vec3(0),
-  __fogAmount:0,
+  __running:     false,
+  __scene:       [],
+  __fogColor:    Marching.vectors.Vec3(0),
+  __fogAmount:   0,
 
+  camera : {
+    pos: { x:0, y:0, z:5 },
+    dir: { x:0, y:0, z:1 },
+    rotation: 0,
+    initialized: false,
 
-  //createProperty( obj, name, value, wrapped ) {
-  __makeCamera() {
-    const camera = {
-      pos: { x:0, y:0, z:5 },
-      dir: { x:0, y:0, z:1 },
-      initialized: false,
-
-      // XXX we have to run this everytime we render as Marching.js
-      // makes a brand new camera :(
-      init() {
-        let storepos, storedir
-        if( Graphics.camera.initialized === true ) {
-          // store current camera data
-          storepos = { x:Graphics.camera.pos.x, y:Graphics.camera.pos.y, z:Graphics.camera.pos.z }
-          storedir = { x:Graphics.camera.dir.x, y:Graphics.camera.dir.y, z:Graphics.camera.dir.z }
-        }
-
-        Graphics.createProperty( camera.pos, 'x', 0, Marching.camera.pos ) 
-        Graphics.createProperty( camera.pos, 'y', 0, Marching.camera.pos ) 
-        Graphics.createProperty( camera.pos, 'z', 5, Marching.camera.pos ) 
-
-        if( Graphics.camera.initialized === true ) {
-          camera.pos.z = storepos.z.value
-          camera.pos.x = storepos.x.value
-          camera.pos.y = storepos.y.value
-
-          // XXX do dir
-        }
-
-        Graphics.camera.initialized = true
+    // XXX we have to run this everytime we render as Marching.js
+    // makes a brand new camera
+    init() {
+      let storepos, storedir
+      if( Graphics.camera.initialized === true ) {
+        // store current camera data
+        storepos = { x:Graphics.camera.pos.x, y:Graphics.camera.pos.y, z:Graphics.camera.pos.z }
+        storedir = { x:Graphics.camera.dir.x, y:Graphics.camera.dir.y, z:Graphics.camera.dir.z }
+        storerot = Graphics.camera.rotation.value
       }
-    }
 
-    return camera
+      // we must re-execute to use current Marching.js camera
+      Graphics.createProperty( Graphics.camera.pos, 'x', 0, Marching.camera.pos ) 
+      Graphics.createProperty( Graphics.camera.pos, 'y', 0, Marching.camera.pos ) 
+      Graphics.createProperty( Graphics.camera.pos, 'z', 5, Marching.camera.pos ) 
+      
+      Graphics.createProperty( Graphics.camera, 'rotation', 0, Marching.camera ) 
+      
+      if( Graphics.camera.initialized === true ) {
+        camera.pos.z = storepos.z.value
+        camera.pos.x = storepos.x.value
+        camera.pos.y = storepos.y.value
+
+        camera.rotation = storerot
+        // XXX do dir
+      }
+
+      Graphics.camera.initialized = true
+    }
   },
 
   export( obj ) {
@@ -61,7 +61,7 @@ const Graphics = {
     obj.march = Marching.createScene.bind( Marching )
     obj.Material = Marching.Material
     obj.Camera = Graphics.camera
-    obj.Fog = Graphics.fog.bind( Marching )
+    obj.Fog = Graphics.fog.bind( Graphics )
   },
 
   init( props, __Gibber ) {
@@ -73,7 +73,6 @@ const Graphics = {
 
     this.run()
 
-    this.camera = this.__makeCamera()
 
     for( let name in Marching.primitives ) {
       this.make( name, Marching.primitives[ name ] )
@@ -83,6 +82,9 @@ const Graphics = {
     }
     for( let name in Marching.domainOps ) {
       this.make( name, Marching.domainOps[ name ] )
+    }
+    for( let name in Marching.alterations ) {
+      this.make( name, Marching.alterations[ name ] )
     }
     Object.assign( this, Marching.vectors )
     Marching.export( this.__native )
@@ -169,19 +171,38 @@ const Graphics = {
   },
 
   createMapping( from, to, name, wrappedTo ) {
-    const f = to[ '__' + name ].follow = Follow({ input: from })
+    if( from.type === 'audio' ) {
+      const f = to[ '__' + name ].follow = Follow({ input: from })
 
-    Marching.callbacks.push( time => {
-      if( f.output !== undefined ) {
-        to[ name ] = to[ name ].offset !== undefined ? to[ name ].offset + f.output : f.output
-      }
-    })
+      Marching.callbacks.push( time => {
+        if( f.output !== undefined ) {
+          to[ name ] = f.output
+        }
+      })
 
-    let m = f.multiplier
-    Object.defineProperty( to[ name ], 'multiplier', {
-      get() { return m },
-      set(v) { m = v; f.multiplier = m }
-    })
+      let m = f.multiplier
+      Object.defineProperty( to[ name ], 'multiplier', {
+        get() { return m },
+        set(v) { m = v; f.multiplier = m }
+      })
+
+      let o = f.offset
+      Object.defineProperty( to[ name ], 'offset', {
+        get() { return o },
+        set(v) { o = v; f.offset = o }
+      })
+    }else if( from.type === 'gen' ) {
+      const gen = from.render( 60, 'graphics' )
+
+      // needed for annotations
+      to[ name ].value.id = to[ name ].value.varName
+      
+      Marching.callbacks.push( t => {
+        const val = gen()
+        to[ name ] = val
+        Environment.codeMarkup.waveform.updateWidget( to[ name ].value.widget, val, false )
+      })
+    }
   },
 
   ease( t ) {  return t < .5 ? 2*t*t : -1+(4-2*t)*t },
@@ -200,6 +221,7 @@ const Graphics = {
       },
 
       isProperty:true,
+      type:'graphics',
       sequencers:[],
       tidals:[],
       name,

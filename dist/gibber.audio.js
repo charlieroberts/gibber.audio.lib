@@ -4274,8 +4274,15 @@ const Analysis = {
         if( analysisName === 'Follow' ) {
           let m = ugen.__wrapped__.multiplier || 1
           Object.defineProperty( ugen, 'multiplier', {
+            configurable:true,
             get() { return m },
             set(v) { m = v; ugen.__wrapped__.multiplier = m }
+          }) 
+          let o = ugen.__wrapped__.offset || 0
+          Object.defineProperty( ugen, 'offset', {
+            configurable:true,
+            get() { return o },
+            set(v) { o = v; ugen.__wrapped__.offset = o }
           }) 
         }
         return ugen
@@ -6926,7 +6933,53 @@ const Gen  = {
     this.ugens.in = __in
   },
 
+  // defer creating genish object until we know whether
+  // this will be used by an audio or visual object
   make( graph, propertyNames ) {
+    const defer = { 
+      graph, 
+      propertyNames,
+      type:'gen',
+      id: Gen.getUID(),
+      rendered:null,
+
+      render( samplerate=44100, type='audio' ) {
+        if( type === 'audio' ) {
+          if( this.rendered === null ) { 
+            this.rendered = Gen.__make( this.graph, this.propertyNames )
+          }
+
+          return this.rendered
+        }
+
+        const store = Gibber.Gibberish.genish.samplerate
+        const g = Gibber.Gibberish.genish
+
+        Gibber.Gibberish.genish.gen.samplerate = samplerate
+        const params = []
+        const __graph = eval( graph.gen( params ) )
+        const callback = g.gen.createCallback( __graph, 4096 )
+        Gibber.Gibberish.genish.gen.samplerate = store      
+
+        return callback.bind( null, ...params.map( v => v[1] ), g.memory )
+      },
+
+      // XXX connecting gen objects to audio properties no longer seems
+      // to work... must be assigned. FIX
+      connect( target ) {
+        if( target.type === 'audio' ) {
+          if( this.rendered === null ) { 
+            this.rendered = Gen.__make( this.graph, this.propertyNames )
+          }
+          this.rendered.connect( target )
+        }
+      }
+    }
+
+    return defer
+  },
+
+  __make( graph, propertyNames ) {
     const ugen = Gibber.Gibberish.prototypes.Ugen
     const g = Gibber.Gibberish.genish
 
@@ -6946,6 +6999,7 @@ const Gen  = {
     const id = Gen.getUID()
 
     params.id = Gibber.Gibberish.utilities.getUID()
+
     // pass a constructor to our worklet processor
     Gibber.Gibberish.worklet.port.postMessage({ 
       address:'addMethod', 
@@ -7032,6 +7086,7 @@ const Gen  = {
 
     out.id = temp
     out.__isGen = out.__wrapped__.__isGen = true
+    out.type = 'gen'
     return out
   }
 }
@@ -7055,46 +7110,46 @@ const Graphics = {
   animate:true,
   camera:null,
   __doNotExport: ['export', 'init', 'run', 'make' ],
-  __running: false,
-  __scene:[],
-  __fogColor:Marching.vectors.Vec3(0),
-  __fogAmount:0,
+  __running:     false,
+  __scene:       [],
+  __fogColor:    Marching.vectors.Vec3(0),
+  __fogAmount:   0,
 
+  camera : {
+    pos: { x:0, y:0, z:5 },
+    dir: { x:0, y:0, z:1 },
+    rotation: 0,
+    initialized: false,
 
-  //createProperty( obj, name, value, wrapped ) {
-  __makeCamera() {
-    const camera = {
-      pos: { x:0, y:0, z:5 },
-      dir: { x:0, y:0, z:1 },
-      initialized: false,
-
-      // XXX we have to run this everytime we render as Marching.js
-      // makes a brand new camera :(
-      init() {
-        let storepos, storedir
-        if( Graphics.camera.initialized === true ) {
-          // store current camera data
-          storepos = { x:Graphics.camera.pos.x, y:Graphics.camera.pos.y, z:Graphics.camera.pos.z }
-          storedir = { x:Graphics.camera.dir.x, y:Graphics.camera.dir.y, z:Graphics.camera.dir.z }
-        }
-
-        Graphics.createProperty( camera.pos, 'x', 0, Marching.camera.pos ) 
-        Graphics.createProperty( camera.pos, 'y', 0, Marching.camera.pos ) 
-        Graphics.createProperty( camera.pos, 'z', 5, Marching.camera.pos ) 
-
-        if( Graphics.camera.initialized === true ) {
-          camera.pos.z = storepos.z.value
-          camera.pos.x = storepos.x.value
-          camera.pos.y = storepos.y.value
-
-          // XXX do dir
-        }
-
-        Graphics.camera.initialized = true
+    // XXX we have to run this everytime we render as Marching.js
+    // makes a brand new camera
+    init() {
+      let storepos, storedir
+      if( Graphics.camera.initialized === true ) {
+        // store current camera data
+        storepos = { x:Graphics.camera.pos.x, y:Graphics.camera.pos.y, z:Graphics.camera.pos.z }
+        storedir = { x:Graphics.camera.dir.x, y:Graphics.camera.dir.y, z:Graphics.camera.dir.z }
+        storerot = Graphics.camera.rotation.value
       }
-    }
 
-    return camera
+      // we must re-execute to use current Marching.js camera
+      Graphics.createProperty( Graphics.camera.pos, 'x', 0, Marching.camera.pos ) 
+      Graphics.createProperty( Graphics.camera.pos, 'y', 0, Marching.camera.pos ) 
+      Graphics.createProperty( Graphics.camera.pos, 'z', 5, Marching.camera.pos ) 
+      
+      Graphics.createProperty( Graphics.camera, 'rotation', 0, Marching.camera ) 
+      
+      if( Graphics.camera.initialized === true ) {
+        camera.pos.z = storepos.z.value
+        camera.pos.x = storepos.x.value
+        camera.pos.y = storepos.y.value
+
+        camera.rotation = storerot
+        // XXX do dir
+      }
+
+      Graphics.camera.initialized = true
+    }
   },
 
   export( obj ) {
@@ -7105,7 +7160,7 @@ const Graphics = {
     obj.march = Marching.createScene.bind( Marching )
     obj.Material = Marching.Material
     obj.Camera = Graphics.camera
-    obj.Fog = Graphics.fog.bind( Marching )
+    obj.Fog = Graphics.fog.bind( Graphics )
   },
 
   init( props, __Gibber ) {
@@ -7117,7 +7172,6 @@ const Graphics = {
 
     this.run()
 
-    this.camera = this.__makeCamera()
 
     for( let name in Marching.primitives ) {
       this.make( name, Marching.primitives[ name ] )
@@ -7127,6 +7181,9 @@ const Graphics = {
     }
     for( let name in Marching.domainOps ) {
       this.make( name, Marching.domainOps[ name ] )
+    }
+    for( let name in Marching.alterations ) {
+      this.make( name, Marching.alterations[ name ] )
     }
     Object.assign( this, Marching.vectors )
     Marching.export( this.__native )
@@ -7213,19 +7270,38 @@ const Graphics = {
   },
 
   createMapping( from, to, name, wrappedTo ) {
-    const f = to[ '__' + name ].follow = Follow({ input: from })
+    if( from.type === 'audio' ) {
+      const f = to[ '__' + name ].follow = Follow({ input: from })
 
-    Marching.callbacks.push( time => {
-      if( f.output !== undefined ) {
-        to[ name ] = to[ name ].offset !== undefined ? to[ name ].offset + f.output : f.output
-      }
-    })
+      Marching.callbacks.push( time => {
+        if( f.output !== undefined ) {
+          to[ name ] = f.output
+        }
+      })
 
-    let m = f.multiplier
-    Object.defineProperty( to[ name ], 'multiplier', {
-      get() { return m },
-      set(v) { m = v; f.multiplier = m }
-    })
+      let m = f.multiplier
+      Object.defineProperty( to[ name ], 'multiplier', {
+        get() { return m },
+        set(v) { m = v; f.multiplier = m }
+      })
+
+      let o = f.offset
+      Object.defineProperty( to[ name ], 'offset', {
+        get() { return o },
+        set(v) { o = v; f.offset = o }
+      })
+    }else if( from.type === 'gen' ) {
+      const gen = from.render( 60, 'graphics' )
+
+      // needed for annotations
+      to[ name ].value.id = to[ name ].value.varName
+      
+      Marching.callbacks.push( t => {
+        const val = gen()
+        to[ name ] = val
+        Environment.codeMarkup.waveform.updateWidget( to[ name ].value.widget, val, false )
+      })
+    }
   },
 
   ease( t ) {  return t < .5 ? 2*t*t : -1+(4-2*t)*t },
@@ -7244,6 +7320,7 @@ const Graphics = {
       },
 
       isProperty:true,
+      type:'graphics',
       sequencers:[],
       tidals:[],
       name,
@@ -9954,6 +10031,29 @@ const removeSeq = function( obj, seq ) {
   seq.clear()
 }
 
+const createMapping = function( from, to, name, wrappedTo ) {
+  if( from.type === 'audio' ) {
+    const f = to[ '__' + name ].follow = Follow({ input: from })
+
+    let m = f.multiplier
+    Object.defineProperty( to[ name ], 'multiplier', {
+      get() { return m },
+      set(v) { m = v; f.multiplier = m }
+    })
+
+    let o = f.offset
+    Object.defineProperty( to[ name ], 'offset', {
+      get() { return o },
+      set(v) { o = v; f.offset = o }
+    })
+
+    wrappedTo[ name ] = f
+  }else if( from.type === 'gen' ) {
+    const gen = from.render()
+
+    wrappedTo[ name ] = gen
+  }
+}
 const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio, isPoly=false ) {
   const namestore = propertyName 
   if( isPoly === true ) propertyName += 'V'
@@ -9961,6 +10061,7 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
   const prop =  obj[ '__' + propertyName ] = {
     isProperty:true,
     sequencers:[],
+    type:'audio',
     tidals:[],
     mods:[],
     name:propertyName,
@@ -9971,12 +10072,16 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
     },
     set value(v) {
       if( v !== undefined ) {
-        const value = timeProps.indexOf( isPoly===true ? namestore : propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
+        if( typeof v === 'number' || typeof v === 'string' ) {
+          const value = timeProps.indexOf( isPoly===true ? namestore : propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
 
-        if( isPoly === true ) {
-          __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ][ namestore ] = value
+          if( isPoly === true ) {
+            __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ][ namestore ] = value
+          }else{
+            __wrappedObject[ propertyName ] = value
+          }
         }else{
-          __wrappedObject[ propertyName ] = value
+          createMapping( v, obj, propertyName, __wrappedObject )
         }
       }
     },
@@ -10155,6 +10260,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       __wrapped__ :__wrappedObject,
       __sequencers : [], 
       __tidals: [],
+      type:'audio',
 
       stop() {
         for( let seq of this.__sequencers ) seq.stop()
@@ -19858,6 +19964,7 @@ module.exports = function (Gibberish) {
      * of the input ugen.
      */
 
+    //console.log( 'isStereo:', Gibberish.mode, isStereo, props.input )
     if (Gibberish.mode === 'worklet') {
       // send obj to be made in processor thread
       props.input = { id: props.input.id };
@@ -19899,12 +20006,29 @@ module.exports = function (Gibberish) {
           });
         }
       });
+
+      let offset = props.offset;
+      Object.defineProperty(out, 'offset', {
+        get() {
+          return offset;
+        },
+        set(v) {
+          offset = v;
+          Gibberish.worklet.port.postMessage({
+            address: 'set',
+            object: props.overrideid,
+            name: 'offset',
+            value: offset
+          });
+        }
+      });
     } else {
-      isStereo = props.isStereo;
+      //isStereo = props.isStereo
 
       const buffer = g.data(props.bufferSize, 1);
       const input = g.in('input');
       const multiplier = g.in('multiplier');
+      const offset = g.in('offset');
 
       const follow_out = Object.create(analyzer);
       follow_out.id = props.id = __props.overrideid;
@@ -19929,49 +20053,10 @@ module.exports = function (Gibberish) {
 
         // nonsense to make our custom function work
       };out.callback.ugenName = out.ugenName = `follow_out_${follow_out.id}`;
-
-      //out = Gibberish.factory( 
-      //  follow_out,
-      //  avg, 
-      //  ['analysis', 'follow_out'], 
-      //  props
-      //)
-
-      //Gibberish.ugens.set( __props.overrideid, out )
-
       out.id = __props.overrideid;
 
       // begin input tracker
       const follow_in = Object.create(ugen);
-
-      // have to write custom callback for input to reuse components from output,
-      // specifically the memory from our buffer
-      //let callback = null
-      //if( isStereo === true ) {
-      //  callback = function( input, memory ) {
-      //    memory[ idx + phase ] = abs( input[0] + input[1] )
-
-      //    phase++
-
-      //    if( phase > props.bufferSize - 1 ) {
-      //      phase = 0
-      //    } 
-
-      //    return 0     
-      //  }
-      //}else{
-      //  callback = function( input, memory ) {
-      //    memory[ idx + phase ] = abs( input )
-
-      //    phase++
-
-      //    if( phase > props.bufferSize - 1 ) {
-      //      phase = 0
-      //    } 
-
-      //    return 0     
-      //  }
-      //}
 
       if (isStereo === true) {
         {
@@ -19982,9 +20067,13 @@ module.exports = function (Gibberish) {
           // hold running sum
           const sum = g.data(1, 1, { meta: true });
 
-          sum[0] = genish.sub(genish.add(sum[0], g.abs(genish.add(input[0], input[1]))), g.peek(buffer, bufferPhaseOut, { mode: 'simple' }));
+          const mono = g.abs(genish.add(input[0], input[1]));
 
-          avg = genish.mul(genish.div(sum[0], props.bufferSize), multiplier);
+          sum[0] = genish.sub(genish.add(sum[0], mono), g.peek(buffer, bufferPhaseOut, { mode: 'simple' }));
+
+          g.poke(buffer, g.abs(mono), bufferPhaseOut);
+
+          avg = genish.add(genish.mul(genish.div(sum[0], props.bufferSize), multiplier), offset);
         }
       } else {
         {
@@ -19999,25 +20088,13 @@ module.exports = function (Gibberish) {
 
           g.poke(buffer, g.abs(input), bufferPhaseOut);
 
-          avg = genish.mul(genish.div(sum[0], props.bufferSize), multiplier);
+          avg = genish.add(genish.mul(genish.div(sum[0], props.bufferSize), multiplier), offset);
         }
       }
       Gibberish.utilities.getUID();
 
+      props.isStereo = false;
       const record = Gibberish.factory(follow_in, avg, ['analysis', 'follow_in'], props);
-
-      //const record = {
-      //  callback,
-      //  input:props.input,
-      //  isStereo,
-      //  dirty:true,
-      //  inputNames:[ 'input', 'memory' ],
-      //  inputs:[ props.input ],
-      //  type:'analysis',
-      //  id: Gibberish.utilities.getUID(),
-
-      //  __properties__: { input:props.input },
-      //}
 
       // nonsense to make our custom function work
       record.callback.ugenName = record.ugenName = `follow_in_${follow_out.id}`;
@@ -20037,7 +20114,8 @@ module.exports = function (Gibberish) {
   Follow.defaults = {
     input: 0,
     bufferSize: 1024,
-    multiplier: 1
+    multiplier: 1,
+    offset: 0
   };
 
   return Follow;
@@ -22676,6 +22754,8 @@ let Gibberish = {
 
   processUgen( ugen, block ) {
     if( block === undefined ) block = []
+    if( ugen === undefined ) return block
+
 
     let dirtyIdx = Gibberish.dirtyUgens.indexOf( ugen )
 
@@ -23099,8 +23179,10 @@ module.exports = function (Gibberish) {
         if (genish.eq(props.panVoices, true)) {
           panner = g.pan(synthWithGain, synthWithGain, g.in('pan'));
           syn.graph = [panner.left, panner.right];
+          syn.isStereo = true;
         } else {
           syn.graph = synthWithGain;
+          syn.isStereo = false;
         }
       }
 
@@ -23328,8 +23410,10 @@ module.exports = function( Gibberish ) {
     if( properties.panVoices ) {  
       const panner = g.pan( withGain, withGain, g.in( 'pan' ) )
       syn = Gibberish.factory( syn, [panner.left, panner.right], ['instruments','karplus'], props  )
+      syn.isStereo = true
     }else{
       syn = Gibberish.factory( syn, withGain, ['instruments','karplus'], props )
+      syn.isStereo = false 
     }
 
     return syn
@@ -23480,8 +23564,10 @@ module.exports = function (Gibberish) {
       if (props.panVoices) {
         const panner = g.pan(filteredOsc, filteredOsc, g.in('pan'));
         syn.graph = [g.mul(panner.left, g.in('gain'), Loudness), g.mul(panner.right, g.in('gain'), Loudness)];
+        syn.isStereo = true;
       } else {
         syn.graph = g.mul(filteredOsc, g.in('gain'), Loudness);
+        syn.isStereo = false;
       }
 
       syn.env = env;
@@ -24065,8 +24151,10 @@ module.exports = function (Gibberish) {
         if (genish.eq(syn.panVoices, true)) {
           panner = g.pan(synthWithGain, synthWithGain, g.in('pan'));
           syn.graph = [panner.left, panner.right];
+          syn.isStereo = true;
         } else {
           syn.graph = synthWithGain;
+          syn.isStereo = false;
         }
 
         syn.env = env;
@@ -24107,8 +24195,7 @@ module.exports = function (Gibberish) {
     Q: .25,
     cutoff: .5,
     filterType: 1,
-    filterMode: 0,
-    isStereo: false
+    filterMode: 0
 
     // do not include velocity, which shoudl always be per voice
   };let PolySynth = Gibberish.PolyTemplate(Synth, ['frequency', 'attack', 'decay', 'pulsewidth', 'pan', 'gain', 'glide', 'saturation', 'filterMult', 'Q', 'cutoff', 'resonance', 'antialias', 'filterType', 'waveform', 'filterMode', '__triggerLoudness', 'loudness']);
@@ -27606,6 +27693,7 @@ for( let name in ops ) {
     const __op = Object.create( Alterations[ name ].prototype )
     __op.sdf = sdf
     __op.variables = []
+    __op.__desc = { parameters:[] }
 
     for( let i = 0; i < op.variables.length; i++ ) {
       const propArray = op.variables[ i ]
@@ -27613,6 +27701,7 @@ for( let name in ops ) {
       const propType = propArray[ 1 ]
       const propValue = args[ i ] === undefined ? propArray[ 2 ] : args[ i ]
 
+      __op.__desc.parameters.push({ name:propName, value:propValue })
       let param
 
       switch( propType ) {
@@ -27828,12 +27917,23 @@ module.exports = BG
 },{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],241:[function(require,module,exports){
 const Camera = {
   init( gl, program, handler ) {
-    const camera_pos = gl.getUniformLocation( program, 'camera_pos' )
-    const camera_normal = gl.getUniformLocation( program, 'camera_normal' )
+    const camera_pos    = gl.getUniformLocation( program, 'camera_pos' )
+    //const camera_normal = gl.getUniformLocation( program, 'camera_normal' )
+    const camera_rot    = gl.getUniformLocation( program, 'camera_rot' )
 
     this.pos = { dirty:false }
     this.dir = { dirty:true }
-    
+    this.__rot = { dirty:true, value:0 }
+
+    Object.defineProperty( this, 'rotation', {
+      configurable:true,
+      get() { return this.__rot.value },
+      set(v) { 
+        this.__rot.value = v 
+        this.__rot.dirty = true
+      }
+    })
+
     let px = 0, py =0, pz = 5, nx = 0, ny = 0, nz = 0
     Object.defineProperties( this.pos, {
       x: {
@@ -27870,17 +27970,22 @@ const Camera = {
     })
 
     let init = false
-    gl.uniform3f( camera_pos, this.pos.x, this.pos.y, this.pos.z )
-    gl.uniform3f( camera_normal, this.dir.x, this.dir.y, this.dir.z )
+    gl.uniform3f( camera_pos,    this.pos.x, this.pos.y, this.pos.z )
+    //gl.uniform3f( camera_normal, this.dir.x, this.dir.y, this.dir.z )
+    gl.uniform1f( camera_rot, this.rot ) 
 
     handler( ()=> {
       if( this.pos.dirty === true ) {
         gl.uniform3f( camera_pos, this.pos.x, this.pos.y, this.pos.z )
         this.pos.dirty = false
       }
-      if( this.dir.dirty === true ) {
-        gl.uniform3f( camera_normal, this.dir.x, this.dir.y, this.dir.z )
-        this.dir.dirty = false
+      //if( this.dir.dirty === true ) {
+      //  gl.uniform3f( camera_normal, this.dir.x, this.dir.y, this.dir.z )
+      //  this.dir.dirty = false
+      //}
+      if( this.__rot.dirty === true ) {
+        gl.uniform1f( camera_rot, this.__rot.value )
+        this.__rot.dirty = false
       }
     })
 
@@ -28419,8 +28524,6 @@ const getDomainOps = function( SDF ) {
         let arg = args[ count ]
         let __var
 
-        console.log( prop.name, arg )
-
         switch( prop.type ) {
           case 'vec2':
             if( typeof arg === 'number' ) arg = Vec2( arg )
@@ -28906,7 +29009,7 @@ const Lights = function( SDF ) {
       global() {
         const shadow = SDF.__scene.__shadow
 
-        const str = glsl(["#define GLSLIFY 1\n\n\n        vec3 global( vec3 pos, vec3 nor, vec3 ro, vec3 rd, Material mat, Light lights[MAX_LIGHTS] ) {\n          Light light = lights[ 0 ];\n          vec3  ref = reflect( rd, nor ); // reflection angle\n          float occ = ao( pos, nor );\n          vec3  lig = normalize( light.position ); // light position\n          float amb = clamp( 0.5 + 0.5 * nor.y, 0.0, 1.0 );\n          float dif = clamp( dot( nor, lig ), 0.0, 1.0 );\n\n          vec4 textureColor;\n          if( mat.textureID > -1 ) {\n            textureColor = texture( textures[ mat.textureID ], pos.xy ); \n          }else{\n            textureColor = vec4(1.);\n          }\n\n          // simulated backlight\n          float bac = clamp( dot( nor, normalize( vec3( -lig.x, 0.0 , -lig.z ))), 0.0, 1.0 ) * clamp( 1.0-pos.y, 0.0 ,1.0 );\n\n          // simulated skydome light\n          float dom = smoothstep( -0.1, 0.1, ref.y );\n          float fre = pow( clamp( 1.0 + dot( nor,rd ),0.0,1.0 ), 3.0);\n          float spe = pow( clamp( dot( ref, lig ), 0.0, 1.0 ), 8.0 );\n\n          dif *= softshadow( pos, lig, 0.02, 2.5, "," );\n          dom *= softshadow( pos, ref, 0.02, 2.5, "," );\n\n          vec3 brdf = vec3( 0.0 );\n          brdf += 1.20 * dif * vec3( 1.00,0.90,0.60 ) * mat.diffuse * light.color;\n          brdf += 2.20 * spe * vec3( 1.00,0.90,0.60 ) * dif * mat.specular * light.color;\n          brdf += 0.30 * amb * vec3( 0.50,0.70,1.00 ) * occ * mat.ambient * light.color;\n          brdf += 0.40 * dom * vec3( 0.50,0.70,1.00 );\n          brdf += 0.70 * bac * vec3( 0.25 );\n          brdf += 0.40 * (fre * light.color);\n\n          return brdf * textureColor.xyz;\n        }\n        ",""],shadow.toFixed(1),shadow.toFixed(1))
+        const str = glsl(["#define GLSLIFY 1\n\n\n        vec3 global( vec3 pos, vec3 nor, vec3 ro, vec3 rd, Material mat, Light lights[MAX_LIGHTS] ) {\n          Light light = lights[ 0 ];\n          vec3  ref = reflect( rd, nor ); // reflection angle\n          float occ = ao( pos, nor );\n          vec3  lig = normalize( light.position ); // light position\n          float amb = clamp( 0.5 + 0.5 * nor.y, 0.0, 1.0 );\n          float dif = clamp( dot( nor, lig ), 0.0, 1.0 );\n\n          vec4 textureColor;\n          /*\n          if( mat.textureID > -1 ) {\n            textureColor = texture( textures[ mat.textureID ], pos.xy ); \n          }else{\n            textureColor = vec4(1.);\n          }*/\n          textureColor = vec4(1.);\n\n          // simulated backlight\n          float bac = clamp( dot( nor, normalize( vec3( -lig.x, 0.0 , -lig.z ))), 0.0, 1.0 ) * clamp( 1.0-pos.y, 0.0 ,1.0 );\n\n          // simulated skydome light\n          float dom = smoothstep( -0.1, 0.1, ref.y );\n          float fre = pow( clamp( 1.0 + dot( nor,rd ),0.0,1.0 ), 3.0);\n          float spe = pow( clamp( dot( ref, lig ), 0.0, 1.0 ), 8.0 );\n\n          dif *= softshadow( pos, lig, 0.02, 2.5, "," );\n          dom *= softshadow( pos, ref, 0.02, 2.5, "," );\n\n          vec3 brdf = vec3( 0.0 );\n          brdf += 1.20 * dif * vec3( 1.00,0.90,0.60 ) * mat.diffuse * light.color;\n          brdf += 2.20 * spe * vec3( 1.00,0.90,0.60 ) * dif * mat.specular * light.color;\n          brdf += 0.30 * amb * vec3( 0.50,0.70,1.00 ) * occ * mat.ambient * light.color;\n          brdf += 0.40 * dom * vec3( 0.50,0.70,1.00 );\n          brdf += 0.70 * bac * vec3( 0.25 );\n          brdf += 0.40 * (fre * light.color);\n\n          return brdf * textureColor.xyz;\n        }\n        ",""],shadow.toFixed(1),shadow.toFixed(1))
 
         return str
       },
@@ -28918,7 +29021,7 @@ const Lights = function( SDF ) {
           ? `diffuseCoefficient *= softshadow( surfacePosition, normalize( light.position ), 0.02, 2.5, ${shadow.toFixed(1)} );` 
           : ''
 
-        const str = glsl(["#define GLSLIFY 1\n  \n        vec4 texcube( sampler2D sam, in vec3 p, in vec3 n, in float scale ) {\n            vec3 m = pow( abs( n ), vec3(scale) );\n            vec4 x = texture( sam, p.yz );\n            vec4 y = texture( sam, p.zx );\n            vec4 z = texture( sam, p.xy );\n            return (x*m.x + y*m.y + z*m.z) / (m.x + m.y + m.z);\n        }\n        // p = point on surface, p0 = object center\n        vec2 getUVCubic(vec3 p, vec3 p0){\n            \n          // Center the surface position about the zero point.\n          p -= p0;\n            \n          vec3 absp = abs(p);\n            \n          // First conditional: If the point is in one of the sextants to the left or right of the x-axis, the uv cordinate will be (0.5*p.zy)/(p.x).\n          // If you trace a line out to a zy plane that is 0.5 units from the zero origin,  (0.5*p.xyz)/(p.x) will be the result, and\n          // the yz components will be our uv coordinates, hence (0.5*p.zy)/(p.x).\n          vec2 uv = ((absp.x>=absp.y)&&(absp.x>=absp.z)) ? (0.5*p.zy)/(p.x) : ((absp.y>=absp.z)&&(absp.y>=absp.x)) ? (0.5*p.xz)/(p.y) : (-0.5*p.xy)/(p.z);\n            \n          //We still need to determine which side our uv cordinates are on so that the texture orients the right way. Note that there's some \n          // redundancy there, which I'll fix at some stage. For now, it works, so I'm not touching it. :)\n          if( ((p.x<0.)&&(absp.x>=absp.y)&&(absp.x>=absp.z)) || ((p.y<0.)&&(absp.y>=absp.z)&&(absp.y>=absp.x)) || ((p.z>0.)&&(absp.z>=absp.x)&&(absp.z>=absp.y)) ) uv.y*=-1.;\n                 \n          // Mapping the uv range from [-0.5, 0.5] to [0.0, 1.0].\n          return (uv+0.5);\n        }\n\n        vec3 directional( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) {\n          vec3  outputColor   = vec3( 0. );\n   \n          // applies to all lights\n          float occlusion = ao( surfacePosition, normal );\n\n          vec4 textureColor;\n          if( mat.textureID > -1 ) {\n            //textureColor = texcube( textures[ mat.textureID ], surfacePosition, normal, 1. );//texture( textures[ mat.textureID ], surfacePosition.xy - normal.xy ); \n            vec2 uv = getUVCubic( surfacePosition, vec3(0.) );//surfacePosition.xz*vec2(0.03,0.07);\n            textureColor = texture( textures[ mat.textureID ], uv );\n          }else{\n            textureColor = vec4(0.);\n          }\n\n          outputColor = textureColor.xyz;\n\n          for( int i = 0; i < 20000; i++ ) {\n            if( i >= MAX_LIGHTS ) break;\n\n            Light light = lights[ i ];\n\n            vec3 surfaceToLightDirection = normalize( light.position - surfacePosition );\n            \n            // get similarity between normal and direction to light\n            float diffuseCoefficient = dot( normal, surfaceToLightDirection ); \n\n            // get reflection angle for light striking surface\n            vec3 angleOfReflection = reflect( -surfaceToLightDirection, normal );\n\n            // see if reflected light travels to camera and generate coefficient accordingly\n            float specularAngle = clamp( dot( angleOfReflection, -rayDirection ), 0., 1. );\n            float specularCoefficient = pow( specularAngle, mat.shininess );\n\n            // lights should have an attenuation factor\n            float attenuation = 1. / ( light.attenuation * pow( length( light.position - surfacePosition ), 2. ) ); \n\n            // bias, scale, power\n            float fresnel = mat.fresnel.x + mat.fresnel.y * pow( 1.0 + dot( rayDirection, normal ), mat.fresnel.z ); \n\n            ","\n\n            vec3 color = vec3( 0. );\n            color += 1.2 * diffuseCoefficient * mat.diffuse * light.color;\n            color += 2.2 * specularCoefficient * mat.specular * light.color;\n            color += 0.3 * (mat.ambient * light.color) * occlusion;\n            color += (fresnel * light.color);\n\n            // texture\n            //color *= textureColor.xyz;\n\n            // gamma correction must occur before light attenuation\n            // which means it must be applied on a per-light basis unfortunately\n            vec3 gammaCorrectedColor = pow( color, vec3( 1./2.2 ) );\n            vec3 attenuatedColor = 2. * gammaCorrectedColor * attenuation; \n\n            outputColor += attenuatedColor;\n          }\n\n          return outputColor;\n        }\n        ",""],__shadow)
+        const str = glsl(["#define GLSLIFY 1\n  \n        vec4 texcube( sampler2D sam, in vec3 p, in vec3 n, in float scale ) {\n            vec3 m = pow( abs( n ), vec3(scale) );\n            vec4 x = texture( sam, p.yz );\n            vec4 y = texture( sam, p.zx );\n            vec4 z = texture( sam, p.xy );\n            return (x*m.x + y*m.y + z*m.z) / (m.x + m.y + m.z);\n        }\n        // p = point on surface, p0 = object center\n        vec2 getUVCubic(vec3 p, vec3 p0){\n            \n          // Center the surface position about the zero point.\n          p -= p0;\n            \n          vec3 absp = abs(p);\n            \n          // First conditional: If the point is in one of the sextants to the left or right of the x-axis, the uv cordinate will be (0.5*p.zy)/(p.x).\n          // If you trace a line out to a zy plane that is 0.5 units from the zero origin,  (0.5*p.xyz)/(p.x) will be the result, and\n          // the yz components will be our uv coordinates, hence (0.5*p.zy)/(p.x).\n          vec2 uv = ((absp.x>=absp.y)&&(absp.x>=absp.z)) ? (0.5*p.zy)/(p.x) : ((absp.y>=absp.z)&&(absp.y>=absp.x)) ? (0.5*p.xz)/(p.y) : (-0.5*p.xy)/(p.z);\n            \n          //We still need to determine which side our uv cordinates are on so that the texture orients the right way. Note that there's some \n          // redundancy there, which I'll fix at some stage. For now, it works, so I'm not touching it. :)\n          if( ((p.x<0.)&&(absp.x>=absp.y)&&(absp.x>=absp.z)) || ((p.y<0.)&&(absp.y>=absp.z)&&(absp.y>=absp.x)) || ((p.z>0.)&&(absp.z>=absp.x)&&(absp.z>=absp.y)) ) uv.y*=-1.;\n                 \n          // Mapping the uv range from [-0.5, 0.5] to [0.0, 1.0].\n          return (uv+0.5);\n        }\n\n        vec3 directional( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) {\n          vec3  outputColor   = vec3( 0. );\n   \n          // applies to all lights\n          float occlusion = ao( surfacePosition, normal );\n\n          /*\n          vec4 textureColor;\n          if( mat.textureID > -1 ) {\n            //textureColor = texcube( textures[ mat.textureID ], surfacePosition, normal, 1. );//texture( textures[ mat.textureID ], surfacePosition.xy - normal.xy ); \n            vec2 uv = getUVCubic( surfacePosition, vec3(0.) );//surfacePosition.xz*vec2(0.03,0.07);\n            textureColor = texture( textures[ mat.textureID ], uv );\n          }else{\n            textureColor = vec4(0.);\n          }\n\n          outputColor = textureColor.xyz;\n          */\n\n          for( int i = 0; i < 20000; i++ ) {\n            if( i >= MAX_LIGHTS ) break;\n\n            Light light = lights[ i ];\n\n            vec3 surfaceToLightDirection = normalize( light.position - surfacePosition );\n            \n            // get similarity between normal and direction to light\n            float diffuseCoefficient = dot( normal, surfaceToLightDirection ); \n\n            // get reflection angle for light striking surface\n            vec3 angleOfReflection = reflect( -surfaceToLightDirection, normal );\n\n            // see if reflected light travels to camera and generate coefficient accordingly\n            float specularAngle = clamp( dot( angleOfReflection, -rayDirection ), 0., 1. );\n            float specularCoefficient = pow( specularAngle, mat.shininess );\n\n            // lights should have an attenuation factor\n            float attenuation = 1. / ( light.attenuation * pow( length( light.position - surfacePosition ), 2. ) ); \n\n            // bias, scale, power\n            float fresnel = mat.fresnel.x + mat.fresnel.y * pow( 1.0 + dot( rayDirection, normal ), mat.fresnel.z ); \n\n            ","\n\n            vec3 color = vec3( 0. );\n            color += 1.2 * diffuseCoefficient * mat.diffuse * light.color;\n            color += 2.2 * specularCoefficient * mat.specular * light.color;\n            color += 0.3 * (mat.ambient * light.color) * occlusion;\n            color += (fresnel * light.color);\n\n            // texture\n            //color *= textureColor.xyz;\n\n            // gamma correction must occur before light attenuation\n            // which means it must be applied on a per-light basis unfortunately\n            vec3 gammaCorrectedColor = pow( color, vec3( 1./2.2 ) );\n            vec3 attenuatedColor = 2. * gammaCorrectedColor * attenuation; \n\n            outputColor += attenuatedColor;\n          }\n\n          return outputColor;\n        }\n        ",""],__shadow)
 
         return str
       }, 
@@ -30113,7 +30216,7 @@ module.exports = createPrimitives
 const glsl = require( 'glslify' )
 
 module.exports = function( variables, scene, preface, geometries, lighting, postprocessing, steps=90, minDistance=.001, maxDistance=20 ) {
-    const fs_source = glsl(["     #version 300 es\n      precision highp float;\n#define GLSLIFY 1\n\n\n      float PI = 3.141592653589793;\n\n      in vec2 v_uv;\n\n      struct Light {\n        vec3 position;\n        vec3 color;\n        float attenuation;\n      };\n\n      struct Material {\n        int  mode;\n        vec3 ambient;\n        vec3 diffuse;\n        vec3 specular;\n        float shininess;\n        vec3 fresnel;\n        int textureID;\n      };     \n\n      uniform float time;\n      uniform vec2 resolution;\n      uniform vec3 camera_pos;\n      uniform vec3 camera_normal;\n\n      ","\n\n      // must be before geometries!\n      float length8( vec2 p ) { \n        return float( pow( pow(p.x,8.)+pow(p.y,8.), 1./8. ) ); \n      }\n\n      /* GEOMETRIES */\n      ","\n\n      vec2 scene(vec3 p);\n\n      // Originally sourced from https://www.shadertoy.com/view/ldfSWs\n// Thank you Iñigo :)\n\nvec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir, float maxd, float precis) {\n  float latest = precis * 2.0;\n  float dist   = +0.0;\n  float type   = -1.0;\n  vec2  res    = vec2(-1.0, -1.0);\n\n  for (int i = 0; i < "," ; i++) {\n    if (latest < precis || dist > maxd) break;\n\n    vec2 result = scene(rayOrigin + rayDir * dist);\n\n    latest = result.x;\n    type   = result.y;\n    dist  += latest;\n  }\n\n  if (dist < maxd) {\n    res = vec2(dist, type);\n  }\n\n  return res;\n}\n\nvec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir) {\n  return calcRayIntersection(rayOrigin, rayDir, 20.0, 0.001);\n}\n\n      // Originally sourced from https://www.shadertoy.com/view/ldfSWs\n// Thank you Iñigo :)\n\nvec3 calcNormal(vec3 pos, float eps) {\n  const vec3 v1 = vec3( 1.0,-1.0,-1.0);\n  const vec3 v2 = vec3(-1.0,-1.0, 1.0);\n  const vec3 v3 = vec3(-1.0, 1.0,-1.0);\n  const vec3 v4 = vec3( 1.0, 1.0, 1.0);\n\n  return normalize( v1 * scene ( pos + v1*eps ).x +\n                    v2 * scene ( pos + v2*eps ).x +\n                    v3 * scene ( pos + v3*eps ).x +\n                    v4 * scene ( pos + v4*eps ).x );\n}\n\nvec3 calcNormal(vec3 pos) {\n  return calcNormal(pos, 0.002);\n}\n\n      mat3 calcLookAtMatrix(vec3 origin, vec3 target, float roll) {\n  vec3 rr = vec3(sin(roll), cos(roll), 0.0);\n  vec3 ww = normalize(target - origin);\n  vec3 uu = normalize(cross(ww, rr));\n  vec3 vv = normalize(cross(uu, ww));\n\n  return mat3(uu, vv, ww);\n}\n\nvec3 getRay(mat3 camMat, vec2 screenPos, float lensLength) {\n  return normalize(camMat * vec3(screenPos, lensLength));\n}\n\nvec3 getRay(vec3 origin, vec3 target, vec2 screenPos, float lensLength) {\n  mat3 camMat = calcLookAtMatrix(origin, target, 0.0);\n  return getRay(camMat, screenPos, lensLength);\n}\n\n      // OPS\n      float opU( float d1, float d2 )\n{\n    return min(d1,d2);\n}\n\nvec2 opU( vec2 d1, vec2 d2 ){\n\treturn ( d1.x < d2.x ) ? d1 : d2;\n}\n\n      float opI( float d1, float d2 ) {\n        return max(d1,d2);\n      }\n\n      vec2 opI( vec2 d1, vec2 d2 ) {\n        return ( d1.x > d2.x ) ? d1 : d2; //max(d1,d2);\n      }\n\n      float opS( float d1, float d2 ) { return max(d1,-d2); }\n      vec2  opS( vec2 d1, vec2 d2 ) {\n        return d1.x >= -d2.x ? vec2( d1.x, d1.y ) : vec2(-d2.x, d2.y);\n      }\n\n      /* ******** from http://mercury.sexy/hg_sdf/ ********* */\n\n      float fOpUnionStairs(float a, float b, float r, float n) {\n        float s = r/n;\n        float u = b-r;\n        return min(min(a,b), 0.5 * (u + a + abs ((mod (u - a + s, 2. * s)) - s)));\n      }\n      vec2 fOpUnionStairs(vec2 a, vec2 b, float r, float n) {\n        float s = r/n;\n        float u = b.x-r;\n        return vec2( min(min(a.x,b.x), 0.5 * (u + a.x + abs ((mod (u - a.x + s, 2. * s)) - s))), a.y );\n      }\n\n      // We can just call Union since stairs are symmetric.\n      float fOpIntersectionStairs(float a, float b, float r, float n) {\n        return -fOpUnionStairs(-a, -b, r, n);\n      }\n\n      float fOpSubstractionStairs(float a, float b, float r, float n) {\n        return -fOpUnionStairs(-a, b, r, n);\n      }\n\n      vec2 fOpIntersectionStairs(vec2 a, vec2 b, float r, float n) {\n        return vec2( -fOpUnionStairs(-a.x, -b.x, r, n), a.y );\n      }\n\n      vec2 fOpSubstractionStairs(vec2 a, vec2 b, float r, float n) {\n        return vec2( -fOpUnionStairs(-a.x, b.x, r, n), a.y );\n      }\n\n      float fOpUnionRound(float a, float b, float r) {\n        vec2 u = max(vec2(r - a,r - b), vec2(0));\n        return max(r, min (a, b)) - length(u);\n      }\n\n      float fOpIntersectionRound(float a, float b, float r) {\n        vec2 u = max(vec2(r + a,r + b), vec2(0));\n        return min(-r, max (a, b)) + length(u);\n      }\n\n      float fOpDifferenceRound (float a, float b, float r) {\n        return fOpIntersectionRound(a, -b, r);\n      }\n\n      vec2 fOpUnionRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpUnionRound( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpIntersectionRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpIntersectionRound( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpDifferenceRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpDifferenceRound( a.x, b.x, r ), a.y );\n      }\n\n      float fOpUnionChamfer(float a, float b, float r) {\n        return min(min(a, b), (a - r + b)*sqrt(0.5));\n      }\n\n      float fOpIntersectionChamfer(float a, float b, float r) {\n        return max(max(a, b), (a + r + b)*sqrt(0.5));\n      }\n\n      float fOpDifferenceChamfer (float a, float b, float r) {\n        return fOpIntersectionChamfer(a, -b, r);\n      }\n      vec2 fOpUnionChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpUnionChamfer( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpIntersectionChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpIntersectionChamfer( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpDifferenceChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpDifferenceChamfer( a.x, b.x, r ), a.y );\n      }\n\n      float fOpPipe(float a, float b, float r) {\n        return length(vec2(a, b)) - r;\n      }\n      float fOpEngrave(float a, float b, float r) {\n        return max(a, (a + r - abs(b))*sqrt(0.5));\n      }\n\n      float fOpGroove(float a, float b, float ra, float rb) {\n        return max(a, min(a + ra, rb - abs(b)));\n      }\n      float fOpTongue(float a, float b, float ra, float rb) {\n        return min(a, max(a - ra, abs(b) - rb));\n      }\n\n      vec2 fOpPipe( vec2 a, vec2 b, float r ) { return vec2( fOpPipe( a.x, b.x, r ), a.y ); }\n      vec2 fOpEngrave( vec2 a, vec2 b, float r ) { return vec2( fOpEngrave( a.x, b.x, r ), a.y ); }\n      vec2 fOpGroove( vec2 a, vec2 b, float ra, float rb ) { return vec2( fOpGroove( a.x, b.x, ra, rb ), a.y ); }\n      vec2 fOpTongue( vec2 a, vec2 b, float ra, float rb ) { return vec2( fOpTongue( a.x, b.x, ra, rb ), a.y ); }\n\n      float opOnion( in float sdf, in float thickness ){\n        return abs(sdf)-thickness;\n      }\n\n      float opHalve( in float sdf, vec3 p, in int dir ){\n        float _out = 0.;\n        switch( dir ) {\n          case 0:  \n            _out = max( sdf, p.y );\n            break;\n          case 1:\n            _out = max( sdf, -p.y );\n            break;\n          case 2:\n            _out = max( sdf, p.x );\n            break;\n          case 3:\n            _out = max( sdf, -p.x );\n            break;\n        }\n\n        return _out;\n      }\n\n      vec4 opElongate( in vec3 p, in vec3 h ) {\n        //return vec4( p-clamp(p,-h,h), 0.0 ); // faster, but produces zero in the interior elongated box\n        \n        vec3 q = abs(p)-h;\n        return vec4( max(q,0.0), min(max(q.x,max(q.y,q.z)),0.0) );\n      }\n\n      vec3 polarRepeat(vec3 p, float repetitions) {\n        float angle = 2.*PI/repetitions;\n        float a = atan(p.z, p.x) + angle/2.;\n        float r = length(p.xz);\n        float c = floor(a/angle);\n        a = mod(a,angle) - angle/2.;\n        vec3 _p = vec3( cos(a) * r, p.y,  sin(a) * r );\n        // For an odd number of repetitions, fix cell index of the cell in -x direction\n        // (cell index would be e.g. -5 and 5 in the two halves of the cell):\n        if (abs(c) >= (repetitions/2.)) c = abs(c);\n        return _p;\n      }\n\n      /* ******************************************************* */\n\n      // added k value to glsl-sdf-ops/soft-shadow\n      float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax, in float k ){\n        float res = 1.0;\n        float t = mint;\n\n        for( int i = 0; i < 16; i++ ) {\n          float h = scene( ro + rd * t ).x;\n          res = min( res, k * h / t );\n          t += clamp( h, 0.02, 0.10 );\n          if( h<0.001 || t>tmax ) break;\n        }\n\n        return clamp( res, 0.0, 1.0 );\n      }\n\n","\n\n      vec2 scene(vec3 p) {\n","\n        return ",";\n      }\n \n\n      out vec4 col;\n\n      void main() {\n        vec2 pos = v_uv * 2.0 - 1.0;\n        pos.x *= ( resolution.x / resolution.y );\n        vec3 color = bg; \n        vec3 ro = camera_pos;\n\n        //float cameraAngle  = 0.8 * time;\n        //vec3  rayOrigin    = vec3(3.5 * sin(cameraAngle), 3.0, 3.5 * cos(cameraAngle));\n\n        vec3 rd = getRay( ro, camera_normal, pos, 2.0 );\n\n        vec2 t = calcRayIntersection( ro, rd, ",", "," );\n        if( t.x > -0.5 ) {\n          vec3 pos = ro + rd * t.x;\n          vec3 nor = calcNormal( pos );\n\n          color = lighting( pos, nor, ro, rd, t.y ); \n        }\n\n        ","\n        \n\n        col = vec4( color, 1.0 );\n      }",""],variables,geometries,steps,lighting,preface,scene,maxDistance,minDistance,postprocessing)
+    const fs_source = glsl(["     #version 300 es\n      precision highp float;\n#define GLSLIFY 1\n\n\n      float PI = 3.141592653589793;\n\n      in vec2 v_uv;\n\n      struct Light {\n        vec3 position;\n        vec3 color;\n        float attenuation;\n      };\n\n      struct Material {\n        int  mode;\n        vec3 ambient;\n        vec3 diffuse;\n        vec3 specular;\n        float shininess;\n        vec3 fresnel;\n        int textureID;\n      };     \n\n      uniform float time;\n      uniform vec2 resolution;\n      uniform vec3 camera_pos;\n      uniform vec3 camera_normal;\n      uniform float camera_rot;\n\n      ","\n\n      // must be before geometries!\n      float length8( vec2 p ) { \n        return float( pow( pow(p.x,8.)+pow(p.y,8.), 1./8. ) ); \n      }\n\n      /* GEOMETRIES */\n      ","\n\n      vec2 scene(vec3 p);\n\n      // Originally sourced from https://www.shadertoy.com/view/ldfSWs\n// Thank you Iñigo :)\n\nvec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir, float maxd, float precis) {\n  float latest = precis * 2.0;\n  float dist   = +0.0;\n  float type   = -1.0;\n  vec2  res    = vec2(-1.0, -1.0);\n\n  for (int i = 0; i < "," ; i++) {\n    if (latest < precis || dist > maxd) break;\n\n    vec2 result = scene(rayOrigin + rayDir * dist);\n\n    latest = result.x;\n    type   = result.y;\n    dist  += latest;\n  }\n\n  if (dist < maxd) {\n    res = vec2(dist, type);\n  }\n\n  return res;\n}\n\nvec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir) {\n  return calcRayIntersection(rayOrigin, rayDir, 20.0, 0.001);\n}\n\n      // Originally sourced from https://www.shadertoy.com/view/ldfSWs\n// Thank you Iñigo :)\n\nvec3 calcNormal(vec3 pos, float eps) {\n  const vec3 v1 = vec3( 1.0,-1.0,-1.0);\n  const vec3 v2 = vec3(-1.0,-1.0, 1.0);\n  const vec3 v3 = vec3(-1.0, 1.0,-1.0);\n  const vec3 v4 = vec3( 1.0, 1.0, 1.0);\n\n  return normalize( v1 * scene ( pos + v1*eps ).x +\n                    v2 * scene ( pos + v2*eps ).x +\n                    v3 * scene ( pos + v3*eps ).x +\n                    v4 * scene ( pos + v4*eps ).x );\n}\n\nvec3 calcNormal(vec3 pos) {\n  return calcNormal(pos, 0.002);\n}\n\n      mat3 calcLookAtMatrix(vec3 origin, vec3 target, float roll) {\n  vec3 rr = vec3(sin(roll), cos(roll), 0.0);\n  vec3 ww = normalize(target - origin);\n  vec3 uu = normalize(cross(ww, rr));\n  vec3 vv = normalize(cross(uu, ww));\n\n  return mat3(uu, vv, ww);\n}\n\nvec3 getRay(mat3 camMat, vec2 screenPos, float lensLength) {\n  return normalize(camMat * vec3(screenPos, lensLength));\n}\n\nvec3 getRay(vec3 origin, vec3 target, vec2 screenPos, float lensLength) {\n  mat3 camMat = calcLookAtMatrix(origin, target, 0.0);\n  return getRay(camMat, screenPos, lensLength);\n}\n\n      vec2 squareFrame(vec2 screenSize) {\n  vec2 position = 2.0 * (gl_FragCoord.xy / screenSize.xy) - 1.0;\n  position.x *= screenSize.x / screenSize.y;\n  return position;\n}\n\nvec2 squareFrame(vec2 screenSize, vec2 coord) {\n  vec2 position = 2.0 * (coord.xy / screenSize.xy) - 1.0;\n  position.x *= screenSize.x / screenSize.y;\n  return position;\n}\n\nvoid orbitCamera(\n  in float camAngle,\n  in float camHeight,\n  in float camDistance,\n  in vec2 screenResolution,\n  out vec3 rayOrigin,\n  out vec3 rayDirection\n) {\n  vec2 screenPos = squareFrame(screenResolution);\n  vec3 rayTarget = vec3(0.0);\n\n  rayOrigin = vec3(\n    camDistance * sin(camAngle),\n    camHeight,\n    camDistance * cos(camAngle)\n  );\n\n  rayDirection = getRay(rayOrigin, rayTarget, screenPos, 2.0);\n}\n\n      // OPS\n      float opU( float d1, float d2 )\n{\n    return min(d1,d2);\n}\n\nvec2 opU( vec2 d1, vec2 d2 ){\n\treturn ( d1.x < d2.x ) ? d1 : d2;\n}\n\n      float opI( float d1, float d2 ) {\n        return max(d1,d2);\n      }\n\n      vec2 opI( vec2 d1, vec2 d2 ) {\n        return ( d1.x > d2.x ) ? d1 : d2; //max(d1,d2);\n      }\n\n      float opS( float d1, float d2 ) { return max(d1,-d2); }\n      vec2  opS( vec2 d1, vec2 d2 ) {\n        return d1.x >= -d2.x ? vec2( d1.x, d1.y ) : vec2(-d2.x, d2.y);\n      }\n\n      /* ******** from http://mercury.sexy/hg_sdf/ ********* */\n\n      float fOpUnionStairs(float a, float b, float r, float n) {\n        float s = r/n;\n        float u = b-r;\n        return min(min(a,b), 0.5 * (u + a + abs ((mod (u - a + s, 2. * s)) - s)));\n      }\n      vec2 fOpUnionStairs(vec2 a, vec2 b, float r, float n) {\n        float s = r/n;\n        float u = b.x-r;\n        return vec2( min(min(a.x,b.x), 0.5 * (u + a.x + abs ((mod (u - a.x + s, 2. * s)) - s))), a.y );\n      }\n\n      // We can just call Union since stairs are symmetric.\n      float fOpIntersectionStairs(float a, float b, float r, float n) {\n        return -fOpUnionStairs(-a, -b, r, n);\n      }\n\n      float fOpSubstractionStairs(float a, float b, float r, float n) {\n        return -fOpUnionStairs(-a, b, r, n);\n      }\n\n      vec2 fOpIntersectionStairs(vec2 a, vec2 b, float r, float n) {\n        return vec2( -fOpUnionStairs(-a.x, -b.x, r, n), a.y );\n      }\n\n      vec2 fOpSubstractionStairs(vec2 a, vec2 b, float r, float n) {\n        return vec2( -fOpUnionStairs(-a.x, b.x, r, n), a.y );\n      }\n\n      float fOpUnionRound(float a, float b, float r) {\n        vec2 u = max(vec2(r - a,r - b), vec2(0));\n        return max(r, min (a, b)) - length(u);\n      }\n\n      float fOpIntersectionRound(float a, float b, float r) {\n        vec2 u = max(vec2(r + a,r + b), vec2(0));\n        return min(-r, max (a, b)) + length(u);\n      }\n\n      float fOpDifferenceRound (float a, float b, float r) {\n        return fOpIntersectionRound(a, -b, r);\n      }\n\n      vec2 fOpUnionRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpUnionRound( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpIntersectionRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpIntersectionRound( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpDifferenceRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpDifferenceRound( a.x, b.x, r ), a.y );\n      }\n\n      float fOpUnionChamfer(float a, float b, float r) {\n        return min(min(a, b), (a - r + b)*sqrt(0.5));\n      }\n\n      float fOpIntersectionChamfer(float a, float b, float r) {\n        return max(max(a, b), (a + r + b)*sqrt(0.5));\n      }\n\n      float fOpDifferenceChamfer (float a, float b, float r) {\n        return fOpIntersectionChamfer(a, -b, r);\n      }\n      vec2 fOpUnionChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpUnionChamfer( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpIntersectionChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpIntersectionChamfer( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpDifferenceChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpDifferenceChamfer( a.x, b.x, r ), a.y );\n      }\n\n      float fOpPipe(float a, float b, float r) {\n        return length(vec2(a, b)) - r;\n      }\n      float fOpEngrave(float a, float b, float r) {\n        return max(a, (a + r - abs(b))*sqrt(0.5));\n      }\n\n      float fOpGroove(float a, float b, float ra, float rb) {\n        return max(a, min(a + ra, rb - abs(b)));\n      }\n      float fOpTongue(float a, float b, float ra, float rb) {\n        return min(a, max(a - ra, abs(b) - rb));\n      }\n\n      vec2 fOpPipe( vec2 a, vec2 b, float r ) { return vec2( fOpPipe( a.x, b.x, r ), a.y ); }\n      vec2 fOpEngrave( vec2 a, vec2 b, float r ) { return vec2( fOpEngrave( a.x, b.x, r ), a.y ); }\n      vec2 fOpGroove( vec2 a, vec2 b, float ra, float rb ) { return vec2( fOpGroove( a.x, b.x, ra, rb ), a.y ); }\n      vec2 fOpTongue( vec2 a, vec2 b, float ra, float rb ) { return vec2( fOpTongue( a.x, b.x, ra, rb ), a.y ); }\n\n      float opOnion( in float sdf, in float thickness ){\n        return abs(sdf)-thickness;\n      }\n\n      float opHalve( in float sdf, vec3 p, in int dir ){\n        float _out = 0.;\n        switch( dir ) {\n          case 0:  \n            _out = max( sdf, p.y );\n            break;\n          case 1:\n            _out = max( sdf, -p.y );\n            break;\n          case 2:\n            _out = max( sdf, p.x );\n            break;\n          case 3:\n            _out = max( sdf, -p.x );\n            break;\n        }\n\n        return _out;\n      }\n\n      vec4 opElongate( in vec3 p, in vec3 h ) {\n        //return vec4( p-clamp(p,-h,h), 0.0 ); // faster, but produces zero in the interior elongated box\n        \n        vec3 q = abs(p)-h;\n        return vec4( max(q,0.0), min(max(q.x,max(q.y,q.z)),0.0) );\n      }\n\n      vec3 polarRepeat(vec3 p, float repetitions) {\n        float angle = 2.*PI/repetitions;\n        float a = atan(p.z, p.x) + angle/2.;\n        float r = length(p.xz);\n        float c = floor(a/angle);\n        a = mod(a,angle) - angle/2.;\n        vec3 _p = vec3( cos(a) * r, p.y,  sin(a) * r );\n        // For an odd number of repetitions, fix cell index of the cell in -x direction\n        // (cell index would be e.g. -5 and 5 in the two halves of the cell):\n        if (abs(c) >= (repetitions/2.)) c = abs(c);\n        return _p;\n      }\n\n      /* ******************************************************* */\n\n      // added k value to glsl-sdf-ops/soft-shadow\n      float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax, in float k ){\n        float res = 1.0;\n        float t = mint;\n\n        for( int i = 0; i < 16; i++ ) {\n          float h = scene( ro + rd * t ).x;\n          res = min( res, k * h / t );\n          t += clamp( h, 0.02, 0.10 );\n          if( h<0.001 || t>tmax ) break;\n        }\n\n        return clamp( res, 0.0, 1.0 );\n      }\n\n","\n\n      vec2 scene(vec3 p) {\n","\n        return ",";\n      }\n \n\n      out vec4 col;\n\n      void main() {\n        vec2 pos = v_uv * 2.0 - 1.0;\n        pos.x *= ( resolution.x / resolution.y );\n        vec3 color = bg; \n        vec3 ro = camera_pos;\n        vec3 rd = camera_normal;\n\n        //vec3 rd = camera( ro, camera_normal, pos, 2.0 );\n        orbitCamera( camera_rot, ro.y, ro.z, resolution, ro, rd );\n        \n        //camera( ro, camera_normal, pos, 2.0 );\n\n        vec2 t = calcRayIntersection( ro, rd, ",", "," );\n        if( t.x > -0.5 ) {\n          vec3 pos = ro + rd * t.x;\n          vec3 nor = calcNormal( pos );\n\n          color = lighting( pos, nor, ro, rd, t.y ); \n        }\n\n        ","\n        \n\n        col = vec4( color, 1.0 );\n      }",""],variables,geometries,steps,lighting,preface,scene,maxDistance,minDistance,postprocessing)
 
     return fs_source
   }
@@ -30327,7 +30430,7 @@ const __Textures = function( SDF ) {
     dirty( tex ) {},
    
     emit_decl() {
-      if( this.textures.length === 0 ) return `uniform sampler2D textures[1];` 
+      if( this.textures.length === 0 ) return ``//uniform sampler2D textures[1];` 
 
       let str = `uniform sampler2D textures[${this.textures.length}];\n\n` //= Texture[${this.textures.length}](`
 
@@ -30335,15 +30438,17 @@ const __Textures = function( SDF ) {
     },
     
     update_location( gl, program ) {
-      this.textures.sort( (a,b) => a.id > b.id ? 1 : -1 ) 
+      if( this.textures.length > 0 ) {
+        this.textures.sort( (a,b) => a.id > b.id ? 1 : -1 ) 
 
-      for( let tex of this.textures ) {
-        tex.loc = gl.getUniformLocation( program, `textures[${tex.id}]` )
-        tex.gltexture.bind( tex.id )
+        for( let tex of this.textures ) {
+          tex.loc = gl.getUniformLocation( program, `textures[${tex.id}]` )
+          tex.gltexture.bind( tex.id )
+        }
+
+        this.__textures = this.textures.slice( 0 )
+        this.textures.length = 0
       }
-
-      this.__textures = this.textures.slice( 0 )
-      this.textures.length = 0
     },
 
     upload_data( gl, program='' ) {
