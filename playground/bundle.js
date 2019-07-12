@@ -8155,7 +8155,8 @@ const Marker = {
         if( oldWidget !== null ) {
           // re-assign existing widget
           __obj.widget = oldWidget
-          delete Marker.waveform.widgets[ oldWidget.gen.id ]
+          //delete Marker.waveform.widgets[ oldWidget.gen.id ]
+          //debugger
           // leave function so that a new widget isn't created
           return
         }else if( __obj.widget !== undefined ) {
@@ -8765,9 +8766,30 @@ const createProxies = function( pre, post, proxiedObj ) {
 
 const shouldUseJSDSP = true
 
+let hidden = false
+const toggleGUI = function() {
+  hidden = !hidden
+  if( hidden === true ) {
+    cm.getWrapperElement().style.display = 'none'
+  }else{
+    cm.getWrapperElement().style.display = 'block'
+  }
+}
+
+delete CodeMirror.keyMap.default[ 'Ctrl-H' ]
+
+window.addEventListener( 'keydown', e => {
+  if( e.key === 'h' && e.ctrlKey === true ) {
+    toggleGUI()
+  }
+})
+
 CodeMirror.keyMap.playground =  {
   fallthrough:'default',
 
+  //'Ctrl-H'( cm ) {
+  //  toggleGUI()
+  //},
   'Ctrl-Enter'( cm ) {
     try {
       const selectedCode = getSelectionCodeColumn( cm, false )

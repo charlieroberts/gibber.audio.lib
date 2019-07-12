@@ -169,7 +169,8 @@ const Marker = {
         if( oldWidget !== null ) {
           // re-assign existing widget
           __obj.widget = oldWidget
-          delete Marker.waveform.widgets[ oldWidget.gen.id ]
+          //delete Marker.waveform.widgets[ oldWidget.gen.id ]
+          //debugger
           // leave function so that a new widget isn't created
           return
         }else if( __obj.widget !== undefined ) {

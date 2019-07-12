@@ -81,6 +81,19 @@ span.cm-string {color: rgb(225, 225, 225) !important }
  */
 
 /*.CodeMirror-matchingbracket{ color: #b00 !important }*/
+
+.Codemirror-activeline-background {
+  background:rgba(255,255,255,.2)
+}
+.CodeMirror pre {
+  background-color: rgba( 0,0,0,.75 ) !important;
+
+  float:left !important;
+  clear:left !important;
+
+  font-family:Menlo, sans-serif !important;
+}
+
 body { 
   margin: 0;
   box-sizing:border;

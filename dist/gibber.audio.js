@@ -7221,7 +7221,7 @@ const Graphics = {
 
         tidals:[],
 
-        render() {
+        render( animate=null ) {
           //if( Graphics.__scene.indexOf( instance ) === -1 ) {
           //  Graphics.__scene.push( instance )
           //}
@@ -7239,7 +7239,7 @@ const Graphics = {
             scene = scene.fog( Graphics.__fogAmount, Graphics.__fogColor )
           }
 
-          scene.render( Graphics.quality, Graphics.animate )
+          scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
 
           Graphics.camera.init()
 
@@ -7295,12 +7295,18 @@ const Graphics = {
 
       // needed for annotations
       to[ name ].value.id = to[ name ].value.varName
-      
-      Marching.callbacks.push( t => {
+
+      if( to[ name ].value.callback  !== undefined ) {
+        const idx = Marching.callbacks.indexOf( to[ name ].value.callback )
+        Marching.callbacks.splice( idx, 1 )
+      }
+      to[ name ].value.callback = t => {
         const val = gen()
         to[ name ] = val
+        //console.log( 'val:', val, to[ name ].value.widget !== undefined )
         Environment.codeMarkup.waveform.updateWidget( to[ name ].value.widget, val, false )
-      })
+      }
+      Marching.callbacks.push( to[ name ].value.callback )
     }
   },
 
@@ -29352,7 +29358,6 @@ const SDF = {
 
     let frameCount = 0
     const render = function( timestamp ){
-      this.currentTime = timestamp
       if( render.running === true && shouldAnimate === true ) {
         window.requestAnimationFrame( render )
       }else if( render.running === false ) {
@@ -29360,6 +29365,8 @@ const SDF = {
         return
       }
       
+      this.currentTime = timestamp
+
       if( this.delay !== 0 && this.delay >= frameCount ) {
         frameCount++
         return
