@@ -267,9 +267,6 @@ window.addEventListener( 'keydown', e => {
 CodeMirror.keyMap.playground =  {
   fallthrough:'default',
 
-  //'Ctrl-H'( cm ) {
-  //  toggleGUI()
-  //},
   'Ctrl-Enter'( cm ) {
     try {
       const selectedCode = getSelectionCodeColumn( cm, false )

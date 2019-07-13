@@ -97,9 +97,19 @@ const Graphics = {
     this.__running = true
   },
 
-  fog( amount=.25, color=Marching.vectors.Vec3(0) ) {
+  fog( amount=.25, color=Marching.vectors.Vec3(0), shouldRender=true) {
     this.__fogColor = color
     this.__fogAmount = amount
+    //if( shouldRender ) {
+    //  console.log( Graphics.scene )
+    //  console.log( Graphics[ Graphics.scene[0] ] )
+    //  let obj =   Graphics[ Graphics.scene[0] ]( ...Graphics.scene[1] ) 
+
+    //  obj.render()
+    //  //scene.render( Graphics.quality, Graphics.animate )
+
+    //  Graphics.camera.init()
+    //}
   },
 
   make( name, op ) {
@@ -137,9 +147,10 @@ const Graphics = {
 
           let scene = Marching.createScene( wrapped )
           if( Graphics.__fogAmount !== 0 ) {
-            scene = scene.fog( Graphics.__fogAmount, Graphics.__fogColor )
+            scene = scene.fog( Graphics.__fogAmount, Graphics.__fogColor, false )
           }
 
+          Graphics.scene = [ name, args ] 
           scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
 
           Graphics.camera.init()
@@ -197,17 +208,31 @@ const Graphics = {
       // needed for annotations
       to[ name ].value.id = to[ name ].value.varName
 
-      if( to[ name ].value.callback  !== undefined ) {
+      if( to[ name ].value.callback !== undefined ) {
         const idx = Marching.callbacks.indexOf( to[ name ].value.callback )
         Marching.callbacks.splice( idx, 1 )
       }
-      to[ name ].value.callback = t => {
-        const val = gen()
-        to[ name ] = val
-        //console.log( 'val:', val, to[ name ].value.widget !== undefined )
-        Environment.codeMarkup.waveform.updateWidget( to[ name ].value.widget, val, false )
+      if( typeof to[ name ].value === 'object' ) {
+        to[ name ].value.callback = t => {
+          const val = gen()
+          to[ name ] = val
+          //console.log( 'val:', val, to[ name ].value.widget !== undefined )
+          Environment.codeMarkup.waveform.updateWidget( to[ name ].value.widget, val, false )
+        }
+      }else{
+        to[ '__'+name ].callback = t => {
+          const val = gen()
+          to[ name ] = val
+          //console.log( 'val:', val, to[ name ].value.widget !== undefined )
+          Environment.codeMarkup.waveform.updateWidget( to[ '__'+name ].widget, val, false )
+        }
       }
-      Marching.callbacks.push( to[ name ].value.callback )
+
+      if( typeof to[ name ].value !== 'object' ) {
+        Marching.callbacks.push( to[ '__'+name ].callback )
+      }else{
+        Marching.callbacks.push( to[ name ].value.callback )
+      }
     }
   },
 
@@ -324,17 +349,24 @@ const Graphics = {
       },
     }
 
-    //const __getter = () => getter()
-    const __getter = () => {
-      return obj[ '__'+name ]
+    // determine if property is of type vector. if so, we need to create properties for the
+    // x,y,z, and w values (depending on the size of the vector.
+    if( wrapped[ name ].type !== undefined && wrapped[ name ].type.indexOf( 'vec' ) > -1 ) {
+      const props = ['x','y','z','w']
+      const size = parseInt( wrapped[ name ].type[3] )
+
+      for( let i = 0; i < size; i++ ) {
+        Graphics.createProperty( obj[ '__'+name ], props[ i ], wrapped[ name ][ props[i] ], wrapped[ name ] )
+        const id = obj[ '__'+name ].__id = Gibber.Gibberish.utilities.getUID()
+        Gibber.Gibberish.worklet.ugens.set( id, obj[ '__'+name ] )
+      }
     }
 
+    const __getter = () => obj[ '__'+name ]
     const __setter = v => {
       obj['__'+name].value = v
 
-      if( isNaN( wrapped[ name ] ) ) {
-      
-      }else{
+      if( !isNaN( wrapped[ name ] ) ) {
         wrapped[ name ] = v
       }
     }

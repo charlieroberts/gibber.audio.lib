@@ -29,7 +29,8 @@ gulp.task('watch', function() {
   bundler.on('update', rebundle);
 
   function rebundle() {
-    console.log("recompiling... ", Date.now() )
+    const date = new Date()
+    console.log("recompiling... ", date.getHours(), date.getMinutes(), date.getSeconds() )
     return bundler.bundle()
       // log errors if they happen
       //.on('error', gutil.log.bind(gutil, 'Browserify Error'))
