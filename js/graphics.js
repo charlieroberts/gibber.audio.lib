@@ -208,10 +208,16 @@ const Graphics = {
       // needed for annotations
       to[ name ].value.id = to[ name ].value.varName
 
+      // XXX fix the two possible locations for the callback
       if( to[ name ].value.callback !== undefined ) {
         const idx = Marching.callbacks.indexOf( to[ name ].value.callback )
         Marching.callbacks.splice( idx, 1 )
+      }else if( to[ '__'+name ].callback !== undefined ) {
+        const idx = Marching.callbacks.indexOf( to[ '__'+name ].callback )
+        Marching.callbacks.splice( idx, 1 )
       }
+
+      // XXX fix the two possible locations for the callback
       if( typeof to[ name ].value === 'object' ) {
         to[ name ].value.callback = t => {
           const val = gen()
