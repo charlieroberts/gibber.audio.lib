@@ -220,10 +220,15 @@ const Graphics = {
           Environment.codeMarkup.waveform.updateWidget( to[ name ].value.widget, val, false )
         }
       }else{
+        // assignment hack while DOM creation is taking place,
+        // only needed for mappings to individual vector elements.
+        if( to[ '__'+name ].widget === undefined ) {
+          setTimeout( ()=> to[ '__'+name ].widget = gen.pre.widget, 150 )
+        }
+
         to[ '__'+name ].callback = t => {
           const val = gen()
           to[ name ] = val
-          //console.log( 'val:', val, to[ name ].value.widget !== undefined )
           Environment.codeMarkup.waveform.updateWidget( to[ '__'+name ].widget, val, false )
         }
       }

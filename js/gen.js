@@ -414,7 +414,13 @@ const Gen  = {
         const callback = g.gen.createCallback( __graph, 4096 )
         Gibber.Gibberish.genish.gen.samplerate = store      
 
-        return callback.bind( null, ...params.map( v => v[1] ), g.memory )
+        const out = callback.bind( null, ...params.map( v => v[1] ), g.memory )
+
+        // annotations can be added to the original defer, so store the defer
+        // to access the annotations later
+        out.pre = defer 
+
+        return out
       },
 
       // XXX connecting gen objects to audio properties no longer seems

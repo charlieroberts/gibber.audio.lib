@@ -77,8 +77,8 @@ const Audio = {
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        //ctx = new AudioContext({ latencyHint:.075 })
-        ctx = new AudioContext()
+        ctx = new AudioContext({ latencyHint:.025 })
+        //ctx = new AudioContext()
       }
 
       Gibberish.init( {}, ctx, null, sac ).then( processorNode => {
