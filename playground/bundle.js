@@ -201,461 +201,463 @@ module.exports = Utility
 
 },{}],2:[function(require,module,exports){
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.acorn = global.acorn || {}, global.acorn.walk = {})));
-}(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = global || self, factory((global.acorn = global.acorn || {}, global.acorn.walk = {})));
+}(this, function (exports) { 'use strict';
 
-// AST walker module for Mozilla Parser API compatible trees
+  // AST walker module for Mozilla Parser API compatible trees
 
-// A simple walk is one where you simply specify callbacks to be
-// called on specific nodes. The last two arguments are optional. A
-// simple use would be
-//
-//     walk.simple(myTree, {
-//         Expression: function(node) { ... }
-//     });
-//
-// to do something with all expressions. All Parser API node types
-// can be used to identify node types, as well as Expression and
-// Statement, which denote categories of nodes.
-//
-// The base argument can be used to pass a custom (recursive)
-// walker, and state can be used to give this walked an initial
-// state.
+  // A simple walk is one where you simply specify callbacks to be
+  // called on specific nodes. The last two arguments are optional. A
+  // simple use would be
+  //
+  //     walk.simple(myTree, {
+  //         Expression: function(node) { ... }
+  //     });
+  //
+  // to do something with all expressions. All Parser API node types
+  // can be used to identify node types, as well as Expression and
+  // Statement, which denote categories of nodes.
+  //
+  // The base argument can be used to pass a custom (recursive)
+  // walker, and state can be used to give this walked an initial
+  // state.
 
-function simple(node, visitors, baseVisitor, state, override) {
-  if (!baseVisitor) { baseVisitor = base
-  ; }(function c(node, st, override) {
-    var type = override || node.type, found = visitors[type];
-    baseVisitor[type](node, st, c);
-    if (found) { found(node, st); }
-  })(node, state, override);
-}
-
-// An ancestor walk keeps an array of ancestor nodes (including the
-// current node) and passes them to the callback as third parameter
-// (and also as state parameter when no other state is present).
-function ancestor(node, visitors, baseVisitor, state) {
-  var ancestors = [];
-  if (!baseVisitor) { baseVisitor = base
-  ; }(function c(node, st, override) {
-    var type = override || node.type, found = visitors[type];
-    var isNew = node !== ancestors[ancestors.length - 1];
-    if (isNew) { ancestors.push(node); }
-    baseVisitor[type](node, st, c);
-    if (found) { found(node, st || ancestors, ancestors); }
-    if (isNew) { ancestors.pop(); }
-  })(node, state);
-}
-
-// A recursive walk is one where your functions override the default
-// walkers. They can modify and replace the state parameter that's
-// threaded through the walk, and can opt how and whether to walk
-// their child nodes (by calling their third argument on these
-// nodes).
-function recursive(node, state, funcs, baseVisitor, override) {
-  var visitor = funcs ? make(funcs, baseVisitor || undefined) : baseVisitor;(function c(node, st, override) {
-    visitor[override || node.type](node, st, c);
-  })(node, state, override);
-}
-
-function makeTest(test) {
-  if (typeof test === "string")
-    { return function (type) { return type === test; } }
-  else if (!test)
-    { return function () { return true; } }
-  else
-    { return test }
-}
-
-var Found = function Found(node, state) { this.node = node; this.state = state; };
-
-// A full walk triggers the callback on each node
-function full(node, callback, baseVisitor, state, override) {
-  if (!baseVisitor) { baseVisitor = base
-  ; }(function c(node, st, override) {
-    var type = override || node.type;
-    baseVisitor[type](node, st, c);
-    if (!override) { callback(node, st, type); }
-  })(node, state, override);
-}
-
-// An fullAncestor walk is like an ancestor walk, but triggers
-// the callback on each node
-function fullAncestor(node, callback, baseVisitor, state) {
-  if (!baseVisitor) { baseVisitor = base; }
-  var ancestors = [];(function c(node, st, override) {
-    var type = override || node.type;
-    var isNew = node !== ancestors[ancestors.length - 1];
-    if (isNew) { ancestors.push(node); }
-    baseVisitor[type](node, st, c);
-    if (!override) { callback(node, st || ancestors, ancestors, type); }
-    if (isNew) { ancestors.pop(); }
-  })(node, state);
-}
-
-// Find a node with a given start, end, and type (all are optional,
-// null can be used as wildcard). Returns a {node, state} object, or
-// undefined when it doesn't find a matching node.
-function findNodeAt(node, start, end, test, baseVisitor, state) {
-  if (!baseVisitor) { baseVisitor = base; }
-  test = makeTest(test);
-  try {
-    (function c(node, st, override) {
-      var type = override || node.type;
-      if ((start == null || node.start <= start) &&
-          (end == null || node.end >= end))
-        { baseVisitor[type](node, st, c); }
-      if ((start == null || node.start === start) &&
-          (end == null || node.end === end) &&
-          test(type, node))
-        { throw new Found(node, st) }
-    })(node, state);
-  } catch (e) {
-    if (e instanceof Found) { return e }
-    throw e
-  }
-}
-
-// Find the innermost node of a given type that contains the given
-// position. Interface similar to findNodeAt.
-function findNodeAround(node, pos, test, baseVisitor, state) {
-  test = makeTest(test);
-  if (!baseVisitor) { baseVisitor = base; }
-  try {
-    (function c(node, st, override) {
-      var type = override || node.type;
-      if (node.start > pos || node.end < pos) { return }
+  function simple(node, visitors, baseVisitor, state, override) {
+    if (!baseVisitor) { baseVisitor = base
+    ; }(function c(node, st, override) {
+      var type = override || node.type, found = visitors[type];
       baseVisitor[type](node, st, c);
-      if (test(type, node)) { throw new Found(node, st) }
-    })(node, state);
-  } catch (e) {
-    if (e instanceof Found) { return e }
-    throw e
+      if (found) { found(node, st); }
+    })(node, state, override);
   }
-}
 
-// Find the outermost matching node after a given position.
-function findNodeAfter(node, pos, test, baseVisitor, state) {
-  test = makeTest(test);
-  if (!baseVisitor) { baseVisitor = base; }
-  try {
-    (function c(node, st, override) {
-      if (node.end < pos) { return }
+  // An ancestor walk keeps an array of ancestor nodes (including the
+  // current node) and passes them to the callback as third parameter
+  // (and also as state parameter when no other state is present).
+  function ancestor(node, visitors, baseVisitor, state) {
+    var ancestors = [];
+    if (!baseVisitor) { baseVisitor = base
+    ; }(function c(node, st, override) {
+      var type = override || node.type, found = visitors[type];
+      var isNew = node !== ancestors[ancestors.length - 1];
+      if (isNew) { ancestors.push(node); }
+      baseVisitor[type](node, st, c);
+      if (found) { found(node, st || ancestors, ancestors); }
+      if (isNew) { ancestors.pop(); }
+    })(node, state);
+  }
+
+  // A recursive walk is one where your functions override the default
+  // walkers. They can modify and replace the state parameter that's
+  // threaded through the walk, and can opt how and whether to walk
+  // their child nodes (by calling their third argument on these
+  // nodes).
+  function recursive(node, state, funcs, baseVisitor, override) {
+    var visitor = funcs ? make(funcs, baseVisitor || undefined) : baseVisitor
+    ;(function c(node, st, override) {
+      visitor[override || node.type](node, st, c);
+    })(node, state, override);
+  }
+
+  function makeTest(test) {
+    if (typeof test === "string")
+      { return function (type) { return type === test; } }
+    else if (!test)
+      { return function () { return true; } }
+    else
+      { return test }
+  }
+
+  var Found = function Found(node, state) { this.node = node; this.state = state; };
+
+  // A full walk triggers the callback on each node
+  function full(node, callback, baseVisitor, state, override) {
+    if (!baseVisitor) { baseVisitor = base
+    ; }(function c(node, st, override) {
       var type = override || node.type;
-      if (node.start >= pos && test(type, node)) { throw new Found(node, st) }
+      baseVisitor[type](node, st, c);
+      if (!override) { callback(node, st, type); }
+    })(node, state, override);
+  }
+
+  // An fullAncestor walk is like an ancestor walk, but triggers
+  // the callback on each node
+  function fullAncestor(node, callback, baseVisitor, state) {
+    if (!baseVisitor) { baseVisitor = base; }
+    var ancestors = []
+    ;(function c(node, st, override) {
+      var type = override || node.type;
+      var isNew = node !== ancestors[ancestors.length - 1];
+      if (isNew) { ancestors.push(node); }
+      baseVisitor[type](node, st, c);
+      if (!override) { callback(node, st || ancestors, ancestors, type); }
+      if (isNew) { ancestors.pop(); }
+    })(node, state);
+  }
+
+  // Find a node with a given start, end, and type (all are optional,
+  // null can be used as wildcard). Returns a {node, state} object, or
+  // undefined when it doesn't find a matching node.
+  function findNodeAt(node, start, end, test, baseVisitor, state) {
+    if (!baseVisitor) { baseVisitor = base; }
+    test = makeTest(test);
+    try {
+      (function c(node, st, override) {
+        var type = override || node.type;
+        if ((start == null || node.start <= start) &&
+            (end == null || node.end >= end))
+          { baseVisitor[type](node, st, c); }
+        if ((start == null || node.start === start) &&
+            (end == null || node.end === end) &&
+            test(type, node))
+          { throw new Found(node, st) }
+      })(node, state);
+    } catch (e) {
+      if (e instanceof Found) { return e }
+      throw e
+    }
+  }
+
+  // Find the innermost node of a given type that contains the given
+  // position. Interface similar to findNodeAt.
+  function findNodeAround(node, pos, test, baseVisitor, state) {
+    test = makeTest(test);
+    if (!baseVisitor) { baseVisitor = base; }
+    try {
+      (function c(node, st, override) {
+        var type = override || node.type;
+        if (node.start > pos || node.end < pos) { return }
+        baseVisitor[type](node, st, c);
+        if (test(type, node)) { throw new Found(node, st) }
+      })(node, state);
+    } catch (e) {
+      if (e instanceof Found) { return e }
+      throw e
+    }
+  }
+
+  // Find the outermost matching node after a given position.
+  function findNodeAfter(node, pos, test, baseVisitor, state) {
+    test = makeTest(test);
+    if (!baseVisitor) { baseVisitor = base; }
+    try {
+      (function c(node, st, override) {
+        if (node.end < pos) { return }
+        var type = override || node.type;
+        if (node.start >= pos && test(type, node)) { throw new Found(node, st) }
+        baseVisitor[type](node, st, c);
+      })(node, state);
+    } catch (e) {
+      if (e instanceof Found) { return e }
+      throw e
+    }
+  }
+
+  // Find the outermost matching node before a given position.
+  function findNodeBefore(node, pos, test, baseVisitor, state) {
+    test = makeTest(test);
+    if (!baseVisitor) { baseVisitor = base; }
+    var max
+    ;(function c(node, st, override) {
+      if (node.start > pos) { return }
+      var type = override || node.type;
+      if (node.end <= pos && (!max || max.node.end < node.end) && test(type, node))
+        { max = new Found(node, st); }
       baseVisitor[type](node, st, c);
     })(node, state);
-  } catch (e) {
-    if (e instanceof Found) { return e }
-    throw e
+    return max
   }
-}
 
-// Find the outermost matching node before a given position.
-function findNodeBefore(node, pos, test, baseVisitor, state) {
-  test = makeTest(test);
-  if (!baseVisitor) { baseVisitor = base; }
-  var max;(function c(node, st, override) {
-    if (node.start > pos) { return }
-    var type = override || node.type;
-    if (node.end <= pos && (!max || max.node.end < node.end) && test(type, node))
-      { max = new Found(node, st); }
-    baseVisitor[type](node, st, c);
-  })(node, state);
-  return max
-}
+  // Fallback to an Object.create polyfill for older environments.
+  var create = Object.create || function(proto) {
+    function Ctor() {}
+    Ctor.prototype = proto;
+    return new Ctor
+  };
 
-// Fallback to an Object.create polyfill for older environments.
-var create = Object.create || function(proto) {
-  function Ctor() {}
-  Ctor.prototype = proto;
-  return new Ctor
-};
-
-// Used to create a custom walker. Will fill in all missing node
-// type properties with the defaults.
-function make(funcs, baseVisitor) {
-  var visitor = create(baseVisitor || base);
-  for (var type in funcs) { visitor[type] = funcs[type]; }
-  return visitor
-}
-
-function skipThrough(node, st, c) { c(node, st); }
-function ignore(_node, _st, _c) {}
-
-// Node walkers.
-
-var base = {};
-
-base.Program = base.BlockStatement = function (node, st, c) {
-  for (var i = 0, list = node.body; i < list.length; i += 1)
-    {
-    var stmt = list[i];
-
-    c(stmt, st, "Statement");
+  // Used to create a custom walker. Will fill in all missing node
+  // type properties with the defaults.
+  function make(funcs, baseVisitor) {
+    var visitor = create(baseVisitor || base);
+    for (var type in funcs) { visitor[type] = funcs[type]; }
+    return visitor
   }
-};
-base.Statement = skipThrough;
-base.EmptyStatement = ignore;
-base.ExpressionStatement = base.ParenthesizedExpression =
-  function (node, st, c) { return c(node.expression, st, "Expression"); };
-base.IfStatement = function (node, st, c) {
-  c(node.test, st, "Expression");
-  c(node.consequent, st, "Statement");
-  if (node.alternate) { c(node.alternate, st, "Statement"); }
-};
-base.LabeledStatement = function (node, st, c) { return c(node.body, st, "Statement"); };
-base.BreakStatement = base.ContinueStatement = ignore;
-base.WithStatement = function (node, st, c) {
-  c(node.object, st, "Expression");
-  c(node.body, st, "Statement");
-};
-base.SwitchStatement = function (node, st, c) {
-  c(node.discriminant, st, "Expression");
-  for (var i = 0, list = node.cases; i < list.length; i += 1) {
-    var cs = list[i];
 
-    if (cs.test) { c(cs.test, st, "Expression"); }
-    for (var i$1 = 0, list$1 = cs.consequent; i$1 < list$1.length; i$1 += 1)
+  function skipThrough(node, st, c) { c(node, st); }
+  function ignore(_node, _st, _c) {}
+
+  // Node walkers.
+
+  var base = {};
+
+  base.Program = base.BlockStatement = function (node, st, c) {
+    for (var i = 0, list = node.body; i < list.length; i += 1)
       {
-      var cons = list$1[i$1];
+      var stmt = list[i];
+
+      c(stmt, st, "Statement");
+    }
+  };
+  base.Statement = skipThrough;
+  base.EmptyStatement = ignore;
+  base.ExpressionStatement = base.ParenthesizedExpression =
+    function (node, st, c) { return c(node.expression, st, "Expression"); };
+  base.IfStatement = function (node, st, c) {
+    c(node.test, st, "Expression");
+    c(node.consequent, st, "Statement");
+    if (node.alternate) { c(node.alternate, st, "Statement"); }
+  };
+  base.LabeledStatement = function (node, st, c) { return c(node.body, st, "Statement"); };
+  base.BreakStatement = base.ContinueStatement = ignore;
+  base.WithStatement = function (node, st, c) {
+    c(node.object, st, "Expression");
+    c(node.body, st, "Statement");
+  };
+  base.SwitchStatement = function (node, st, c) {
+    c(node.discriminant, st, "Expression");
+    for (var i$1 = 0, list$1 = node.cases; i$1 < list$1.length; i$1 += 1) {
+      var cs = list$1[i$1];
+
+      if (cs.test) { c(cs.test, st, "Expression"); }
+      for (var i = 0, list = cs.consequent; i < list.length; i += 1)
+        {
+        var cons = list[i];
+
+        c(cons, st, "Statement");
+      }
+    }
+  };
+  base.SwitchCase = function (node, st, c) {
+    if (node.test) { c(node.test, st, "Expression"); }
+    for (var i = 0, list = node.consequent; i < list.length; i += 1)
+      {
+      var cons = list[i];
 
       c(cons, st, "Statement");
     }
-  }
-};
-base.SwitchCase = function (node, st, c) {
-  if (node.test) { c(node.test, st, "Expression"); }
-  for (var i = 0, list = node.consequent; i < list.length; i += 1)
-    {
-    var cons = list[i];
+  };
+  base.ReturnStatement = base.YieldExpression = base.AwaitExpression = function (node, st, c) {
+    if (node.argument) { c(node.argument, st, "Expression"); }
+  };
+  base.ThrowStatement = base.SpreadElement =
+    function (node, st, c) { return c(node.argument, st, "Expression"); };
+  base.TryStatement = function (node, st, c) {
+    c(node.block, st, "Statement");
+    if (node.handler) { c(node.handler, st); }
+    if (node.finalizer) { c(node.finalizer, st, "Statement"); }
+  };
+  base.CatchClause = function (node, st, c) {
+    if (node.param) { c(node.param, st, "Pattern"); }
+    c(node.body, st, "Statement");
+  };
+  base.WhileStatement = base.DoWhileStatement = function (node, st, c) {
+    c(node.test, st, "Expression");
+    c(node.body, st, "Statement");
+  };
+  base.ForStatement = function (node, st, c) {
+    if (node.init) { c(node.init, st, "ForInit"); }
+    if (node.test) { c(node.test, st, "Expression"); }
+    if (node.update) { c(node.update, st, "Expression"); }
+    c(node.body, st, "Statement");
+  };
+  base.ForInStatement = base.ForOfStatement = function (node, st, c) {
+    c(node.left, st, "ForInit");
+    c(node.right, st, "Expression");
+    c(node.body, st, "Statement");
+  };
+  base.ForInit = function (node, st, c) {
+    if (node.type === "VariableDeclaration") { c(node, st); }
+    else { c(node, st, "Expression"); }
+  };
+  base.DebuggerStatement = ignore;
 
-    c(cons, st, "Statement");
-  }
-};
-base.ReturnStatement = base.YieldExpression = base.AwaitExpression = function (node, st, c) {
-  if (node.argument) { c(node.argument, st, "Expression"); }
-};
-base.ThrowStatement = base.SpreadElement =
-  function (node, st, c) { return c(node.argument, st, "Expression"); };
-base.TryStatement = function (node, st, c) {
-  c(node.block, st, "Statement");
-  if (node.handler) { c(node.handler, st); }
-  if (node.finalizer) { c(node.finalizer, st, "Statement"); }
-};
-base.CatchClause = function (node, st, c) {
-  if (node.param) { c(node.param, st, "Pattern"); }
-  c(node.body, st, "Statement");
-};
-base.WhileStatement = base.DoWhileStatement = function (node, st, c) {
-  c(node.test, st, "Expression");
-  c(node.body, st, "Statement");
-};
-base.ForStatement = function (node, st, c) {
-  if (node.init) { c(node.init, st, "ForInit"); }
-  if (node.test) { c(node.test, st, "Expression"); }
-  if (node.update) { c(node.update, st, "Expression"); }
-  c(node.body, st, "Statement");
-};
-base.ForInStatement = base.ForOfStatement = function (node, st, c) {
-  c(node.left, st, "ForInit");
-  c(node.right, st, "Expression");
-  c(node.body, st, "Statement");
-};
-base.ForInit = function (node, st, c) {
-  if (node.type === "VariableDeclaration") { c(node, st); }
-  else { c(node, st, "Expression"); }
-};
-base.DebuggerStatement = ignore;
-
-base.FunctionDeclaration = function (node, st, c) { return c(node, st, "Function"); };
-base.VariableDeclaration = function (node, st, c) {
-  for (var i = 0, list = node.declarations; i < list.length; i += 1)
-    {
-    var decl = list[i];
-
-    c(decl, st);
-  }
-};
-base.VariableDeclarator = function (node, st, c) {
-  c(node.id, st, "Pattern");
-  if (node.init) { c(node.init, st, "Expression"); }
-};
-
-base.Function = function (node, st, c) {
-  if (node.id) { c(node.id, st, "Pattern"); }
-  for (var i = 0, list = node.params; i < list.length; i += 1)
-    {
-    var param = list[i];
-
-    c(param, st, "Pattern");
-  }
-  c(node.body, st, node.expression ? "Expression" : "Statement");
-};
-
-base.Pattern = function (node, st, c) {
-  if (node.type === "Identifier")
-    { c(node, st, "VariablePattern"); }
-  else if (node.type === "MemberExpression")
-    { c(node, st, "MemberPattern"); }
-  else
-    { c(node, st); }
-};
-base.VariablePattern = ignore;
-base.MemberPattern = skipThrough;
-base.RestElement = function (node, st, c) { return c(node.argument, st, "Pattern"); };
-base.ArrayPattern = function (node, st, c) {
-  for (var i = 0, list = node.elements; i < list.length; i += 1) {
-    var elt = list[i];
-
-    if (elt) { c(elt, st, "Pattern"); }
-  }
-};
-base.ObjectPattern = function (node, st, c) {
-  for (var i = 0, list = node.properties; i < list.length; i += 1) {
-    var prop = list[i];
-
-    if (prop.type === "Property") {
-      if (prop.computed) { c(prop.key, st, "Expression"); }
-      c(prop.value, st, "Pattern");
-    } else if (prop.type === "RestElement") {
-      c(prop.argument, st, "Pattern");
-    }
-  }
-};
-
-base.Expression = skipThrough;
-base.ThisExpression = base.Super = base.MetaProperty = ignore;
-base.ArrayExpression = function (node, st, c) {
-  for (var i = 0, list = node.elements; i < list.length; i += 1) {
-    var elt = list[i];
-
-    if (elt) { c(elt, st, "Expression"); }
-  }
-};
-base.ObjectExpression = function (node, st, c) {
-  for (var i = 0, list = node.properties; i < list.length; i += 1)
-    {
-    var prop = list[i];
-
-    c(prop, st);
-  }
-};
-base.FunctionExpression = base.ArrowFunctionExpression = base.FunctionDeclaration;
-base.SequenceExpression = function (node, st, c) {
-  for (var i = 0, list = node.expressions; i < list.length; i += 1)
-    {
-    var expr = list[i];
-
-    c(expr, st, "Expression");
-  }
-};
-base.TemplateLiteral = function (node, st, c) {
-  for (var i = 0, list = node.quasis; i < list.length; i += 1)
-    {
-    var quasi = list[i];
-
-    c(quasi, st);
-  }
-
-  for (var i$1 = 0, list$1 = node.expressions; i$1 < list$1.length; i$1 += 1)
-    {
-    var expr = list$1[i$1];
-
-    c(expr, st, "Expression");
-  }
-};
-base.TemplateElement = ignore;
-base.UnaryExpression = base.UpdateExpression = function (node, st, c) {
-  c(node.argument, st, "Expression");
-};
-base.BinaryExpression = base.LogicalExpression = function (node, st, c) {
-  c(node.left, st, "Expression");
-  c(node.right, st, "Expression");
-};
-base.AssignmentExpression = base.AssignmentPattern = function (node, st, c) {
-  c(node.left, st, "Pattern");
-  c(node.right, st, "Expression");
-};
-base.ConditionalExpression = function (node, st, c) {
-  c(node.test, st, "Expression");
-  c(node.consequent, st, "Expression");
-  c(node.alternate, st, "Expression");
-};
-base.NewExpression = base.CallExpression = function (node, st, c) {
-  c(node.callee, st, "Expression");
-  if (node.arguments)
-    { for (var i = 0, list = node.arguments; i < list.length; i += 1)
+  base.FunctionDeclaration = function (node, st, c) { return c(node, st, "Function"); };
+  base.VariableDeclaration = function (node, st, c) {
+    for (var i = 0, list = node.declarations; i < list.length; i += 1)
       {
-        var arg = list[i];
+      var decl = list[i];
 
-        c(arg, st, "Expression");
-      } }
-};
-base.MemberExpression = function (node, st, c) {
-  c(node.object, st, "Expression");
-  if (node.computed) { c(node.property, st, "Expression"); }
-};
-base.ExportNamedDeclaration = base.ExportDefaultDeclaration = function (node, st, c) {
-  if (node.declaration)
-    { c(node.declaration, st, node.type === "ExportNamedDeclaration" || node.declaration.id ? "Statement" : "Expression"); }
-  if (node.source) { c(node.source, st, "Expression"); }
-};
-base.ExportAllDeclaration = function (node, st, c) {
-  c(node.source, st, "Expression");
-};
-base.ImportDeclaration = function (node, st, c) {
-  for (var i = 0, list = node.specifiers; i < list.length; i += 1)
-    {
-    var spec = list[i];
+      c(decl, st);
+    }
+  };
+  base.VariableDeclarator = function (node, st, c) {
+    c(node.id, st, "Pattern");
+    if (node.init) { c(node.init, st, "Expression"); }
+  };
 
-    c(spec, st);
-  }
-  c(node.source, st, "Expression");
-};
-base.ImportSpecifier = base.ImportDefaultSpecifier = base.ImportNamespaceSpecifier = base.Identifier = base.Literal = ignore;
+  base.Function = function (node, st, c) {
+    if (node.id) { c(node.id, st, "Pattern"); }
+    for (var i = 0, list = node.params; i < list.length; i += 1)
+      {
+      var param = list[i];
 
-base.TaggedTemplateExpression = function (node, st, c) {
-  c(node.tag, st, "Expression");
-  c(node.quasi, st, "Expression");
-};
-base.ClassDeclaration = base.ClassExpression = function (node, st, c) { return c(node, st, "Class"); };
-base.Class = function (node, st, c) {
-  if (node.id) { c(node.id, st, "Pattern"); }
-  if (node.superClass) { c(node.superClass, st, "Expression"); }
-  c(node.body, st);
-};
-base.ClassBody = function (node, st, c) {
-  for (var i = 0, list = node.body; i < list.length; i += 1)
-    {
-    var elt = list[i];
+      c(param, st, "Pattern");
+    }
+    c(node.body, st, node.expression ? "Expression" : "Statement");
+  };
 
-    c(elt, st);
-  }
-};
-base.MethodDefinition = base.Property = function (node, st, c) {
-  if (node.computed) { c(node.key, st, "Expression"); }
-  c(node.value, st, "Expression");
-};
+  base.Pattern = function (node, st, c) {
+    if (node.type === "Identifier")
+      { c(node, st, "VariablePattern"); }
+    else if (node.type === "MemberExpression")
+      { c(node, st, "MemberPattern"); }
+    else
+      { c(node, st); }
+  };
+  base.VariablePattern = ignore;
+  base.MemberPattern = skipThrough;
+  base.RestElement = function (node, st, c) { return c(node.argument, st, "Pattern"); };
+  base.ArrayPattern = function (node, st, c) {
+    for (var i = 0, list = node.elements; i < list.length; i += 1) {
+      var elt = list[i];
 
-exports.simple = simple;
-exports.ancestor = ancestor;
-exports.recursive = recursive;
-exports.full = full;
-exports.fullAncestor = fullAncestor;
-exports.findNodeAt = findNodeAt;
-exports.findNodeAround = findNodeAround;
-exports.findNodeAfter = findNodeAfter;
-exports.findNodeBefore = findNodeBefore;
-exports.make = make;
-exports.base = base;
+      if (elt) { c(elt, st, "Pattern"); }
+    }
+  };
+  base.ObjectPattern = function (node, st, c) {
+    for (var i = 0, list = node.properties; i < list.length; i += 1) {
+      var prop = list[i];
 
-Object.defineProperty(exports, '__esModule', { value: true });
+      if (prop.type === "Property") {
+        if (prop.computed) { c(prop.key, st, "Expression"); }
+        c(prop.value, st, "Pattern");
+      } else if (prop.type === "RestElement") {
+        c(prop.argument, st, "Pattern");
+      }
+    }
+  };
 
-})));
+  base.Expression = skipThrough;
+  base.ThisExpression = base.Super = base.MetaProperty = ignore;
+  base.ArrayExpression = function (node, st, c) {
+    for (var i = 0, list = node.elements; i < list.length; i += 1) {
+      var elt = list[i];
 
+      if (elt) { c(elt, st, "Expression"); }
+    }
+  };
+  base.ObjectExpression = function (node, st, c) {
+    for (var i = 0, list = node.properties; i < list.length; i += 1)
+      {
+      var prop = list[i];
+
+      c(prop, st);
+    }
+  };
+  base.FunctionExpression = base.ArrowFunctionExpression = base.FunctionDeclaration;
+  base.SequenceExpression = function (node, st, c) {
+    for (var i = 0, list = node.expressions; i < list.length; i += 1)
+      {
+      var expr = list[i];
+
+      c(expr, st, "Expression");
+    }
+  };
+  base.TemplateLiteral = function (node, st, c) {
+    for (var i = 0, list = node.quasis; i < list.length; i += 1)
+      {
+      var quasi = list[i];
+
+      c(quasi, st);
+    }
+
+    for (var i$1 = 0, list$1 = node.expressions; i$1 < list$1.length; i$1 += 1)
+      {
+      var expr = list$1[i$1];
+
+      c(expr, st, "Expression");
+    }
+  };
+  base.TemplateElement = ignore;
+  base.UnaryExpression = base.UpdateExpression = function (node, st, c) {
+    c(node.argument, st, "Expression");
+  };
+  base.BinaryExpression = base.LogicalExpression = function (node, st, c) {
+    c(node.left, st, "Expression");
+    c(node.right, st, "Expression");
+  };
+  base.AssignmentExpression = base.AssignmentPattern = function (node, st, c) {
+    c(node.left, st, "Pattern");
+    c(node.right, st, "Expression");
+  };
+  base.ConditionalExpression = function (node, st, c) {
+    c(node.test, st, "Expression");
+    c(node.consequent, st, "Expression");
+    c(node.alternate, st, "Expression");
+  };
+  base.NewExpression = base.CallExpression = function (node, st, c) {
+    c(node.callee, st, "Expression");
+    if (node.arguments)
+      { for (var i = 0, list = node.arguments; i < list.length; i += 1)
+        {
+          var arg = list[i];
+
+          c(arg, st, "Expression");
+        } }
+  };
+  base.MemberExpression = function (node, st, c) {
+    c(node.object, st, "Expression");
+    if (node.computed) { c(node.property, st, "Expression"); }
+  };
+  base.ExportNamedDeclaration = base.ExportDefaultDeclaration = function (node, st, c) {
+    if (node.declaration)
+      { c(node.declaration, st, node.type === "ExportNamedDeclaration" || node.declaration.id ? "Statement" : "Expression"); }
+    if (node.source) { c(node.source, st, "Expression"); }
+  };
+  base.ExportAllDeclaration = function (node, st, c) {
+    c(node.source, st, "Expression");
+  };
+  base.ImportDeclaration = function (node, st, c) {
+    for (var i = 0, list = node.specifiers; i < list.length; i += 1)
+      {
+      var spec = list[i];
+
+      c(spec, st);
+    }
+    c(node.source, st, "Expression");
+  };
+  base.ImportSpecifier = base.ImportDefaultSpecifier = base.ImportNamespaceSpecifier = base.Identifier = base.Literal = base.Import = ignore;
+
+  base.TaggedTemplateExpression = function (node, st, c) {
+    c(node.tag, st, "Expression");
+    c(node.quasi, st, "Expression");
+  };
+  base.ClassDeclaration = base.ClassExpression = function (node, st, c) { return c(node, st, "Class"); };
+  base.Class = function (node, st, c) {
+    if (node.id) { c(node.id, st, "Pattern"); }
+    if (node.superClass) { c(node.superClass, st, "Expression"); }
+    c(node.body, st);
+  };
+  base.ClassBody = function (node, st, c) {
+    for (var i = 0, list = node.body; i < list.length; i += 1)
+      {
+      var elt = list[i];
+
+      c(elt, st);
+    }
+  };
+  base.MethodDefinition = base.Property = function (node, st, c) {
+    if (node.computed) { c(node.key, st, "Expression"); }
+    c(node.value, st, "Expression");
+  };
+
+  exports.ancestor = ancestor;
+  exports.base = base;
+  exports.findNodeAfter = findNodeAfter;
+  exports.findNodeAround = findNodeAround;
+  exports.findNodeAt = findNodeAt;
+  exports.findNodeBefore = findNodeBefore;
+  exports.full = full;
+  exports.fullAncestor = fullAncestor;
+  exports.make = make;
+  exports.recursive = recursive;
+  exports.simple = simple;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+}));
 
 },{}],3:[function(require,module,exports){
 (function (global, factory) {
@@ -1535,7 +1537,7 @@ pp$1.parseDoStatement = function(node) {
 
 pp$1.parseForStatement = function(node) {
   this.next();
-  var awaitAt = (this.options.ecmaVersion >= 9 && this.inAsync && this.eatContextual("await")) ? this.lastTokStart : -1;
+  var awaitAt = (this.options.ecmaVersion >= 9 && (this.inAsync || (!this.inFunction && this.options.allowAwaitOutsideFunction)) && this.eatContextual("await")) ? this.lastTokStart : -1;
   this.labels.push(loopLabel);
   this.enterLexicalScope();
   this.expect(types.parenL);
@@ -1741,7 +1743,7 @@ pp$1.parseLabeledStatement = function(node, maybeName, expr) {
   node.body = this.parseStatement(true);
   if (node.body.type === "ClassDeclaration" ||
       node.body.type === "VariableDeclaration" && node.body.kind !== "var" ||
-      node.body.type === "FunctionDeclaration" && (this.strict || node.body.generator))
+      node.body.type === "FunctionDeclaration" && (this.strict || node.body.generator || node.body.async))
     { this.raiseRecoverable(node.body.start, "Invalid labeled declaration"); }
   this.labels.pop();
   node.label = expr;
@@ -1859,7 +1861,7 @@ pp$1.parseFunction = function(node, isStatement, allowExpressionBody, isAsync) {
   if (isStatement) {
     node.id = isStatement === "nullableID" && this.type !== types.name ? null : this.parseIdent();
     if (node.id) {
-      this.checkLVal(node.id, "var");
+      this.checkLVal(node.id, this.inModule && !this.inFunction ? "let" : "var");
     }
   }
 
@@ -3007,6 +3009,7 @@ pp$3.parseTemplate = function(ref) {
   var curElt = this.parseTemplateElement({isTagged: isTagged});
   node.quasis = [curElt];
   while (!curElt.tail) {
+    if (this$1.type === types.eof) { this$1.raise(this$1.pos, "Unterminated template literal"); }
     this$1.expect(types.dollarBraceL);
     node.expressions.push(this$1.parseExpression());
     this$1.expect(types.braceR);
@@ -3686,7 +3689,7 @@ types.star.updateContext = function(prevType) {
 
 types.name.updateContext = function(prevType) {
   var allowed = false;
-  if (this.options.ecmaVersion >= 6) {
+  if (this.options.ecmaVersion >= 6 && prevType !== types.dot) {
     if (this.value === "of" && !this.exprAllowed ||
         this.value === "yield" && this.inGeneratorContext())
       { allowed = true; }
@@ -5934,7 +5937,7 @@ pp$8.readWord = function() {
 // [dammit]: acorn_loose.js
 // [walk]: util/walk.js
 
-var version = "5.7.1";
+var version = "5.7.3";
 
 // The main exported interface (under `self.acorn` when in the
 // browser) is a `parse` function that takes a code string and
@@ -8528,32 +8531,155 @@ let cm, cmconsole, exampleCode,
 window.onload = function() {
   cm = CodeMirror( document.querySelector('#editor'), {
     mode:   'javascript',
-    value:  '// click in the editor to begin',
+    value:  '// click in the editor to begin!!!',
     keyMap: 'playground',
     autofocus: true,
     //matchBrackets:true,
     indentUnit:2,
     autoCloseBrackets:true,
     tabSize:2,
-    //extraKeys:{ 'Ctrl-Space':'autocomplete' },
-    //hintOptions:{ hint:CodeMirror.hint.javascript }
+    extraKeys:{ 'Ctrl-Space':'autocomplete' },
+    hintOptions:{ hint:CodeMirror.hint.javascript }
   })
 
   Babel.registerPlugin( 'jsdsp', jsdsp )
 
   cm.setSize( null, '100%' )
 
-  /*
-  cmconsole = CodeMirror( document.querySelector('#main'), {
-    mode:'javascript',
-    value:
-`// gibber.audio playground, v0.0.1
-// https://github.com/charlieroberts/gibber.audio.lib`,
-    readOnly:'nocursor',
-  })     
+  function getURL(url, c) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", url, true);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState != 4) return;
+      if (xhr.status < 400) return c(null, xhr.responseText);
+      var e = new Error(xhr.responseText || "No response");
+      e.status = xhr.status;
+      c(e);
+    };
+  }
 
-  cmconsole.setSize( null, '100%' )
-*/
+  let server
+  getURL("./gibberdef.json", function(err, code) {
+  //getURL("../node_modules/tern/defs/ecmascript.json", function(err, code) {
+    if (err) throw new Error("request for gibberdef.json: " + err);
+    console.log( 'loaded gibber environment definition.' )
+    environment.server = server = new CodeMirror.TernServer({defs: [JSON.parse( code )], options:{ hintDelay:5000 } })
+
+    cm.setOption("extraKeys", {
+      "Ctrl-Space": function(cm) { server.complete(cm) },
+      "Ctrl-I"    : function(cm) { server.showType(cm) },
+      "Ctrl-O"    : function(cm) { server.showDocs(cm) }
+    })
+    cm.on( 'cursorActivity', function( cm ) { 
+      server.updateArgHints( cm ) 
+    })
+
+    cm.on( 'change', function( cm, change ) {
+      if( change.text[ change.text.length - 1 ] === '.' ) {
+        server.complete( cm )
+      }
+    })
+  })
+
+  cm.getWrapperElement().addEventListener( 'click', e => {
+    if( e.altKey === true ) {
+
+      if( e.shiftKey === true ) {
+        const ele = document.createElement('span')
+        let node = e.path[0]
+        while( node.parentNode.className.indexOf( 'CodeMirror-line' ) === -1 ) {
+          node = node.parentNode
+        }
+        const split = node.innerText.split( '=' )[0].split('.')
+        let txt = null
+        try {
+          let obj = window[  split[0].trim() ]
+          for( let i = 1; i < split.length; i++ ) {
+            obj = obj[ split[ i ].trim() ]
+          }
+          txt = obj.value !== undefined ? obj.value : obj
+        } catch(e) {
+          throw e
+        }
+        ele.innerText = txt
+        tempTooltip( cm, ele, server )
+      }else{
+        server.showDocs( cm ) 
+      }
+    }
+  })
+
+  var Pos = CodeMirror.Pos;
+  var cls = "CodeMirror-Tern-";
+  var bigDoc = 250;
+  function elt(tagname, cls /*, ... elts*/) {
+    var e = document.createElement(tagname);
+    if (cls) e.className = cls;
+    for (var i = 2; i < arguments.length; ++i) {
+      var elt = arguments[i];
+      if (typeof elt == "string") elt = document.createTextNode(elt);
+      e.appendChild(elt);
+    }
+    return e;
+  }
+  function tempTooltip(cm, content, ts) {
+    if (cm.state.ternTooltip) remove(cm.state.ternTooltip);
+    var where = cm.cursorCoords();
+    var tip = cm.state.ternTooltip = makeTooltip(where.right + 1, where.bottom, content);
+    function maybeClear() {
+      old = true;
+      if (!mouseOnTip) clear();
+    }
+    function clear() {
+      cm.state.ternTooltip = null;
+      if (tip.parentNode) fadeOut(tip)
+      clearActivity()
+    }
+    var mouseOnTip = false, old = false;
+    CodeMirror.on(tip, "mousemove", function() { mouseOnTip = true; });
+    CodeMirror.on(tip, "mouseout", function(e) {
+      var related = e.relatedTarget || e.toElement
+      if (!related || !CodeMirror.contains(tip, related)) {
+        if (old) clear();
+        else mouseOnTip = false;
+      }
+    });
+    setTimeout(maybeClear, ts.options.hintDelay ? ts.options.hintDelay : 1700);
+    var clearActivity = onEditorActivity(cm, clear)
+  }
+
+  function onEditorActivity(cm, f) {
+    cm.on("cursorActivity", f)
+    cm.on("blur", f)
+    cm.on("scroll", f)
+    cm.on("setDoc", f)
+    return function() {
+      cm.off("cursorActivity", f)
+      cm.off("blur", f)
+      cm.off("scroll", f)
+      cm.off("setDoc", f)
+    }
+  }
+
+  function makeTooltip(x, y, content) {
+    var node = elt("div", cls + "tooltip", content);
+    node.style.left = x + "px";
+    node.style.top = y + "px";
+    document.body.appendChild(node);
+    return node;
+  }
+
+  function remove(node) {
+    var p = node && node.parentNode;
+    if (p) p.removeChild(node);
+  }
+
+  function fadeOut(tooltip) {
+    tooltip.style.opacity = "0";
+    setTimeout(function() { remove(tooltip); }, 1100);
+  }
+
   const workletPath = '../dist/gibberish_worklet.js' 
 
   const start = () => {

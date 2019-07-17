@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gibber = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"/Users/charlie/Documents/code/genish.js/js/abs.js":[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gibber = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -31,7 +31,7 @@ module.exports = x => {
   return abs
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/accum.js":[function(require,module,exports){
+},{"./gen.js":30}],2:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -150,7 +150,7 @@ module.exports = ( incr, reset=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/acos.js":[function(require,module,exports){
+},{"./gen.js":30}],3:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -185,7 +185,7 @@ module.exports = x => {
   return acos
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ad.js":[function(require,module,exports){
+},{"./gen.js":30}],4:[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -258,7 +258,7 @@ module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
   return out 
 }
 
-},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gte.js":"/Users/charlie/Documents/code/genish.js/js/gte.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/add.js":[function(require,module,exports){
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":30,"./gte.js":32,"./ifelseif.js":35,"./lt.js":38,"./memo.js":42,"./mul.js":48,"./neq.js":49,"./peek.js":54,"./poke.js":56,"./sub.js":66}],5:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -309,7 +309,7 @@ module.exports = ( ...args ) => {
   return add
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/adsr.js":[function(require,module,exports){
+},{"./gen.js":30}],6:[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -405,7 +405,7 @@ module.exports = ( attackTime=44, decayTime=22050, sustainTime=44100, sustainLev
   return out 
 }
 
-},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gtp.js":"/Users/charlie/Documents/code/genish.js/js/gtp.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./not.js":"/Users/charlie/Documents/code/genish.js/js/not.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/and.js":[function(require,module,exports){
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":30,"./gtp.js":33,"./ifelseif.js":35,"./lt.js":38,"./mul.js":48,"./neq.js":49,"./not.js":51,"./param.js":53,"./peek.js":54,"./poke.js":56,"./sub.js":66}],7:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -437,7 +437,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/asin.js":[function(require,module,exports){
+},{"./gen.js":30}],8:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -472,7 +472,7 @@ module.exports = x => {
   return asin
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/atan.js":[function(require,module,exports){
+},{"./gen.js":30}],9:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -507,7 +507,7 @@ module.exports = x => {
   return atan
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/attack.js":[function(require,module,exports){
+},{"./gen.js":30}],10:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -528,7 +528,7 @@ module.exports = ( decayTime = 44100 ) => {
   return sub( 1, ssd.out )
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/bang.js":[function(require,module,exports){
+},{"./gen.js":30,"./history.js":34,"./mul.js":48,"./sub.js":66}],11:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -568,7 +568,7 @@ module.exports = ( _props ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/bool.js":[function(require,module,exports){
+},{"./gen.js":30}],12:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -602,7 +602,7 @@ module.exports = ( in1 ) => {
 }
 
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ceil.js":[function(require,module,exports){
+},{"./gen.js":30}],13:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -635,7 +635,7 @@ module.exports = x => {
   return ceil
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/clamp.js":[function(require,module,exports){
+},{"./gen.js":30}],14:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -680,7 +680,7 @@ module.exports = ( in1, min=-1, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/cos.js":[function(require,module,exports){
+},{"./floor.js":27,"./gen.js":30,"./memo.js":42,"./sub.js":66}],15:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -715,7 +715,7 @@ module.exports = x => {
   return cos
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/counter.js":[function(require,module,exports){
+},{"./gen.js":30}],16:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -830,7 +830,7 @@ module.exports = ( incr=1, min=0, max=Infinity, reset=0, loops=1,  properties ) 
   return ugen
 } 
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/cycle.js":[function(require,module,exports){
+},{"./gen.js":30}],17:[function(require,module,exports){
 'use strict'
 
 let gen  = require( './gen.js' ),
@@ -865,7 +865,7 @@ module.exports = ( frequency=1, reset=0, _props ) => {
   return ugen
 }
 
-},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor.js":"/Users/charlie/Documents/code/genish.js/js/phasor.js"}],"/Users/charlie/Documents/code/genish.js/js/data.js":[function(require,module,exports){
+},{"./data.js":18,"./gen.js":30,"./mul.js":48,"./peek.js":54,"./phasor.js":55}],18:[function(require,module,exports){
 'use strict'
 
 const gen  = require('./gen.js'),
@@ -1028,7 +1028,7 @@ module.exports = ( x, y=1, properties ) => {
 }
 
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./utilities.js":"/Users/charlie/Documents/code/genish.js/js/utilities.js"}],"/Users/charlie/Documents/code/genish.js/js/dcblock.js":[function(require,module,exports){
+},{"./gen.js":30,"./peek.js":54,"./poke.js":56,"./utilities.js":72}],19:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1051,7 +1051,7 @@ module.exports = ( in1 ) => {
   return filter
 }
 
-},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/decay.js":[function(require,module,exports){
+},{"./add.js":5,"./gen.js":30,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66}],20:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1072,7 +1072,7 @@ module.exports = ( decayTime = 44100, props ) => {
   return ssd.out 
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./t60.js":"/Users/charlie/Documents/code/genish.js/js/t60.js"}],"/Users/charlie/Documents/code/genish.js/js/delay.js":[function(require,module,exports){
+},{"./gen.js":30,"./history.js":34,"./mul.js":48,"./t60.js":68}],21:[function(require,module,exports){
 'use strict'
 
 const gen  = require( './gen.js'  ),
@@ -1128,7 +1128,7 @@ module.exports = ( in1, taps, properties ) => {
   return ugen
 }
 
-},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/delta.js":[function(require,module,exports){
+},{"./accum.js":2,"./data.js":18,"./gen.js":30,"./memo.js":42,"./peek.js":54,"./poke.js":56,"./sub.js":66,"./wrap.js":74}],22:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1146,7 +1146,7 @@ module.exports = ( in1 ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/div.js":[function(require,module,exports){
+},{"./gen.js":30,"./history.js":34,"./sub.js":66}],23:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1199,7 +1199,7 @@ module.exports = (...args) => {
   return div
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/env.js":[function(require,module,exports){
+},{"./gen.js":30}],24:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen' ),
@@ -1235,7 +1235,7 @@ module.exports = props => {
   return ugen
 }
 
-},{"./data":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen":"/Users/charlie/Documents/code/genish.js/js/gen.js","./peek":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor":"/Users/charlie/Documents/code/genish.js/js/phasor.js","./windows":"/Users/charlie/Documents/code/genish.js/js/windows.js"}],"/Users/charlie/Documents/code/genish.js/js/eq.js":[function(require,module,exports){
+},{"./data":18,"./gen":30,"./peek":54,"./phasor":55,"./windows":73}],25:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1267,7 +1267,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/exp.js":[function(require,module,exports){
+},{"./gen.js":30}],26:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1300,7 +1300,7 @@ module.exports = x => {
   return exp
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/floor.js":[function(require,module,exports){
+},{"./gen.js":30}],27:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1333,7 +1333,7 @@ module.exports = x => {
   return floor
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/fold.js":[function(require,module,exports){
+},{"./gen.js":30}],28:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1395,7 +1395,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gate.js":[function(require,module,exports){
+},{"./gen.js":30}],29:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1491,7 +1491,7 @@ module.exports = ( control, in1, properties ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gen.js":[function(require,module,exports){
+},{"./gen.js":30}],30:[function(require,module,exports){
 'use strict'
 
 /* gen.js
@@ -1779,7 +1779,7 @@ let gen = {
 
 module.exports = gen
 
-},{"memory-helper":"/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js"}],"/Users/charlie/Documents/code/genish.js/js/gt.js":[function(require,module,exports){
+},{"memory-helper":75}],31:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1815,7 +1815,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gte.js":[function(require,module,exports){
+},{"./gen.js":30}],32:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1851,7 +1851,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gtp.js":[function(require,module,exports){
+},{"./gen.js":30}],33:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1881,7 +1881,7 @@ module.exports = (x,y) => {
   return gtp
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/history.js":[function(require,module,exports){
+},{"./gen.js":30}],34:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1971,7 +1971,7 @@ module.exports = ( in1=0 ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ifelseif.js":[function(require,module,exports){
+},{"./gen.js":30}],35:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2053,7 +2053,7 @@ module.exports = ( ...args  ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/in.js":[function(require,module,exports){
+},{"./gen.js":30}],36:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2092,7 +2092,7 @@ module.exports = ( name ) => {
   return input
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/index.js":[function(require,module,exports){
+},{"./gen.js":30}],37:[function(require,module,exports){
 'use strict'
 
 let library = {
@@ -2201,7 +2201,7 @@ library.gen.lib = library
 
 module.exports = library
 
-},{"./abs.js":"/Users/charlie/Documents/code/genish.js/js/abs.js","./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./acos.js":"/Users/charlie/Documents/code/genish.js/js/acos.js","./ad.js":"/Users/charlie/Documents/code/genish.js/js/ad.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./adsr.js":"/Users/charlie/Documents/code/genish.js/js/adsr.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./asin.js":"/Users/charlie/Documents/code/genish.js/js/asin.js","./atan.js":"/Users/charlie/Documents/code/genish.js/js/atan.js","./attack.js":"/Users/charlie/Documents/code/genish.js/js/attack.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./bool.js":"/Users/charlie/Documents/code/genish.js/js/bool.js","./ceil.js":"/Users/charlie/Documents/code/genish.js/js/ceil.js","./clamp.js":"/Users/charlie/Documents/code/genish.js/js/clamp.js","./cos.js":"/Users/charlie/Documents/code/genish.js/js/cos.js","./counter.js":"/Users/charlie/Documents/code/genish.js/js/counter.js","./cycle.js":"/Users/charlie/Documents/code/genish.js/js/cycle.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./dcblock.js":"/Users/charlie/Documents/code/genish.js/js/dcblock.js","./decay.js":"/Users/charlie/Documents/code/genish.js/js/decay.js","./delay.js":"/Users/charlie/Documents/code/genish.js/js/delay.js","./delta.js":"/Users/charlie/Documents/code/genish.js/js/delta.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./eq.js":"/Users/charlie/Documents/code/genish.js/js/eq.js","./exp.js":"/Users/charlie/Documents/code/genish.js/js/exp.js","./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./fold.js":"/Users/charlie/Documents/code/genish.js/js/fold.js","./gate.js":"/Users/charlie/Documents/code/genish.js/js/gate.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gt.js":"/Users/charlie/Documents/code/genish.js/js/gt.js","./gte.js":"/Users/charlie/Documents/code/genish.js/js/gte.js","./gtp.js":"/Users/charlie/Documents/code/genish.js/js/gtp.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./in.js":"/Users/charlie/Documents/code/genish.js/js/in.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./lte.js":"/Users/charlie/Documents/code/genish.js/js/lte.js","./ltp.js":"/Users/charlie/Documents/code/genish.js/js/ltp.js","./max.js":"/Users/charlie/Documents/code/genish.js/js/max.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./min.js":"/Users/charlie/Documents/code/genish.js/js/min.js","./mix.js":"/Users/charlie/Documents/code/genish.js/js/mix.js","./mod.js":"/Users/charlie/Documents/code/genish.js/js/mod.js","./mstosamps.js":"/Users/charlie/Documents/code/genish.js/js/mstosamps.js","./mtof.js":"/Users/charlie/Documents/code/genish.js/js/mtof.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./noise.js":"/Users/charlie/Documents/code/genish.js/js/noise.js","./not.js":"/Users/charlie/Documents/code/genish.js/js/not.js","./pan.js":"/Users/charlie/Documents/code/genish.js/js/pan.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor.js":"/Users/charlie/Documents/code/genish.js/js/phasor.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./pow.js":"/Users/charlie/Documents/code/genish.js/js/pow.js","./process.js":"/Users/charlie/Documents/code/genish.js/js/process.js","./rate.js":"/Users/charlie/Documents/code/genish.js/js/rate.js","./round.js":"/Users/charlie/Documents/code/genish.js/js/round.js","./sah.js":"/Users/charlie/Documents/code/genish.js/js/sah.js","./selector.js":"/Users/charlie/Documents/code/genish.js/js/selector.js","./sign.js":"/Users/charlie/Documents/code/genish.js/js/sign.js","./sin.js":"/Users/charlie/Documents/code/genish.js/js/sin.js","./slide.js":"/Users/charlie/Documents/code/genish.js/js/slide.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./switch.js":"/Users/charlie/Documents/code/genish.js/js/switch.js","./t60.js":"/Users/charlie/Documents/code/genish.js/js/t60.js","./tan.js":"/Users/charlie/Documents/code/genish.js/js/tan.js","./tanh.js":"/Users/charlie/Documents/code/genish.js/js/tanh.js","./train.js":"/Users/charlie/Documents/code/genish.js/js/train.js","./utilities.js":"/Users/charlie/Documents/code/genish.js/js/utilities.js","./windows.js":"/Users/charlie/Documents/code/genish.js/js/windows.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/lt.js":[function(require,module,exports){
+},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./data.js":18,"./dcblock.js":19,"./decay.js":20,"./delay.js":21,"./delta.js":22,"./div.js":23,"./env.js":24,"./eq.js":25,"./exp.js":26,"./floor.js":27,"./fold.js":28,"./gate.js":29,"./gen.js":30,"./gt.js":31,"./gte.js":32,"./gtp.js":33,"./history.js":34,"./ifelseif.js":35,"./in.js":36,"./lt.js":38,"./lte.js":39,"./ltp.js":40,"./max.js":41,"./memo.js":42,"./min.js":43,"./mix.js":44,"./mod.js":45,"./mstosamps.js":46,"./mtof.js":47,"./mul.js":48,"./neq.js":49,"./noise.js":50,"./not.js":51,"./pan.js":52,"./param.js":53,"./peek.js":54,"./phasor.js":55,"./poke.js":56,"./pow.js":57,"./process.js":58,"./rate.js":59,"./round.js":60,"./sah.js":61,"./selector.js":62,"./sign.js":63,"./sin.js":64,"./slide.js":65,"./sub.js":66,"./switch.js":67,"./t60.js":68,"./tan.js":69,"./tanh.js":70,"./train.js":71,"./utilities.js":72,"./windows.js":73,"./wrap.js":74}],38:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2239,7 +2239,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/lte.js":[function(require,module,exports){
+},{"./gen.js":30}],39:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2277,7 +2277,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ltp.js":[function(require,module,exports){
+},{"./gen.js":30}],40:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2307,7 +2307,7 @@ module.exports = (x,y) => {
   return ltp
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/max.js":[function(require,module,exports){
+},{"./gen.js":30}],41:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2340,7 +2340,7 @@ module.exports = (x,y) => {
   return max
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/memo.js":[function(require,module,exports){
+},{"./gen.js":30}],42:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2370,7 +2370,7 @@ module.exports = (in1,memoName) => {
   return memo
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/min.js":[function(require,module,exports){
+},{"./gen.js":30}],43:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2403,7 +2403,7 @@ module.exports = (x,y) => {
   return min
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mix.js":[function(require,module,exports){
+},{"./gen.js":30}],44:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js'),
@@ -2419,7 +2419,7 @@ module.exports = ( in1, in2, t=.5 ) => {
   return ugen
 }
 
-},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/mod.js":[function(require,module,exports){
+},{"./add.js":5,"./gen.js":30,"./memo.js":42,"./mul.js":48,"./sub.js":66}],45:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2463,7 +2463,7 @@ module.exports = (...args) => {
   return mod
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mstosamps.js":[function(require,module,exports){
+},{"./gen.js":30}],46:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2501,7 +2501,7 @@ module.exports = x => {
   return mstosamps
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mtof.js":[function(require,module,exports){
+},{"./gen.js":30}],47:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2539,7 +2539,7 @@ module.exports = ( x, props ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mul.js":[function(require,module,exports){
+},{"./gen.js":30}],48:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -2595,7 +2595,7 @@ module.exports = ( ...args ) => {
   return mul
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/neq.js":[function(require,module,exports){
+},{"./gen.js":30}],49:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2627,7 +2627,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/noise.js":[function(require,module,exports){
+},{"./gen.js":30}],50:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2655,7 +2655,7 @@ module.exports = x => {
   return noise
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/not.js":[function(require,module,exports){
+},{"./gen.js":30}],51:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2685,7 +2685,7 @@ module.exports = x => {
   return not
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/pan.js":[function(require,module,exports){
+},{"./gen.js":30}],52:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' ),
@@ -2729,7 +2729,7 @@ module.exports = ( leftInput, rightInput, pan =.5, properties ) => {
   return ugen
 }
 
-},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js"}],"/Users/charlie/Documents/code/genish.js/js/param.js":[function(require,module,exports){
+},{"./data.js":18,"./gen.js":30,"./mul.js":48,"./peek.js":54}],53:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2785,7 +2785,7 @@ module.exports = ( propName=0, value=0 ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/peek.js":[function(require,module,exports){
+},{"./gen.js":30}],54:[function(require,module,exports){
 'use strict'
 
 const gen      = require( './gen.js' ),
@@ -2926,7 +2926,7 @@ module.exports = ( input_data, index=0, properties ) => {
   return ugen
 }
 
-},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js"}],"/Users/charlie/Documents/code/genish.js/js/phasor.js":[function(require,module,exports){
+},{"./data.js":18,"./gen.js":30,"./param.js":53}],55:[function(require,module,exports){
 'use strict'
 
 let gen   = require( './gen.js' ),
@@ -2957,7 +2957,7 @@ module.exports = ( frequency = 1, reset = 0, _props ) => {
   return ugen
 }
 
-},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js"}],"/Users/charlie/Documents/code/genish.js/js/poke.js":[function(require,module,exports){
+},{"./accum.js":2,"./div.js":23,"./gen.js":30,"./mul.js":48}],56:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -3012,7 +3012,7 @@ module.exports = ( data, value, index, properties ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/pow.js":[function(require,module,exports){
+},{"./gen.js":30,"./mul.js":48,"./wrap.js":74}],57:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3054,7 +3054,7 @@ module.exports = (x,y) => {
   return pow
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/process.js":[function(require,module,exports){
+},{"./gen.js":30}],58:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3108,7 +3108,7 @@ module.exports = (...args) => {
   return process 
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/rate.js":[function(require,module,exports){
+},{"./gen.js":30}],59:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3160,7 +3160,7 @@ module.exports = ( in1, rate ) => {
   return ugen
 }
 
-},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./delta.js":"/Users/charlie/Documents/code/genish.js/js/delta.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/round.js":[function(require,module,exports){
+},{"./add.js":5,"./delta.js":22,"./gen.js":30,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66,"./wrap.js":74}],60:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3193,7 +3193,7 @@ module.exports = x => {
   return round
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sah.js":[function(require,module,exports){
+},{"./gen.js":30}],61:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' )
@@ -3250,7 +3250,7 @@ module.exports = ( in1, control, threshold=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/selector.js":[function(require,module,exports){
+},{"./gen.js":30}],62:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3302,7 +3302,7 @@ module.exports = ( ...inputs ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sign.js":[function(require,module,exports){
+},{"./gen.js":30}],63:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3335,7 +3335,7 @@ module.exports = x => {
   return sign
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sin.js":[function(require,module,exports){
+},{"./gen.js":30}],64:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3370,7 +3370,7 @@ module.exports = x => {
   return sin
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/slide.js":[function(require,module,exports){
+},{"./gen.js":30}],65:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3397,7 +3397,7 @@ module.exports = ( in1, slideUp = 1, slideDown = 1 ) => {
   return filter
 }
 
-},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gt.js":"/Users/charlie/Documents/code/genish.js/js/gt.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./switch.js":"/Users/charlie/Documents/code/genish.js/js/switch.js"}],"/Users/charlie/Documents/code/genish.js/js/sub.js":[function(require,module,exports){
+},{"./add.js":5,"./div.js":23,"./gen.js":30,"./gt.js":31,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66,"./switch.js":67}],66:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -3462,7 +3462,7 @@ module.exports = ( ...args ) => {
   return sub
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/switch.js":[function(require,module,exports){
+},{"./gen.js":30}],67:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3496,7 +3496,7 @@ module.exports = ( control, in1 = 1, in2 = 0 ) => {
   return ugen
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/t60.js":[function(require,module,exports){
+},{"./gen.js":30}],68:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3536,7 +3536,7 @@ module.exports = x => {
   return t60
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/tan.js":[function(require,module,exports){
+},{"./gen.js":30}],69:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3571,7 +3571,7 @@ module.exports = x => {
   return tan
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/tanh.js":[function(require,module,exports){
+},{"./gen.js":30}],70:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3606,7 +3606,7 @@ module.exports = x => {
   return tanh
 }
 
-},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/train.js":[function(require,module,exports){
+},{"./gen.js":30}],71:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3623,7 +3623,7 @@ module.exports = ( frequency=440, pulsewidth=.5 ) => {
 }
 
 
-},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js"}],"/Users/charlie/Documents/code/genish.js/js/utilities.js":[function(require,module,exports){
+},{"./accum.js":2,"./div.js":23,"./gen.js":30,"./lt.js":38}],72:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' ),
@@ -4010,7 +4010,7 @@ utilities.clear.callbacks = []
 
 module.exports = utilities
 
-},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/windows.js":[function(require,module,exports){
+},{"./data.js":18,"./gen.js":30}],73:[function(require,module,exports){
 'use strict'
 
 /*
@@ -4098,7 +4098,7 @@ const windows = module.exports = {
   }
 }
 
-},{}],"/Users/charlie/Documents/code/genish.js/js/wrap.js":[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -4153,7 +4153,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js":[function(require,module,exports){
+},{"./floor.js":27,"./gen.js":30,"./memo.js":42,"./sub.js":66}],75:[function(require,module,exports){
 'use strict';
 
 var MemoryHelper = {
@@ -4246,7 +4246,7 @@ var MemoryHelper = {
 
 module.exports = MemoryHelper;
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js":[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4301,7 +4301,7 @@ const Analysis = {
 
 module.exports = Analysis 
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/arp.js":[function(require,module,exports){
+},{"./ugen.js":116,"gibberish-dsp":198}],77:[function(require,module,exports){
 const ArpWrapper = function( Gibber ) {
 
 const Arp = function( __chord = [0,2,4,6], octaves = 1, pattern = 'updown2' ) {
@@ -4436,7 +4436,7 @@ ArpWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = ArpWrapper
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js":[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 const Gibberish   = require( 'gibberish-dsp' )
 const Ugen        = require( './ugen.js' )
 const Instruments = require( './instruments.js' )
@@ -4774,7 +4774,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{"./analysis.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js","./arp.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/arp.js","./automata.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/automata.js","./binops.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js","./busses.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js","./clock.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js","./drums.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js","./effects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js","./ensemble.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js","./envelopes.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js","./euclid.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/euclid.js","./filters.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js","./freesound.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js","./gen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js","./graphics.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/graphics.js","./hex.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js","./hexSteps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js","./instruments.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js","./oscillators.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js","./pattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/pattern.js","./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./seq.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js","./steps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","./tidal.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/tidal.js","./triggers.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","./utility.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js","./waveObjects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js","./wavePattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/automata.js":[function(require,module,exports){
+},{"./analysis.js":76,"./arp.js":77,"./automata.js":79,"./binops.js":80,"./busses.js":81,"./clock.js":82,"./drums.js":83,"./effects.js":84,"./ensemble.js":85,"./envelopes.js":86,"./euclid.js":87,"./filters.js":90,"./freesound.js":91,"./gen.js":92,"./graphics.js":93,"./hex.js":94,"./hexSteps.js":95,"./instruments.js":96,"./oscillators.js":97,"./pattern.js":98,"./presets.js":99,"./seq.js":111,"./steps.js":112,"./theory.js":113,"./tidal.js":114,"./triggers.js":115,"./ugen.js":116,"./utility.js":117,"./waveObjects.js":118,"./wavePattern.js":119,"gibberish-dsp":198}],79:[function(require,module,exports){
 // XXX Need to create automata in the AWP thread so that the evolve method can
 // be easily sequenced. Or is there some way to simply add a method to the AWP instance?
 
@@ -4863,7 +4863,7 @@ return Automata
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js":[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4903,7 +4903,7 @@ const Binops = {
 
 module.exports = Binops
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js":[function(require,module,exports){
+},{"./ugen.js":116,"gibberish-dsp":198}],81:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4955,7 +4955,7 @@ const Busses = {
 
 module.exports = Busses
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js":[function(require,module,exports){
+},{"./ugen.js":116,"gibberish-dsp":198}],82:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 
@@ -5129,7 +5129,7 @@ const Clock = {
 
 module.exports = Clock
 
-},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js":[function(require,module,exports){
+},{"gibberish-dsp":198,"serialize-javascript":151}],83:[function(require,module,exports){
 const Ugen = require( './ugen.js' )
 const Presets = require( './presets.js' )
 
@@ -5308,7 +5308,7 @@ module.exports = function( __Audio ) {
   return { Drums, EDrums }
 }
 
-},{"./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js":[function(require,module,exports){
+},{"./presets.js":99,"./ugen.js":116}],84:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5345,7 +5345,7 @@ const Effects = {
 
 module.exports = Effects
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js":[function(require,module,exports){
+},{"./ugen.js":116,"gibberish-dsp":198}],85:[function(require,module,exports){
 module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
   const Ensemble = function( props ) {
@@ -5404,7 +5404,7 @@ module.exports = function( Audio ) {
   return Ensemble
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js":[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5437,7 +5437,7 @@ const Envelopes = {
 
 module.exports = Envelopes
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/euclid.js":[function(require,module,exports){
+},{"./ugen.js":116,"gibberish-dsp":198}],87:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -5673,7 +5673,7 @@ Euclid.test = function( testKey ) {
 return Euclid
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/external/freesound2.js":[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 (function () {
 
     var freesound = function () {        
@@ -6027,7 +6027,7 @@ return Euclid
     else {this.freesound = freesound(); }
 }());
 
-},{"http":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js":[function(require,module,exports){
+},{"http":153}],89:[function(require,module,exports){
 
 // See all scales at: http://abbernie.github.io/tune/scales.html
 
@@ -6255,7 +6255,7 @@ Tune.prototype.root = function(newmidi, newfreq) {
 
 module.exports = Tune
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js":[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -6303,7 +6303,7 @@ const Filters = {
 
 module.exports = Filters
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js":[function(require,module,exports){
+},{"./ugen.js":116,"gibberish-dsp":198}],91:[function(require,module,exports){
 const freesound = require( './external/freesound2.js' )
 
 module.exports = function( Audio ) {
@@ -6544,7 +6544,7 @@ module.exports = function( Audio ) {
   return Freesound
 }
 
-},{"./external/freesound2.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/freesound2.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js":[function(require,module,exports){
+},{"./external/freesound2.js":88}],92:[function(require,module,exports){
 module.exports = function( Gibber ) {
   
 const binops = [ 
@@ -7102,7 +7102,7 @@ Gen.init()
 return Gen 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/graphics.js":[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 const Marching = require( 'marching' )
 
 let Gibber = null
@@ -7298,12 +7298,14 @@ const Graphics = {
 
       let m = f.multiplier
       Object.defineProperty( to[ name ], 'multiplier', {
+        configurable:true,
         get() { return m },
         set(v) { m = v; f.multiplier = m }
       })
 
       let o = f.offset
       Object.defineProperty( to[ name ], 'offset', {
+        configurable:true,
         get() { return o },
         set(v) { o = v; f.offset = o }
       })
@@ -7313,10 +7315,16 @@ const Graphics = {
       // needed for annotations
       to[ name ].value.id = to[ name ].value.varName
 
+      // XXX fix the two possible locations for the callback
       if( to[ name ].value.callback !== undefined ) {
         const idx = Marching.callbacks.indexOf( to[ name ].value.callback )
         Marching.callbacks.splice( idx, 1 )
+      }else if( to[ '__'+name ].callback !== undefined ) {
+        const idx = Marching.callbacks.indexOf( to[ '__'+name ].callback )
+        Marching.callbacks.splice( idx, 1 )
       }
+
+      // XXX fix the two possible locations for the callback
       if( typeof to[ name ].value === 'object' ) {
         to[ name ].value.callback = t => {
           const val = gen()
@@ -7493,7 +7501,7 @@ const Graphics = {
 
 module.exports = Graphics
 
-},{"marching":"/Users/charlie/Documents/code/marching/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js":[function(require,module,exports){
+},{"marching":247}],94:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -7571,7 +7579,7 @@ return Hex
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js":[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 module.exports = function( Gibber ) {
   
 let Steps = {
@@ -7657,7 +7665,7 @@ return Steps.create
 }
 
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js":[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7681,6 +7689,7 @@ const Instruments = {
       instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false )
 
     }
+    instruments.Pluck = instruments.Karplus
     return instruments
   },
 
@@ -7754,7 +7763,7 @@ const Instruments = {
 
 module.exports = Instruments
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js":[function(require,module,exports){
+},{"./ugen.js":116,"gibberish-dsp":198}],97:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7787,7 +7796,7 @@ const Oscillators = {
 
 module.exports = Oscillators
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/pattern.js":[function(require,module,exports){
+},{"./ugen.js":116,"gibberish-dsp":198}],98:[function(require,module,exports){
 const patternWrapper = function( Gibber ) {
   "use strict"
 
@@ -8433,7 +8442,7 @@ patternWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = patternWrapper
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js":[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 const Presets = {
   process( description, args, Audio ) {
     let output
@@ -8506,7 +8515,7 @@ Presets.instruments.PolyMono = Presets.instruments.Monosynth
 
 module.exports = Presets
 
-},{"./presets/bus2_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/bus2_presets.js","./presets/chorus_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/chorus_presets.js","./presets/distortion_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/distortion_presets.js","./presets/drums_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/drums_presets.js","./presets/edrums_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/edrums_presets.js","./presets/flanger_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/flanger_presets.js","./presets/fm_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/fm_presets.js","./presets/kick_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/kick_presets.js","./presets/monosynth_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/monosynth_presets.js","./presets/snare_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/snare_presets.js","./presets/synth_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/synth_presets.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/bus2_presets.js":[function(require,module,exports){
+},{"./presets/bus2_presets.js":100,"./presets/chorus_presets.js":101,"./presets/distortion_presets.js":102,"./presets/drums_presets.js":103,"./presets/edrums_presets.js":104,"./presets/flanger_presets.js":105,"./presets/fm_presets.js":106,"./presets/kick_presets.js":107,"./presets/monosynth_presets.js":108,"./presets/snare_presets.js":109,"./presets/synth_presets.js":110}],100:[function(require,module,exports){
 module.exports = {
 
   'spaceverb': {
@@ -8567,7 +8576,7 @@ module.exports = {
   },
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/chorus_presets.js":[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 module.exports = {
 
   lush: {
@@ -8595,7 +8604,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/distortion_presets.js":[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports = {
 
   crunch: {
@@ -8618,7 +8627,7 @@ module.exports = {
   }
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/drums_presets.js":[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -8654,7 +8663,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/edrums_presets.js":[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -8710,7 +8719,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/flanger_presets.js":[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 module.exports = {
   moderate: {
     feedback: .25,
@@ -8726,7 +8735,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/fm_presets.js":[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 module.exports = {
 
   bass : {
@@ -8810,7 +8819,7 @@ module.exports = {
 	}
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/kick_presets.js":[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = {
 
   deep: {
@@ -8838,7 +8847,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/monosynth_presets.js":[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 module.exports = {
 
   'short.dry' : { 
@@ -9096,7 +9105,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/snare_presets.js":[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = {
 
   snappy: {
@@ -9113,7 +9122,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/synth_presets.js":[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = {
 
   acidBass: {
@@ -9245,7 +9254,7 @@ module.exports = {
   'square.perc': { waveform:'square', shape:'exponential', antialias:true, filterType:2, cutoff:.25, decay:1/8 },
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js":[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 
 module.exports = function( Audio ) {
@@ -9405,7 +9414,7 @@ module.exports = function( Audio ) {
 
 }
 
-},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js":[function(require,module,exports){
+},{"gibberish-dsp":198}],112:[function(require,module,exports){
 module.exports = function( Gibber ) {
   
 const Steps = {
@@ -9597,7 +9606,7 @@ return Steps.create
 
 //}
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js":[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 const Tune      = require( './external/tune-api-only.js' )
@@ -9916,7 +9925,7 @@ const Theory = {
 
 module.exports = Theory
 
-},{"./external/tune-api-only.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/tidal.js":[function(require,module,exports){
+},{"./external/tune-api-only.js":89,"gibberish-dsp":198,"serialize-javascript":151}],114:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 
 module.exports = function( Audio ) {
@@ -10009,7 +10018,7 @@ module.exports = function( Audio ) {
 
 }
 
-},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js":[function(require,module,exports){
+},{"gibberish-dsp":198}],115:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -10049,7 +10058,7 @@ return Triggers
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js":[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
@@ -10636,7 +10645,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
 module.exports = Ugen
 
-},{"./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js":[function(require,module,exports){
+},{"./presets.js":99,"./theory.js":113,"gibberish-dsp":198}],117:[function(require,module,exports){
 const Utility = {
   rndf( min=0, max=1, number, canRepeat=true ) {
     let out = 0
@@ -10837,7 +10846,7 @@ const Utility = {
 
 module.exports = Utility
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js":[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = function( Gibber ) {
    const gen = Gibber.Gen.make  
 
@@ -10942,7 +10951,7 @@ module.exports = function( Gibber ) {
   return WavePatterns
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js":[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const WavePattern = function( ugen ) {
@@ -10959,7 +10968,7 @@ module.exports = function( Gibber ) {
   return WavePattern
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/base64-js/index.js":[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -11112,9 +11121,9 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js":[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js":[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -12852,7 +12861,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/base64-js/index.js","ieee754":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/ieee754/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/builtin-status-codes/browser.js":[function(require,module,exports){
+},{"base64-js":120,"ieee754":126}],123:[function(require,module,exports){
 module.exports = {
   "100": "Continue",
   "101": "Switching Protocols",
@@ -12918,7 +12927,7 @@ module.exports = {
   "511": "Network Authentication Required"
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js":[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -13029,7 +13038,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/events/events.js":[function(require,module,exports){
+},{"../../is-buffer/index.js":128}],125:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -13550,7 +13559,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/ieee754/index.js":[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -13636,7 +13645,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -13661,7 +13670,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js":[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -13684,14 +13693,14 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/isarray/index.js":[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/path-browserify/index.js":[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -13919,7 +13928,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js":[function(require,module,exports){
+},{"_process":132}],131:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -13967,7 +13976,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 
 }).call(this,require('_process'))
-},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js":[function(require,module,exports){
+},{"_process":132}],132:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -14153,7 +14162,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/punycode/punycode.js":[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -14690,7 +14699,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/decode.js":[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14776,7 +14785,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/encode.js":[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14863,16 +14872,16 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/index.js":[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/decode.js","./encode":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/encode.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/duplex-browser.js":[function(require,module,exports){
+},{"./decode":134,"./encode":135}],137:[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js":[function(require,module,exports){
+},{"./lib/_stream_duplex.js":138}],138:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15004,7 +15013,7 @@ Duplex.prototype._destroy = function (err, cb) {
 
   pna.nextTick(cb, err);
 };
-},{"./_stream_readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js","./_stream_writable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_passthrough.js":[function(require,module,exports){
+},{"./_stream_readable":140,"./_stream_writable":142,"core-util-is":124,"inherits":127,"process-nextick-args":131}],139:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15052,7 +15061,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js":[function(require,module,exports){
+},{"./_stream_transform":141,"core-util-is":124,"inherits":127}],140:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16074,7 +16083,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./internal/streams/BufferList":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/BufferList.js","./internal/streams/destroy":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/events/events.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","isarray":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/isarray/index.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js","safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","string_decoder/":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/string_decoder/lib/string_decoder.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js":[function(require,module,exports){
+},{"./_stream_duplex":138,"./internal/streams/BufferList":143,"./internal/streams/destroy":144,"./internal/streams/stream":145,"_process":132,"core-util-is":124,"events":125,"inherits":127,"isarray":129,"process-nextick-args":131,"safe-buffer":150,"string_decoder/":157,"util":121}],141:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16289,7 +16298,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js":[function(require,module,exports){
+},{"./_stream_duplex":138,"core-util-is":124,"inherits":127}],142:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16979,7 +16988,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./internal/streams/destroy":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js","safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","util-deprecate":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util-deprecate/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/BufferList.js":[function(require,module,exports){
+},{"./_stream_duplex":138,"./internal/streams/destroy":144,"./internal/streams/stream":145,"_process":132,"core-util-is":124,"inherits":127,"process-nextick-args":131,"safe-buffer":150,"util-deprecate":161}],143:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17059,7 +17068,7 @@ if (util && util.inspect && util.inspect.custom) {
     return this.constructor.name + ' ' + obj;
   };
 }
-},{"safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js":[function(require,module,exports){
+},{"safe-buffer":150,"util":121}],144:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -17134,13 +17143,13 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js":[function(require,module,exports){
+},{"process-nextick-args":131}],145:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/events/events.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/passthrough.js":[function(require,module,exports){
+},{"events":125}],146:[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js":[function(require,module,exports){
+},{"./readable":147}],147:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -17149,13 +17158,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./lib/_stream_passthrough.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_passthrough.js","./lib/_stream_readable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js","./lib/_stream_transform.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js","./lib/_stream_writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/transform.js":[function(require,module,exports){
+},{"./lib/_stream_duplex.js":138,"./lib/_stream_passthrough.js":139,"./lib/_stream_readable.js":140,"./lib/_stream_transform.js":141,"./lib/_stream_writable.js":142}],148:[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/writable-browser.js":[function(require,module,exports){
+},{"./readable":147}],149:[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js":[function(require,module,exports){
+},{"./lib/_stream_writable.js":142}],150:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -17219,7 +17228,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js":[function(require,module,exports){
+},{"buffer":122}],151:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -17340,7 +17349,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-browserify/index.js":[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -17469,7 +17478,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/events/events.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","readable-stream/duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/duplex-browser.js","readable-stream/passthrough.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/passthrough.js","readable-stream/readable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js","readable-stream/transform.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/transform.js","readable-stream/writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/writable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/index.js":[function(require,module,exports){
+},{"events":125,"inherits":127,"readable-stream/duplex.js":137,"readable-stream/passthrough.js":146,"readable-stream/readable.js":147,"readable-stream/transform.js":148,"readable-stream/writable.js":149}],153:[function(require,module,exports){
 (function (global){
 var ClientRequest = require('./lib/request')
 var response = require('./lib/response')
@@ -17557,7 +17566,7 @@ http.METHODS = [
 	'UNSUBSCRIBE'
 ]
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lib/request":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/request.js","./lib/response":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/response.js","builtin-status-codes":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/builtin-status-codes/browser.js","url":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/url/url.js","xtend":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/xtend/immutable.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/capability.js":[function(require,module,exports){
+},{"./lib/request":155,"./lib/response":156,"builtin-status-codes":123,"url":159,"xtend":165}],154:[function(require,module,exports){
 (function (global){
 exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableStream)
 
@@ -17634,7 +17643,7 @@ function isFunction (value) {
 xhr = null // Help gc
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/request.js":[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var inherits = require('inherits')
@@ -17961,7 +17970,7 @@ var unsafeHeaders = [
 ]
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/capability.js","./response":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/response.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","readable-stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js","to-arraybuffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/to-arraybuffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/response.js":[function(require,module,exports){
+},{"./capability":154,"./response":156,"_process":132,"buffer":122,"inherits":127,"readable-stream":147,"to-arraybuffer":158}],156:[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var inherits = require('inherits')
@@ -18182,7 +18191,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/capability.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","readable-stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/string_decoder/lib/string_decoder.js":[function(require,module,exports){
+},{"./capability":154,"_process":132,"buffer":122,"inherits":127,"readable-stream":147}],157:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -18479,7 +18488,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/to-arraybuffer/index.js":[function(require,module,exports){
+},{"safe-buffer":150}],158:[function(require,module,exports){
 var Buffer = require('buffer').Buffer
 
 module.exports = function (buf) {
@@ -18508,7 +18517,7 @@ module.exports = function (buf) {
 	}
 }
 
-},{"buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/url/url.js":[function(require,module,exports){
+},{"buffer":122}],159:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -19242,7 +19251,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/url/util.js","punycode":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/punycode/punycode.js","querystring":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/url/util.js":[function(require,module,exports){
+},{"./util":160,"punycode":133,"querystring":136}],160:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -19260,7 +19269,7 @@ module.exports = {
   }
 };
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util-deprecate/browser.js":[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 (function (global){
 
 /**
@@ -19331,16 +19340,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
-arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js"][0].apply(exports,arguments)
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+},{}],162:[function(require,module,exports){
+arguments[4][127][0].apply(exports,arguments)
+},{"dup":127}],163:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/util.js":[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -19930,7 +19939,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/support/isBufferBrowser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/xtend/immutable.js":[function(require,module,exports){
+},{"./support/isBuffer":163,"_process":132,"inherits":162}],165:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -19951,7 +19960,7 @@ function extend() {
     return target
 }
 
-},{}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js":[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 let ugen = require( '../ugen.js' )
 
 let analyzer = Object.create( ugen )
@@ -19963,7 +19972,7 @@ Object.assign( analyzer, {
 
 module.exports = analyzer
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzers.js":[function(require,module,exports){
+},{"../ugen.js":231}],167:[function(require,module,exports){
 module.exports = function( Gibberish ) {
   const { In, Out, SSD } = require( './singlesampledelay.js'  )( Gibberish )
 
@@ -19988,7 +19997,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./follow.js":"/Users/charlie/Documents/code/gibberish/js/analysis/follow.js","./singlesampledelay.js":"/Users/charlie/Documents/code/gibberish/js/analysis/singlesampledelay.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/follow.js":[function(require,module,exports){
+},{"./follow.js":168,"./singlesampledelay.js":169}],168:[function(require,module,exports){
 const g = require('genish.js'),
       analyzer = require('./analyzer.js'),
       ugen = require('../ugen.js');
@@ -20171,7 +20180,7 @@ module.exports = function (Gibberish) {
 
   return Follow;
 };
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/singlesampledelay.js":[function(require,module,exports){
+},{"../ugen.js":231,"./analyzer.js":166,"genish.js":37}],169:[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       proxy    = require( '../workletProxy.js' ),
@@ -20288,7 +20297,7 @@ return { In, Out, SSD }
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","./analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/ad.js":[function(require,module,exports){
+},{"../ugen.js":231,"../workletProxy.js":234,"./analyzer.js":166,"genish.js":37}],170:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -20316,7 +20325,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/adsr.js":[function(require,module,exports){
+},{"../ugen.js":231,"genish.js":37}],171:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -20361,7 +20370,7 @@ module.exports = function( Gibberish ) {
   return ADSR
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/envelopes.js":[function(require,module,exports){
+},{"../ugen.js":231,"genish.js":37}],172:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -20396,7 +20405,7 @@ module.exports = function( Gibberish ) {
   return Envelopes
 }
 
-},{"./ad.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/ad.js","./adsr.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/adsr.js","./ramp.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/ramp.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/ramp.js":[function(require,module,exports){
+},{"./ad.js":170,"./adsr.js":171,"./ramp.js":173,"genish.js":37}],173:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -20430,7 +20439,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/external/priorityqueue.js":[function(require,module,exports){
+},{"../ugen.js":231,"genish.js":37}],174:[function(require,module,exports){
 /*
  * https://github.com/antimatter15/heapqueue.js/blob/master/heapqueue.js
  *
@@ -20544,7 +20553,7 @@ HeapQueue.prototype.pop = function(){
 
 module.exports = HeapQueue
 
-},{}],"/Users/charlie/Documents/code/gibberish/js/filters/allpass.js":[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 let g = require( 'genish.js' )
  
 // constructor for schroeder allpass filters
@@ -20561,7 +20570,7 @@ let allPass = function( _input, length=500, feedback=.5 ) {
 
 module.exports = allPass
 
-},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/biquad.js":[function(require,module,exports){
+},{"genish.js":37}],176:[function(require,module,exports){
 let g = require('genish.js'),
     filter = require('./filter.js');
 
@@ -20717,7 +20726,7 @@ module.exports = function (Gibberish) {
 
   return Biquad;
 };
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js":[function(require,module,exports){
+},{"./filter.js":179,"genish.js":37}],177:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 ) {
@@ -20736,7 +20745,7 @@ let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 
 
 module.exports = combFilter
 
-},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/diodeFilterZDF.js":[function(require,module,exports){
+},{"genish.js":37}],178:[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -20946,7 +20955,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filter.js":[function(require,module,exports){
+},{"./filter.js":179,"genish.js":37}],179:[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let filter = Object.create( ugen )
@@ -20957,7 +20966,7 @@ Object.assign( filter, {
 
 module.exports = filter
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filter24.js":[function(require,module,exports){
+},{"../ugen.js":231}],180:[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -21027,7 +21036,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filters.js":[function(require,module,exports){
+},{"./filter.js":179,"genish.js":37}],181:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const g = Gibberish.genish
@@ -21099,7 +21108,7 @@ return filters
 
 }
 
-},{"./allpass.js":"/Users/charlie/Documents/code/gibberish/js/filters/allpass.js","./biquad.js":"/Users/charlie/Documents/code/gibberish/js/filters/biquad.js","./combfilter.js":"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js","./diodeFilterZDF.js":"/Users/charlie/Documents/code/gibberish/js/filters/diodeFilterZDF.js","./filter24.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter24.js","./ladder.js":"/Users/charlie/Documents/code/gibberish/js/filters/ladder.js","./svf.js":"/Users/charlie/Documents/code/gibberish/js/filters/svf.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/ladder.js":[function(require,module,exports){
+},{"./allpass.js":175,"./biquad.js":176,"./combfilter.js":177,"./diodeFilterZDF.js":178,"./filter24.js":180,"./ladder.js":182,"./svf.js":183}],182:[function(require,module,exports){
 const genish = require('genish.js'),
       filterProto = require('./filter.js');
 
@@ -21212,7 +21221,7 @@ module.exports = function (Gibberish) {
 
   return Zd24;
 };
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/svf.js":[function(require,module,exports){
+},{"./filter.js":179,"genish.js":37}],183:[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -21284,7 +21293,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/bitCrusher.js":[function(require,module,exports){
+},{"./filter.js":179,"genish.js":37}],184:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -21362,7 +21371,7 @@ return BitCrusher
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/bufferShuffler.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],185:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -21487,7 +21496,7 @@ module.exports = function( Gibberish ) {
   return Shuffler 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/chorus.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],186:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
   
@@ -21584,7 +21593,7 @@ return __Chorus
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/dattorro.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],187:[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -21777,7 +21786,7 @@ module.exports = function (Gibberish) {
 
   return Reverb;
 };
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/delay.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],188:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -21849,7 +21858,7 @@ return Delay
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/distortion.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],189:[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -21928,7 +21937,7 @@ module.exports = function (Gibberish) {
 
   return Distortion;
 };
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/effect.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],190:[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let effect = Object.create( ugen )
@@ -21940,7 +21949,7 @@ Object.assign( effect, {
 
 module.exports = effect
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/effects.js":[function(require,module,exports){
+},{"../ugen.js":231}],191:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const effects = {
@@ -21971,7 +21980,7 @@ return effects
 
 }
 
-},{"./bitCrusher.js":"/Users/charlie/Documents/code/gibberish/js/fx/bitCrusher.js","./bufferShuffler.js":"/Users/charlie/Documents/code/gibberish/js/fx/bufferShuffler.js","./chorus.js":"/Users/charlie/Documents/code/gibberish/js/fx/chorus.js","./dattorro.js":"/Users/charlie/Documents/code/gibberish/js/fx/dattorro.js","./delay.js":"/Users/charlie/Documents/code/gibberish/js/fx/delay.js","./distortion.js":"/Users/charlie/Documents/code/gibberish/js/fx/distortion.js","./flanger.js":"/Users/charlie/Documents/code/gibberish/js/fx/flanger.js","./freeverb.js":"/Users/charlie/Documents/code/gibberish/js/fx/freeverb.js","./ringMod.js":"/Users/charlie/Documents/code/gibberish/js/fx/ringMod.js","./tremolo.js":"/Users/charlie/Documents/code/gibberish/js/fx/tremolo.js","./vibrato.js":"/Users/charlie/Documents/code/gibberish/js/fx/vibrato.js","./wavefolder.js":"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/flanger.js":[function(require,module,exports){
+},{"./bitCrusher.js":184,"./bufferShuffler.js":185,"./chorus.js":186,"./dattorro.js":187,"./delay.js":188,"./distortion.js":189,"./flanger.js":192,"./freeverb.js":193,"./ringMod.js":194,"./tremolo.js":195,"./vibrato.js":196,"./wavefolder.js":197}],192:[function(require,module,exports){
 let g = require( 'genish.js' ),
     proto = require( './effect.js' )
 
@@ -22062,7 +22071,7 @@ return Flanger
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/freeverb.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],193:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -22170,7 +22179,7 @@ return Freeverb
 }
 
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/ringMod.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],194:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -22235,7 +22244,7 @@ return RingMod
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/tremolo.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],195:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -22308,7 +22317,7 @@ return Tremolo
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/vibrato.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],196:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -22395,7 +22404,7 @@ return Vibrato
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],197:[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -22532,7 +22541,7 @@ module.exports = function (Gibberish) {
 
   return Wavefolder;
 };
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/index.js":[function(require,module,exports){
+},{"./effect.js":190,"genish.js":37}],198:[function(require,module,exports){
 let MemoryHelper = require( 'memory-helper' ),
     genish       = require( 'genish.js' )
     
@@ -23019,7 +23028,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","./analysis/analyzers.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzers.js","./envelopes/envelopes.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/envelopes.js","./filters/filters.js":"/Users/charlie/Documents/code/gibberish/js/filters/filters.js","./fx/effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","./fx/effects.js":"/Users/charlie/Documents/code/gibberish/js/fx/effects.js","./instruments/instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","./instruments/instruments.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instruments.js","./instruments/polyMixin.js":"/Users/charlie/Documents/code/gibberish/js/instruments/polyMixin.js","./instruments/polytemplate.js":"/Users/charlie/Documents/code/gibberish/js/instruments/polytemplate.js","./misc/binops.js":"/Users/charlie/Documents/code/gibberish/js/misc/binops.js","./misc/bus.js":"/Users/charlie/Documents/code/gibberish/js/misc/bus.js","./misc/bus2.js":"/Users/charlie/Documents/code/gibberish/js/misc/bus2.js","./misc/monops.js":"/Users/charlie/Documents/code/gibberish/js/misc/monops.js","./misc/panner.js":"/Users/charlie/Documents/code/gibberish/js/misc/panner.js","./misc/time.js":"/Users/charlie/Documents/code/gibberish/js/misc/time.js","./oscillators/oscillators.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/oscillators.js","./scheduling/scheduler.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/scheduler.js","./scheduling/seq2.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/seq2.js","./scheduling/sequencer.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/sequencer.js","./scheduling/tidal.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/tidal.js","./ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./ugenTemplate.js":"/Users/charlie/Documents/code/gibberish/js/ugenTemplate.js","./utilities.js":"/Users/charlie/Documents/code/gibberish/js/utilities.js","./workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js","memory-helper":"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/clap.js":[function(require,module,exports){
+},{"./analysis/analyzer.js":166,"./analysis/analyzers.js":167,"./envelopes/envelopes.js":172,"./filters/filters.js":181,"./fx/effect.js":190,"./fx/effects.js":191,"./instruments/instrument.js":204,"./instruments/instruments.js":205,"./instruments/polyMixin.js":209,"./instruments/polytemplate.js":210,"./misc/binops.js":215,"./misc/bus.js":216,"./misc/bus2.js":217,"./misc/monops.js":218,"./misc/panner.js":219,"./misc/time.js":220,"./oscillators/oscillators.js":223,"./scheduling/scheduler.js":227,"./scheduling/seq2.js":228,"./scheduling/sequencer.js":229,"./scheduling/tidal.js":230,"./ugen.js":231,"./ugenTemplate.js":232,"./utilities.js":233,"./workletProxy.js":234,"genish.js":37,"memory-helper":236}],199:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -23089,7 +23098,7 @@ module.exports = function (Gibberish) {
 
   return Clap;
 };
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/conga.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],200:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -23130,7 +23139,7 @@ module.exports = function( Gibberish ) {
   return [ Conga, PolyConga ]
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/cowbell.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],201:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -23174,7 +23183,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/fm.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],202:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -23291,7 +23300,7 @@ module.exports = function (Gibberish) {
 
   return [FM, PolyFM];
 };
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/hat.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],203:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -23345,7 +23354,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],204:[function(require,module,exports){
 const ugen = require( '../ugen.js' )()
 
 const instrument = Object.create( ugen )
@@ -23385,7 +23394,7 @@ Object.assign( instrument, {
 
 module.exports = instrument
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/instruments.js":[function(require,module,exports){
+},{"../ugen.js":231}],205:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
 const instruments = {
@@ -23420,7 +23429,7 @@ return instruments
 
 }
 
-},{"./clap.js":"/Users/charlie/Documents/code/gibberish/js/instruments/clap.js","./conga.js":"/Users/charlie/Documents/code/gibberish/js/instruments/conga.js","./cowbell.js":"/Users/charlie/Documents/code/gibberish/js/instruments/cowbell.js","./fm.js":"/Users/charlie/Documents/code/gibberish/js/instruments/fm.js","./hat.js":"/Users/charlie/Documents/code/gibberish/js/instruments/hat.js","./karplusstrong.js":"/Users/charlie/Documents/code/gibberish/js/instruments/karplusstrong.js","./kick.js":"/Users/charlie/Documents/code/gibberish/js/instruments/kick.js","./monosynth.js":"/Users/charlie/Documents/code/gibberish/js/instruments/monosynth.js","./sampler.js":"/Users/charlie/Documents/code/gibberish/js/instruments/sampler.js","./snare.js":"/Users/charlie/Documents/code/gibberish/js/instruments/snare.js","./synth.js":"/Users/charlie/Documents/code/gibberish/js/instruments/synth.js","./tom.js":"/Users/charlie/Documents/code/gibberish/js/instruments/tom.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/karplusstrong.js":[function(require,module,exports){
+},{"./clap.js":199,"./conga.js":200,"./cowbell.js":201,"./fm.js":202,"./hat.js":203,"./karplusstrong.js":206,"./kick.js":207,"./monosynth.js":208,"./sampler.js":211,"./snare.js":212,"./synth.js":213,"./tom.js":214}],206:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -23512,7 +23521,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/kick.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],207:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -23563,7 +23572,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/monosynth.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],208:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js'),
       feedbackOsc = require('../oscillators/fmfeedbackosc.js');
@@ -23674,7 +23683,7 @@ module.exports = function (Gibberish) {
 
   return [Mono, PolyMono];
 };
-},{"../oscillators/fmfeedbackosc.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js","./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/polyMixin.js":[function(require,module,exports){
+},{"../oscillators/fmfeedbackosc.js":222,"./instrument.js":204,"genish.js":37}],209:[function(require,module,exports){
 // XXX TOO MANY GLOBAL GIBBERISH VALUES
 
 const Gibberish = require( '../index.js' )
@@ -23762,7 +23771,7 @@ module.exports = {
   triggerNote:null
 }
 
-},{"../index.js":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/polytemplate.js":[function(require,module,exports){
+},{"../index.js":198}],210:[function(require,module,exports){
 /*
  * This files creates a factory generating polysynth constructors.
  */
@@ -23883,7 +23892,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/sampler.js":[function(require,module,exports){
+},{"../workletProxy.js":234,"genish.js":37}],211:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -24104,7 +24113,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/snare.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],212:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
   
@@ -24156,7 +24165,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/synth.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],213:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -24260,7 +24269,7 @@ module.exports = function (Gibberish) {
 
   return [Synth, PolySynth];
 };
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/tom.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],214:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -24311,7 +24320,7 @@ module.exports = function( Gibberish ) {
   return Tom
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/binops.js":[function(require,module,exports){
+},{"./instrument.js":204,"genish.js":37}],215:[function(require,module,exports){
 const ugenproto = require( '../ugen.js' )(),
      __proxy     = require( '../workletProxy.js' ),
      g = require( 'genish.js' )
@@ -24426,7 +24435,7 @@ module.exports = function( Gibberish ) {
   return Binops
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/bus.js":[function(require,module,exports){
+},{"../ugen.js":231,"../workletProxy.js":234,"genish.js":37}],216:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )(),
     __proxy= require( '../workletProxy.js' )
@@ -24509,7 +24518,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/bus2.js":[function(require,module,exports){
+},{"../ugen.js":231,"../workletProxy.js":234,"genish.js":37}],217:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       __proxy = require( '../workletProxy.js' )
@@ -24648,7 +24657,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/monops.js":[function(require,module,exports){
+},{"../ugen.js":231,"../workletProxy.js":234,"genish.js":37}],218:[function(require,module,exports){
 const  g    = require( 'genish.js'  ),
        ugen = require( '../ugen.js' )()
 
@@ -24710,7 +24719,7 @@ module.exports = function( Gibberish ) {
   return Monops
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/panner.js":[function(require,module,exports){
+},{"../ugen.js":231,"genish.js":37}],219:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 const ugen = require( '../ugen.js' )()
@@ -24747,7 +24756,7 @@ return Panner
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/time.js":[function(require,module,exports){
+},{"../ugen.js":231,"genish.js":37}],220:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const Time = {
@@ -24776,7 +24785,7 @@ module.exports = function( Gibberish ) {
   return Time
 }
 
-},{}],"/Users/charlie/Documents/code/gibberish/js/oscillators/brownnoise.js":[function(require,module,exports){
+},{}],221:[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       noise = genish.noise;
@@ -24796,7 +24805,7 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js":[function(require,module,exports){
+},{"genish.js":37}],222:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
@@ -24872,7 +24881,7 @@ let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
 
 module.exports = feedbackOsc
 
-},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/oscillators.js":[function(require,module,exports){
+},{"genish.js":37}],223:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       feedbackOsc = require( './fmfeedbackosc.js' ),
@@ -25052,7 +25061,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./brownnoise.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/brownnoise.js","./fmfeedbackosc.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js","./pinknoise.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/pinknoise.js","./polyblep.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/polyblep.js","./wavetable.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/wavetable.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/pinknoise.js":[function(require,module,exports){
+},{"../ugen.js":231,"./brownnoise.js":221,"./fmfeedbackosc.js":222,"./pinknoise.js":224,"./polyblep.js":225,"./wavetable.js":226,"genish.js":37}],224:[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       data = genish.data,
@@ -25077,7 +25086,7 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/polyblep.js":[function(require,module,exports){
+},{"genish.js":37}],225:[function(require,module,exports){
 const genish = require('genish.js');
 const g = genish;
 
@@ -25135,7 +25144,7 @@ const polyBlep = function (__frequency, argumentProps) {
 };
 
 module.exports = polyBlep;
-},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/wavetable.js":[function(require,module,exports){
+},{"genish.js":37}],226:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )()
 
@@ -25169,7 +25178,7 @@ module.exports = function( Gibberish ) {
   return Wavetable
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/scheduler.js":[function(require,module,exports){
+},{"../ugen.js":231,"genish.js":37}],227:[function(require,module,exports){
 const Queue = require( '../external/priorityqueue.js' )
 const Big   = require( 'big.js' )
 
@@ -25248,7 +25257,7 @@ Object.defineProperty( Scheduler, 'shouldSync', {
 
 module.exports = Scheduler
 
-},{"../external/priorityqueue.js":"/Users/charlie/Documents/code/gibberish/js/external/priorityqueue.js","big.js":"/Users/charlie/Documents/code/gibberish/node_modules/big.js/big.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/seq2.js":[function(require,module,exports){
+},{"../external/priorityqueue.js":174,"big.js":235}],228:[function(require,module,exports){
 const g = require( 'genish.js' ),
       __proxy = require( '../workletProxy.js' ),
       ugen = require( '../ugen.js' )()
@@ -25447,7 +25456,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/sequencer.js":[function(require,module,exports){
+},{"../ugen.js":231,"../workletProxy.js":234,"genish.js":37}],229:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 
 module.exports = function( Gibberish ) {
@@ -25542,7 +25551,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/tidal.js":[function(require,module,exports){
+},{"../workletProxy.js":234}],230:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 const Pattern = require( 'tidal.pegjs' )
 
@@ -25737,7 +25746,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","tidal.pegjs":"/Users/charlie/Documents/code/tidal.peg/src/pattern.js"}],"/Users/charlie/Documents/code/gibberish/js/ugen.js":[function(require,module,exports){
+},{"../workletProxy.js":234,"tidal.pegjs":284}],231:[function(require,module,exports){
 let Gibberish = null
 
 const __ugen = function( __Gibberish ) {
@@ -25884,7 +25893,7 @@ const __ugen = function( __Gibberish ) {
 
 module.exports = __ugen
 
-},{}],"/Users/charlie/Documents/code/gibberish/js/ugenTemplate.js":[function(require,module,exports){
+},{}],232:[function(require,module,exports){
 const __proxy = require( './workletProxy.js' )
 const effectProto = require( './fx/effect.js' )
 
@@ -26040,7 +26049,7 @@ module.exports = function( Gibberish ) {
   return factory
 }
 
-},{"./fx/effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","./workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js"}],"/Users/charlie/Documents/code/gibberish/js/utilities.js":[function(require,module,exports){
+},{"./fx/effect.js":190,"./workletProxy.js":234}],233:[function(require,module,exports){
 const genish = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -26238,7 +26247,7 @@ return utilities
 
 }
 
-},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/workletProxy.js":[function(require,module,exports){
+},{"genish.js":37}],234:[function(require,module,exports){
 const serialize = require('serialize-javascript')
 
 module.exports = function( Gibberish ) {
@@ -26397,7 +26406,7 @@ return __proxy
 
 }
 
-},{"serialize-javascript":"/Users/charlie/Documents/code/gibberish/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/big.js/big.js":[function(require,module,exports){
+},{"serialize-javascript":237}],235:[function(require,module,exports){
 /* big.js v3.1.3 https://github.com/MikeMcl/big.js/LICENCE */
 ;(function (global) {
     'use strict';
@@ -27545,9 +27554,9 @@ return __proxy
     }
 })(this);
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js":[function(require,module,exports){
-arguments[4]["/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js"][0].apply(exports,arguments)
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/serialize-javascript/index.js":[function(require,module,exports){
+},{}],236:[function(require,module,exports){
+arguments[4][75][0].apply(exports,arguments)
+},{"dup":75}],237:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -27716,7 +27725,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],"/Users/charlie/Documents/code/marching/js/alterations.js":[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen } = require( './var.js' )
@@ -27824,7 +27833,7 @@ Alterations.Halve.RIGHT = 2
 
 module.exports = Alterations
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/audio.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],239:[function(require,module,exports){
 const Audio = {
   __hasInput: false,
   ctx: null,
@@ -27914,7 +27923,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{}],"/Users/charlie/Documents/code/marching/js/background.js":[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' )
@@ -27970,7 +27979,7 @@ const BG = function( Scene, SDF ) {
 
 module.exports = BG 
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/camera.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],241:[function(require,module,exports){
 const Camera = {
   init( gl, program, handler ) {
     const camera_pos    = gl.getUniformLocation( program, 'camera_pos' )
@@ -28050,7 +28059,7 @@ const Camera = {
 
 module.exports = Camera
 
-},{}],"/Users/charlie/Documents/code/marching/js/distanceDeformations.js":[function(require,module,exports){
+},{}],242:[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
@@ -28199,7 +28208,7 @@ for( let name in ops ) {
 module.exports = DistanceOps
 
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/distanceOperations.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],243:[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' )
@@ -28399,7 +28408,7 @@ ops.SmoothUnion.code = `      vec2 smin( vec2 a, vec2 b, float k) {
 module.exports = DistanceOps
 
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/domainOperations.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],244:[function(require,module,exports){
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
@@ -28712,7 +28721,7 @@ const getDomainOps = function( SDF ) {
 
 module.exports = getDomainOps
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/float.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261}],245:[function(require,module,exports){
 const emit_float = function( a ) {
 	if (a % 1 === 0)
 		return a.toFixed( 1 )
@@ -28735,7 +28744,7 @@ const Float = function( x=0 ) {
 
 module.exports = Float
 
-},{}],"/Users/charlie/Documents/code/marching/js/fog.js":[function(require,module,exports){
+},{}],246:[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
@@ -28809,7 +28818,7 @@ const Fogger = function( Scene, SDF ) {
 
 module.exports = Fogger
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/index.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],247:[function(require,module,exports){
 'use strict'
 
 const Marching = require( './main.js' )
@@ -28824,7 +28833,7 @@ window.Marching = Marching
 
 module.exports = Marching
 
-},{"./main.js":"/Users/charlie/Documents/code/marching/js/main.js"}],"/Users/charlie/Documents/code/marching/js/int.js":[function(require,module,exports){
+},{"./main.js":250}],248:[function(require,module,exports){
 const emit_int = function( a ) {
 	if( a % 1 !== 0 )
 		return Math.round( a )
@@ -28847,7 +28856,7 @@ const Int = function( x=0 ) {
 
 module.exports = Int
 
-},{}],"/Users/charlie/Documents/code/marching/js/lighting.js":[function(require,module,exports){
+},{}],249:[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' ),
@@ -28868,6 +28877,12 @@ const Lights = function( SDF ) {
       );
     `,
 
+    defaultMaterials:`
+      Material materials[2] = Material[2](
+        Material( 0, vec3( 1. ), vec3(0.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.) ),
+        Material( 0, vec3( 1. ), vec3(1.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.) )
+      );
+    `,
 
     light( __pos=Vec3(2,2,3), __color=Vec3(0,0,1), attenuation=1 ) {
       const light = { 
@@ -28928,7 +28943,7 @@ const Lights = function( SDF ) {
     },
 
     emit_lights() {
-      if( this.lights.length === 0 ) return this.defaultLights 
+      if( this.lights.length === 0 ) return this.defaultLights
 
       let str = `Light lights[${this.lights.length}] = Light[${this.lights.length}](`
 
@@ -29120,7 +29135,7 @@ module.exports = Lights
 /*
 */
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/main.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261,"glslify":270}],250:[function(require,module,exports){
 const SDF = {
   camera:           require( './camera.js' ),
   __primitives:     require( './primitives.js' ),
@@ -29445,7 +29460,7 @@ const SDF = {
 
 module.exports = SDF
 
-},{"./alterations.js":"/Users/charlie/Documents/code/marching/js/alterations.js","./audio.js":"/Users/charlie/Documents/code/marching/js/audio.js","./camera.js":"/Users/charlie/Documents/code/marching/js/camera.js","./distanceDeformations.js":"/Users/charlie/Documents/code/marching/js/distanceDeformations.js","./distanceOperations.js":"/Users/charlie/Documents/code/marching/js/distanceOperations.js","./domainOperations.js":"/Users/charlie/Documents/code/marching/js/domainOperations.js","./lighting.js":"/Users/charlie/Documents/code/marching/js/lighting.js","./material.js":"/Users/charlie/Documents/code/marching/js/material.js","./noise.js":"/Users/charlie/Documents/code/marching/js/noise.js","./primitives.js":"/Users/charlie/Documents/code/marching/js/primitives.js","./renderFragmentShader.js":"/Users/charlie/Documents/code/marching/js/renderFragmentShader.js","./scene.js":"/Users/charlie/Documents/code/marching/js/scene.js","./texture.js":"/Users/charlie/Documents/code/marching/js/texture.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/material.js":[function(require,module,exports){
+},{"./alterations.js":238,"./audio.js":239,"./camera.js":241,"./distanceDeformations.js":242,"./distanceOperations.js":243,"./domainOperations.js":244,"./lighting.js":249,"./material.js":251,"./noise.js":252,"./primitives.js":254,"./renderFragmentShader.js":255,"./scene.js":256,"./texture.js":258,"./var.js":260,"./vec.js":261}],251:[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' ),
@@ -29468,12 +29483,12 @@ const __Materials = function( SDF ) {
 
     default: 'global',
 
-    defaultMaterials:`
-      Material materials[2] = Material[2](
-        Material( 0, vec3( 1. ), vec3(0.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.) ),
-        Material( 0, vec3( 1. ), vec3(1.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.) )
-      );
-    `,
+    //defaultMaterials:`
+    //  Material materials[2] = Material[2](
+    //    Material( 0, vec3( 1. ), vec3(0.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.) ),
+    //    Material( 0, vec3( 1. ), vec3(1.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.) )
+    //  );
+    //`,
 
     addMaterial( mat ) {
       if( mat === undefined ) mat = Materials.material.default
@@ -29586,7 +29601,10 @@ const __Materials = function( SDF ) {
     },
    
     emit_materials() {
-      if( this.materials.length === 0 ) this.addMaterial() 
+      if( this.materials.length === 0 ) {
+        console.log( 'returning undefined?', this.defaultMaterials )
+        return this.defaultMaterials//this.addMaterial() 
+      }
 
       let str = `Material materials[${this.materials.length}] = Material[${this.materials.length}](`
 
@@ -29671,7 +29689,7 @@ const __Materials = function( SDF ) {
 
 module.exports = __Materials
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/noise.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261,"glslify":270}],252:[function(require,module,exports){
 const glsl = require( 'glslify' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
@@ -29758,7 +29776,7 @@ return Noise
 
 module.exports = getNoise 
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/primitiveDescriptions.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"glslify":270}],253:[function(require,module,exports){
 const glsl = require( 'glslify' )
 
 module.exports = {
@@ -29883,6 +29901,34 @@ module.exports = {
 
     // adapted from: https://www.shadertoy.com/view/ltfSWn
     glslify:glsl(["#define GLSLIFY 1\n      float mandelbulb( in vec3 p, in float aa ){\n        vec3 w = p;\n        float m = dot(w,w);\n\n        vec4 trap = vec4(abs(w),m);\n        float dz = 1.0;\n                \n        for( int i=0; i<4; i++ ) {\n          dz = aa*pow(sqrt(m),aa - 1.)*dz + 1.0;\n\n          float r = length(w);\n          float b = aa*acos( w.y /r);\n          float a = aa*atan( w.x, w.z );\n          w = p + pow(r,aa) * vec3( sin(b)*sin(a), cos(b), sin(b)*cos(a) );\n\n          trap = min( trap, vec4(abs(w),m) );\n\n          m = dot(w,w);\n          if( m > 256.0 ) {\n            break;\n          }\n        }\n\n        return 0.25*log(m)*sqrt(m)/dz;\n      }\n    ",""]),
+  },
+
+  // adapted from https://www.shadertoy.com/view/llGXDR
+  Mandelbox: {
+    parameters:[
+      { name:'mr2', type:'float', default:.1 },
+      { name:'scale', type:'float', default:3.},
+      { name:'iterations', type:'float', default:5 },
+      { name:'center', type:'vec3', default:[0,0,0] },
+      { name:'material', type:'mat', default:null }
+    ],
+
+    glslify:`float mandelbox( float MR2, float SCALE, float ITER, vec3 position ){
+      vec4 scalevec = vec4(SCALE, SCALE, SCALE, abs(SCALE)) / MR2;
+      float C1 = abs(SCALE-1.0), C2 = pow(abs(SCALE), 1.-ITER); // 10 is ITERS
+      vec4 p = vec4(position.xyz, 1.0), p0 = vec4(position.xyz, 1.0);  // p.w is knighty's DEfactor
+      for (int i=0; i<int(ITER); i++) {
+        p.xyz = clamp(p.xyz, -1.0, 1.0) * 2.0 - p.xyz;  // box fold: min3, max3gg, mad3
+        float r2 = dot(p.xyz, p.xyz);  // dp3
+        p.xyzw *= clamp(max(MR2/r2, MR2), 0.0, 1.0);  // sphere fold: div1, max1.sat, mul4
+        p.xyzw = p*scalevec + p0;  // mad4
+      }
+      return (length(p.xyz) - C1) / p.w - C2;
+  }`,
+
+    primitiveString( pName ) {
+      return `mandelbox( ${this.mr2.emit()}, ${this.scale.emit()}, ${this.iterations.emit()}, ${pName} - ${this.center.emit()} )`
+    }
   },
 
 	Octahedron: {
@@ -30068,7 +30114,7 @@ module.exports = {
 
 }
 
-},{"glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/primitives.js":[function(require,module,exports){
+},{"glslify":270}],254:[function(require,module,exports){
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc }  = require( './var.js' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
@@ -30270,7 +30316,7 @@ const createPrimitives = function( SDF ) {
 
 module.exports = createPrimitives
 
-},{"./primitiveDescriptions.js":"/Users/charlie/Documents/code/marching/js/primitiveDescriptions.js","./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/renderFragmentShader.js":[function(require,module,exports){
+},{"./primitiveDescriptions.js":253,"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261}],255:[function(require,module,exports){
 const glsl = require( 'glslify' )
 
 module.exports = function( variables, scene, preface, geometries, lighting, postprocessing, steps=90, minDistance=.001, maxDistance=20 ) {
@@ -30279,7 +30325,7 @@ module.exports = function( variables, scene, preface, geometries, lighting, post
     return fs_source
   }
 
-},{"glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/scene.js":[function(require,module,exports){
+},{"glslify":270}],256:[function(require,module,exports){
 const getFog = require( './fog.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const __lighting = require( './lighting.js' )
@@ -30292,7 +30338,7 @@ const getScene = function( SDF ) {
 
     MaterialID.clear()
 
-    //SDF.lighting.lights = []
+    SDF.lighting.lights = []
 
     Object.assign( scene, { 
       objs, 
@@ -30388,7 +30434,7 @@ const getScene = function( SDF ) {
 
 module.exports = getScene 
 
-},{"./background.js":"/Users/charlie/Documents/code/marching/js/background.js","./fog.js":"/Users/charlie/Documents/code/marching/js/fog.js","./lighting.js":"/Users/charlie/Documents/code/marching/js/lighting.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/sceneNode.js":[function(require,module,exports){
+},{"./background.js":240,"./fog.js":246,"./lighting.js":249,"./utils.js":259,"./var.js":260}],257:[function(require,module,exports){
 // SceneNode
 
 let SceneNode = ()=> Object.create( SceneNode.prototype )
@@ -30429,7 +30475,7 @@ SceneNode.prototype = {
 
 module.exports = SceneNode
 
-},{}],"/Users/charlie/Documents/code/marching/js/texture.js":[function(require,module,exports){
+},{}],258:[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       getPixels = require( 'get-pixels' ),
       createTexture = require( 'gl-texture2d' ),
@@ -30524,7 +30570,7 @@ const __Textures = function( SDF ) {
 
 module.exports = __Textures
 
-},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","get-pixels":"/Users/charlie/Documents/code/marching/node_modules/get-pixels/dom-pixels.js","gl-texture2d":"/Users/charlie/Documents/code/marching/node_modules/gl-texture2d/texture.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/utils.js":[function(require,module,exports){
+},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261,"get-pixels":268,"gl-texture2d":269,"glslify":270}],259:[function(require,module,exports){
 const Var = require('./var.js').Var
 
 // Wrapper
@@ -30547,7 +30593,7 @@ const MaterialID = {
 
 module.exports = { param_wrap, MaterialID }
 
-},{"./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/var.js":[function(require,module,exports){
+},{"./var.js":260}],260:[function(require,module,exports){
 const { Vec2, Vec3, Vec4 } = require( './vec.js' )
 const float = require( './float.js' )
 const int   = require( './int.js' )
@@ -30752,7 +30798,7 @@ function vec4_var_gen( x, y, z, w, name=null ) {
 }
 */
 
-},{"./float.js":"/Users/charlie/Documents/code/marching/js/float.js","./int.js":"/Users/charlie/Documents/code/marching/js/int.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/vec.js":[function(require,module,exports){
+},{"./float.js":245,"./int.js":248,"./vec.js":261}],261:[function(require,module,exports){
 const float = require( './float.js' )
 
 const Vec2 = function (x=0, y=0) {
@@ -31007,7 +31053,7 @@ Vec4.prototype = {
 
 module.exports = { Vec2, Vec3, Vec4 } 
 
-},{"./float.js":"/Users/charlie/Documents/code/marching/js/float.js"}],"/Users/charlie/Documents/code/marching/node_modules/bit-twiddle/twiddle.js":[function(require,module,exports){
+},{"./float.js":245}],262:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -31213,7 +31259,7 @@ exports.nextCombination = function(v) {
 }
 
 
-},{}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js":[function(require,module,exports){
+},{}],263:[function(require,module,exports){
 "use strict"
 
 var createThunk = require("./lib/thunk.js")
@@ -31324,7 +31370,7 @@ function compileCwise(user_args) {
 
 module.exports = compileCwise
 
-},{"./lib/thunk.js":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/thunk.js"}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/compile.js":[function(require,module,exports){
+},{"./lib/thunk.js":265}],264:[function(require,module,exports){
 "use strict"
 
 var uniq = require("uniq")
@@ -31684,7 +31730,7 @@ function generateCWiseOp(proc, typesig) {
 }
 module.exports = generateCWiseOp
 
-},{"uniq":"/Users/charlie/Documents/code/marching/node_modules/uniq/uniq.js"}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/thunk.js":[function(require,module,exports){
+},{"uniq":280}],265:[function(require,module,exports){
 "use strict"
 
 // The function below is called when constructing a cwise function object, and does the following:
@@ -31772,7 +31818,7 @@ function createThunk(proc) {
 
 module.exports = createThunk
 
-},{"./compile.js":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/compile.js"}],"/Users/charlie/Documents/code/marching/node_modules/data-uri-to-buffer/index.js":[function(require,module,exports){
+},{"./compile.js":264}],266:[function(require,module,exports){
 (function (Buffer){
 
 /**
@@ -31830,7 +31876,7 @@ function dataUriToBuffer (uri) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/dup/dup.js":[function(require,module,exports){
+},{"buffer":122}],267:[function(require,module,exports){
 "use strict"
 
 function dupe_array(count, value, i) {
@@ -31880,7 +31926,7 @@ function dupe(count, value) {
 }
 
 module.exports = dupe
-},{}],"/Users/charlie/Documents/code/marching/node_modules/get-pixels/dom-pixels.js":[function(require,module,exports){
+},{}],268:[function(require,module,exports){
 (function (Buffer,process){
 'use strict'
 
@@ -32018,7 +32064,7 @@ module.exports = function getPixels(url, type, cb) {
   }
 }
 }).call(this,{"isBuffer":require("../../../gibber.audio.lib/node_modules/is-buffer/index.js")},require('_process'))
-},{"../../../gibber.audio.lib/node_modules/is-buffer/index.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","data-uri-to-buffer":"/Users/charlie/Documents/code/marching/node_modules/data-uri-to-buffer/index.js","ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js","ndarray-pack":"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/convert.js","omggif":"/Users/charlie/Documents/code/marching/node_modules/omggif/omggif.js","path":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/path-browserify/index.js","through":"/Users/charlie/Documents/code/marching/node_modules/through/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-texture2d/texture.js":[function(require,module,exports){
+},{"../../../gibber.audio.lib/node_modules/is-buffer/index.js":128,"_process":132,"data-uri-to-buffer":266,"ndarray":276,"ndarray-pack":274,"omggif":277,"path":130,"through":278}],269:[function(require,module,exports){
 'use strict'
 
 var ndarray = require('ndarray')
@@ -32581,7 +32627,7 @@ function createTexture2D(gl) {
   throw new Error('gl-texture2d: Invalid arguments for texture2d constructor')
 }
 
-},{"ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js","ndarray-ops":"/Users/charlie/Documents/code/marching/node_modules/ndarray-ops/ndarray-ops.js","typedarray-pool":"/Users/charlie/Documents/code/marching/node_modules/typedarray-pool/pool.js"}],"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js":[function(require,module,exports){
+},{"ndarray":276,"ndarray-ops":273,"typedarray-pool":279}],270:[function(require,module,exports){
 module.exports = function(strings) {
   if (typeof strings === 'string') strings = [strings]
   var exprs = [].slice.call(arguments,1)
@@ -32593,7 +32639,7 @@ module.exports = function(strings) {
   return parts.join('')
 }
 
-},{}],"/Users/charlie/Documents/code/marching/node_modules/iota-array/iota.js":[function(require,module,exports){
+},{}],271:[function(require,module,exports){
 "use strict"
 
 function iota(n) {
@@ -32605,9 +32651,9 @@ function iota(n) {
 }
 
 module.exports = iota
-},{}],"/Users/charlie/Documents/code/marching/node_modules/is-buffer/index.js":[function(require,module,exports){
-arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js"][0].apply(exports,arguments)
-},{}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-ops/ndarray-ops.js":[function(require,module,exports){
+},{}],272:[function(require,module,exports){
+arguments[4][128][0].apply(exports,arguments)
+},{"dup":128}],273:[function(require,module,exports){
 "use strict"
 
 var compile = require("cwise-compiler")
@@ -33070,7 +33116,7 @@ exports.equals = compile({
 
 
 
-},{"cwise-compiler":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/convert.js":[function(require,module,exports){
+},{"cwise-compiler":263}],274:[function(require,module,exports){
 "use strict"
 
 var ndarray = require("ndarray")
@@ -33093,10 +33139,10 @@ module.exports = function convert(arr, result) {
   return result
 }
 
-},{"./doConvert.js":"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/doConvert.js","ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/doConvert.js":[function(require,module,exports){
+},{"./doConvert.js":275,"ndarray":276}],275:[function(require,module,exports){
 module.exports=require('cwise-compiler')({"args":["array","scalar","index"],"pre":{"body":"{}","args":[],"thisVars":[],"localVars":[]},"body":{"body":"{\nvar _inline_1_v=_inline_1_arg1_,_inline_1_i\nfor(_inline_1_i=0;_inline_1_i<_inline_1_arg2_.length-1;++_inline_1_i) {\n_inline_1_v=_inline_1_v[_inline_1_arg2_[_inline_1_i]]\n}\n_inline_1_arg0_=_inline_1_v[_inline_1_arg2_[_inline_1_arg2_.length-1]]\n}","args":[{"name":"_inline_1_arg0_","lvalue":true,"rvalue":false,"count":1},{"name":"_inline_1_arg1_","lvalue":false,"rvalue":true,"count":1},{"name":"_inline_1_arg2_","lvalue":false,"rvalue":true,"count":4}],"thisVars":[],"localVars":["_inline_1_i","_inline_1_v"]},"post":{"body":"{}","args":[],"thisVars":[],"localVars":[]},"funcName":"convert","blockSize":64})
 
-},{"cwise-compiler":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js":[function(require,module,exports){
+},{"cwise-compiler":263}],276:[function(require,module,exports){
 var iota = require("iota-array")
 var isBuffer = require("is-buffer")
 
@@ -33441,7 +33487,7 @@ function wrappedNDArrayCtor(data, shape, stride, offset) {
 
 module.exports = wrappedNDArrayCtor
 
-},{"iota-array":"/Users/charlie/Documents/code/marching/node_modules/iota-array/iota.js","is-buffer":"/Users/charlie/Documents/code/marching/node_modules/is-buffer/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/omggif/omggif.js":[function(require,module,exports){
+},{"iota-array":271,"is-buffer":272}],277:[function(require,module,exports){
 // (c) Dean McNamee <dean@gmail.com>, 2013.
 //
 // https://github.com/deanm/omggif
@@ -34250,7 +34296,7 @@ function GifReaderLZWOutputIndexStream(code_stream, p, output, output_length) {
 // CommonJS.
 try { exports.GifWriter = GifWriter; exports.GifReader = GifReader } catch(e) {}
 
-},{}],"/Users/charlie/Documents/code/marching/node_modules/through/index.js":[function(require,module,exports){
+},{}],278:[function(require,module,exports){
 (function (process){
 var Stream = require('stream')
 
@@ -34362,7 +34408,7 @@ function through (write, end, opts) {
 
 
 }).call(this,require('_process'))
-},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-browserify/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/typedarray-pool/pool.js":[function(require,module,exports){
+},{"_process":132,"stream":152}],279:[function(require,module,exports){
 (function (global,Buffer){
 'use strict'
 
@@ -34579,7 +34625,7 @@ exports.clearCache = function clearCache() {
   }
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"bit-twiddle":"/Users/charlie/Documents/code/marching/node_modules/bit-twiddle/twiddle.js","buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js","dup":"/Users/charlie/Documents/code/marching/node_modules/dup/dup.js"}],"/Users/charlie/Documents/code/marching/node_modules/uniq/uniq.js":[function(require,module,exports){
+},{"bit-twiddle":262,"buffer":122,"dup":267}],280:[function(require,module,exports){
 "use strict"
 
 function unique_pred(list, compare) {
@@ -34638,7 +34684,7 @@ function unique(list, compare, sorted) {
 
 module.exports = unique
 
-},{}],"/Users/charlie/Documents/code/tidal.peg/dist/tidal.js":[function(require,module,exports){
+},{}],281:[function(require,module,exports){
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -36998,7 +37044,7 @@ module.exports = {
   parse:       peg$parse
 };
 
-},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/bjork/index.js":[function(require,module,exports){
+},{}],282:[function(require,module,exports){
 function bjorklund(slots, pulses){
   var pattern = [],
       count = [],
@@ -37039,7 +37085,7 @@ module.exports = function(m, k){
   else return bjorklund(k, m);
 };
 
-},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js":[function(require,module,exports){
+},{}],283:[function(require,module,exports){
 /**
  * @license Fraction.js v4.0.12 09/09/2015
  * http://www.xarg.org/2014/03/rational-numbers-in-javascript/
@@ -37875,7 +37921,7 @@ module.exports = function(m, k){
 
 })(this);
 
-},{}],"/Users/charlie/Documents/code/tidal.peg/src/pattern.js":[function(require,module,exports){
+},{}],284:[function(require,module,exports){
 const parse = require('../dist/tidal.js').parse
 const query = require('./queryArc.js' ).queryArc
 const Fraction = require( 'fraction.js' )
@@ -37935,7 +37981,7 @@ const Pattern = ( patternString, opts ) => {
 
 module.exports = Pattern
 
-},{"../dist/tidal.js":"/Users/charlie/Documents/code/tidal.peg/dist/tidal.js","./queryArc.js":"/Users/charlie/Documents/code/tidal.peg/src/queryArc.js","fraction.js":"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js"}],"/Users/charlie/Documents/code/tidal.peg/src/queryArc.js":[function(require,module,exports){
+},{"../dist/tidal.js":281,"./queryArc.js":285,"fraction.js":283}],285:[function(require,module,exports){
 const Fraction = require( 'fraction.js' )
 const util     = require( 'util' )
 const bjork    = require( 'bjork' ) 
@@ -38483,5 +38529,5 @@ const handlers = {
 
 module.exports.queryArc = queryArc
 
-},{"bjork":"/Users/charlie/Documents/code/tidal.peg/node_modules/bjork/index.js","fraction.js":"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/util.js"}]},{},["/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js"])("/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js")
+},{"bjork":282,"fraction.js":283,"util":164}]},{},[78])(78)
 });

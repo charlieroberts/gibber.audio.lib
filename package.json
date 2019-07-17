@@ -7,19 +7,23 @@
     "url": "git://github.com/charlieroberts/gibber.audio.lib"
   },
   "devDependencies": {
-    "acorn": "^5.7.1",
     "browserify": "^16.2.0",
-    "codemirror": "^5.39.0",
+    "codemirror": "^5.48.0",
     "gulp": "^3.9.1",
+    "gulp-beautify": "^3.0.0",
+    "gulp-json-validator": "^1.2.0",
     "gulp-rename": "^1.2.2",
+    "gulp-replace": "^1.0.0",
     "gulp-uglify": "^3.0.0",
     "serialize-javascript": "^1.5.0",
+    "tern": "^0.24.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
     "watchify": "^3.11.0"
   },
   "dependencies": {
-    "acorn-walk": "^6.1.1",
+    "acorn": "^6.2.0",
+    "acorn-walk": "^6.2.0",
     "gibberish-dsp": "~3.0.0",
     "glslify": "^7.0.0"
   },

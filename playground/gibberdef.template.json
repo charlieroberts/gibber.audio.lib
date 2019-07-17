@@ -23,7 +23,7 @@
       "note": {
         "!type": "fn(scaleIndex: number)",
         "!doc": "The note function triggers a new note using an argument scale index, which is converted into Hz and stored in the instrument's .frequency property.",
-        SEQMIXIN 
+        SEQMIXIN
       },
       "trigger": {
         "!type": "fn(loudness: number)",
@@ -44,6 +44,144 @@
         SEQMIXIN        
       }
     },
+
+    "effect": {
+      "!proto": "ugen",
+      "input": {
+        "!type": "ugen",
+        "!doc": "default: 0 (silence). The input property provides the signal to be processed. This is automatically set when adding the effect to an effect chain on an instrument, or when calling instrument.connect( effect )."
+      }
+    },
+
+    "freeverb": {
+      "!proto": "effect",
+      "!doc": "This is a reverberation model that uses four allpass filters in series and then eight comb filters in parallel. It is the same as the generic Reverb effect in Gibber.",
+      "roomSize": {
+        "!type": "number__sequencable",
+        "!doc": "default: .925, range:0-.999. This controls the amount of feedback in the comb filters, which has the effect of shortening or lengthening thhe reverb tail."
+      },
+      "damping": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range:0–1. This controls the high frequency content in the reverberated signal."
+      },
+      "dry": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range:0–1. The amount of dry signal in the output. Set to 0 if you're using this on a bus, or to higher values if it is in an effecets chain."
+      },
+      "wet1": {
+         "!type": "number__sequencable",
+        "!doc": "default: 1, range:0–1. Using different values for this and .wet2 will affect the stereo output by sending some of the left output to the right channel and vice versa. With a value of 1 for this property and 0 for .wet2 each output will only go to one channel."
+      },
+      "wet2": {
+        "!type": "number__sequencable",
+        "!doc": "default: .0, range:0–1. Using different values for this and .wet1 will affect the stereo output by sending some of the left output to the right channel and vice versa. With a value of 0 for this property and 1 for .wet1 each output will only go to one channel."
+      }
+    },
+    "bitcrusher": {
+      "!proto": "effect",
+      "!doc": "A sample-rate / bit-rate reduction effect.",
+      "bitDepth": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range:.01-1. This controls the number of bits in each processed sample. A value of 1 corresponds to 16-bits."
+      },
+      "sampleRate": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range:0–1. This controls the sampling rate of the input signal. A value of 1 equals whatever the sampling rate of the current session is."
+      }
+    },
+    "delay": {
+      "!proto": "effect",
+      "!doc": "A feedback delay (echo) effect.",
+      "time": {
+        "!type": "duration",
+        "!doc": "default: 1/8, range:1/512–1. This controls the amount of time betweeen echoes, or, if no feedback is applied, the amount of time between the original signal and the delayed signal."
+      },
+      "feedback": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range:0–1. This controls the amount of feedback, which determines how long the echoes carry on for. Note that values over 1 can produce an interesting effect, but will eventually blow up your speakers and potentially your ears... be careful!"
+      }
+    },
+    "wavefolder": {
+      "!proto": "effect",
+      "!doc": "A wavefolding effect, where a signal is 'folded' repeatedly when it exceeds a certain threshold, adding spectral complexity and creating distortion.",
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: 2, range:0-???. This the boost that is applied to the input signal; applying more of a boost will create more distortion."
+      },
+      "postgain": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range:0–1. This property can be used to decrease the volume of the signal after it has gone through the wavefolder."
+      }
+    },
+    "distortion": {
+      "!proto": "effect",
+      "!doc": "A waveshaping distortion taken from Csound, which calls it a 'modified hyperbolic tangent distortion'.",
+      "pregain": {
+        "!type": "number__sequencable",
+        "!doc": "default: 5, range:0-???. This the boost that is applied to the input signal; applying more of a boost will create more distortion."
+      },
+      "postgain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range:0–1. This property can be used to decrease the volume of the signal after it has gone through the waveshaper."
+      },
+      "shape1": {
+        "!type": "number__sequencable",
+        "!doc": "default: .1, range:-5–5. This property controls the waveshaping of the positive part of the signal. A value of 0 gives a flat clip."
+      },
+      "shape2": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range:0–1. This property controls the waveshaping of the negative part of the signal. A value of 0 gives a flat clip."
+      }
+    },
+    "flanger": {
+      "!proto": "effect",
+      "!doc": "The classic flanging effect featuring a modulated delay line with feedback.",
+      "frequency": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range:.0001-???. This controls the frequnecy of the sine oscillator that is modulating the lookup in the delay line."
+      },
+      "feedback": {
+        "!type": "number__sequencable",
+        "!doc": "default: .84, range:0–1. This controls the amount of feedback in the delay line."
+      },
+      "offset": {
+        "!type": "number__sequencable",
+        "!doc": "default: .125, range:.01–1. This controls how far back the delay line is reading from. Larger values yield more dramatic results. A value of 1 === 500 samples in the past."
+      }
+    },
+    "vibrato": {
+      "!proto": "effect",
+      "!doc": "An effect that modulates the pitch of an incoming signal over time.",
+      "frequency": {
+        "!type": "number__sequencable",
+        "!doc": "default: 4, range:.0001-???. This controls the frequnecy of the modulating oscillator."
+      },
+      "feedback": {
+        "!type": "number__sequencable",
+        "!doc": "default: .01, range:0–1. Although not used for traditional vibrato, increasing the feedback amount can introduce interesting distortions."
+      },
+      "amount": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range:.01–1. Controls the width of the vibrato, or how much the pitch fluctuates."
+      }
+    },
+    "tremolo": {
+      "!proto": "effect",
+      "!doc": "An effect that modulates the volume of an input sigal over time.",
+      "frequency": {
+        "!type": "number__sequencable",
+        "!doc": "default: 2, range:.0001-???. This controls the frequency of the moduluating oscillator."
+      },
+      "amount": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range:.01–1. Controls the width of the tremolo, or how much the amplitude fluctuates."
+      },
+      "shape": {
+        "!type": "string",
+        "!doc": "default: 'sine'. Controls the type of oscillation; options are 'sine', 'square', and 'saw'."
+      }    
+    },
+
 
     "sampler": {
       "!proto": "instrument",
@@ -124,6 +262,111 @@
       }
     },
 
+    "hat": {
+      "!proto": "instrument",
+      "!doc": "The Hat instrument emulates the hihat found on the Roland TR-808 drum machine. It consists of six tuned square waves feeding bandpass and highpass filters scaled by an exponential decay.",
+      "tune": {
+        "!type": "number__sequencable",
+        "!doc": "default: .6, range 0–.8. The tuning of the hihat cymbals."
+      },
+      "decay": {
+        "!type": "number__sequencable",
+        "!doc": "default: .1, range 0–1. Controls the length of each hihat hit." 
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–5. Loudness linearly controls the signal pre-filter."
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. This linearly controls the overall output (sometimes known as volume) of the synth."
+      }
+    },
+    "clap": {
+      "!proto": "instrument",
+      "!doc": "The Clap instrument poorly emulates the clap found on the Roland TR-808 drum machine, with three enveloped and filtered noise bursts slightly offset from each other in time.",
+      "spacing": {
+        "!type": "number__sequencable",
+        "!doc": "default: 100, range 1-1000. The spacing, in Hz, between each noise envelope."
+      },
+      "decay": {
+        "!type": "number__sequencable",
+        "!doc": "default: .2, range 0–1. Controls the length of each clap."
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–5. Loudness linearly controls the signal pre-filter."
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. This linearly controls the overall output (sometimes known as volume) of the synth."
+      }
+    },
+    "cowbell": {
+      "!proto": "instrument",
+      "!doc": "The Cowbell instrument emulates the iconic cowbell found on the Roland TR-808 drum machine, with two enveloped and filtered square waves.",
+      "decay": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. Controls the length of each cowbell strike."
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–5. Loudness linearly controls the signal pre-filter."
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. This linearly controls the overall output (sometimes known as volume) of the synth."
+      }
+    },
+    "edrums":{
+      "!proto":"ugen",
+      "!doc": "The EDrums object is many of the synthetic drums sounds inspired by the 808 grouped together into a single output. You can sequence the different instruments by referring to them with the kd (kick drum), sd (snare drum), ch (closed hat), cp (clap), cb (cowbell), and oh (open hat) shorthands. You can also access each instrument individually to change gain, panning, and other properties.",
+      "seq": {
+        "!type": "fn(values: ?, timings?: ?, seq_id?: number)",
+        "!doc": "The seq method enables you to easily sequence any method or property. You can pass a single value or an array of values for both the 'values' and 'timings' arguments. The timings argument will determine when the sequencer fires and the values argument will determine output."
+      },
+      "sequencers": {
+        "!type":"[]",
+        "!doc":"Stores all scheduler instances created by calling .seq on this property/method."
+      },
+      "stop":{
+        "!type": "fn(pattern: string)",
+        "!doc": "Stops all seq and tidal schedulers controlling this property/method."
+      },
+      "tidal":{
+        "!type": "fn(pattern: string, tidal_id?: number)",
+        "!doc": "The tidal method enables you to easily sequence any method or property using the TidalCycles mini-notation. For the Drums object, you can sequence the different samplers by referring to them with the kd (kick drum), sd (snare drum), ch (closed hat), and oh (open hat) shorthands."
+      },
+      "tidals": {
+        "!type":"[]",
+        "!doc":"Stores all scheduler instances created by calling .tidal on this property/method."
+      },
+      "kick": {
+        "!type": "kick",
+        "!doc" : "Kick instrument"
+      },
+      "snare": {
+        "!type": "snare",
+        "!doc" : "Snare instrument."
+      },
+      "closedHat": {
+        "!type": "hat",
+        "!doc" : "Hat instrument with short decay time."
+      },
+      "openHat": {
+        "!type": "hat",
+        "!doc" : "Hat instrument with longer decay time."
+      },
+      "clap": {
+        "!type": "clap",
+        "!doc" : "Clap instrument."
+      },
+      "cowbell": {
+        "!type": "cowbell",
+        "!doc" : "Cowbell instrument."
+      },
+      PANMIXIN
+    },
     "drums":{
       "!proto":"ugen",
       "!doc": "The Drums object is four samplers grouped together into a single output. You can sequence the different samplers by referring to them with the kd (kick drum), sd (snare drum), ch (closed hat), and oh (open hat) shorthands. You can also access each sampler individually to change gain, panning, and other properties.",
@@ -327,6 +570,7 @@
     }
   },
   
+  
   "Monosynth": {
     "!type": "fn(initializer?: properties|string, presetMods?: properties) -> monosynth",
     "!doc": "Constructor for a three-oscillator synth with a filter and envelope. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset" 
@@ -347,6 +591,10 @@
     "!type": "fn(initializer?: properties|string, presetMods?: properties) -> drums",
     "!doc": "Constructor for sample-based drum instrument, featuring samples for kick, snare, closed hihat, and open hihat sounds. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
   },
+  "EDrums":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> edrums",
+    "!doc": "Constructor for synthetic drum instrument, featuring synthesizers for kick, snare, closed hihat, open hihat, clap, and cowbell sounds. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
+  },
   "Kick":{
     "!type": "fn(initializer?: properties|string, presetMods?: properties) -> kick",
     "!doc": "Constructor for synthetic kick drum in the style of the Roland TR-808. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
@@ -354,5 +602,49 @@
   "Snare":{
     "!type": "fn(initializer?: properties|string, presetMods?: properties) -> snare",
     "!doc": "Constructor for a synthetic snare drum in the style of the TR-808. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
+  },
+  "Hat":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> hat",
+    "!doc": "Constructor for a synthetic hihat in the style of the TR-808. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
+  },
+  "Clap":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> clap",
+    "!doc": "Constructor for a synthetic clap in the style of the TR-808. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
+  },
+  "Cowbell":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> cowbell",
+    "!doc": "Constructor for a synthetic cowbell in the style of the TR-808. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
+  },
+  "Freeverb":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> freeverb",
+    "!doc": "Constructor for a reverb. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."   
+  },
+  "Bitcrusher":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> bitcrusher",
+    "!doc": "Constructor for a bitcrusher effect. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."   
+  },
+  "Delay":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> delay",
+    "!doc": "Constructor for a delay effect. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."   
+  },
+  "Wavefolder":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> wavefolder",
+    "!doc": "Constructor for a wavefolder distortion effect. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."   
+  },
+  "Distortion":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> distortion",
+    "!doc": "Constructor for a waveshaper distortion effect. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."   
+  },
+ "Flanger":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> flanger",
+    "!doc": "Constructor for a flanger effect. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."   
+  },
+ "Vibrato":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> vibrato",
+    "!doc": "Constructor for a vibrato effect. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."   
+  },
+ "Tremolo":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> tremolo",
+    "!doc": "Constructor for a tremolo effect. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."   
   }
 }
