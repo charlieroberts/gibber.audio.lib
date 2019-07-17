@@ -21,6 +21,7 @@ const Instruments = {
       instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false )
 
     }
+    instruments.Pluck = instruments.Karplus
     return instruments
   },
 
