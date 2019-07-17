@@ -6,7 +6,11 @@ const gulp = require( 'gulp' ),
       watchify = require( 'watchify' ),
       browserify = require( 'browserify' ),
       source = require('vinyl-source-stream'),
-      rename = require( 'gulp-rename' )
+      rename = require( 'gulp-rename' ),
+      replace= require( 'gulp-replace' ),
+      beautify=require( 'gulp-beautify' ),
+      validate=require( 'gulp-json-validator' ),
+      fs     = require( 'fs' )
 
 gulp.task( 'client', function(){
   //var out = gulp.src( './js/audio.js' )//gulp.src( './node_modules/gibber.core.lib/scripts/gibber.js')
@@ -44,6 +48,22 @@ gulp.task('watch', function() {
 
   return rebundle();
 });
+
+gulp.task( 'tern', function() {
+  const seq = fs.readFileSync( './playground/gibberdef.seq.mixin.txt' ).toString('utf-8')
+  const env = fs.readFileSync( './playground/gibberdef.env.mixin.txt' ).toString('utf-8')
+  const pan = fs.readFileSync( './playground/gibberdef.pan.mixin.txt' ).toString('utf-8')
+  const filter = fs.readFileSync( './playground/gibberdef.filter.mixin.txt' ).toString('utf-8')
+  const src = gulp.src( './playground/gibberdef.template.json' )
+        .pipe( replace( 'ENVMIXIN', env ) )
+        .pipe( replace( 'FILTERMIXIN', filter ) )
+        .pipe( replace( 'PANMIXIN', pan ) )
+        .pipe( replace( 'SEQMIXIN', seq ) )
+        .pipe( beautify.js({ indent_size:2 }) )
+        .pipe( validate({ allowDuplicatedKeys:true }) )
+        .pipe( rename( 'gibberdef.json' ) )
+        .pipe( gulp.dest('./playground' ) )
+})
 
 gulp.task( 'p5', ['client'], function() {
   var out = gulp.src( './build/gibber.audio.lib.js'  )

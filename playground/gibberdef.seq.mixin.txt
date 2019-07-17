@@ -1,0 +1,24 @@
+"seq": {
+  "!type": "fn(values: ?, timings?: ?, seq_id?: number)",
+  "!doc": "The seq method enables you to easily sequence any method or property. You can pass a single value or an array of values for both the 'values' and 'timings' arguments. The timings argument will determine when the sequencer fires and the values argument will determine output."
+},
+"sequencers": {
+  "!type":"[]",
+  "!doc":"Stores all scheduler instances created by calling .seq on this property/method."
+},
+"start":{
+  "!type": "fn()",
+  "!doc": "Starts all seq and tidal schedulers controlling this property/method."
+},
+"stop":{
+  "!type": "fn(pattern: string)",
+  "!doc": "Stops all seq and tidal schedulers controlling this property/method."
+},
+"tidal":{
+  "!type": "fn(pattern: string, tidal_id?: number)",
+  "!doc": "The tidal method enables you to easily sequence any method or property using the TidalCycles mini-notation. "
+},
+"tidals": {
+  "!type":"[]",
+  "!doc":"Stores all scheduler instances created by calling .tidal on this property/method."
+}

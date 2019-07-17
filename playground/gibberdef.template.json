@@ -1,0 +1,358 @@
+{
+  "!name": "gibber",
+  "!define": {
+    "presetName":{ "name":"string" },
+    "properties":{ "name":"string" },
+    "duration"  :{ 
+      SEQMIXIN
+    },
+    "number__sequencable": {
+      SEQMIXIN
+    },
+
+    "ugen": {
+      "connect": {
+        "!type":"fn(target?: ugen)",
+        "!doc": "The connect function connects synthesis object to another synthesis object. If no object is passed as an argument, connect will connect to Gibber's Master bus."
+      },
+      "disconnect": "fn(target?: ugen)"
+    },
+
+    "instrument":{
+      "!proto": "ugen",
+      "note": {
+        "!type": "fn(scaleIndex: number)",
+        "!doc": "The note function triggers a new note using an argument scale index, which is converted into Hz and stored in the instrument's .frequency property.",
+        SEQMIXIN 
+      },
+      "trigger": {
+        "!type": "fn(loudness: number)",
+        "!doc" : "The trigger function triggers a new note using the argument loudness and, if appropriate, the current value of the instrument's .frequency property.",
+        SEQMIXIN        
+      }
+    },
+    "polyinstrument":{
+      "!proto": "ugen",
+      "note": {
+        "!type": "fn(scaleIndex: number)",
+        "!doc": "The note function triggers a new note using an argument scale index, which is converted into Hz and stored in the instrument's .frequency property.",
+        SEQMIXIN 
+      },
+      "trigger": {
+        "!type": "fn(loudness: number)",
+        "!doc" : "The trigger function triggers a new note using the argument loudness and, if appropriate, the current value of the instrument's .frequency property.",
+        SEQMIXIN        
+      }
+    },
+
+    "sampler": {
+      "!proto": "instrument",
+      "rate": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range -100–100. This controls the rate of sample playback. Higher speeds will result in higher pitches; negative numbers will play samples backwards."
+      },
+      "start": {
+        "!type": "number__sequencable",
+        "!doc": "default: 0, range 0–1. This determines where sample playback begins, for example, a value of .5 would start the sample in the middle when triggered."
+      },
+      "end": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–1. This determines where sample playback ends. A value of 1 means that the sample will play to its end."
+      },
+      "loops": {
+        "!type": "number__sequencable",
+        "!doc": "default: 0. 0 or 1. When set to a value of 1 sample playback will loop according to the sampler's .start and .end properties."
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–1. Loudness linearly controls the signal pre-filter."
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. This linearly controls the overall output (sometimes known as volume) of the synth."
+      },
+      PANMIXIN
+    },
+
+    "kick": {
+      "!proto": "instrument",
+      "!doc": "The Kick unit generator emulates the kick sound found on the Roland TR-808 drum machine, a classic in hip-hop. It consists of an impulse feeding resonant bandpass and hipass filters scaled by an exponential decay.",
+      "frequency": {
+        "!type": "number__sequencable",
+        "!doc": "default: 85, range 40–8000. The pitch of the kick drum."
+      },
+      "decay": {
+        "!type": "number__sequencable",
+        "!doc": "default: .9, range 0–1. Controls the length of each kick drum. Very high values (~.975 and above) result in long, booming sub-bass sounds." 
+      },
+      "tone": {
+        "!type": "number__sequencable",
+        "!doc": "default: .25, range 0–1. Controls the amount of a high-frequency click at the start of each hit"
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–1. Loudness linearly controls the signal pre-filter."
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. This linearly controls the overall output (sometimes known as volume) of the synth."
+      }
+    },
+
+    "snare": {
+      "!proto": "instrument",
+      "!doc": "The Snare instrument emulates the snare found on the Roland TR-808 drum machine. It consists of an two resonant bandpass filters mixed with high-passed noise, all scaled by an exponential decay.",
+      "tune": {
+        "!type": "number__sequencable",
+        "!doc": "default: 0, range -4–4. The pitch of the snare drum."
+      },
+      "decay": {
+        "!type": "number__sequencable",
+        "!doc": "default: .1, range 0–1. Controls the length of each snare drum hit." 
+      },
+      "snappy": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–1. Controls the amount of a high-frequency click at the start of each hit"
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–5. Loudness linearly controls the signal pre-filter."
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. This linearly controls the overall output (sometimes known as volume) of the synth."
+      }
+    },
+
+    "drums":{
+      "!proto":"ugen",
+      "!doc": "The Drums object is four samplers grouped together into a single output. You can sequence the different samplers by referring to them with the kd (kick drum), sd (snare drum), ch (closed hat), and oh (open hat) shorthands. You can also access each sampler individually to change gain, panning, and other properties.",
+      "rate": {
+        "!doc": "default: 1, range -100 100. Global control of the each sampler's playback rate.",
+        "!type": "number__sequencable"
+      },
+      "start": {
+        "!doc": "default: 0, range 0–1. Global control of the each sampler's starting position.",
+        "!type": "number__sequencable"
+      },
+      "end": {
+        "!doc": "default: 1, range 0–1. Global control of the each sampler's ending position.",
+        "!type": "number__sequencable"
+      },
+      "seq": {
+        "!type": "fn(values: ?, timings?: ?, seq_id?: number)",
+        "!doc": "The seq method enables you to easily sequence any method or property. You can pass a single value or an array of values for both the 'values' and 'timings' arguments. The timings argument will determine when the sequencer fires and the values argument will determine output."
+      },
+      "sequencers": {
+        "!type":"[]",
+        "!doc":"Stores all scheduler instances created by calling .seq on this property/method."
+      },
+      "stop":{
+        "!type": "fn(pattern: string)",
+        "!doc": "Stops all seq and tidal schedulers controlling this property/method."
+      },
+      "tidal":{
+        "!type": "fn(pattern: string, tidal_id?: number)",
+        "!doc": "The tidal method enables you to easily sequence any method or property using the TidalCycles mini-notation. For the Drums object, you can sequence the different samplers by referring to them with the kd (kick drum), sd (snare drum), ch (closed hat), and oh (open hat) shorthands."
+      },
+      "tidals": {
+        "!type":"[]",
+        "!doc":"Stores all scheduler instances created by calling .tidal on this property/method."
+      },
+      "kick": {
+        "!type": "sampler",
+        "!doc" : "Sampler that is loaded with a kick drum sample."
+      },
+      "snare": {
+        "!type": "sampler",
+        "!doc" : "Sampler that is loaded with a snare drum sample."
+      },
+      "closedHat": {
+        "!type": "sampler",
+        "!doc" : "Sampler that is loaded with a closed hihat sample."
+      },
+      "openHat": {
+        "!type": "sampler",
+        "!doc" : "Sampler that is loaded with a open hihat sample."
+      },
+      PANMIXIN
+    },
+
+    "pluck": {
+      "!proto":"instrument",
+      "!doc":  "A physically modeled string instrument, using the Karplus-Strong model.",
+      "blend": {
+        "!doc": "default: 1, range 0–1. A feature of the model used for this instrument is that it is easy to randomly add noise to the signal. Values slightly less than 1 will produce notes that sound almost errant, while values closer to .5 will produce bursts of noise and can be a useful percussive texture.",
+        "!type": "number__sequencable"
+      },
+      "decay": {
+        "!doc": "default: .97, range 0–1. Controls the time it takes for each note to fade to silence.",
+        "!type": "number__sequencable"
+      },
+      "damping": {
+        "!doc": "default: .2, range 0–1. Controls the amount of high frequency damping, or brightness, of the sound.", 
+        "!type": "number__sequencable"
+      },
+      "frequency": {
+        "!type": "number__sequencable",
+        "!doc": "default: 220, range 40–8000. This is the frequency that will be used when the .trigger() method is called, or if you call .note() and pass no argument. Calls to .note() (assuming you pass an argument) will set the value of this property." 
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. This linearly controls the overall output (sometimes known as volume) of the synth."
+      },
+      "glide": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 1–4000. The glide property controls a single-pole lowpass filter on the frequency, causing notes to slide from one to the next (portamento). The filter equation is: y (n) = y (n-1) + ((x (n) - y (n-1))/glide). A value of 1 generates no glide, a value of 1500 generates a substantial glide."
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–1. Loudness linearly controls the signal pre-filter. Additionally, when the synth's filter is enabled loudness will modulate the cutoff frequency of the filter... 'louder' sounds will be perceptually brighter as well."
+      },
+      PANMIXIN
+    },
+
+    "synth": { 
+      "!proto":"instrument",
+      "!doc": "The Synth object pairs a single oscillator, an envelope, and a filter. The envelope controls both the gain of the synth (volume) and the cutoff frequency of the filter, make its sound brighter when the envelope is fully open.",
+      "waveform": {
+        "!type": "string",
+        "!doc": "default: 'sine'. Controls the waveform of the synth's oscillator. Options include 'saw', 'triangle', 'pwm', 'sine', 'square', and 'noise'."
+      },
+      "frequency": {
+        "!type": "number__sequencable",
+        "!doc": "default: 220, range 40–8000. This is the frequency that will be used when the .trigger() method is called, or if you call .note() and pass no argument. Calls to .note() (assuming you pass an argument) will set the value of this property." 
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5, range 0–1. This linearly controls the overall output (sometimes known as volume) of the synth."
+      },
+      "glide": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 1–4000. The glide property controls a single-pole lowpass filter on the frequency, causing notes to slide from one to the next (portamento). The filter equation is: y (n) = y (n-1) + ((x (n) - y (n-1))/glide). A value of 1 generates no glide, a value of 1500 generates a substantial glide."
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1, range 0–1. Loudness linearly controls the signal pre-filter. Additionally, when the synth's filter is enabled loudness will modulate the cutoff frequency of the filter... 'louder' sounds will be perceptually brighter as well."
+      },
+      "antialias": {
+        "!type": "bool",
+        "!doc": "default: false. When set to true, the synth's oscillators will use higher-quality (but more CPU expensive) anti-aliasing oscillators."
+      },
+      ENVMIXIN,
+      FILTERMIXIN,
+      PANMIXIN
+    },
+    "monosynth": { 
+      "!proto":"instrument",
+      "!doc": "The Monosynth object pairs three oscillators, an envelope, and a filter. The envelope controls both the gain of the synth (volume) and the cutoff frequency of the filter, make it's sound brighter when the envelope is fully open. Oscillators can be detuned from each other creating a fuller sound than a single oscillator alone.",
+      "detune2": {
+        "!type": "number__sequencable",
+        "!doc": "default: .005. The frequency for oscillator #2 will be determined by taking the value of the .frequency property (which controls the frequency of oscillator #1) and offsetting it by the the value of this property multiplied by the base frequency. So, if the base .frqeuency property was 1000 Hz, oscillator #2 would run at a frequency of 1005 Hz using the default value of .005" 
+      },
+      "detune3": {
+        "!type": "number__sequencable",
+        "!doc": "default: -.005. The frequency for oscillator #3 will be determined by taking the value of the .frequency property (which controls the frequency of oscillator #1) and offsetting it by the the value of this property multiplied by the base frequency. So, if the base .frqeuency property was 1000 Hz, oscillator #3 would run at a frequency of 995 Hz using the default value of -.005" 
+      },
+      "frequency": {
+        "!type": "number__sequencable",
+        "!doc": "default: 220. This is the frequency that will be used when the .trigger() method is called, or if you call .note() and pass no argument. Calls to .note() (assuming you pass an argument) will set the value of this property." 
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5. This linearly controls the overall output (sometimes known as volume) of the synth."
+      },
+      "glide": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1. The glide property controls a single-pole lowpass filter on the frequency, causing notes to slide from one to the next (portamento). The filter equation is: y (n) = y (n-1) + ((x (n) - y (n-1))/glide). A value of 1 generates no glide, a value of 1500 generates a substantial glide."
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1. Loudness linearly controls the signal pre-filter. Additionally, when the synth's filter is enabled loudness will modulate the cutoff frequency of the filter... 'louder' sounds will be perceptually brighter as well."
+      },
+      "antialias": {
+        "!type": "bool",
+        "!doc": "default: false. When set to true, the synth's oscillators will use higher-quality (but more CPU expensive) anti-aliasing oscillators."
+      },
+      ENVMIXIN,
+      FILTERMIXIN,
+      PANMIXIN
+    },
+    "fm": { 
+      "!proto":"instrument",
+      "!doc": "The FM object pairs two oscillators (with one modulating the frequency of the other), an envelope, and a filter. The envelope controls the amplitude of the modulator (also known as the modulation index) , the overall gain of the synth (volume), and the cutoff frequency of the filter, make its sound perceptually brighter when the envelope is fully open." ,
+      "cmRatio": {
+        "!type": "number__sequencable",
+        "!doc": "default: 2. This controls the ratio between the carrier and modulation frequencies. When a note is trigger on this synth the frequency is assigned to the carrier oscillator; the frequency is then multiplied by this property and assigned ot the modulator." 
+      },
+      "index": {
+        "!type": "number__sequencable",
+        "!doc": "default: 2. This property value, multiplied by the frequency of the carrier oscillator, determines the amplitude of the modulating oscillator." 
+      },
+      "feedback": {
+        "!type": "number__sequencable",
+        "!doc": "default: 0. The modulating oscillator can direct its output to modulate its own frequency, resulting in chaotic and noisy sounds."
+      },
+      "carrierWaveform": {
+        "!type": "string",
+        "!doc": "default: 'sine'. Controls the waveform of the carrier oscillator. Options include 'saw', 'triangle', 'pwm', 'sine', 'square', and 'noise'."
+      },
+      "modulatorWaveform": {
+        "!type": "string",
+        "!doc": "default: 'sine'. Controls the waveform of the modulating oscillator. Options include 'saw', 'triangle', 'pwm', 'sine', 'square', and 'noise'."
+      },
+      "frequency": {
+        "!type": "number__sequencable",
+        "!doc": "default: 220. This is the frequency that will be used when the .trigger() method is called, or if you call .note() and pass no argument. Calls to .note() (assuming you pass an argument) will set the value of this property." 
+      },
+      "gain": {
+        "!type": "number__sequencable",
+        "!doc": "default: .5. This linearly controls the overall output (sometimes known as volume) of the synth."
+      },
+      "glide": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1. The glide property controls a single-pole lowpass filter on the frequency, causing notes to slide from one to the next (portamento). The filter equation is: y (n) = y (n-1) + ((x (n) - y (n-1))/glide). A value of 1 generates no glide, a value of 1500 generates a substantial glide."
+      },
+      "loudness": {
+        "!type": "number__sequencable",
+        "!doc": "default: 1. Loudness linearly controls the signal pre-filter. Additionally, when the synth's filter is enabled loudness will modulate the cutoff frequency of the filter... 'louder' sounds will be perceptually brighter as well."
+      },
+      "antialias": {
+        "!type": "bool",
+        "!doc": "default: false. When set to true, the synth's oscillators will use higher-quality (but more CPU expensive) anti-aliasing oscillators."
+      },
+      ENVMIXIN,
+      FILTERMIXIN,
+      PANMIXIN
+    }
+  },
+  
+  "Monosynth": {
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> monosynth",
+    "!doc": "Constructor for a three-oscillator synth with a filter and envelope. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset" 
+  },
+  "Synth": {
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> synth",
+    "!doc": "Constructor for a single oscillator synth with a filter and envelope. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset" 
+  },
+  "FM": {
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> fm",
+    "!doc": "Constructor for a two-operator FM synthesizer. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset" 
+  },
+  "Pluck": {
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> pluck",
+    "!doc": "Constructor for physically-modeled string instrument (Karplus-Strong). The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset." 
+  },
+  "Drums":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> drums",
+    "!doc": "Constructor for sample-based drum instrument, featuring samples for kick, snare, closed hihat, and open hihat sounds. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
+  },
+  "Kick":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> kick",
+    "!doc": "Constructor for synthetic kick drum in the style of the Roland TR-808. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
+  },
+  "Snare":{
+    "!type": "fn(initializer?: properties|string, presetMods?: properties) -> snare",
+    "!doc": "Constructor for a synthetic snare drum in the style of the TR-808. The constructor can accept two types of arguments: pass an object specifying property values for the new object, or, pass a preset name and an optional object containing modifications to the preset."
+  }
+}

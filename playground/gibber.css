@@ -183,6 +183,51 @@ span.cm-number, .cm-s-default .cm-atom, .cm-s-default .cm-number { color:rgba(89
 
 span.cm-string, span.cm-string-2 {color: rgb(225, 225, 225) !important }
 
+
+.CodeMirror-Tern-fname { color: white !important; font-weight:bold }
+.CodeMirror-Tern-farg { color: lightgrey !important }
+.CodeMirror-Tern-tooltip {
+  position: absolute;
+  z-index: 10;
+  overflow: hidden;
+  list-style: none;
+
+  margin: 0;
+  padding: 2px;
+
+  -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+  border-radius: 3px;
+  border: 1px solid silver;
+
+  background: black !important;
+  color:white !important;
+  font-size: 90%;
+  font-family: monospace;
+
+  max-height: 20em;
+  overflow-y: auto;
+}
+
+
+.CodeMirror-hints {
+  border-radius: 1px;
+  white-space: pre;
+  color: white;
+  background:black;
+  cursor: pointer;
+}
+
+.CodeMirror-hint {
+  color: white
+}
+
+li.CodeMirror-hint-active {
+  background: #08f;
+  color: white;
+}
+
 .CodeMirror-cursor {
   background: rgba(255,255,255,.5);
   border: none !important;

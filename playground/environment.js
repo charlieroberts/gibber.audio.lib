@@ -8,32 +8,155 @@ let cm, cmconsole, exampleCode,
 window.onload = function() {
   cm = CodeMirror( document.querySelector('#editor'), {
     mode:   'javascript',
-    value:  '// click in the editor to begin',
+    value:  '// click in the editor to begin!!!',
     keyMap: 'playground',
     autofocus: true,
     //matchBrackets:true,
     indentUnit:2,
     autoCloseBrackets:true,
     tabSize:2,
-    //extraKeys:{ 'Ctrl-Space':'autocomplete' },
-    //hintOptions:{ hint:CodeMirror.hint.javascript }
+    extraKeys:{ 'Ctrl-Space':'autocomplete' },
+    hintOptions:{ hint:CodeMirror.hint.javascript }
   })
 
   Babel.registerPlugin( 'jsdsp', jsdsp )
 
   cm.setSize( null, '100%' )
 
-  /*
-  cmconsole = CodeMirror( document.querySelector('#main'), {
-    mode:'javascript',
-    value:
-`// gibber.audio playground, v0.0.1
-// https://github.com/charlieroberts/gibber.audio.lib`,
-    readOnly:'nocursor',
-  })     
+  function getURL(url, c) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", url, true);
+    xhr.send();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState != 4) return;
+      if (xhr.status < 400) return c(null, xhr.responseText);
+      var e = new Error(xhr.responseText || "No response");
+      e.status = xhr.status;
+      c(e);
+    };
+  }
 
-  cmconsole.setSize( null, '100%' )
-*/
+  let server
+  getURL("./gibberdef.json", function(err, code) {
+  //getURL("../node_modules/tern/defs/ecmascript.json", function(err, code) {
+    if (err) throw new Error("request for gibberdef.json: " + err);
+    console.log( 'loaded gibber environment definition.' )
+    environment.server = server = new CodeMirror.TernServer({defs: [JSON.parse( code )], options:{ hintDelay:5000 } })
+
+    cm.setOption("extraKeys", {
+      "Ctrl-Space": function(cm) { server.complete(cm) },
+      "Ctrl-I"    : function(cm) { server.showType(cm) },
+      "Ctrl-O"    : function(cm) { server.showDocs(cm) }
+    })
+    cm.on( 'cursorActivity', function( cm ) { 
+      server.updateArgHints( cm ) 
+    })
+
+    cm.on( 'change', function( cm, change ) {
+      if( change.text[ change.text.length - 1 ] === '.' ) {
+        server.complete( cm )
+      }
+    })
+  })
+
+  cm.getWrapperElement().addEventListener( 'click', e => {
+    if( e.altKey === true ) {
+
+      if( e.shiftKey === true ) {
+        const ele = document.createElement('span')
+        let node = e.path[0]
+        while( node.parentNode.className.indexOf( 'CodeMirror-line' ) === -1 ) {
+          node = node.parentNode
+        }
+        const split = node.innerText.split( '=' )[0].split('.')
+        let txt = null
+        try {
+          let obj = window[  split[0].trim() ]
+          for( let i = 1; i < split.length; i++ ) {
+            obj = obj[ split[ i ].trim() ]
+          }
+          txt = obj.value !== undefined ? obj.value : obj
+        } catch(e) {
+          throw e
+        }
+        ele.innerText = txt
+        tempTooltip( cm, ele, server )
+      }else{
+        server.showDocs( cm ) 
+      }
+    }
+  })
+
+  var Pos = CodeMirror.Pos;
+  var cls = "CodeMirror-Tern-";
+  var bigDoc = 250;
+  function elt(tagname, cls /*, ... elts*/) {
+    var e = document.createElement(tagname);
+    if (cls) e.className = cls;
+    for (var i = 2; i < arguments.length; ++i) {
+      var elt = arguments[i];
+      if (typeof elt == "string") elt = document.createTextNode(elt);
+      e.appendChild(elt);
+    }
+    return e;
+  }
+  function tempTooltip(cm, content, ts) {
+    if (cm.state.ternTooltip) remove(cm.state.ternTooltip);
+    var where = cm.cursorCoords();
+    var tip = cm.state.ternTooltip = makeTooltip(where.right + 1, where.bottom, content);
+    function maybeClear() {
+      old = true;
+      if (!mouseOnTip) clear();
+    }
+    function clear() {
+      cm.state.ternTooltip = null;
+      if (tip.parentNode) fadeOut(tip)
+      clearActivity()
+    }
+    var mouseOnTip = false, old = false;
+    CodeMirror.on(tip, "mousemove", function() { mouseOnTip = true; });
+    CodeMirror.on(tip, "mouseout", function(e) {
+      var related = e.relatedTarget || e.toElement
+      if (!related || !CodeMirror.contains(tip, related)) {
+        if (old) clear();
+        else mouseOnTip = false;
+      }
+    });
+    setTimeout(maybeClear, ts.options.hintDelay ? ts.options.hintDelay : 1700);
+    var clearActivity = onEditorActivity(cm, clear)
+  }
+
+  function onEditorActivity(cm, f) {
+    cm.on("cursorActivity", f)
+    cm.on("blur", f)
+    cm.on("scroll", f)
+    cm.on("setDoc", f)
+    return function() {
+      cm.off("cursorActivity", f)
+      cm.off("blur", f)
+      cm.off("scroll", f)
+      cm.off("setDoc", f)
+    }
+  }
+
+  function makeTooltip(x, y, content) {
+    var node = elt("div", cls + "tooltip", content);
+    node.style.left = x + "px";
+    node.style.top = y + "px";
+    document.body.appendChild(node);
+    return node;
+  }
+
+  function remove(node) {
+    var p = node && node.parentNode;
+    if (p) p.removeChild(node);
+  }
+
+  function fadeOut(tooltip) {
+    tooltip.style.opacity = "0";
+    setTimeout(function() { remove(tooltip); }, 1100);
+  }
+
   const workletPath = '../dist/gibberish_worklet.js' 
 
   const start = () => {
