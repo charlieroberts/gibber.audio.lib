@@ -193,12 +193,14 @@ const Graphics = {
 
       let m = f.multiplier
       Object.defineProperty( to[ name ], 'multiplier', {
+        configurable:true,
         get() { return m },
         set(v) { m = v; f.multiplier = m }
       })
 
       let o = f.offset
       Object.defineProperty( to[ name ], 'offset', {
+        configurable:true,
         get() { return o },
         set(v) { o = v; f.offset = o }
       })
