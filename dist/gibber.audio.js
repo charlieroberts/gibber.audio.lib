@@ -7115,11 +7115,13 @@ const Graphics = {
   quality:3,
   animate:true,
   camera:null,
+  initialized: false,
   __doNotExport: ['export', 'init', 'run', 'make' ],
   __running:     false,
   __scene:       [],
   __fogColor:    Marching.vectors.Vec3(0),
   __fogAmount:   0,
+
 
   camera : {
     pos: { x:0, y:0, z:5 },
@@ -7176,8 +7178,7 @@ const Graphics = {
     this.__native  = {}
     this.__wrapped = {}
 
-    this.run()
-
+    Marching.init( this.canvas, false )
 
     for( let name in Marching.primitives ) {
       this.make( name, Marching.primitives[ name ] )
@@ -7198,8 +7199,11 @@ const Graphics = {
   },
 
   run() {
-    Marching.init( this.canvas )
-    this.__running = true
+    if( this.initialized === false ) {
+      Marching.initBuffers()
+      this.__running = true
+      this.initialized = true
+    }
   },
 
   fog( amount=.25, color=Marching.vectors.Vec3(0), shouldRender=true) {
@@ -7219,8 +7223,6 @@ const Graphics = {
 
   make( name, op ) {
     this[ name ] = function( ...args ) {
-      if( this.__running === false ) this.run()
-
       // XXX do these need to be proxies? We're basically creating
       // proxies by binding the GLSL codegen functions below...
       const wrapped = op( ...args )
@@ -7238,17 +7240,11 @@ const Graphics = {
         tidals:[],
 
         render( animate=null ) {
-          //if( Graphics.__scene.indexOf( instance ) === -1 ) {
-          //  Graphics.__scene.push( instance )
-          //}
-          ///// XXX need to replace overwritten .emit methods from previous scenes...
-          //Marching.createScene( ...Graphics.__scene ).render( Graphics.quality, Graphics.animate )
 
-          /* XXX
-           * Should multiple ops be allowed to render at once? similar to march( obj1, obj2 )
-           * we could combine them in a Union... we'd have to previously written .emit methods
-           * or figure out a better way to deal with that from inside marching.js
-           */
+          if( Graphics.initialized === false ) {
+            console.log( 'running...' )
+            Graphics.run()
+          }
 
           let scene = Marching.createScene( wrapped )
           if( Graphics.__fogAmount !== 0 ) {
@@ -24153,7 +24149,6 @@ module.exports = function( Gibberish ) {
   
   Snare.defaults = {
     gain: .5,
-    frequency:1000,
     tune:0,
     snappy: 1,
     decay:.1,
@@ -29198,7 +29193,7 @@ const SDF = {
     obj.FFT = this.FFT
   },
 
-  init( canvas ) {
+  init( canvas, shouldInit = false ) {
     this.primitives = this.__primitives( this )
     this.Scene      = this.__scene( this )
     this.domainOps  = this.__domainOps( this )
@@ -29215,14 +29210,14 @@ const SDF = {
 
     //this.canvas.width = window.innerWidth * size
     //this.canvas.height = window.innerHeight * size
-    this.gl = this.canvas.getContext( 'webgl2', { antialias:true, alpha:false })
+    this.gl = this.canvas.getContext( 'webgl2', { antialias:true, alpha:true })
 
-    this.initBuffers()
+    if( shouldInit === true ) this.initBuffers()
   },
 
   initBuffers() {
     const gl = this.gl
-    gl.clearColor( 0.0, 0.0, 0.0, 1.0 )
+    gl.clearColor( 0.0, 0.0, 0.0, 0.0 )
     gl.clear(gl.COLOR_BUFFER_BIT)
 
     const vbo = gl.createBuffer()

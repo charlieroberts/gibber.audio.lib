@@ -2,7 +2,10 @@ const codeMarkup = require( './codeMarkup.js' )
 
 let cm, cmconsole, exampleCode, 
     isStereo = false,
-    environment = {},
+    environment = {
+      showArgHints:true,
+      showCompletions:true
+    },
     fontSize = 1
 
 window.onload = function() {
@@ -49,12 +52,16 @@ window.onload = function() {
       "Ctrl-O"    : function(cm) { server.showDocs(cm) }
     })
     cm.on( 'cursorActivity', function( cm ) { 
-      server.updateArgHints( cm ) 
+      if( environment.showArgHints === true ) {
+        server.updateArgHints( cm ) 
+      }
     })
 
     cm.on( 'change', function( cm, change ) {
-      if( change.text[ change.text.length - 1 ] === '.' ) {
-        server.complete( cm )
+      if( environment.showCompletions === true ) {
+        if( change.text[ change.text.length - 1 ] === '.' ) {
+          server.complete( cm )
+        }
       }
     })
   })
