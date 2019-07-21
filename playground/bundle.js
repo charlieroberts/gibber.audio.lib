@@ -6462,19 +6462,19 @@ module.exports = function( Marker ) {
   const Tidal = function( node, state, tidal, container=null, index=0 ) {
     if( node.processed === true ) return 
 
-    const cm = state.cm
-    const target = tidal.target // XXX seq.object for gibberwocky
-    const pattern = tidal.__pattern.__data
-    
-    const markers = {}
-
-    const line  = node.offset.vertical
-    const start = node.start
-    const end   = node.end
+    const cm       = state.cm,
+          target   = tidal.target, // XXX seq.object for gibberwocky
+          pattern  = tidal.__pattern.__data,
+          markers  = {},
+          line     = node.loc.start.line - 1 + node.offset.vertical,
+          startCol = node.loc.start.column,
+          endCol   = node.loc.end.column,
+          startRow = line,
+          endRow   = line + (node.loc.end.line - node.loc.start.line)
 
     const marker = cm.markText( 
-      { line: node.offset.vertical, ch:start }, 
-      { line: node.offset.vertical + (node.loc.end.line - node.loc.start.line), ch:end }, 
+      { line:startRow, ch:startCol }, 
+      { line:endRow, ch:endCol }, 
       { className: 'annotation tidalblock' }
     )
 
@@ -8064,7 +8064,7 @@ const Marker = {
   process( code, position, codemirror, track ) {
     // store position offset from top of code editor
     // to use when marking patterns, since acorn will produce
-    // relative offsets 
+    // relative offsets
     Marker.offset = {
       vertical:   position.start.line,
       horizontal: position.horizontalOffset === undefined ? 0 : position.horizontalOffset
@@ -8563,7 +8563,7 @@ window.onload = function() {
   }
 
   let server
-  getURL("./gibberdef.json", function(err, code) {
+  getURL("./terndefs/gibberdef.json", function(err, code) {
   //getURL("../node_modules/tern/defs/ecmascript.json", function(err, code) {
     if (err) throw new Error("request for gibberdef.json: " + err);
     console.log( 'loaded gibber environment definition.' )
@@ -8985,6 +8985,7 @@ CodeMirror.keyMap.playground =  {
   ${selectedCode.code}
 }`
 
+      console.log( selectedCode )
       code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
       flash( cm, selectedCode.selection )
 
@@ -8999,15 +9000,15 @@ CodeMirror.keyMap.playground =  {
         createProxies( preWindowMembers, postWindowMembers, window )
       }
 
-      //const func = new Function( selectedCode.code ).bind( Gibber.currentTrack ),
+      //const func = new Function( selectedCode.code ).bind( Gibber.currentTrack )
       const markupFunction = () => {
-              Environment.codeMarkup.process( 
-                selectedCode.code, 
-                selectedCode.selection, 
-                cm, 
-                Gibber.currentTrack 
-              ) 
-            }
+        Environment.codeMarkup.process( 
+          selectedCode.code, 
+          selectedCode.selection, 
+          cm, 
+          Gibber.currentTrack 
+        ) 
+      }
 
       markupFunction.origin = func
 

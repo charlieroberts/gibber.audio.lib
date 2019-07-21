@@ -97,7 +97,7 @@ const Audio = {
         Audio.Main = Gibberish.output
 
         // must wait for Gen to be initialized
-        Audio.Clock.init( Audio.Gen )
+        Audio.Clock.init( Audio.Gen, Audio )
 
         Audio.createUgens()
         
@@ -136,7 +136,7 @@ const Audio = {
   // XXX stop clock from being cleared.
   clear() { 
     Gibberish.clear() 
-    Audio.Clock.init( Audio.Gen )
+    Audio.Clock.init( Audio.Gen, Audio )
 
     Audio.Seq.clear()
 
@@ -259,6 +259,7 @@ const Audio = {
       value,
       isProperty:true,
       sequencers:[],
+      tidals:[],
       mods:[],
       name,
 
@@ -282,7 +283,7 @@ const Audio = {
         return obj
       },
       tidal( pattern,  number = 0, delay = 0 ) {
-        let prevSeq = obj[ '__' + name ].sequencers[ number ] 
+        let prevSeq = obj[ '__' + name ].tidals[ number ] 
         if( prevSeq !== undefined ) {
           const idx = obj.__sequencers.indexOf( prevSeq )
           obj.__sequencers.splice( idx, 1 )
@@ -300,7 +301,7 @@ const Audio = {
 
         s.start( Audio.Clock.time( delay ) )
 
-        obj[ '__' + name ].sequencers[ number ] = obj[ '__' + name ][ number ] = s
+        obj[ '__' + name ].tidals[ number ] = obj[ '__' + name ][ number ] = s
 
         // return object for method chaining
         return obj

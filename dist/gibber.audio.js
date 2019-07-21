@@ -4536,7 +4536,7 @@ const Audio = {
         Audio.Main = Gibberish.output
 
         // must wait for Gen to be initialized
-        Audio.Clock.init( Audio.Gen )
+        Audio.Clock.init( Audio.Gen, Audio )
 
         Audio.createUgens()
         
@@ -4575,7 +4575,7 @@ const Audio = {
   // XXX stop clock from being cleared.
   clear() { 
     Gibberish.clear() 
-    Audio.Clock.init( Audio.Gen )
+    Audio.Clock.init( Audio.Gen, Audio )
 
     Audio.Seq.clear()
 
@@ -4698,6 +4698,7 @@ const Audio = {
       value,
       isProperty:true,
       sequencers:[],
+      tidals:[],
       mods:[],
       name,
 
@@ -4721,7 +4722,7 @@ const Audio = {
         return obj
       },
       tidal( pattern,  number = 0, delay = 0 ) {
-        let prevSeq = obj[ '__' + name ].sequencers[ number ] 
+        let prevSeq = obj[ '__' + name ].tidals[ number ] 
         if( prevSeq !== undefined ) {
           const idx = obj.__sequencers.indexOf( prevSeq )
           obj.__sequencers.splice( idx, 1 )
@@ -4739,7 +4740,7 @@ const Audio = {
 
         s.start( Audio.Clock.time( delay ) )
 
-        obj[ '__' + name ].sequencers[ number ] = obj[ '__' + name ][ number ] = s
+        obj[ '__' + name ].tidals[ number ] = obj[ '__' + name ][ number ] = s
 
         // return object for method chaining
         return obj
@@ -4988,7 +4989,7 @@ const Clock = {
     }
   },
 
-  init:function( Gen ) {
+  init:function( Gen, Gibber ) {
     // needed so that when the clock is re-initialized (for example, after clearing)
     // gibber won't try and serialized its sequencer
     this.seq = null
@@ -5023,6 +5024,7 @@ const Clock = {
         set(v){ 
           bpm = v
           if( Gibberish.mode === 'worklet' ) {
+            if( Gibber.Tidal !== undefined ) Gibber.Tidal.cps = bpm/120/2
             Gibberish.worklet.port.postMessage({
               address:'set',
               object:this.id,
@@ -7242,7 +7244,6 @@ const Graphics = {
         render( animate=null ) {
 
           if( Graphics.initialized === false ) {
-            console.log( 'running...' )
             Graphics.run()
           }
 
@@ -20632,7 +20633,7 @@ module.exports = function (Gibberish) {
 
     /****** left / mono output ********/
 
-    let l = genish.eq(isStereo, true) ? input[0] : input;
+    let l = isStereo === true ? input[0] : input;
     in1a0 = genish.mul(l, a[0]);
     x0a1 = genish.mul(x[0], a[1]);
     x1a2 = genish.mul(x[1], a[2]);
@@ -21595,9 +21596,7 @@ const g = require('genish.js'),
 
 const genish = g;
 
-"use jsdsp";
-
-const AllPassChain = (in1, in2, in3) => {
+const AllPassChain = (in1, in2, in3, magic_coeff) => {
   "use jsdsp";
 
   /* in1 = predelay_out */
@@ -21605,22 +21604,22 @@ const AllPassChain = (in1, in2, in3) => {
   /* in3 = indiffusion2 */
 
   const sub1 = genish.sub(in1, 0);
-  const d1 = g.delay(sub1, 142);
+  const d1 = g.delay(sub1, 142 * 1.481805046873425);
   sub1.inputs[1] = genish.mul(d1, in2);
   const ap1_out = genish.add(genish.mul(sub1, in2), d1);
 
   const sub2 = genish.sub(ap1_out, 0);
-  const d2 = g.delay(sub2, 107);
+  const d2 = g.delay(sub2, 107 * 1.481805046873425);
   sub2.inputs[1] = genish.mul(d2, in2);
   const ap2_out = genish.add(genish.mul(sub2, in2), d2);
 
   const sub3 = genish.sub(ap2_out, 0);
-  const d3 = g.delay(sub3, 379);
+  const d3 = g.delay(sub3, 379 * 1.481805046873425);
   sub3.inputs[1] = genish.mul(d3, in3);
   const ap3_out = genish.add(genish.mul(sub3, in3), d3);
 
   const sub4 = genish.sub(ap3_out, 0);
-  const d4 = g.delay(sub4, 277);
+  const d4 = g.delay(sub4, 277 * 1.481805046873425);
   sub4.inputs[1] = genish.mul(d4, in3);
   const ap4_out = genish.add(genish.mul(sub4, in3), d4);
 
@@ -21628,75 +21627,81 @@ const AllPassChain = (in1, in2, in3) => {
 };
 
 /*const tank_outs = Tank( ap_out, decaydiffusion1, decaydiffusion2, damping, decay )*/
-const Tank = function (in1, in2, in3, in4, in5) {
-  "use jsdsp";
+const Tank = function (in1, in2, in3, in4, in5, magic_coeff) {
 
+  // 1012, 1361
+  const leftDelaySize = genish.add(16, Math.round(672 * 1.481805046873425));
+  const rightDelaySize = genish.add(16, Math.round(908 * 1.481805046873425));
   const outs = [[], [], [], [], []];
+  {
+    "use jsdsp";
+    console.log(leftDelaySize, rightDelaySize);
 
-  /* LEFT CHANNEL */
-  const leftStart = genish.add(in1, 0);
-  const delayInput = genish.add(leftStart, 0);
-  const delay1 = g.delay(delayInput, [genish.add(genish.mul(g.cycle(.1), 16), 672)], { size: 688 });
-  delayInput.inputs[1] = genish.mul(delay1, in2);
-  const delayOut = genish.sub(delay1, genish.mul(delayInput, in2));
+    /* LEFT CHANNEL */
+    const leftStart = genish.add(in1, 0);
+    const delayInput = genish.add(leftStart, 0);
+    const delay1 = g.delay(delayInput, [genish.add(genish.mul(g.cycle(.1), 16), 672 * 1.481805046873425)], { size: leftDelaySize });
+    delayInput.inputs[1] = genish.mul(delay1, in2);
+    const delayOut = genish.sub(delay1, genish.mul(delayInput, in2));
 
-  const delay2 = g.delay(delayOut, [4453, 353, 3627, 1190]);
-  outs[3].push(genish.add(delay2.outputs[1], delay2.outputs[2]));
-  outs[2].push(delay2.outputs[3]);
+    const delay2 = g.delay(delayOut, [4453 * 1.481805046873425, 353 * 1.481805046873425, 3627 * 1.481805046873425, 1190 * 1.481805046873425]);
+    outs[3].push(genish.add(delay2.outputs[1], delay2.outputs[2]));
+    outs[2].push(delay2.outputs[3]);
 
-  const mz = g.history(0);
-  const ml = g.mix(delay2, mz.out, in4);
-  mz.in(ml);
+    const mz = g.history(0);
+    const ml = g.mix(delay2, mz.out, in4);
+    mz.in(ml);
 
-  const mout = genish.mul(ml, in5);
+    const mout = genish.mul(ml, in5);
 
-  const s1 = genish.sub(mout, 0);
-  const delay3 = g.delay(s1, [1800, 187, 1228]);
-  outs[2].push(delay3.outputs[1]);
-  outs[4].push(delay3.outputs[2]);
-  s1.inputs[1] = genish.mul(delay3, in3);
-  const m2 = genish.mul(s1, in3);
-  const dl2_out = genish.add(delay3, m2);
+    const s1 = genish.sub(mout, 0);
+    const delay3 = g.delay(s1, [1800 * 1.481805046873425, 187 * 1.481805046873425, 1228 * 1.481805046873425]);
+    outs[2].push(delay3.outputs[1]);
+    outs[4].push(delay3.outputs[2]);
+    s1.inputs[1] = genish.mul(delay3, in3);
+    const m2 = genish.mul(s1, in3);
+    const dl2_out = genish.add(delay3, m2);
 
-  const delay4 = g.delay(dl2_out, [3720, 1066, 2673]);
-  outs[2].push(delay4.outputs[1]);
-  outs[3].push(delay4.outputs[2]);
+    const delay4 = g.delay(dl2_out, [3720 * 1.481805046873425, 1066 * 1.481805046873425, 2673 * 1.481805046873425]);
+    outs[2].push(delay4.outputs[1]);
+    outs[3].push(delay4.outputs[2]);
 
-  /* RIGHT CHANNEL */
-  const rightStart = genish.add(genish.mul(delay4, in5), in1);
-  const delayInputR = genish.add(rightStart, 0);
-  const delay1R = g.delay(delayInputR, genish.add(genish.mul(g.cycle(.07), 16), 908), { size: 924 });
-  delayInputR.inputs[1] = genish.mul(delay1R, in2);
-  const delayOutR = genish.sub(delay1R, genish.mul(delayInputR, in2));
+    /* RIGHT CHANNEL */
+    const rightStart = genish.add(genish.mul(delay4, in5), in1);
+    const delayInputR = genish.add(rightStart, 0);
+    const delay1R = g.delay(delayInputR, genish.add(genish.mul(g.cycle(.07), 16), 908 * 1.481805046873425), { size: rightDelaySize });
+    delayInputR.inputs[1] = genish.mul(delay1R, in2);
+    const delayOutR = genish.sub(delay1R, genish.mul(delayInputR, in2));
 
-  const delay2R = g.delay(delayOutR, [4217, 266, 2974, 2111]);
-  outs[1].push(genish.add(delay2R.outputs[1], delay2R.outputs[2]));
-  outs[4].push(delay2R.outputs[3]);
+    const delay2R = g.delay(delayOutR, [4217 * 1.481805046873425, 266 * 1.481805046873425, 2974 * 1.481805046873425, 2111 * 1.481805046873425]);
+    outs[1].push(genish.add(delay2R.outputs[1], delay2R.outputs[2]));
+    outs[4].push(delay2R.outputs[3]);
 
-  const mzR = g.history(0);
-  const mlR = g.mix(delay2R, mzR.out, in4);
-  mzR.in(mlR);
+    const mzR = g.history(0);
+    const mlR = g.mix(delay2R, mzR.out, in4);
+    mzR.in(mlR);
 
-  const moutR = genish.mul(mlR, in5);
+    const moutR = genish.mul(mlR, in5);
 
-  const s1R = genish.sub(moutR, 0);
-  const delay3R = g.delay(s1R, [2656, 335, 1913]);
-  outs[4].push(delay3R.outputs[1]);
-  outs[2].push(delay3R.outputs[2]);
-  s1R.inputs[1] = genish.mul(delay3R, in3);
-  const m2R = genish.mul(s1R, in3);
-  const dl2_outR = genish.add(delay3R, m2R);
+    const s1R = genish.sub(moutR, 0);
+    const delay3R = g.delay(s1R, [2656 * 1.481805046873425, 335 * 1.481805046873425, 1913 * 1.481805046873425]);
+    outs[4].push(delay3R.outputs[1]);
+    outs[2].push(delay3R.outputs[2]);
+    s1R.inputs[1] = genish.mul(delay3R, in3);
+    const m2R = genish.mul(s1R, in3);
+    const dl2_outR = genish.add(delay3R, m2R);
 
-  const delay4R = g.delay(dl2_outR, [3163, 121, 1996]);
-  outs[4].push(delay4.outputs[1]);
-  outs[1].push(delay4.outputs[2]);
+    const delay4R = g.delay(dl2_outR, [3163 * 1.481805046873425, 121 * 1.481805046873425, 1996 * 1.481805046873425]);
+    outs[4].push(delay4.outputs[1]);
+    outs[1].push(delay4.outputs[2]);
 
-  leftStart.inputs[1] = genish.mul(delay4R, in5);
+    leftStart.inputs[1] = genish.mul(delay4R, in5);
 
-  outs[1] = g.add(...outs[1]);
-  outs[2] = g.add(...outs[2]);
-  outs[3] = g.add(...outs[3]);
-  outs[4] = g.add(...outs[4]);
+    outs[1] = g.add(...outs[1]);
+    outs[2] = g.add(...outs[2]);
+    outs[3] = g.add(...outs[3]);
+    outs[4] = g.add(...outs[4]);
+  }
   return outs;
 };
 
@@ -21729,6 +21734,9 @@ module.exports = function (Gibberish) {
             indiffusion1 = g.in('indiffusion1'),
             indiffusion2 = g.in('indiffusion2');
 
+      // adjust from original equation coefficients at 29761 hz
+      const coeff = genish.div(g.gen.samplerate, 29761);
+
       const summedInput = isStereo === true ? g.mul(g.add(input[0], input[1]), inputGain) : g.mul(input, inputGain);
       {
         'use jsdsp';
@@ -21743,10 +21751,10 @@ module.exports = function (Gibberish) {
         const predelay_out = mix1;
 
         // run input + predelay through all-pass chain
-        const ap_out = AllPassChain(predelay_out, indiffusion1, indiffusion2);
+        const ap_out = AllPassChain(predelay_out, indiffusion1, indiffusion2, coeff);
 
         // run filtered signal into "tank" model
-        const tank_outs = Tank(ap_out, decaydiffusion1, decaydiffusion2, damping, decay);
+        const tank_outs = Tank(ap_out, decaydiffusion1, decaydiffusion2, damping, decay, coeff);
 
         const leftWet = genish.mul(genish.sub(tank_outs[1], tank_outs[2]), .6);
         const rightWet = genish.mul(genish.sub(tank_outs[3], tank_outs[4]), .6);
@@ -21860,6 +21868,7 @@ const g = require('genish.js'),
 
 const genish = g;
 
+// taken from csound: http://manual.freeshell.org/csound5/distort1.html
 /*
 
          exp(asig * (shape1 + pregain)) - exp(asig * (shape2 - pregain))
@@ -23238,7 +23247,7 @@ module.exports = function (Gibberish) {
         const synthWithGain = genish.mul(genish.mul(filteredOsc, g.in('gain')), Loudness);
 
         let panner;
-        if (genish.eq(props.panVoices, true)) {
+        if (props.panVoices === true) {
           panner = g.pan(synthWithGain, synthWithGain, g.in('pan'));
           syn.graph = [panner.left, panner.right];
           syn.isStereo = true;
@@ -23659,9 +23668,8 @@ module.exports = function (Gibberish) {
     pan: .5,
     detune2: .005,
     detune3: -.005,
-    cutoff: 1,
-    resonance: .25,
-    Q: .5,
+    cutoff: .5,
+    Q: .25,
     panVoices: false,
     glide: 1,
     antialias: false,
@@ -24209,7 +24217,7 @@ module.exports = function (Gibberish) {
 
         let synthWithGain = genish.mul(filteredOsc, g.in('gain'));
 
-        if (genish.eq(syn.panVoices, true)) {
+        if (syn.panVoices === true) {
           panner = g.pan(synthWithGain, synthWithGain, g.in('pan'));
           syn.graph = [panner.left, panner.right];
           syn.isStereo = true;
@@ -25089,50 +25097,50 @@ const g = genish;
 const polyBlep = function (__frequency, argumentProps) {
   'use jsdsp';
 
-  if (genish.eq(argumentProps, undefined)) argumentProps = { type: 'saw' };
+  if (argumentProps === undefined) argumentProps = { type: 'saw' };
 
   const mem = g.history(0);
   const type = argumentProps.type;
-  const frequency = genish.eq(__frequency, undefined) ? 220 : __frequency;
+  const frequency = __frequency === undefined ? 220 : __frequency;
   const dt = genish.div(frequency, g.gen.samplerate);
 
   const t = g.accum(dt, 0, { min: 0 });
   let osc;
 
   // triangle waves are integrated square waves, so the below case accomodates both types
-  if (genish.eq(type, 'triangle') || genish.eq(type, 'square')) {
+  if (type === 'triangle' || type === 'square') {
     // lt NOT gt to get correct phase
     osc = genish.sub(genish.mul(2, g.lt(t, .5)), 1);
   } else {
-    osc = 2 * t - 1;
+    osc = genish.sub(genish.mul(2, t), 1);
   }
   const case1 = g.lt(t, dt);
-  const case2 = g.gt(t, 1 - dt);
-  const adjustedT = g.switch(case1, t / dt, g.switch(case2, (t - 1) / dt, t));
+  const case2 = g.gt(t, genish.sub(1, dt));
+  const adjustedT = g.switch(case1, genish.div(t, dt), g.switch(case2, genish.div(genish.sub(t, 1), dt), t));
 
   // if/elseif/else with nested ternary operators
-  const blep = g.switch(case1, adjustedT + adjustedT - adjustedT * adjustedT - 1, g.switch(case2, adjustedT * adjustedT + adjustedT + adjustedT + 1,
+  const blep = g.switch(case1, genish.sub(genish.sub(genish.add(adjustedT, adjustedT), genish.mul(adjustedT, adjustedT)), 1), g.switch(case2, genish.add(genish.add(genish.add(genish.mul(adjustedT, adjustedT), adjustedT), adjustedT), 1),
   // final else case is 0
   0));
 
   // triangle waves are integrated square waves, so the below case accomodates both types
   if (type !== 'saw') {
-    osc = osc + blep;
-    const t_2 = g.memo(g.mod(t + .5, 1));
+    osc = genish.add(osc, blep);
+    const t_2 = g.memo(g.mod(genish.add(t, .5), 1));
     const case1_2 = g.lt(t_2, dt);
-    const case2_2 = g.gt(t_2, 1 - dt);
-    const adjustedT_2 = g.switch(case1_2, t_2 / dt, g.switch(case2_2, (t_2 - 1) / dt, t_2));
+    const case2_2 = g.gt(t_2, genish.sub(1, dt));
+    const adjustedT_2 = g.switch(case1_2, genish.div(t_2, dt), g.switch(case2_2, genish.div(genish.sub(t_2, 1), dt), t_2));
 
-    const blep2 = g.switch(case1_2, adjustedT_2 + adjustedT_2 - adjustedT_2 * adjustedT_2 - 1, g.switch(case2_2, adjustedT_2 * adjustedT_2 + adjustedT_2 + adjustedT_2 + 1, 0));
-    osc = osc - blep2;
+    const blep2 = g.switch(case1_2, genish.sub(genish.sub(genish.add(adjustedT_2, adjustedT_2), genish.mul(adjustedT_2, adjustedT_2)), 1), g.switch(case2_2, genish.add(genish.add(genish.add(genish.mul(adjustedT_2, adjustedT_2), adjustedT_2), adjustedT_2), 1), 0));
+    osc = genish.sub(osc, blep2);
 
     // leaky integrator to create triangle from square wave
     if (type === 'triangle') {
-      osc = dt * osc + (1 - dt) * mem.out;
+      osc = genish.add(genish.mul(dt, osc), genish.mul(genish.sub(1, dt), mem.out));
       mem.in(osc);
     }
   } else {
-    osc = osc - blep;
+    osc = genish.sub(osc, blep);
   }
 
   return osc;

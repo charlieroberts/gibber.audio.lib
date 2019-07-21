@@ -40,7 +40,7 @@ window.onload = function() {
   }
 
   let server
-  getURL("./gibberdef.json", function(err, code) {
+  getURL("./terndefs/gibberdef.json", function(err, code) {
   //getURL("../node_modules/tern/defs/ecmascript.json", function(err, code) {
     if (err) throw new Error("request for gibberdef.json: " + err);
     console.log( 'loaded gibber environment definition.' )
@@ -462,6 +462,7 @@ CodeMirror.keyMap.playground =  {
   ${selectedCode.code}
 }`
 
+      console.log( selectedCode )
       code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
       flash( cm, selectedCode.selection )
 
@@ -476,15 +477,15 @@ CodeMirror.keyMap.playground =  {
         createProxies( preWindowMembers, postWindowMembers, window )
       }
 
-      //const func = new Function( selectedCode.code ).bind( Gibber.currentTrack ),
+      //const func = new Function( selectedCode.code ).bind( Gibber.currentTrack )
       const markupFunction = () => {
-              Environment.codeMarkup.process( 
-                selectedCode.code, 
-                selectedCode.selection, 
-                cm, 
-                Gibber.currentTrack 
-              ) 
-            }
+        Environment.codeMarkup.process( 
+          selectedCode.code, 
+          selectedCode.selection, 
+          cm, 
+          Gibber.currentTrack 
+        ) 
+      }
 
       markupFunction.origin = func
 

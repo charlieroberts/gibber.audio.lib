@@ -10,19 +10,19 @@ module.exports = function( Marker ) {
   const Tidal = function( node, state, tidal, container=null, index=0 ) {
     if( node.processed === true ) return 
 
-    const cm = state.cm
-    const target = tidal.target // XXX seq.object for gibberwocky
-    const pattern = tidal.__pattern.__data
-    
-    const markers = {}
-
-    const line  = node.offset.vertical
-    const start = node.start
-    const end   = node.end
+    const cm       = state.cm,
+          target   = tidal.target, // XXX seq.object for gibberwocky
+          pattern  = tidal.__pattern.__data,
+          markers  = {},
+          line     = node.loc.start.line - 1 + node.offset.vertical,
+          startCol = node.loc.start.column,
+          endCol   = node.loc.end.column,
+          startRow = line,
+          endRow   = line + (node.loc.end.line - node.loc.start.line)
 
     const marker = cm.markText( 
-      { line: node.offset.vertical, ch:start }, 
-      { line: node.offset.vertical + (node.loc.end.line - node.loc.start.line), ch:end }, 
+      { line:startRow, ch:startCol }, 
+      { line:endRow, ch:endCol }, 
       { className: 'annotation tidalblock' }
     )
 

@@ -75,7 +75,7 @@ const Marker = {
   process( code, position, codemirror, track ) {
     // store position offset from top of code editor
     // to use when marking patterns, since acorn will produce
-    // relative offsets 
+    // relative offsets
     Marker.offset = {
       vertical:   position.start.line,
       horizontal: position.horizontalOffset === undefined ? 0 : position.horizontalOffset
