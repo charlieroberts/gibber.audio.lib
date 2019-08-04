@@ -26,31 +26,34 @@ window.onload = function() {
 
   cm.setSize( null, '100%' )
 
-  function getURL(url, c) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", url, true);
-    xhr.send();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState != 4) return;
-      if (xhr.status < 400) return c(null, xhr.responseText);
-      var e = new Error(xhr.responseText || "No response");
-      e.status = xhr.status;
-      c(e);
-    };
+  function getURL(url) {
+    const xhr = new XMLHttpRequest()
+    xhr.open( 'get', url, true )
+
+    const p = new Promise( (resolve, reject ) => {
+      xhr.send()
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState != 4) return
+        if (xhr.status < 400) resolve( xhr.responseText )
+        const e = new Error( xhr.responseText || "No response" )
+        e.status = xhr.status
+        reject( e )
+      }
+    })
+
+    return p
   }
 
   let server
-  getURL("./terndefs/gibberdef.json", function(err, code) {
-  //getURL("../node_modules/tern/defs/ecmascript.json", function(err, code) {
-    if (err) throw new Error("request for gibberdef.json: " + err);
-    console.log( 'loaded gibber environment definition.' )
-    environment.server = server = new CodeMirror.TernServer({defs: [JSON.parse( code )], options:{ hintDelay:5000 } })
+  Promise.all( [ getURL("./terndefs/gibber.audio.def.json" ), getURL("./terndefs/gibber.graphics.def.json" ) ] ).then( defs => {
+    environment.server = server = new CodeMirror.TernServer({defs: defs.map( JSON.parse ), options:{ hintDelay:5000 } })
 
     cm.setOption("extraKeys", {
       "Ctrl-Space": function(cm) { server.complete(cm) },
       "Ctrl-I"    : function(cm) { server.showType(cm) },
       "Ctrl-O"    : function(cm) { server.showDocs(cm) }
     })
+
     cm.on( 'cursorActivity', function( cm ) { 
       if( environment.showArgHints === true ) {
         server.updateArgHints( cm ) 
@@ -462,7 +465,6 @@ CodeMirror.keyMap.playground =  {
   ${selectedCode.code}
 }`
 
-      console.log( selectedCode )
       code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
       flash( cm, selectedCode.selection )
 

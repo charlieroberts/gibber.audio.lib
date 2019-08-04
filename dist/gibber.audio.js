@@ -7123,7 +7123,8 @@ const Graphics = {
   __scene:       [],
   __fogColor:    Marching.vectors.Vec3(0),
   __fogAmount:   0,
-
+  __background:  Marching.vectors.Vec3(0),
+  __onrender:    [],
 
   camera : {
     pos: { x:0, y:0, z:5 },
@@ -7171,6 +7172,7 @@ const Graphics = {
     obj.Material = Marching.Material
     obj.Camera = Graphics.camera
     obj.Fog = Graphics.fog.bind( Graphics )
+    obj.Background = Graphics.background.bind( Graphics )
   },
 
   init( props, __Gibber ) {
@@ -7194,6 +7196,9 @@ const Graphics = {
     for( let name in Marching.alterations ) {
       this.make( name, Marching.alterations[ name ] )
     }
+    for( let name in Marching.distanceDeforms) {
+      this.make( name, Marching.distanceDeforms[ name ] )
+    }
     Object.assign( this, Marching.vectors )
     Marching.export( this.__native )
 
@@ -7208,6 +7213,7 @@ const Graphics = {
     }
   },
 
+  background( color=Marching.vectors.Vec3(0) ) { Graphics.__background = color },
   fog( amount=.25, color=Marching.vectors.Vec3(0), shouldRender=true) {
     this.__fogColor = color
     this.__fogAmount = amount
@@ -7221,7 +7227,48 @@ const Graphics = {
 
     //  Graphics.camera.init()
     //}
+    const obj = {
+      get color() {
+        if( Graphics.scene === undefined ) {
+          return color
+        }else{
+          return Graphics.scene.postprocessing[0].color
+        }
+      },
+
+      get amount() { 
+        if( Graphics.scene === undefined ) {
+          return amount 
+        }else{
+          return Graphics.scene.postprocessing[0].amount
+        }
+      },
+      set amount(v) { 
+        amount = v
+        Graphics.scene.postprocessing[0].amount = v 
+      }
+    }
+
+    Graphics.__onrender.push( ()=> {
+      Graphics.createProperty( 
+        obj, 
+        'color', 
+        Graphics.scene.postprocessing[0].color,
+        Graphics.scene.postprocessing[0]
+      )
+    })
+    Graphics.__onrender.push( ()=> {
+      Graphics.createProperty( 
+        obj, 
+        'amount', 
+        Graphics.scene.postprocessing[0].amount,
+        Graphics.scene.postprocessing[0]
+      )
+    })
+    return obj
+
   },
+
 
   make( name, op ) {
     this[ name ] = function( ...args ) {
@@ -7251,9 +7298,13 @@ const Graphics = {
           if( Graphics.__fogAmount !== 0 ) {
             scene = scene.fog( Graphics.__fogAmount, Graphics.__fogColor, false )
           }
+          scene = scene.background( Graphics.__background )
 
-          Graphics.scene = [ name, args ] 
-          scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
+          //Graphics.scene = [ name, args ] 
+          Graphics.scene = scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
+
+          Graphics.__onrender.forEach( v => v() )
+          Graphics.__onrender.length = 0
 
           Graphics.camera.init()
 
@@ -7380,6 +7431,13 @@ const Graphics = {
       },
 
       fade( from, to, time ) {
+        if( from === null ) {
+          from = obj[ '__'+name ].value
+          while( typeof from === 'object' ) {
+            from = from.value
+          }
+        }
+
         const lengthInFrames = time * 60
         const diff = to - from
         const incr = diff / lengthInFrames
@@ -7390,7 +7448,7 @@ const Graphics = {
             const percent = frameCount / lengthInFrames 
             const val = Graphics.ease( percent ) 
             obj[ name ] = from + val * diff
-            const widget = obj[ name ].value.widget
+            const widget = obj[ name ].__fadeObj.widget
 
             if( widget !== undefined ) {
               widget.isFade = true
@@ -7402,7 +7460,7 @@ const Graphics = {
               Environment.codeMarkup.waveform.updateWidget( widget, from + val * diff, false )
             }
           }else{
-            const prop = obj[ name ].value
+            const prop = obj[ name ].__fadeObj
             if( prop.widget !== undefined ) prop.widget.clear()
             delete prop.from
             delete prop.to
@@ -7410,6 +7468,8 @@ const Graphics = {
             Marching.callbacks.splice( Marching.callbacks.indexOf( fadeFunc ), 1 )
           }
         }
+
+        obj[ name ].__fadeObj = { fnc: fadeFunc, from, to, values:[] }
 
         Marching.callbacks.push( fadeFunc )
       },
@@ -28183,6 +28243,7 @@ for( let name in ops ) {
 
       op.params.push({ name:'scale' })
     }
+    op.__desc = { parameters:op.params }
     return op
   } 
 
@@ -28761,7 +28822,7 @@ const Fogger = function( Scene, SDF ) {
     Object.defineProperty( fog, 'amount', {
       get() { return __amount },
       set( v ) {
-        __amount.var.set( v )
+        __amount.set( v )
       }
     })
 
@@ -29216,8 +29277,8 @@ const SDF = {
     this.textures = this.__textures( this )
     this.Texture = this.textures.texture
 
-    //this.canvas.width = window.innerWidth * size
-    //this.canvas.height = window.innerHeight * size
+    this.canvas.width = window.innerWidth 
+    this.canvas.height = window.innerHeight
     this.gl = this.canvas.getContext( 'webgl2', { antialias:true, alpha:true })
 
     if( shouldInit === true ) this.initBuffers()
@@ -29409,6 +29470,8 @@ const SDF = {
     gl.vertexAttribPointer(loc_a_pos, 3, gl.FLOAT, false, 20, 0)
     gl.vertexAttribPointer(loc_a_uv, 2, gl.FLOAT, false, 20, 12)
 
+
+    console.log( 'w:',width, 'h:',height )
     gl.viewport( 0,0,width,height )
     gl.uniform2f( loc_u_resolution, width, height )
 
@@ -29860,21 +29923,21 @@ module.exports = {
 
   Julia: {
     parameters:[
-      { name:'atime', type:'float', default:0 },
+      { name:'c0', type:'float', default:0 },
       { name:'center', type:'vec3', default:[0,0,0] },
       { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `julia( ${pName} - ${this.center.emit()}, ${this.atime.emit()} )`
+      return `julia( ${pName} - ${this.center.emit()}, ${this.c0.emit()} )`
     },
 
     // https://www.shadertoy.com/view/MsfGRr
-    glslify:glsl(["#define GLSLIFY 1\n  vec4 qsqr( in vec4 a ) {\n    return vec4( a.x*a.x - a.y*a.y - a.z*a.z - a.w*a.w,\n                 2.0*a.x*a.y,\n                 2.0*a.x*a.z,\n                 2.0*a.x*a.w );\n  }\n\n  float julia( in vec3 p, float atime ){\n    vec4 c = 0.45*cos( vec4(0.5,3.9,1.4,1.1) + atime*vec4(1.2,1.7,1.3,2.5) ) - vec4(0.3,0.0,0.0,0.0);\n    vec4 z = vec4(p,0.);\n    float md2 = 1.0;\n    float mz2 = dot(z,z);\n\n    for( int i=0; i<11; i++ ){\n      md2 *= 4.0*mz2;   \n      // dz -> 2·z·dz, meaning |dz| -> 2·|z|·|dz| (can take the 4 out of the loop and do an exp2() afterwards)\n      z = qsqr(z) + c;  // z  -> z^2 + c\n\n      mz2 = dot(z,z);\n      if(mz2>4.0) break;\n    }\n    \n    return 0.25*sqrt(mz2/md2)*log(mz2);  // d = 0.5·|z|·log|z| / |dz|\n  }",""]),
+    glslify:glsl(["#define GLSLIFY 1\n  vec4 qsqr( in vec4 a ) {\n    return vec4( a.x*a.x - a.y*a.y - a.z*a.z - a.w*a.w,\n                 2.0*a.x*a.y,\n                 2.0*a.x*a.z,\n                 2.0*a.x*a.w );\n  }\n\n  float julia( in vec3 p, float atime ){\n    vec4 c = 0.45*cos( vec4(0.5,3.9,1.4,1.1) + atime * vec4(1.2,1.7,1.3,2.5) ) - vec4(0.3,0.0,0.0,0.0);\n    vec4 z = vec4(p,0.);\n    float md2 = 1.0;\n    float mz2 = dot(z,z);\n\n    for( int i=0; i<11; i++ ){\n      md2 *= 4.0*mz2;   \n      // dz -> 2·z·dz, meaning |dz| -> 2·|z|·|dz| (can take the 4 out of the loop and do an exp2() afterwards)\n      z = qsqr(z) + c;  // z  -> z^2 + c\n\n      mz2 = dot(z,z);\n      if(mz2>4.0) break;\n    }\n    \n    return 0.25*sqrt(mz2/md2)*log(mz2);  // d = 0.5·|z|·log|z| / |dz|\n  }",""]),
   },
   KIFS: {
     parameters:[
-      { name:'a', type:'float', default:8 },
+      { name:'count', type:'float', default:8 },
       { name:'fold', type:'float', default:0 },
       { name:'radius', type:'float', default:.01 },
       { name:'threshold', type:'float', default:.004 },
@@ -29884,7 +29947,7 @@ module.exports = {
     ],
 
     primitiveString( pName ) { 
-      return `kifs( ${pName} - ${this.center.emit()}, ${this.a.emit()}, ${this.fold.emit()}, ${this.radius.emit()}, ${this.threshold.emit()}, ${this.scale.emit()} )`
+      return `kifs( ${pName} - ${this.center.emit()}, ${this.count.emit()}, ${this.fold.emit()}, ${this.radius.emit()}, ${this.threshold.emit()}, ${this.scale.emit()} )`
     },
 
     // adapted from http://roy.red/folding-the-koch-snowflake-.html
@@ -29893,13 +29956,13 @@ module.exports = {
 
   Mandelbulb: {
     parameters:[
-      { name:'a', type:'float', default:8 },
+      { name:'c0', type:'float', default:8 },
       { name:'center', type:'vec3', default:[0,0,0] },
       { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `mandelbulb( ${pName} - ${this.center.emit()}, ${this.a.emit()} )`
+      return `mandelbulb( ${pName} - ${this.center.emit()}, ${this.c0.emit()} )`
     },
 
     // adapted from: https://www.shadertoy.com/view/ltfSWn
@@ -29909,7 +29972,7 @@ module.exports = {
   // adapted from https://www.shadertoy.com/view/llGXDR
   Mandelbox: {
     parameters:[
-      { name:'mr2', type:'float', default:.1 },
+      { name:'fold', type:'float', default:.1 },
       { name:'scale', type:'float', default:3.},
       { name:'iterations', type:'float', default:5 },
       { name:'center', type:'vec3', default:[0,0,0] },
@@ -29930,22 +29993,23 @@ module.exports = {
   }`,
 
     primitiveString( pName ) {
-      return `mandelbox( ${this.mr2.emit()}, ${this.scale.emit()}, ${this.iterations.emit()}, ${pName} - ${this.center.emit()} )`
+      return `mandelbox( ${this.fold.emit()}, ${this.scale.emit()}, ${this.iterations.emit()}, ${pName} - ${this.center.emit()} )`
     }
   },
 
 	Octahedron: {
     parameters:[
-      { name:'size', type:'float', default:1 },
+      { name:'radius', type:'float', default:1 },
       { name:'center', type:'vec3', default:[0,0,0] },
       { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdOctahedron( ${pName} - ${this.center.emit()}, ${this.size.emit()} )`
+      return `sdOctahedron( ${pName} - ${this.center.emit()}, ${this.radius.emit()} )`
     },
 
     glslify:`    float sdOctahedron(vec3 p, float h) {
+    p.y = p.y + h; // center vertically... is it centered on the z-axis?
     vec2 d = .5*(abs(p.xz)+p.y) - min(h,p.y);
     return length(max(d,0.)) + min(max(d.x,d.y), 0.);
   }`
@@ -29980,6 +30044,7 @@ module.exports = {
     },
     glslify:glsl(["#define GLSLIFY 1\n    float dot2( in vec3 v ) { return dot(v,v); }\nfloat udQuad( vec3 p, vec3 a, vec3 b, vec3 c, vec3 d )\n{\n    vec3 ba = b - a; vec3 pa = p - a;\n    vec3 cb = c - b; vec3 pb = p - b;\n    vec3 dc = d - c; vec3 pc = p - c;\n    vec3 ad = a - d; vec3 pd = p - d;\n    vec3 nor = cross( ba, ad );\n\n    return sqrt(\n    (sign(dot(cross(ba,nor),pa)) +\n     sign(dot(cross(cb,nor),pb)) +\n     sign(dot(cross(dc,nor),pc)) +\n     sign(dot(cross(ad,nor),pd))<3.0)\n     ?\n     min( min( min(\n     dot2(ba*clamp(dot(ba,pa)/dot2(ba),0.0,1.0)-pa),\n     dot2(cb*clamp(dot(cb,pb)/dot2(cb),0.0,1.0)-pb) ),\n     dot2(dc*clamp(dot(dc,pc)/dot2(dc),0.0,1.0)-pc) ),\n     dot2(ad*clamp(dot(ad,pd)/dot2(ad),0.0,1.0)-pd) )\n     :\n     dot(nor,pa)*dot(nor,pa)/dot2(nor) );\n}\n\n"])
   }, 
+
   RoundBox: {
     parameters:[
       { name:'size', type:'vec3', default:[1,1,1] },
@@ -30354,7 +30419,7 @@ const getScene = function( SDF ) {
       .steps( steps )
       .threshold( minDistance )
       .farPlane( maxDistance )
-      .resolution( size )
+      .resolution( 1 )
 
     scene.useQuality = true
 
@@ -30366,8 +30431,8 @@ const getScene = function( SDF ) {
   Scene.prototype = {
     animate( v ) { this.__animate = v; return this },  
     resolution( v ) { 
-      this.width = this.canvas.width = window.innerWidth * v
-      this.height = this.canvas.height = window.innerHeight * v
+      this.width = Math.floor( this.canvas.width = window.innerWidth * v )
+      this.height = Math.floor( this.canvas.height = window.innerHeight * v )
       
       this.__resolution = v;
       this.useQuality = false
@@ -30388,7 +30453,7 @@ const getScene = function( SDF ) {
       this.threshold( .1 / (quality * quality * quality ) )
       this.steps( quality * 20 )
       this.farPlane( quality * 5 )
-      this.resolution( .2 * quality )
+      //this.resolution( Math.min( .2 * quality, 2 ) )
 
       return this
     },
@@ -30399,9 +30464,9 @@ const getScene = function( SDF ) {
     fog: getFog( Scene, SDF ),
     background: require( './background.js' )( Scene, SDF ),
 
-    render( quality=10, animate=false ) {
+    render( quality=10, animate=false, useQuality=true ) {
       this.background() // adds default if none has been specified
-      if( this.useQuality === true ) {
+      if( useQuality === true ) {
         this.quality( quality )
       }
       this.animate( animate )

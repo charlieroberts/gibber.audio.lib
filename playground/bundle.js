@@ -7674,12 +7674,16 @@ const Waveform = {
 
     let isFade = false
 
+    // special case for fades on graphics objects, which don't use an underlying genish object
+    if( Array.isArray( walkState ) && walkState.indexOf('fade') > -1 && patternObject.type === 'graphics' ) { 
+      widget.gen = patternObject.__fadeObj 
+    }
     // is it a fade?
     if( widget.gen.from !== undefined ) {
       widget.min = widget.gen.from.value
       widget.max = widget.gen.to.value
       widget.isFade = isFade = true
-      widget.gen = widget.gen.__wrapped__
+      widget.gen = widget.gen.__wrapped__ !== undefined ? widget.gen.__wrapped : widget.gen
       widget.values = widget.gen.values
     }
     
@@ -8238,7 +8242,16 @@ const Marker = {
     // a widget created; if so, don't make another one!
     const seqExpression = node
 
-    const gen = window[ state[0] ][ state[ 1 ] ].value
+    let name = state[0]
+    let count = 1
+    let gen  = window[ name ]
+    while( name !== 'fade' ) {
+      name = state[ count ]
+      if( name === 'fade' ) break
+      gen = gen[ name ]
+      count++
+    }
+    //if( gen.value !== undefined && typeof gen.value !== 'number' ) gen = gen.value
     Marker.waveform.createWaveformWidget( line, closeParenStart, ch-1, false, node, state.cm, gen, null, false, state )
   },
 
@@ -8549,31 +8562,34 @@ window.onload = function() {
 
   cm.setSize( null, '100%' )
 
-  function getURL(url, c) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", url, true);
-    xhr.send();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState != 4) return;
-      if (xhr.status < 400) return c(null, xhr.responseText);
-      var e = new Error(xhr.responseText || "No response");
-      e.status = xhr.status;
-      c(e);
-    };
+  function getURL(url) {
+    const xhr = new XMLHttpRequest()
+    xhr.open( 'get', url, true )
+
+    const p = new Promise( (resolve, reject ) => {
+      xhr.send()
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState != 4) return
+        if (xhr.status < 400) resolve( xhr.responseText )
+        const e = new Error( xhr.responseText || "No response" )
+        e.status = xhr.status
+        reject( e )
+      }
+    })
+
+    return p
   }
 
   let server
-  getURL("./terndefs/gibberdef.json", function(err, code) {
-  //getURL("../node_modules/tern/defs/ecmascript.json", function(err, code) {
-    if (err) throw new Error("request for gibberdef.json: " + err);
-    console.log( 'loaded gibber environment definition.' )
-    environment.server = server = new CodeMirror.TernServer({defs: [JSON.parse( code )], options:{ hintDelay:5000 } })
+  Promise.all( [ getURL("./terndefs/gibber.audio.def.json" ), getURL("./terndefs/gibber.graphics.def.json" ) ] ).then( defs => {
+    environment.server = server = new CodeMirror.TernServer({defs: defs.map( JSON.parse ), options:{ hintDelay:5000 } })
 
     cm.setOption("extraKeys", {
       "Ctrl-Space": function(cm) { server.complete(cm) },
       "Ctrl-I"    : function(cm) { server.showType(cm) },
       "Ctrl-O"    : function(cm) { server.showDocs(cm) }
     })
+
     cm.on( 'cursorActivity', function( cm ) { 
       if( environment.showArgHints === true ) {
         server.updateArgHints( cm ) 
@@ -8985,7 +9001,6 @@ CodeMirror.keyMap.playground =  {
   ${selectedCode.code}
 }`
 
-      console.log( selectedCode )
       code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
       flash( cm, selectedCode.selection )
 

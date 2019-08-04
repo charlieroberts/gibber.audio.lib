@@ -16,7 +16,8 @@ const Graphics = {
   __scene:       [],
   __fogColor:    Marching.vectors.Vec3(0),
   __fogAmount:   0,
-
+  __background:  Marching.vectors.Vec3(0),
+  __onrender:    [],
 
   camera : {
     pos: { x:0, y:0, z:5 },
@@ -64,6 +65,7 @@ const Graphics = {
     obj.Material = Marching.Material
     obj.Camera = Graphics.camera
     obj.Fog = Graphics.fog.bind( Graphics )
+    obj.Background = Graphics.background.bind( Graphics )
   },
 
   init( props, __Gibber ) {
@@ -87,6 +89,9 @@ const Graphics = {
     for( let name in Marching.alterations ) {
       this.make( name, Marching.alterations[ name ] )
     }
+    for( let name in Marching.distanceDeforms) {
+      this.make( name, Marching.distanceDeforms[ name ] )
+    }
     Object.assign( this, Marching.vectors )
     Marching.export( this.__native )
 
@@ -101,6 +106,7 @@ const Graphics = {
     }
   },
 
+  background( color=Marching.vectors.Vec3(0) ) { Graphics.__background = color },
   fog( amount=.25, color=Marching.vectors.Vec3(0), shouldRender=true) {
     this.__fogColor = color
     this.__fogAmount = amount
@@ -114,7 +120,48 @@ const Graphics = {
 
     //  Graphics.camera.init()
     //}
+    const obj = {
+      get color() {
+        if( Graphics.scene === undefined ) {
+          return color
+        }else{
+          return Graphics.scene.postprocessing[0].color
+        }
+      },
+
+      get amount() { 
+        if( Graphics.scene === undefined ) {
+          return amount 
+        }else{
+          return Graphics.scene.postprocessing[0].amount
+        }
+      },
+      set amount(v) { 
+        amount = v
+        Graphics.scene.postprocessing[0].amount = v 
+      }
+    }
+
+    Graphics.__onrender.push( ()=> {
+      Graphics.createProperty( 
+        obj, 
+        'color', 
+        Graphics.scene.postprocessing[0].color,
+        Graphics.scene.postprocessing[0]
+      )
+    })
+    Graphics.__onrender.push( ()=> {
+      Graphics.createProperty( 
+        obj, 
+        'amount', 
+        Graphics.scene.postprocessing[0].amount,
+        Graphics.scene.postprocessing[0]
+      )
+    })
+    return obj
+
   },
+
 
   make( name, op ) {
     this[ name ] = function( ...args ) {
@@ -144,9 +191,13 @@ const Graphics = {
           if( Graphics.__fogAmount !== 0 ) {
             scene = scene.fog( Graphics.__fogAmount, Graphics.__fogColor, false )
           }
+          scene = scene.background( Graphics.__background )
 
-          Graphics.scene = [ name, args ] 
-          scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
+          //Graphics.scene = [ name, args ] 
+          Graphics.scene = scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
+
+          Graphics.__onrender.forEach( v => v() )
+          Graphics.__onrender.length = 0
 
           Graphics.camera.init()
 
@@ -273,6 +324,13 @@ const Graphics = {
       },
 
       fade( from, to, time ) {
+        if( from === null ) {
+          from = obj[ '__'+name ].value
+          while( typeof from === 'object' ) {
+            from = from.value
+          }
+        }
+
         const lengthInFrames = time * 60
         const diff = to - from
         const incr = diff / lengthInFrames
@@ -283,7 +341,7 @@ const Graphics = {
             const percent = frameCount / lengthInFrames 
             const val = Graphics.ease( percent ) 
             obj[ name ] = from + val * diff
-            const widget = obj[ name ].value.widget
+            const widget = obj[ name ].__fadeObj.widget
 
             if( widget !== undefined ) {
               widget.isFade = true
@@ -295,7 +353,7 @@ const Graphics = {
               Environment.codeMarkup.waveform.updateWidget( widget, from + val * diff, false )
             }
           }else{
-            const prop = obj[ name ].value
+            const prop = obj[ name ].__fadeObj
             if( prop.widget !== undefined ) prop.widget.clear()
             delete prop.from
             delete prop.to
@@ -303,6 +361,8 @@ const Graphics = {
             Marching.callbacks.splice( Marching.callbacks.indexOf( fadeFunc ), 1 )
           }
         }
+
+        obj[ name ].__fadeObj = { fnc: fadeFunc, from, to, values:[] }
 
         Marching.callbacks.push( fadeFunc )
       },

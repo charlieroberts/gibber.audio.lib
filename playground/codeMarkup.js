@@ -249,7 +249,16 @@ const Marker = {
     // a widget created; if so, don't make another one!
     const seqExpression = node
 
-    const gen = window[ state[0] ][ state[ 1 ] ].value
+    let name = state[0]
+    let count = 1
+    let gen  = window[ name ]
+    while( name !== 'fade' ) {
+      name = state[ count ]
+      if( name === 'fade' ) break
+      gen = gen[ name ]
+      count++
+    }
+    //if( gen.value !== undefined && typeof gen.value !== 'number' ) gen = gen.value
     Marker.waveform.createWaveformWidget( line, closeParenStart, ch-1, false, node, state.cm, gen, null, false, state )
   },
 

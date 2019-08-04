@@ -50,19 +50,26 @@ gulp.task('watch', function() {
 });
 
 gulp.task( 'tern', function() {
-  const seq = fs.readFileSync( './playground/gibberdef.seq.mixin.txt' ).toString('utf-8')
-  const env = fs.readFileSync( './playground/gibberdef.env.mixin.txt' ).toString('utf-8')
-  const pan = fs.readFileSync( './playground/gibberdef.pan.mixin.txt' ).toString('utf-8')
-  const filter = fs.readFileSync( './playground/gibberdef.filter.mixin.txt' ).toString('utf-8')
-  const src = gulp.src( './playground/gibberdef.template.json' )
+  const seq = fs.readFileSync( './playground/terndefs/gibberdef.seq.mixin.txt' ).toString('utf-8')
+  const env = fs.readFileSync( './playground/terndefs/gibberdef.env.mixin.txt' ).toString('utf-8')
+  const pan = fs.readFileSync( './playground/terndefs/gibberdef.pan.mixin.txt' ).toString('utf-8')
+  const filter = fs.readFileSync( './playground/terndefs/gibberdef.filter.mixin.txt' ).toString('utf-8')
+  const src = gulp.src( './playground/terndefs/gibberdef.template.json' )
         .pipe( replace( 'ENVMIXIN', env ) )
         .pipe( replace( 'FILTERMIXIN', filter ) )
         .pipe( replace( 'PANMIXIN', pan ) )
         .pipe( replace( 'SEQMIXIN', seq ) )
         .pipe( beautify.js({ indent_size:2 }) )
         .pipe( validate({ allowDuplicatedKeys:true }) )
-        .pipe( rename( 'gibberdef.json' ) )
-        .pipe( gulp.dest('./playground' ) )
+        .pipe( rename( 'gibber.audio.def.json' ) )
+        .pipe( gulp.dest('./playground/terndefs' ) )
+
+   gulp.src( './playground/terndefs/gibber.graphics.template.json' )
+        .pipe( replace( 'SEQMIXIN', seq ) )
+        .pipe( beautify.js({ indent_size:2 }) )
+        .pipe( validate({ allowDuplicatedKeys:true }) )
+        .pipe( rename( 'gibber.graphics.def.json' ) )
+        .pipe( gulp.dest('./playground/terndefs' ) )
 })
 
 gulp.task( 'p5', ['client'], function() {

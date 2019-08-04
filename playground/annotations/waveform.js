@@ -62,12 +62,16 @@ const Waveform = {
 
     let isFade = false
 
+    // special case for fades on graphics objects, which don't use an underlying genish object
+    if( Array.isArray( walkState ) && walkState.indexOf('fade') > -1 && patternObject.type === 'graphics' ) { 
+      widget.gen = patternObject.__fadeObj 
+    }
     // is it a fade?
     if( widget.gen.from !== undefined ) {
       widget.min = widget.gen.from.value
       widget.max = widget.gen.to.value
       widget.isFade = isFade = true
-      widget.gen = widget.gen.__wrapped__
+      widget.gen = widget.gen.__wrapped__ !== undefined ? widget.gen.__wrapped : widget.gen
       widget.values = widget.gen.values
     }
     
