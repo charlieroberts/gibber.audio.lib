@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gibber = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gibber = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"/Users/charlie/Documents/code/genish.js/js/abs.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -31,7 +31,7 @@ module.exports = x => {
   return abs
 }
 
-},{"./gen.js":30}],2:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/accum.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -150,7 +150,7 @@ module.exports = ( incr, reset=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],3:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/acos.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -185,7 +185,7 @@ module.exports = x => {
   return acos
 }
 
-},{"./gen.js":30}],4:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ad.js":[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -258,7 +258,7 @@ module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":30,"./gte.js":32,"./ifelseif.js":35,"./lt.js":38,"./memo.js":42,"./mul.js":48,"./neq.js":49,"./peek.js":54,"./poke.js":56,"./sub.js":66}],5:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gte.js":"/Users/charlie/Documents/code/genish.js/js/gte.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/add.js":[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -309,7 +309,7 @@ module.exports = ( ...args ) => {
   return add
 }
 
-},{"./gen.js":30}],6:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/adsr.js":[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -405,7 +405,7 @@ module.exports = ( attackTime=44, decayTime=22050, sustainTime=44100, sustainLev
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":30,"./gtp.js":33,"./ifelseif.js":35,"./lt.js":38,"./mul.js":48,"./neq.js":49,"./not.js":51,"./param.js":53,"./peek.js":54,"./poke.js":56,"./sub.js":66}],7:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gtp.js":"/Users/charlie/Documents/code/genish.js/js/gtp.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./not.js":"/Users/charlie/Documents/code/genish.js/js/not.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/and.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -437,7 +437,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],8:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/asin.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -472,7 +472,7 @@ module.exports = x => {
   return asin
 }
 
-},{"./gen.js":30}],9:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/atan.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -507,7 +507,7 @@ module.exports = x => {
   return atan
 }
 
-},{"./gen.js":30}],10:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/attack.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -528,7 +528,7 @@ module.exports = ( decayTime = 44100 ) => {
   return sub( 1, ssd.out )
 }
 
-},{"./gen.js":30,"./history.js":34,"./mul.js":48,"./sub.js":66}],11:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/bang.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -568,7 +568,7 @@ module.exports = ( _props ) => {
   return ugen
 }
 
-},{"./gen.js":30}],12:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/bool.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -602,7 +602,7 @@ module.exports = ( in1 ) => {
 }
 
 
-},{"./gen.js":30}],13:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ceil.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -635,7 +635,7 @@ module.exports = x => {
   return ceil
 }
 
-},{"./gen.js":30}],14:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/clamp.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -680,7 +680,7 @@ module.exports = ( in1, min=-1, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":27,"./gen.js":30,"./memo.js":42,"./sub.js":66}],15:[function(require,module,exports){
+},{"./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/cos.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -715,7 +715,7 @@ module.exports = x => {
   return cos
 }
 
-},{"./gen.js":30}],16:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/counter.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -830,7 +830,7 @@ module.exports = ( incr=1, min=0, max=Infinity, reset=0, loops=1,  properties ) 
   return ugen
 } 
 
-},{"./gen.js":30}],17:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/cycle.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require( './gen.js' ),
@@ -865,7 +865,7 @@ module.exports = ( frequency=1, reset=0, _props ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./mul.js":48,"./peek.js":54,"./phasor.js":55}],18:[function(require,module,exports){
+},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor.js":"/Users/charlie/Documents/code/genish.js/js/phasor.js"}],"/Users/charlie/Documents/code/genish.js/js/data.js":[function(require,module,exports){
 'use strict'
 
 const gen  = require('./gen.js'),
@@ -1028,7 +1028,7 @@ module.exports = ( x, y=1, properties ) => {
 }
 
 
-},{"./gen.js":30,"./peek.js":54,"./poke.js":56,"./utilities.js":72}],19:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./utilities.js":"/Users/charlie/Documents/code/genish.js/js/utilities.js"}],"/Users/charlie/Documents/code/genish.js/js/dcblock.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1051,7 +1051,7 @@ module.exports = ( in1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./gen.js":30,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66}],20:[function(require,module,exports){
+},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/decay.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1072,7 +1072,7 @@ module.exports = ( decayTime = 44100, props ) => {
   return ssd.out 
 }
 
-},{"./gen.js":30,"./history.js":34,"./mul.js":48,"./t60.js":68}],21:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./t60.js":"/Users/charlie/Documents/code/genish.js/js/t60.js"}],"/Users/charlie/Documents/code/genish.js/js/delay.js":[function(require,module,exports){
 'use strict'
 
 const gen  = require( './gen.js'  ),
@@ -1128,7 +1128,7 @@ module.exports = ( in1, taps, properties ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./data.js":18,"./gen.js":30,"./memo.js":42,"./peek.js":54,"./poke.js":56,"./sub.js":66,"./wrap.js":74}],22:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/delta.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1146,7 +1146,7 @@ module.exports = ( in1 ) => {
   return ugen
 }
 
-},{"./gen.js":30,"./history.js":34,"./sub.js":66}],23:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/div.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1199,7 +1199,7 @@ module.exports = (...args) => {
   return div
 }
 
-},{"./gen.js":30}],24:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/env.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen' ),
@@ -1235,7 +1235,7 @@ module.exports = props => {
   return ugen
 }
 
-},{"./data":18,"./gen":30,"./peek":54,"./phasor":55,"./windows":73}],25:[function(require,module,exports){
+},{"./data":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen":"/Users/charlie/Documents/code/genish.js/js/gen.js","./peek":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor":"/Users/charlie/Documents/code/genish.js/js/phasor.js","./windows":"/Users/charlie/Documents/code/genish.js/js/windows.js"}],"/Users/charlie/Documents/code/genish.js/js/eq.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1267,7 +1267,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],26:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/exp.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1300,7 +1300,7 @@ module.exports = x => {
   return exp
 }
 
-},{"./gen.js":30}],27:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/floor.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1333,7 +1333,7 @@ module.exports = x => {
   return floor
 }
 
-},{"./gen.js":30}],28:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/fold.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1395,7 +1395,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],29:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gate.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1491,7 +1491,7 @@ module.exports = ( control, in1, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],30:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gen.js":[function(require,module,exports){
 'use strict'
 
 /* gen.js
@@ -1779,7 +1779,7 @@ let gen = {
 
 module.exports = gen
 
-},{"memory-helper":75}],31:[function(require,module,exports){
+},{"memory-helper":"/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js"}],"/Users/charlie/Documents/code/genish.js/js/gt.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1815,7 +1815,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":30}],32:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gte.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1851,7 +1851,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":30}],33:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gtp.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1881,7 +1881,7 @@ module.exports = (x,y) => {
   return gtp
 }
 
-},{"./gen.js":30}],34:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/history.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1971,7 +1971,7 @@ module.exports = ( in1=0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],35:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ifelseif.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2053,7 +2053,7 @@ module.exports = ( ...args  ) => {
   return ugen
 }
 
-},{"./gen.js":30}],36:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/in.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2092,7 +2092,7 @@ module.exports = ( name ) => {
   return input
 }
 
-},{"./gen.js":30}],37:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/index.js":[function(require,module,exports){
 'use strict'
 
 let library = {
@@ -2201,7 +2201,7 @@ library.gen.lib = library
 
 module.exports = library
 
-},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./data.js":18,"./dcblock.js":19,"./decay.js":20,"./delay.js":21,"./delta.js":22,"./div.js":23,"./env.js":24,"./eq.js":25,"./exp.js":26,"./floor.js":27,"./fold.js":28,"./gate.js":29,"./gen.js":30,"./gt.js":31,"./gte.js":32,"./gtp.js":33,"./history.js":34,"./ifelseif.js":35,"./in.js":36,"./lt.js":38,"./lte.js":39,"./ltp.js":40,"./max.js":41,"./memo.js":42,"./min.js":43,"./mix.js":44,"./mod.js":45,"./mstosamps.js":46,"./mtof.js":47,"./mul.js":48,"./neq.js":49,"./noise.js":50,"./not.js":51,"./pan.js":52,"./param.js":53,"./peek.js":54,"./phasor.js":55,"./poke.js":56,"./pow.js":57,"./process.js":58,"./rate.js":59,"./round.js":60,"./sah.js":61,"./selector.js":62,"./sign.js":63,"./sin.js":64,"./slide.js":65,"./sub.js":66,"./switch.js":67,"./t60.js":68,"./tan.js":69,"./tanh.js":70,"./train.js":71,"./utilities.js":72,"./windows.js":73,"./wrap.js":74}],38:[function(require,module,exports){
+},{"./abs.js":"/Users/charlie/Documents/code/genish.js/js/abs.js","./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./acos.js":"/Users/charlie/Documents/code/genish.js/js/acos.js","./ad.js":"/Users/charlie/Documents/code/genish.js/js/ad.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./adsr.js":"/Users/charlie/Documents/code/genish.js/js/adsr.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./asin.js":"/Users/charlie/Documents/code/genish.js/js/asin.js","./atan.js":"/Users/charlie/Documents/code/genish.js/js/atan.js","./attack.js":"/Users/charlie/Documents/code/genish.js/js/attack.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./bool.js":"/Users/charlie/Documents/code/genish.js/js/bool.js","./ceil.js":"/Users/charlie/Documents/code/genish.js/js/ceil.js","./clamp.js":"/Users/charlie/Documents/code/genish.js/js/clamp.js","./cos.js":"/Users/charlie/Documents/code/genish.js/js/cos.js","./counter.js":"/Users/charlie/Documents/code/genish.js/js/counter.js","./cycle.js":"/Users/charlie/Documents/code/genish.js/js/cycle.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./dcblock.js":"/Users/charlie/Documents/code/genish.js/js/dcblock.js","./decay.js":"/Users/charlie/Documents/code/genish.js/js/decay.js","./delay.js":"/Users/charlie/Documents/code/genish.js/js/delay.js","./delta.js":"/Users/charlie/Documents/code/genish.js/js/delta.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./eq.js":"/Users/charlie/Documents/code/genish.js/js/eq.js","./exp.js":"/Users/charlie/Documents/code/genish.js/js/exp.js","./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./fold.js":"/Users/charlie/Documents/code/genish.js/js/fold.js","./gate.js":"/Users/charlie/Documents/code/genish.js/js/gate.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gt.js":"/Users/charlie/Documents/code/genish.js/js/gt.js","./gte.js":"/Users/charlie/Documents/code/genish.js/js/gte.js","./gtp.js":"/Users/charlie/Documents/code/genish.js/js/gtp.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./in.js":"/Users/charlie/Documents/code/genish.js/js/in.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./lte.js":"/Users/charlie/Documents/code/genish.js/js/lte.js","./ltp.js":"/Users/charlie/Documents/code/genish.js/js/ltp.js","./max.js":"/Users/charlie/Documents/code/genish.js/js/max.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./min.js":"/Users/charlie/Documents/code/genish.js/js/min.js","./mix.js":"/Users/charlie/Documents/code/genish.js/js/mix.js","./mod.js":"/Users/charlie/Documents/code/genish.js/js/mod.js","./mstosamps.js":"/Users/charlie/Documents/code/genish.js/js/mstosamps.js","./mtof.js":"/Users/charlie/Documents/code/genish.js/js/mtof.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./noise.js":"/Users/charlie/Documents/code/genish.js/js/noise.js","./not.js":"/Users/charlie/Documents/code/genish.js/js/not.js","./pan.js":"/Users/charlie/Documents/code/genish.js/js/pan.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor.js":"/Users/charlie/Documents/code/genish.js/js/phasor.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./pow.js":"/Users/charlie/Documents/code/genish.js/js/pow.js","./process.js":"/Users/charlie/Documents/code/genish.js/js/process.js","./rate.js":"/Users/charlie/Documents/code/genish.js/js/rate.js","./round.js":"/Users/charlie/Documents/code/genish.js/js/round.js","./sah.js":"/Users/charlie/Documents/code/genish.js/js/sah.js","./selector.js":"/Users/charlie/Documents/code/genish.js/js/selector.js","./sign.js":"/Users/charlie/Documents/code/genish.js/js/sign.js","./sin.js":"/Users/charlie/Documents/code/genish.js/js/sin.js","./slide.js":"/Users/charlie/Documents/code/genish.js/js/slide.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./switch.js":"/Users/charlie/Documents/code/genish.js/js/switch.js","./t60.js":"/Users/charlie/Documents/code/genish.js/js/t60.js","./tan.js":"/Users/charlie/Documents/code/genish.js/js/tan.js","./tanh.js":"/Users/charlie/Documents/code/genish.js/js/tanh.js","./train.js":"/Users/charlie/Documents/code/genish.js/js/train.js","./utilities.js":"/Users/charlie/Documents/code/genish.js/js/utilities.js","./windows.js":"/Users/charlie/Documents/code/genish.js/js/windows.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/lt.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2239,7 +2239,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":30}],39:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/lte.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2277,7 +2277,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":30}],40:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ltp.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2307,7 +2307,7 @@ module.exports = (x,y) => {
   return ltp
 }
 
-},{"./gen.js":30}],41:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/max.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2340,7 +2340,7 @@ module.exports = (x,y) => {
   return max
 }
 
-},{"./gen.js":30}],42:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/memo.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2370,7 +2370,7 @@ module.exports = (in1,memoName) => {
   return memo
 }
 
-},{"./gen.js":30}],43:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/min.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2403,7 +2403,7 @@ module.exports = (x,y) => {
   return min
 }
 
-},{"./gen.js":30}],44:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mix.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js'),
@@ -2419,7 +2419,7 @@ module.exports = ( in1, in2, t=.5 ) => {
   return ugen
 }
 
-},{"./add.js":5,"./gen.js":30,"./memo.js":42,"./mul.js":48,"./sub.js":66}],45:[function(require,module,exports){
+},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/mod.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2463,7 +2463,7 @@ module.exports = (...args) => {
   return mod
 }
 
-},{"./gen.js":30}],46:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mstosamps.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2501,7 +2501,7 @@ module.exports = x => {
   return mstosamps
 }
 
-},{"./gen.js":30}],47:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mtof.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2539,7 +2539,7 @@ module.exports = ( x, props ) => {
   return ugen
 }
 
-},{"./gen.js":30}],48:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mul.js":[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -2595,7 +2595,7 @@ module.exports = ( ...args ) => {
   return mul
 }
 
-},{"./gen.js":30}],49:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/neq.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2627,7 +2627,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],50:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/noise.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2655,7 +2655,7 @@ module.exports = x => {
   return noise
 }
 
-},{"./gen.js":30}],51:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/not.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2685,7 +2685,7 @@ module.exports = x => {
   return not
 }
 
-},{"./gen.js":30}],52:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/pan.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' ),
@@ -2729,7 +2729,7 @@ module.exports = ( leftInput, rightInput, pan =.5, properties ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./mul.js":48,"./peek.js":54}],53:[function(require,module,exports){
+},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js"}],"/Users/charlie/Documents/code/genish.js/js/param.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2785,7 +2785,7 @@ module.exports = ( propName=0, value=0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],54:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/peek.js":[function(require,module,exports){
 'use strict'
 
 const gen      = require( './gen.js' ),
@@ -2926,7 +2926,7 @@ module.exports = ( input_data, index=0, properties ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./param.js":53}],55:[function(require,module,exports){
+},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js"}],"/Users/charlie/Documents/code/genish.js/js/phasor.js":[function(require,module,exports){
 'use strict'
 
 let gen   = require( './gen.js' ),
@@ -2957,7 +2957,7 @@ module.exports = ( frequency = 1, reset = 0, _props ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./div.js":23,"./gen.js":30,"./mul.js":48}],56:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js"}],"/Users/charlie/Documents/code/genish.js/js/poke.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -3012,7 +3012,7 @@ module.exports = ( data, value, index, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30,"./mul.js":48,"./wrap.js":74}],57:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/pow.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3054,7 +3054,7 @@ module.exports = (x,y) => {
   return pow
 }
 
-},{"./gen.js":30}],58:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/process.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3108,7 +3108,7 @@ module.exports = (...args) => {
   return process 
 }
 
-},{"./gen.js":30}],59:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/rate.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3160,7 +3160,7 @@ module.exports = ( in1, rate ) => {
   return ugen
 }
 
-},{"./add.js":5,"./delta.js":22,"./gen.js":30,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66,"./wrap.js":74}],60:[function(require,module,exports){
+},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./delta.js":"/Users/charlie/Documents/code/genish.js/js/delta.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/round.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3193,7 +3193,7 @@ module.exports = x => {
   return round
 }
 
-},{"./gen.js":30}],61:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sah.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' )
@@ -3250,7 +3250,7 @@ module.exports = ( in1, control, threshold=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],62:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/selector.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3302,7 +3302,7 @@ module.exports = ( ...inputs ) => {
   return ugen
 }
 
-},{"./gen.js":30}],63:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sign.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3335,7 +3335,7 @@ module.exports = x => {
   return sign
 }
 
-},{"./gen.js":30}],64:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sin.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3370,7 +3370,7 @@ module.exports = x => {
   return sin
 }
 
-},{"./gen.js":30}],65:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/slide.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3397,7 +3397,7 @@ module.exports = ( in1, slideUp = 1, slideDown = 1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./div.js":23,"./gen.js":30,"./gt.js":31,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66,"./switch.js":67}],66:[function(require,module,exports){
+},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gt.js":"/Users/charlie/Documents/code/genish.js/js/gt.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./switch.js":"/Users/charlie/Documents/code/genish.js/js/switch.js"}],"/Users/charlie/Documents/code/genish.js/js/sub.js":[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -3462,7 +3462,7 @@ module.exports = ( ...args ) => {
   return sub
 }
 
-},{"./gen.js":30}],67:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/switch.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3496,7 +3496,7 @@ module.exports = ( control, in1 = 1, in2 = 0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],68:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/t60.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3536,7 +3536,7 @@ module.exports = x => {
   return t60
 }
 
-},{"./gen.js":30}],69:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/tan.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3571,7 +3571,7 @@ module.exports = x => {
   return tan
 }
 
-},{"./gen.js":30}],70:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/tanh.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3606,7 +3606,7 @@ module.exports = x => {
   return tanh
 }
 
-},{"./gen.js":30}],71:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/train.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3623,7 +3623,7 @@ module.exports = ( frequency=440, pulsewidth=.5 ) => {
 }
 
 
-},{"./accum.js":2,"./div.js":23,"./gen.js":30,"./lt.js":38}],72:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js"}],"/Users/charlie/Documents/code/genish.js/js/utilities.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' ),
@@ -4010,7 +4010,7 @@ utilities.clear.callbacks = []
 
 module.exports = utilities
 
-},{"./data.js":18,"./gen.js":30}],73:[function(require,module,exports){
+},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/windows.js":[function(require,module,exports){
 'use strict'
 
 /*
@@ -4098,7 +4098,7 @@ const windows = module.exports = {
   }
 }
 
-},{}],74:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/genish.js/js/wrap.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -4153,7 +4153,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":27,"./gen.js":30,"./memo.js":42,"./sub.js":66}],75:[function(require,module,exports){
+},{"./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js":[function(require,module,exports){
 'use strict';
 
 var MemoryHelper = {
@@ -4246,7 +4246,7 @@ var MemoryHelper = {
 
 module.exports = MemoryHelper;
 
-},{}],76:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4301,7 +4301,7 @@ const Analysis = {
 
 module.exports = Analysis 
 
-},{"./ugen.js":116,"gibberish-dsp":198}],77:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/arp.js":[function(require,module,exports){
 const ArpWrapper = function( Gibber ) {
 
 const Arp = function( __chord = [0,2,4,6], octaves = 1, pattern = 'updown2' ) {
@@ -4436,7 +4436,7 @@ ArpWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = ArpWrapper
 
-},{}],78:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js":[function(require,module,exports){
 const Gibberish   = require( 'gibberish-dsp' )
 const Ugen        = require( './ugen.js' )
 const Instruments = require( './instruments.js' )
@@ -4516,7 +4516,7 @@ const Audio = {
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AudioContext({ latencyHint:.025 })
+        ctx = new AudioContext({ latencyHint:.05 })
         //ctx = new AudioContext()
       }
 
@@ -4775,7 +4775,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{"./analysis.js":76,"./arp.js":77,"./automata.js":79,"./binops.js":80,"./busses.js":81,"./clock.js":82,"./drums.js":83,"./effects.js":84,"./ensemble.js":85,"./envelopes.js":86,"./euclid.js":87,"./filters.js":90,"./freesound.js":91,"./gen.js":92,"./graphics.js":93,"./hex.js":94,"./hexSteps.js":95,"./instruments.js":96,"./oscillators.js":97,"./pattern.js":98,"./presets.js":99,"./seq.js":111,"./steps.js":112,"./theory.js":113,"./tidal.js":114,"./triggers.js":115,"./ugen.js":116,"./utility.js":117,"./waveObjects.js":118,"./wavePattern.js":119,"gibberish-dsp":198}],79:[function(require,module,exports){
+},{"./analysis.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js","./arp.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/arp.js","./automata.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/automata.js","./binops.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js","./busses.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js","./clock.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js","./drums.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js","./effects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js","./ensemble.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js","./envelopes.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js","./euclid.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/euclid.js","./filters.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js","./freesound.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js","./gen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js","./graphics.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/graphics.js","./hex.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js","./hexSteps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js","./instruments.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js","./oscillators.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js","./pattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/pattern.js","./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./seq.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js","./steps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","./tidal.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/tidal.js","./triggers.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","./utility.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js","./waveObjects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js","./wavePattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/automata.js":[function(require,module,exports){
 // XXX Need to create automata in the AWP thread so that the evolve method can
 // be easily sequenced. Or is there some way to simply add a method to the AWP instance?
 
@@ -4864,7 +4864,7 @@ return Automata
 
 }
 
-},{}],80:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4904,7 +4904,7 @@ const Binops = {
 
 module.exports = Binops
 
-},{"./ugen.js":116,"gibberish-dsp":198}],81:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4956,7 +4956,7 @@ const Busses = {
 
 module.exports = Busses
 
-},{"./ugen.js":116,"gibberish-dsp":198}],82:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 
@@ -5131,7 +5131,7 @@ const Clock = {
 
 module.exports = Clock
 
-},{"gibberish-dsp":198,"serialize-javascript":151}],83:[function(require,module,exports){
+},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js":[function(require,module,exports){
 const Ugen = require( './ugen.js' )
 const Presets = require( './presets.js' )
 
@@ -5310,7 +5310,7 @@ module.exports = function( __Audio ) {
   return { Drums, EDrums }
 }
 
-},{"./presets.js":99,"./ugen.js":116}],84:[function(require,module,exports){
+},{"./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5347,7 +5347,7 @@ const Effects = {
 
 module.exports = Effects
 
-},{"./ugen.js":116,"gibberish-dsp":198}],85:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js":[function(require,module,exports){
 module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
   const Ensemble = function( props ) {
@@ -5406,7 +5406,7 @@ module.exports = function( Audio ) {
   return Ensemble
 }
 
-},{}],86:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5439,7 +5439,7 @@ const Envelopes = {
 
 module.exports = Envelopes
 
-},{"./ugen.js":116,"gibberish-dsp":198}],87:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/euclid.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -5675,7 +5675,7 @@ Euclid.test = function( testKey ) {
 return Euclid
 }
 
-},{}],88:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/external/freesound2.js":[function(require,module,exports){
 (function () {
 
     var freesound = function () {        
@@ -6029,7 +6029,7 @@ return Euclid
     else {this.freesound = freesound(); }
 }());
 
-},{"http":153}],89:[function(require,module,exports){
+},{"http":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js":[function(require,module,exports){
 
 // See all scales at: http://abbernie.github.io/tune/scales.html
 
@@ -6257,7 +6257,7 @@ Tune.prototype.root = function(newmidi, newfreq) {
 
 module.exports = Tune
 
-},{}],90:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -6305,7 +6305,7 @@ const Filters = {
 
 module.exports = Filters
 
-},{"./ugen.js":116,"gibberish-dsp":198}],91:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js":[function(require,module,exports){
 const freesound = require( './external/freesound2.js' )
 
 module.exports = function( Audio ) {
@@ -6546,7 +6546,7 @@ module.exports = function( Audio ) {
   return Freesound
 }
 
-},{"./external/freesound2.js":88}],92:[function(require,module,exports){
+},{"./external/freesound2.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/freesound2.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
   
 const binops = [ 
@@ -7104,7 +7104,7 @@ Gen.init()
 return Gen 
 }
 
-},{}],93:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/graphics.js":[function(require,module,exports){
 const Marching = require( 'marching' )
 
 let Gibber = null
@@ -7125,6 +7125,7 @@ const Graphics = {
   __fogAmount:   0,
   __background:  Marching.vectors.Vec3(0),
   __onrender:    [],
+  __protomethods:['translate','scale','rotate','texture','material'],
 
   camera : {
     pos: { x:0, y:0, z:5 },
@@ -7170,6 +7171,7 @@ const Graphics = {
 
     obj.march = Marching.createScene.bind( Marching )
     obj.Material = Marching.Material
+    obj.Texture  = Marching.Texture
     obj.Camera = Graphics.camera
     obj.Fog = Graphics.fog.bind( Graphics )
     obj.Background = Graphics.background.bind( Graphics )
@@ -7284,11 +7286,18 @@ const Graphics = {
         emit: wrapped.emit.bind( wrapped ),
         emit_decl: wrapped.emit_decl.bind( wrapped ),
         update_location: wrapped.update_location.bind( wrapped ),
-        //
+
+        // XXX should this just be a proxy for the wrapped object?
+        type:      wrapped.type,
+        transform: wrapped.transform,
+        material:  wrapped.material,
+        texture:   wrapped.texture,
 
         tidals:[],
 
-        render( animate=null ) {
+        render( animate=null, quality = null ) {
+
+          if( quality !== null ) Graphics.quality = quality
 
           if( Graphics.initialized === false ) {
             Graphics.run()
@@ -7300,7 +7309,6 @@ const Graphics = {
           }
           scene = scene.background( Graphics.__background )
 
-          //Graphics.scene = [ name, args ] 
           Graphics.scene = scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
 
           Graphics.__onrender.forEach( v => v() )
@@ -7310,8 +7318,33 @@ const Graphics = {
 
           return instance
         }
-
       }
+
+      if( wrapped.sdf !== undefined ) instance.sdf = wrapped.sdf
+      if( wrapped.a !== undefined ) instance.a = wrapped.a
+      if( wrapped.b !== undefined ) instance.b = wrapped.b
+      
+      // this id number is for communicating
+      // with the worklet / sequencing
+      let __id = wrapped.id || 0
+      Object.defineProperty( wrapped, 'id', {
+        get() { return __id },
+        set(v) {
+          __id = instance.id = v
+        }
+      })
+
+      instance.id = wrapped.id
+
+      // this is the primary id that is used inside of
+      // the generated GLSL shader
+      let __sdfID = 0
+      Object.defineProperty( instance, '__sdfID', {
+        get() { return __sdfID },
+        set(v) {
+          __sdfID = wrapped.__sdfID = v
+        }
+      })
 
       if( wrapped.upload_data !== undefined ) instance.upload_data = wrapped.upload_data.bind( wrapped )
 
@@ -7327,6 +7360,71 @@ const Graphics = {
 
       }
 
+      for( let param of Graphics.__protomethods ) {
+        if( wrapped[ param ] !== undefined ) {
+          // texture properties are dynamically created when the
+          // function is called, so we want to wait for that function
+          // call before wrapping...
+          if( param !== 'texture' && param !== 'material' ) {
+            instance[ param ] = function( ...args ) {
+              wrapped[ param ]( ...args )
+
+              return instance
+            }
+          }else if( param === 'texture' ) { 
+            instance.texture = wrapped.texture = function( ...args ) {
+              const tex = typeof args[0] === 'string' ? Marching.Texture( ...args ) : args[0]
+              instance.__textureObj = wrapped.__textureObj = tex
+
+              for( let p of tex.parameters ) {
+                Graphics.createProperty( 
+                  instance.texture, 
+                  p.name, 
+                  tex[ p.name ],
+                  tex 
+                )
+                instance.texture.tidals = wrapped.texture.tidals = []
+                instance.texture.__sequencers = wrapped.texture.__sequencers = []
+                instance.texture.__id = wrapped.texture.__id = __wrapped.__id = Gibber.Gibberish.utilities.getUID()
+                Gibber.Gibberish.worklet.ugens.set( instance.texture.__id, instance.texture )
+              }
+
+
+              return instance 
+            }
+          }else{
+            const __wrapped = wrapped.material
+            instance.material = wrapped.material = function( ...args ) {
+              const mat = typeof args[0] !== 'string'
+                ? Marching.Material( ...args )
+                : Marching.Material[ args[0] ]
+              
+              instance.__material = wrapped.__material = Marching.materials.addMaterial( mat )
+              
+              // mmmm... how do you sequence lighting params anyways?
+              /*
+              for( let p of mat.parameters ) {
+                Graphics.createProperty( 
+                  instance.material, 
+                  p.name, 
+                  mat[ p.name ],
+                  mat 
+                )
+                instance.material.tidals = wrapped.material.tidals = []
+                instance.material.__sequencers = wrapped.material.__sequencers = []
+                instance.material.__id = wrapped.material.__id = __wrapped.__id = Gibber.Gibberish.utilities.getUID()
+                Gibber.Gibberish.worklet.ugens.set( instance.material.__id, instance.material )
+              }*/
+
+
+              return instance 
+            }
+
+          }
+        }
+      }
+
+
       // hack to make audio sequencing work with graphical objects
       Gibber.Gibberish.worklet.ugens.set( instance.__id, instance )
 
@@ -7336,7 +7434,7 @@ const Graphics = {
 
   createMapping( from, to, name, wrappedTo ) {
     if( from.type === 'audio' ) {
-      const f = to[ '__' + name ].follow = Follow({ input: from })
+      const f = to[ '__' + name ].follow = Follow({ input: from, bufferSize:4096 })
 
       Marching.callbacks.push( time => {
         if( f.output !== undefined ) {
@@ -7378,7 +7476,8 @@ const Graphics = {
           const val = gen()
           to[ name ] = val
           //console.log( 'val:', val, to[ name ].value.widget !== undefined )
-          Environment.codeMarkup.waveform.updateWidget( to[ name ].value.widget, val, false )
+          const target = to[ name ].value.widget !== undefined ? to[ name ].value.widget : from.widget
+          Environment.codeMarkup.waveform.updateWidget( target, val, false )
         }
       }else{
         // assignment hack while DOM creation is taking place,
@@ -7424,10 +7523,10 @@ const Graphics = {
       name,
       valueOf() { return __getter() },
 
-      map( from, mult, offset ) {
-        obj[ '__' + name ].value = from
-        obj[ '__' + name ].offset = offset
-        obj[ '__' + name ].multiplier = mult
+      map( from, mult=null, offset=null ) {
+        obj[ name ] = from
+        if( mult !== null )   obj[ name ].offset = offset
+        if( offset !== null ) obj[ name ].multiplier = mult
       },
 
       fade( from, to, time ) {
@@ -7526,7 +7625,7 @@ const Graphics = {
 
     // determine if property is of type vector. if so, we need to create properties for the
     // x,y,z, and w values (depending on the size of the vector.
-    if( wrapped[ name ].type !== undefined && wrapped[ name ].type.indexOf( 'vec' ) > -1 ) {
+    if( wrapped[ name ] !== undefined && wrapped[ name ].type !== undefined && wrapped[ name ].type.indexOf( 'vec' ) > -1 ) {
       const props = ['x','y','z','w']
       const size = parseInt( wrapped[ name ].type[3] )
 
@@ -7558,7 +7657,7 @@ const Graphics = {
 
 module.exports = Graphics
 
-},{"marching":247}],94:[function(require,module,exports){
+},{"marching":"/Users/charlie/Documents/code/marching/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -7636,7 +7735,7 @@ return Hex
 
 }
 
-},{}],95:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
   
 let Steps = {
@@ -7722,7 +7821,7 @@ return Steps.create
 }
 
 
-},{}],96:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7820,7 +7919,7 @@ const Instruments = {
 
 module.exports = Instruments
 
-},{"./ugen.js":116,"gibberish-dsp":198}],97:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7853,7 +7952,7 @@ const Oscillators = {
 
 module.exports = Oscillators
 
-},{"./ugen.js":116,"gibberish-dsp":198}],98:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/pattern.js":[function(require,module,exports){
 const patternWrapper = function( Gibber ) {
   "use strict"
 
@@ -8499,7 +8598,7 @@ patternWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = patternWrapper
 
-},{}],99:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js":[function(require,module,exports){
 const Presets = {
   process( description, args, Audio ) {
     let output
@@ -8572,7 +8671,7 @@ Presets.instruments.PolyMono = Presets.instruments.Monosynth
 
 module.exports = Presets
 
-},{"./presets/bus2_presets.js":100,"./presets/chorus_presets.js":101,"./presets/distortion_presets.js":102,"./presets/drums_presets.js":103,"./presets/edrums_presets.js":104,"./presets/flanger_presets.js":105,"./presets/fm_presets.js":106,"./presets/kick_presets.js":107,"./presets/monosynth_presets.js":108,"./presets/snare_presets.js":109,"./presets/synth_presets.js":110}],100:[function(require,module,exports){
+},{"./presets/bus2_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/bus2_presets.js","./presets/chorus_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/chorus_presets.js","./presets/distortion_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/distortion_presets.js","./presets/drums_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/drums_presets.js","./presets/edrums_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/edrums_presets.js","./presets/flanger_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/flanger_presets.js","./presets/fm_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/fm_presets.js","./presets/kick_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/kick_presets.js","./presets/monosynth_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/monosynth_presets.js","./presets/snare_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/snare_presets.js","./presets/synth_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/synth_presets.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/bus2_presets.js":[function(require,module,exports){
 module.exports = {
 
   'spaceverb': {
@@ -8633,7 +8732,7 @@ module.exports = {
   },
 }
 
-},{}],101:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/chorus_presets.js":[function(require,module,exports){
 module.exports = {
 
   lush: {
@@ -8661,7 +8760,7 @@ module.exports = {
 
 }
 
-},{}],102:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/distortion_presets.js":[function(require,module,exports){
 module.exports = {
 
   crunch: {
@@ -8684,7 +8783,7 @@ module.exports = {
   }
 }
 
-},{}],103:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/drums_presets.js":[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -8720,7 +8819,7 @@ module.exports = {
 
 }
 
-},{}],104:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/edrums_presets.js":[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -8776,7 +8875,7 @@ module.exports = {
 
 }
 
-},{}],105:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/flanger_presets.js":[function(require,module,exports){
 module.exports = {
   moderate: {
     feedback: .25,
@@ -8792,7 +8891,7 @@ module.exports = {
 
 }
 
-},{}],106:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/fm_presets.js":[function(require,module,exports){
 module.exports = {
 
   bass : {
@@ -8876,7 +8975,7 @@ module.exports = {
 	}
 }
 
-},{}],107:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/kick_presets.js":[function(require,module,exports){
 module.exports = {
 
   deep: {
@@ -8904,7 +9003,7 @@ module.exports = {
 
 }
 
-},{}],108:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/monosynth_presets.js":[function(require,module,exports){
 module.exports = {
 
   'short.dry' : { 
@@ -9162,7 +9261,7 @@ module.exports = {
 
 }
 
-},{}],109:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/snare_presets.js":[function(require,module,exports){
 module.exports = {
 
   snappy: {
@@ -9179,7 +9278,7 @@ module.exports = {
 
 }
 
-},{}],110:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/synth_presets.js":[function(require,module,exports){
 module.exports = {
 
   acidBass: {
@@ -9311,7 +9410,7 @@ module.exports = {
   'square.perc': { waveform:'square', shape:'exponential', antialias:true, filterType:2, cutoff:.25, decay:1/8 },
 }
 
-},{}],111:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 
 module.exports = function( Audio ) {
@@ -9471,7 +9570,7 @@ module.exports = function( Audio ) {
 
 }
 
-},{"gibberish-dsp":198}],112:[function(require,module,exports){
+},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
   
 const Steps = {
@@ -9663,7 +9762,7 @@ return Steps.create
 
 //}
 
-},{}],113:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 const Tune      = require( './external/tune-api-only.js' )
@@ -9982,7 +10081,7 @@ const Theory = {
 
 module.exports = Theory
 
-},{"./external/tune-api-only.js":89,"gibberish-dsp":198,"serialize-javascript":151}],114:[function(require,module,exports){
+},{"./external/tune-api-only.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/tidal.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 
 module.exports = function( Audio ) {
@@ -10075,7 +10174,7 @@ module.exports = function( Audio ) {
 
 }
 
-},{"gibberish-dsp":198}],115:[function(require,module,exports){
+},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -10115,7 +10214,7 @@ return Triggers
 
 }
 
-},{}],116:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js":[function(require,module,exports){
 const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
@@ -10702,7 +10801,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
 module.exports = Ugen
 
-},{"./presets.js":99,"./theory.js":113,"gibberish-dsp":198}],117:[function(require,module,exports){
+},{"./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js":[function(require,module,exports){
 const Utility = {
   rndf( min=0, max=1, number, canRepeat=true ) {
     let out = 0
@@ -10903,7 +11002,7 @@ const Utility = {
 
 module.exports = Utility
 
-},{}],118:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
    const gen = Gibber.Gen.make  
 
@@ -11008,7 +11107,7 @@ module.exports = function( Gibber ) {
   return WavePatterns
 }
 
-},{}],119:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const WavePattern = function( ugen ) {
@@ -11025,7 +11124,7 @@ module.exports = function( Gibber ) {
   return WavePattern
 }
 
-},{}],120:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/base64-js/index.js":[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -11178,9 +11277,9 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],121:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js":[function(require,module,exports){
 
-},{}],122:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js":[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -12918,7 +13017,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":120,"ieee754":126}],123:[function(require,module,exports){
+},{"base64-js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/base64-js/index.js","ieee754":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/ieee754/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/builtin-status-codes/browser.js":[function(require,module,exports){
 module.exports = {
   "100": "Continue",
   "101": "Switching Protocols",
@@ -12984,7 +13083,7 @@ module.exports = {
   "511": "Network Authentication Required"
 }
 
-},{}],124:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js":[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -13095,7 +13194,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":128}],125:[function(require,module,exports){
+},{"../../is-buffer/index.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -13616,7 +13715,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],126:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/ieee754/index.js":[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -13702,7 +13801,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],127:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -13727,7 +13826,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],128:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js":[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -13750,14 +13849,14 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],129:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/isarray/index.js":[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],130:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/path-browserify/index.js":[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -13985,7 +14084,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":132}],131:[function(require,module,exports){
+},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js":[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -14033,7 +14132,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 
 }).call(this,require('_process'))
-},{"_process":132}],132:[function(require,module,exports){
+},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -14219,7 +14318,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],133:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/punycode/punycode.js":[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -14756,7 +14855,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],134:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/decode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14842,7 +14941,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],135:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/encode.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14929,16 +15028,16 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],136:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/index.js":[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":134,"./encode":135}],137:[function(require,module,exports){
+},{"./decode":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/decode.js","./encode":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/encode.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/duplex-browser.js":[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":138}],138:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15070,7 +15169,7 @@ Duplex.prototype._destroy = function (err, cb) {
 
   pna.nextTick(cb, err);
 };
-},{"./_stream_readable":140,"./_stream_writable":142,"core-util-is":124,"inherits":127,"process-nextick-args":131}],139:[function(require,module,exports){
+},{"./_stream_readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js","./_stream_writable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_passthrough.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15118,7 +15217,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":141,"core-util-is":124,"inherits":127}],140:[function(require,module,exports){
+},{"./_stream_transform":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16140,7 +16239,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":138,"./internal/streams/BufferList":143,"./internal/streams/destroy":144,"./internal/streams/stream":145,"_process":132,"core-util-is":124,"events":125,"inherits":127,"isarray":129,"process-nextick-args":131,"safe-buffer":150,"string_decoder/":157,"util":121}],141:[function(require,module,exports){
+},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./internal/streams/BufferList":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/BufferList.js","./internal/streams/destroy":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/events/events.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","isarray":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/isarray/index.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js","safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","string_decoder/":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/string_decoder/lib/string_decoder.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16355,7 +16454,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":138,"core-util-is":124,"inherits":127}],142:[function(require,module,exports){
+},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -17045,7 +17144,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":138,"./internal/streams/destroy":144,"./internal/streams/stream":145,"_process":132,"core-util-is":124,"inherits":127,"process-nextick-args":131,"safe-buffer":150,"util-deprecate":161}],143:[function(require,module,exports){
+},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./internal/streams/destroy":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js","safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","util-deprecate":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util-deprecate/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/BufferList.js":[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17125,7 +17224,7 @@ if (util && util.inspect && util.inspect.custom) {
     return this.constructor.name + ' ' + obj;
   };
 }
-},{"safe-buffer":150,"util":121}],144:[function(require,module,exports){
+},{"safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js":[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -17200,13 +17299,13 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":131}],145:[function(require,module,exports){
+},{"process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js":[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":125}],146:[function(require,module,exports){
+},{"events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/events/events.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/passthrough.js":[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":147}],147:[function(require,module,exports){
+},{"./readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js":[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -17215,13 +17314,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":138,"./lib/_stream_passthrough.js":139,"./lib/_stream_readable.js":140,"./lib/_stream_transform.js":141,"./lib/_stream_writable.js":142}],148:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./lib/_stream_passthrough.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_passthrough.js","./lib/_stream_readable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js","./lib/_stream_transform.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js","./lib/_stream_writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/transform.js":[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":147}],149:[function(require,module,exports){
+},{"./readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/writable-browser.js":[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":142}],150:[function(require,module,exports){
+},{"./lib/_stream_writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js":[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -17285,7 +17384,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":122}],151:[function(require,module,exports){
+},{"buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js":[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -17406,7 +17505,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],152:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-browserify/index.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -17535,7 +17634,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":125,"inherits":127,"readable-stream/duplex.js":137,"readable-stream/passthrough.js":146,"readable-stream/readable.js":147,"readable-stream/transform.js":148,"readable-stream/writable.js":149}],153:[function(require,module,exports){
+},{"events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/events/events.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","readable-stream/duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/duplex-browser.js","readable-stream/passthrough.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/passthrough.js","readable-stream/readable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js","readable-stream/transform.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/transform.js","readable-stream/writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/writable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/index.js":[function(require,module,exports){
 (function (global){
 var ClientRequest = require('./lib/request')
 var response = require('./lib/response')
@@ -17623,7 +17722,7 @@ http.METHODS = [
 	'UNSUBSCRIBE'
 ]
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lib/request":155,"./lib/response":156,"builtin-status-codes":123,"url":159,"xtend":165}],154:[function(require,module,exports){
+},{"./lib/request":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/request.js","./lib/response":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/response.js","builtin-status-codes":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/builtin-status-codes/browser.js","url":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/url/url.js","xtend":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/xtend/immutable.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/capability.js":[function(require,module,exports){
 (function (global){
 exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableStream)
 
@@ -17700,7 +17799,7 @@ function isFunction (value) {
 xhr = null // Help gc
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],155:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/request.js":[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var inherits = require('inherits')
@@ -18027,7 +18126,7 @@ var unsafeHeaders = [
 ]
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":154,"./response":156,"_process":132,"buffer":122,"inherits":127,"readable-stream":147,"to-arraybuffer":158}],156:[function(require,module,exports){
+},{"./capability":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/capability.js","./response":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/response.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","readable-stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js","to-arraybuffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/to-arraybuffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/response.js":[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var inherits = require('inherits')
@@ -18248,7 +18347,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":154,"_process":132,"buffer":122,"inherits":127,"readable-stream":147}],157:[function(require,module,exports){
+},{"./capability":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-http/lib/capability.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","readable-stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/string_decoder/lib/string_decoder.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -18545,7 +18644,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":150}],158:[function(require,module,exports){
+},{"safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/to-arraybuffer/index.js":[function(require,module,exports){
 var Buffer = require('buffer').Buffer
 
 module.exports = function (buf) {
@@ -18574,7 +18673,7 @@ module.exports = function (buf) {
 	}
 }
 
-},{"buffer":122}],159:[function(require,module,exports){
+},{"buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/url/url.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -19308,7 +19407,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":160,"punycode":133,"querystring":136}],160:[function(require,module,exports){
+},{"./util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/url/util.js","punycode":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/punycode/punycode.js","querystring":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/querystring-es3/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/url/util.js":[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -19326,7 +19425,7 @@ module.exports = {
   }
 };
 
-},{}],161:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util-deprecate/browser.js":[function(require,module,exports){
 (function (global){
 
 /**
@@ -19397,16 +19496,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],162:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],163:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js"][0].apply(exports,arguments)
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],164:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -19996,7 +20095,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":163,"_process":132,"inherits":162}],165:[function(require,module,exports){
+},{"./support/isBuffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/support/isBufferBrowser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/xtend/immutable.js":[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -20017,7 +20116,7 @@ function extend() {
     return target
 }
 
-},{}],166:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js":[function(require,module,exports){
 let ugen = require( '../ugen.js' )
 
 let analyzer = Object.create( ugen )
@@ -20029,7 +20128,7 @@ Object.assign( analyzer, {
 
 module.exports = analyzer
 
-},{"../ugen.js":231}],167:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzers.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
   const { In, Out, SSD } = require( './singlesampledelay.js'  )( Gibberish )
 
@@ -20054,7 +20153,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./follow.js":168,"./singlesampledelay.js":169}],168:[function(require,module,exports){
+},{"./follow.js":"/Users/charlie/Documents/code/gibberish/js/analysis/follow.js","./singlesampledelay.js":"/Users/charlie/Documents/code/gibberish/js/analysis/singlesampledelay.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/follow.js":[function(require,module,exports){
 const g = require('genish.js'),
       analyzer = require('./analyzer.js'),
       ugen = require('../ugen.js');
@@ -20237,7 +20336,7 @@ module.exports = function (Gibberish) {
 
   return Follow;
 };
-},{"../ugen.js":231,"./analyzer.js":166,"genish.js":37}],169:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/singlesampledelay.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       proxy    = require( '../workletProxy.js' ),
@@ -20354,7 +20453,7 @@ return { In, Out, SSD }
 
 }
 
-},{"../ugen.js":231,"../workletProxy.js":234,"./analyzer.js":166,"genish.js":37}],170:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","./analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/ad.js":[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -20382,7 +20481,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":231,"genish.js":37}],171:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/adsr.js":[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -20427,7 +20526,7 @@ module.exports = function( Gibberish ) {
   return ADSR
 }
 
-},{"../ugen.js":231,"genish.js":37}],172:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/envelopes.js":[function(require,module,exports){
 const g = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -20462,7 +20561,7 @@ module.exports = function( Gibberish ) {
   return Envelopes
 }
 
-},{"./ad.js":170,"./adsr.js":171,"./ramp.js":173,"genish.js":37}],173:[function(require,module,exports){
+},{"./ad.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/ad.js","./adsr.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/adsr.js","./ramp.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/ramp.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/ramp.js":[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -20496,7 +20595,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":231,"genish.js":37}],174:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/external/priorityqueue.js":[function(require,module,exports){
 /*
  * https://github.com/antimatter15/heapqueue.js/blob/master/heapqueue.js
  *
@@ -20610,7 +20709,7 @@ HeapQueue.prototype.pop = function(){
 
 module.exports = HeapQueue
 
-},{}],175:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibberish/js/filters/allpass.js":[function(require,module,exports){
 let g = require( 'genish.js' )
  
 // constructor for schroeder allpass filters
@@ -20627,7 +20726,7 @@ let allPass = function( _input, length=500, feedback=.5 ) {
 
 module.exports = allPass
 
-},{"genish.js":37}],176:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/biquad.js":[function(require,module,exports){
 let g = require('genish.js'),
     filter = require('./filter.js');
 
@@ -20783,7 +20882,7 @@ module.exports = function (Gibberish) {
 
   return Biquad;
 };
-},{"./filter.js":179,"genish.js":37}],177:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js":[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 ) {
@@ -20802,7 +20901,7 @@ let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 
 
 module.exports = combFilter
 
-},{"genish.js":37}],178:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/diodeFilterZDF.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -21012,7 +21111,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./filter.js":179,"genish.js":37}],179:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filter.js":[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let filter = Object.create( ugen )
@@ -21023,7 +21122,7 @@ Object.assign( filter, {
 
 module.exports = filter
 
-},{"../ugen.js":231}],180:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filter24.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -21093,7 +21192,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":179,"genish.js":37}],181:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filters.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const g = Gibberish.genish
@@ -21165,7 +21264,7 @@ return filters
 
 }
 
-},{"./allpass.js":175,"./biquad.js":176,"./combfilter.js":177,"./diodeFilterZDF.js":178,"./filter24.js":180,"./ladder.js":182,"./svf.js":183}],182:[function(require,module,exports){
+},{"./allpass.js":"/Users/charlie/Documents/code/gibberish/js/filters/allpass.js","./biquad.js":"/Users/charlie/Documents/code/gibberish/js/filters/biquad.js","./combfilter.js":"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js","./diodeFilterZDF.js":"/Users/charlie/Documents/code/gibberish/js/filters/diodeFilterZDF.js","./filter24.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter24.js","./ladder.js":"/Users/charlie/Documents/code/gibberish/js/filters/ladder.js","./svf.js":"/Users/charlie/Documents/code/gibberish/js/filters/svf.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/ladder.js":[function(require,module,exports){
 const genish = require('genish.js'),
       filterProto = require('./filter.js');
 
@@ -21278,7 +21377,7 @@ module.exports = function (Gibberish) {
 
   return Zd24;
 };
-},{"./filter.js":179,"genish.js":37}],183:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/svf.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -21350,7 +21449,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":179,"genish.js":37}],184:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/bitCrusher.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -21428,7 +21527,7 @@ return BitCrusher
 
 }
 
-},{"./effect.js":190,"genish.js":37}],185:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/bufferShuffler.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -21553,7 +21652,7 @@ module.exports = function( Gibberish ) {
   return Shuffler 
 }
 
-},{"./effect.js":190,"genish.js":37}],186:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/chorus.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
   
@@ -21650,214 +21749,14 @@ return __Chorus
 
 }
 
-},{"./effect.js":190,"genish.js":37}],187:[function(require,module,exports){
-const g = require('genish.js'),
-      effect = require('./effect.js');
-
-const genish = g;
-
-const AllPassChain = (in1, in2, in3, magic_coeff) => {
-  "use jsdsp";
-
-  /* in1 = predelay_out */
-  /* in2 = indiffusion1 */
-  /* in3 = indiffusion2 */
-
-  const sub1 = genish.sub(in1, 0);
-  const d1 = g.delay(sub1, 142 * 1.481805046873425);
-  sub1.inputs[1] = genish.mul(d1, in2);
-  const ap1_out = genish.add(genish.mul(sub1, in2), d1);
-
-  const sub2 = genish.sub(ap1_out, 0);
-  const d2 = g.delay(sub2, 107 * 1.481805046873425);
-  sub2.inputs[1] = genish.mul(d2, in2);
-  const ap2_out = genish.add(genish.mul(sub2, in2), d2);
-
-  const sub3 = genish.sub(ap2_out, 0);
-  const d3 = g.delay(sub3, 379 * 1.481805046873425);
-  sub3.inputs[1] = genish.mul(d3, in3);
-  const ap3_out = genish.add(genish.mul(sub3, in3), d3);
-
-  const sub4 = genish.sub(ap3_out, 0);
-  const d4 = g.delay(sub4, 277 * 1.481805046873425);
-  sub4.inputs[1] = genish.mul(d4, in3);
-  const ap4_out = genish.add(genish.mul(sub4, in3), d4);
-
-  return ap4_out;
-};
-
-/*const tank_outs = Tank( ap_out, decaydiffusion1, decaydiffusion2, damping, decay )*/
-const Tank = function (in1, in2, in3, in4, in5, magic_coeff) {
-
-  // 1012, 1361
-  const leftDelaySize = genish.add(16, Math.round(672 * 1.481805046873425));
-  const rightDelaySize = genish.add(16, Math.round(908 * 1.481805046873425));
-  const outs = [[], [], [], [], []];
-  {
-    "use jsdsp";
-    console.log(leftDelaySize, rightDelaySize);
-
-    /* LEFT CHANNEL */
-    const leftStart = genish.add(in1, 0);
-    const delayInput = genish.add(leftStart, 0);
-    const delay1 = g.delay(delayInput, [genish.add(genish.mul(g.cycle(.1), 16), 672 * 1.481805046873425)], { size: leftDelaySize });
-    delayInput.inputs[1] = genish.mul(delay1, in2);
-    const delayOut = genish.sub(delay1, genish.mul(delayInput, in2));
-
-    const delay2 = g.delay(delayOut, [4453 * 1.481805046873425, 353 * 1.481805046873425, 3627 * 1.481805046873425, 1190 * 1.481805046873425]);
-    outs[3].push(genish.add(delay2.outputs[1], delay2.outputs[2]));
-    outs[2].push(delay2.outputs[3]);
-
-    const mz = g.history(0);
-    const ml = g.mix(delay2, mz.out, in4);
-    mz.in(ml);
-
-    const mout = genish.mul(ml, in5);
-
-    const s1 = genish.sub(mout, 0);
-    const delay3 = g.delay(s1, [1800 * 1.481805046873425, 187 * 1.481805046873425, 1228 * 1.481805046873425]);
-    outs[2].push(delay3.outputs[1]);
-    outs[4].push(delay3.outputs[2]);
-    s1.inputs[1] = genish.mul(delay3, in3);
-    const m2 = genish.mul(s1, in3);
-    const dl2_out = genish.add(delay3, m2);
-
-    const delay4 = g.delay(dl2_out, [3720 * 1.481805046873425, 1066 * 1.481805046873425, 2673 * 1.481805046873425]);
-    outs[2].push(delay4.outputs[1]);
-    outs[3].push(delay4.outputs[2]);
-
-    /* RIGHT CHANNEL */
-    const rightStart = genish.add(genish.mul(delay4, in5), in1);
-    const delayInputR = genish.add(rightStart, 0);
-    const delay1R = g.delay(delayInputR, genish.add(genish.mul(g.cycle(.07), 16), 908 * 1.481805046873425), { size: rightDelaySize });
-    delayInputR.inputs[1] = genish.mul(delay1R, in2);
-    const delayOutR = genish.sub(delay1R, genish.mul(delayInputR, in2));
-
-    const delay2R = g.delay(delayOutR, [4217 * 1.481805046873425, 266 * 1.481805046873425, 2974 * 1.481805046873425, 2111 * 1.481805046873425]);
-    outs[1].push(genish.add(delay2R.outputs[1], delay2R.outputs[2]));
-    outs[4].push(delay2R.outputs[3]);
-
-    const mzR = g.history(0);
-    const mlR = g.mix(delay2R, mzR.out, in4);
-    mzR.in(mlR);
-
-    const moutR = genish.mul(mlR, in5);
-
-    const s1R = genish.sub(moutR, 0);
-    const delay3R = g.delay(s1R, [2656 * 1.481805046873425, 335 * 1.481805046873425, 1913 * 1.481805046873425]);
-    outs[4].push(delay3R.outputs[1]);
-    outs[2].push(delay3R.outputs[2]);
-    s1R.inputs[1] = genish.mul(delay3R, in3);
-    const m2R = genish.mul(s1R, in3);
-    const dl2_outR = genish.add(delay3R, m2R);
-
-    const delay4R = g.delay(dl2_outR, [3163 * 1.481805046873425, 121 * 1.481805046873425, 1996 * 1.481805046873425]);
-    outs[4].push(delay4.outputs[1]);
-    outs[1].push(delay4.outputs[2]);
-
-    leftStart.inputs[1] = genish.mul(delay4R, in5);
-
-    outs[1] = g.add(...outs[1]);
-    outs[2] = g.add(...outs[2]);
-    outs[3] = g.add(...outs[3]);
-    outs[4] = g.add(...outs[4]);
-  }
-  return outs;
-};
-
-module.exports = function (Gibberish) {
-
-  const Reverb = inputProps => {
-    const props = Object.assign({}, Reverb.defaults, effect.defaults, inputProps),
-          reverb = Object.create(effect);
-
-    let out;
-
-    reverb.__createGraph = function () {
-      let isStereo = false;
-      if (out === undefined) {
-        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
-      } else {
-        isStereo = out.input.isStereo;
-        out.isStereo = isStereo;
-      }
-
-      const input = g.in('input'),
-            inputGain = g.in('inputGain'),
-            damping = g.in('damping'),
-            drywet = g.in('drywet'),
-            decay = g.in('decay'),
-            predelay = g.in('predelay'),
-            inbandwidth = g.in('inbandwidth'),
-            decaydiffusion1 = g.in('decaydiffusion1'),
-            decaydiffusion2 = g.in('decaydiffusion2'),
-            indiffusion1 = g.in('indiffusion1'),
-            indiffusion2 = g.in('indiffusion2');
-
-      // adjust from original equation coefficients at 29761 hz
-      const coeff = genish.div(g.gen.samplerate, 29761);
-
-      const summedInput = isStereo === true ? g.mul(g.add(input[0], input[1]), inputGain) : g.mul(input, inputGain);
-      {
-        'use jsdsp';
-
-        // calculcate predelay
-        const predelay_samps = g.mstosamps(predelay);
-        const predelay_delay = g.delay(summedInput, predelay_samps, { size: 4410 });
-        const z_pd = g.history(0);
-        const mix1 = g.mix(z_pd.out, predelay_delay, inbandwidth);
-        z_pd.in(mix1);
-
-        const predelay_out = mix1;
-
-        // run input + predelay through all-pass chain
-        const ap_out = AllPassChain(predelay_out, indiffusion1, indiffusion2, coeff);
-
-        // run filtered signal into "tank" model
-        const tank_outs = Tank(ap_out, decaydiffusion1, decaydiffusion2, damping, decay, coeff);
-
-        const leftWet = genish.mul(genish.sub(tank_outs[1], tank_outs[2]), .6);
-        const rightWet = genish.mul(genish.sub(tank_outs[3], tank_outs[4]), .6);
-
-        // mix wet and dry signal for final output
-        const left = g.mix(isStereo ? g.mul(input[0], inputGain) : g.mul(input, inputGain), leftWet, drywet);
-        const right = g.mix(isStereo ? g.mul(input[1], inputGain) : g.mul(input, inputGain), rightWet, drywet);
-
-        reverb.graph = [left, right];
-      }
-    };
-
-    reverb.__createGraph();
-    reverb.__requiresRecompilation = ['input'];
-
-    out = Gibberish.factory(reverb, reverb.graph, ['fx', 'plate'], props);
-
-    return out;
-  };
-
-  Reverb.defaults = {
-    input: 0,
-    damping: .5,
-    drywet: .5,
-    decay: .5,
-    predelay: 10,
-    inbandwidth: .5,
-    indiffusion1: .75,
-    indiffusion2: .625,
-    decaydiffusion1: .7,
-    decaydiffusion2: .5
-  };
-
-  return Reverb;
-};
-},{"./effect.js":190,"genish.js":37}],188:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/delay.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
 module.exports = function( Gibberish ) {
  
 let Delay = inputProps => {
-  let props = Object.assign( { delayLength: 44100 }, effect.defaults, Delay.defaults, inputProps ),
+  let props = Object.assign( { delayLength: 88200 }, effect.defaults, Delay.defaults, inputProps ),
       delay = Object.create( effect )
 
   let out
@@ -21922,7 +21821,7 @@ return Delay
 
 }
 
-},{"./effect.js":190,"genish.js":37}],189:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/distortion.js":[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -22002,7 +21901,7 @@ module.exports = function (Gibberish) {
 
   return Distortion;
 };
-},{"./effect.js":190,"genish.js":37}],190:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/effect.js":[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let effect = Object.create( ugen )
@@ -22014,12 +21913,12 @@ Object.assign( effect, {
 
 module.exports = effect
 
-},{"../ugen.js":231}],191:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/effects.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const effects = {
     Freeverb    : require( './freeverb.js'  )( Gibberish ),
-    Plate       : require( './dattorro.js'  )( Gibberish ),
+    //Plate       : require( './dattorro.js'  )( Gibberish ),
     Flanger     : require( './flanger.js'   )( Gibberish ),
     Vibrato     : require( './vibrato.js'   )( Gibberish ),
     Delay       : require( './delay.js'     )( Gibberish ),
@@ -22045,7 +21944,7 @@ return effects
 
 }
 
-},{"./bitCrusher.js":184,"./bufferShuffler.js":185,"./chorus.js":186,"./dattorro.js":187,"./delay.js":188,"./distortion.js":189,"./flanger.js":192,"./freeverb.js":193,"./ringMod.js":194,"./tremolo.js":195,"./vibrato.js":196,"./wavefolder.js":197}],192:[function(require,module,exports){
+},{"./bitCrusher.js":"/Users/charlie/Documents/code/gibberish/js/fx/bitCrusher.js","./bufferShuffler.js":"/Users/charlie/Documents/code/gibberish/js/fx/bufferShuffler.js","./chorus.js":"/Users/charlie/Documents/code/gibberish/js/fx/chorus.js","./delay.js":"/Users/charlie/Documents/code/gibberish/js/fx/delay.js","./distortion.js":"/Users/charlie/Documents/code/gibberish/js/fx/distortion.js","./flanger.js":"/Users/charlie/Documents/code/gibberish/js/fx/flanger.js","./freeverb.js":"/Users/charlie/Documents/code/gibberish/js/fx/freeverb.js","./ringMod.js":"/Users/charlie/Documents/code/gibberish/js/fx/ringMod.js","./tremolo.js":"/Users/charlie/Documents/code/gibberish/js/fx/tremolo.js","./vibrato.js":"/Users/charlie/Documents/code/gibberish/js/fx/vibrato.js","./wavefolder.js":"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/flanger.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     proto = require( './effect.js' )
 
@@ -22136,7 +22035,7 @@ return Flanger
 
 }
 
-},{"./effect.js":190,"genish.js":37}],193:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/freeverb.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -22244,7 +22143,7 @@ return Freeverb
 }
 
 
-},{"./effect.js":190,"genish.js":37}],194:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/ringMod.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -22309,7 +22208,7 @@ return RingMod
 
 }
 
-},{"./effect.js":190,"genish.js":37}],195:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/tremolo.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -22382,7 +22281,7 @@ return Tremolo
 
 }
 
-},{"./effect.js":190,"genish.js":37}],196:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/vibrato.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -22469,7 +22368,7 @@ return Vibrato
 
 }
 
-},{"./effect.js":190,"genish.js":37}],197:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.js":[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -22606,7 +22505,7 @@ module.exports = function (Gibberish) {
 
   return Wavefolder;
 };
-},{"./effect.js":190,"genish.js":37}],198:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/index.js":[function(require,module,exports){
 let MemoryHelper = require( 'memory-helper' ),
     genish       = require( 'genish.js' )
     
@@ -23093,7 +22992,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzer.js":166,"./analysis/analyzers.js":167,"./envelopes/envelopes.js":172,"./filters/filters.js":181,"./fx/effect.js":190,"./fx/effects.js":191,"./instruments/instrument.js":204,"./instruments/instruments.js":205,"./instruments/polyMixin.js":209,"./instruments/polytemplate.js":210,"./misc/binops.js":215,"./misc/bus.js":216,"./misc/bus2.js":217,"./misc/monops.js":218,"./misc/panner.js":219,"./misc/time.js":220,"./oscillators/oscillators.js":223,"./scheduling/scheduler.js":227,"./scheduling/seq2.js":228,"./scheduling/sequencer.js":229,"./scheduling/tidal.js":230,"./ugen.js":231,"./ugenTemplate.js":232,"./utilities.js":233,"./workletProxy.js":234,"genish.js":37,"memory-helper":236}],199:[function(require,module,exports){
+},{"./analysis/analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","./analysis/analyzers.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzers.js","./envelopes/envelopes.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/envelopes.js","./filters/filters.js":"/Users/charlie/Documents/code/gibberish/js/filters/filters.js","./fx/effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","./fx/effects.js":"/Users/charlie/Documents/code/gibberish/js/fx/effects.js","./instruments/instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","./instruments/instruments.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instruments.js","./instruments/polyMixin.js":"/Users/charlie/Documents/code/gibberish/js/instruments/polyMixin.js","./instruments/polytemplate.js":"/Users/charlie/Documents/code/gibberish/js/instruments/polytemplate.js","./misc/binops.js":"/Users/charlie/Documents/code/gibberish/js/misc/binops.js","./misc/bus.js":"/Users/charlie/Documents/code/gibberish/js/misc/bus.js","./misc/bus2.js":"/Users/charlie/Documents/code/gibberish/js/misc/bus2.js","./misc/monops.js":"/Users/charlie/Documents/code/gibberish/js/misc/monops.js","./misc/panner.js":"/Users/charlie/Documents/code/gibberish/js/misc/panner.js","./misc/time.js":"/Users/charlie/Documents/code/gibberish/js/misc/time.js","./oscillators/oscillators.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/oscillators.js","./scheduling/scheduler.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/scheduler.js","./scheduling/seq2.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/seq2.js","./scheduling/sequencer.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/sequencer.js","./scheduling/tidal.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/tidal.js","./ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./ugenTemplate.js":"/Users/charlie/Documents/code/gibberish/js/ugenTemplate.js","./utilities.js":"/Users/charlie/Documents/code/gibberish/js/utilities.js","./workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js","memory-helper":"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/clap.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -23163,7 +23062,7 @@ module.exports = function (Gibberish) {
 
   return Clap;
 };
-},{"./instrument.js":204,"genish.js":37}],200:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/conga.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -23204,7 +23103,7 @@ module.exports = function( Gibberish ) {
   return [ Conga, PolyConga ]
 }
 
-},{"./instrument.js":204,"genish.js":37}],201:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/cowbell.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -23248,7 +23147,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":204,"genish.js":37}],202:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/fm.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -23365,7 +23264,7 @@ module.exports = function (Gibberish) {
 
   return [FM, PolyFM];
 };
-},{"./instrument.js":204,"genish.js":37}],203:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/hat.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -23419,7 +23318,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":204,"genish.js":37}],204:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js":[function(require,module,exports){
 const ugen = require( '../ugen.js' )()
 
 const instrument = Object.create( ugen )
@@ -23459,7 +23358,7 @@ Object.assign( instrument, {
 
 module.exports = instrument
 
-},{"../ugen.js":231}],205:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/instruments.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
 const instruments = {
@@ -23494,7 +23393,7 @@ return instruments
 
 }
 
-},{"./clap.js":199,"./conga.js":200,"./cowbell.js":201,"./fm.js":202,"./hat.js":203,"./karplusstrong.js":206,"./kick.js":207,"./monosynth.js":208,"./sampler.js":211,"./snare.js":212,"./synth.js":213,"./tom.js":214}],206:[function(require,module,exports){
+},{"./clap.js":"/Users/charlie/Documents/code/gibberish/js/instruments/clap.js","./conga.js":"/Users/charlie/Documents/code/gibberish/js/instruments/conga.js","./cowbell.js":"/Users/charlie/Documents/code/gibberish/js/instruments/cowbell.js","./fm.js":"/Users/charlie/Documents/code/gibberish/js/instruments/fm.js","./hat.js":"/Users/charlie/Documents/code/gibberish/js/instruments/hat.js","./karplusstrong.js":"/Users/charlie/Documents/code/gibberish/js/instruments/karplusstrong.js","./kick.js":"/Users/charlie/Documents/code/gibberish/js/instruments/kick.js","./monosynth.js":"/Users/charlie/Documents/code/gibberish/js/instruments/monosynth.js","./sampler.js":"/Users/charlie/Documents/code/gibberish/js/instruments/sampler.js","./snare.js":"/Users/charlie/Documents/code/gibberish/js/instruments/snare.js","./synth.js":"/Users/charlie/Documents/code/gibberish/js/instruments/synth.js","./tom.js":"/Users/charlie/Documents/code/gibberish/js/instruments/tom.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/karplusstrong.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -23586,7 +23485,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":204,"genish.js":37}],207:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/kick.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -23637,7 +23536,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":204,"genish.js":37}],208:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/monosynth.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js'),
       feedbackOsc = require('../oscillators/fmfeedbackosc.js');
@@ -23747,7 +23646,7 @@ module.exports = function (Gibberish) {
 
   return [Mono, PolyMono];
 };
-},{"../oscillators/fmfeedbackosc.js":222,"./instrument.js":204,"genish.js":37}],209:[function(require,module,exports){
+},{"../oscillators/fmfeedbackosc.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js","./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/polyMixin.js":[function(require,module,exports){
 // XXX TOO MANY GLOBAL GIBBERISH VALUES
 
 const Gibberish = require( '../index.js' )
@@ -23835,7 +23734,7 @@ module.exports = {
   triggerNote:null
 }
 
-},{"../index.js":198}],210:[function(require,module,exports){
+},{"../index.js":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/polytemplate.js":[function(require,module,exports){
 /*
  * This files creates a factory generating polysynth constructors.
  */
@@ -23956,7 +23855,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../workletProxy.js":234,"genish.js":37}],211:[function(require,module,exports){
+},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/sampler.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -24177,7 +24076,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./instrument.js":204,"genish.js":37}],212:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/snare.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
   
@@ -24228,7 +24127,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":204,"genish.js":37}],213:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/synth.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -24332,7 +24231,7 @@ module.exports = function (Gibberish) {
 
   return [Synth, PolySynth];
 };
-},{"./instrument.js":204,"genish.js":37}],214:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/tom.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -24383,7 +24282,7 @@ module.exports = function( Gibberish ) {
   return Tom
 }
 
-},{"./instrument.js":204,"genish.js":37}],215:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/binops.js":[function(require,module,exports){
 const ugenproto = require( '../ugen.js' )(),
      __proxy     = require( '../workletProxy.js' ),
      g = require( 'genish.js' )
@@ -24498,7 +24397,7 @@ module.exports = function( Gibberish ) {
   return Binops
 }
 
-},{"../ugen.js":231,"../workletProxy.js":234,"genish.js":37}],216:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/bus.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )(),
     __proxy= require( '../workletProxy.js' )
@@ -24581,7 +24480,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":231,"../workletProxy.js":234,"genish.js":37}],217:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/bus2.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       __proxy = require( '../workletProxy.js' )
@@ -24720,7 +24619,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":231,"../workletProxy.js":234,"genish.js":37}],218:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/monops.js":[function(require,module,exports){
 const  g    = require( 'genish.js'  ),
        ugen = require( '../ugen.js' )()
 
@@ -24782,7 +24681,7 @@ module.exports = function( Gibberish ) {
   return Monops
 }
 
-},{"../ugen.js":231,"genish.js":37}],219:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/panner.js":[function(require,module,exports){
 const g = require( 'genish.js' )
 
 const ugen = require( '../ugen.js' )()
@@ -24819,7 +24718,7 @@ return Panner
 
 }
 
-},{"../ugen.js":231,"genish.js":37}],220:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/time.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const Time = {
@@ -24848,7 +24747,7 @@ module.exports = function( Gibberish ) {
   return Time
 }
 
-},{}],221:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibberish/js/oscillators/brownnoise.js":[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       noise = genish.noise;
@@ -24868,7 +24767,7 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":37}],222:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js":[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
@@ -24944,7 +24843,7 @@ let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
 
 module.exports = feedbackOsc
 
-},{"genish.js":37}],223:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/oscillators.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       feedbackOsc = require( './fmfeedbackosc.js' ),
@@ -25124,7 +25023,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":231,"./brownnoise.js":221,"./fmfeedbackosc.js":222,"./pinknoise.js":224,"./polyblep.js":225,"./wavetable.js":226,"genish.js":37}],224:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./brownnoise.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/brownnoise.js","./fmfeedbackosc.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js","./pinknoise.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/pinknoise.js","./polyblep.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/polyblep.js","./wavetable.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/wavetable.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/pinknoise.js":[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       data = genish.data,
@@ -25149,7 +25048,7 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":37}],225:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/polyblep.js":[function(require,module,exports){
 const genish = require('genish.js');
 const g = genish;
 
@@ -25207,7 +25106,7 @@ const polyBlep = function (__frequency, argumentProps) {
 };
 
 module.exports = polyBlep;
-},{"genish.js":37}],226:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/wavetable.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )()
 
@@ -25241,7 +25140,7 @@ module.exports = function( Gibberish ) {
   return Wavetable
 }
 
-},{"../ugen.js":231,"genish.js":37}],227:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/scheduler.js":[function(require,module,exports){
 const Queue = require( '../external/priorityqueue.js' )
 const Big   = require( 'big.js' )
 
@@ -25320,7 +25219,7 @@ Object.defineProperty( Scheduler, 'shouldSync', {
 
 module.exports = Scheduler
 
-},{"../external/priorityqueue.js":174,"big.js":235}],228:[function(require,module,exports){
+},{"../external/priorityqueue.js":"/Users/charlie/Documents/code/gibberish/js/external/priorityqueue.js","big.js":"/Users/charlie/Documents/code/gibberish/node_modules/big.js/big.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/seq2.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       __proxy = require( '../workletProxy.js' ),
       ugen = require( '../ugen.js' )()
@@ -25519,7 +25418,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":231,"../workletProxy.js":234,"genish.js":37}],229:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/sequencer.js":[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 
 module.exports = function( Gibberish ) {
@@ -25614,7 +25513,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":234}],230:[function(require,module,exports){
+},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/tidal.js":[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 const Pattern = require( 'tidal.pegjs' )
 
@@ -25809,7 +25708,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":234,"tidal.pegjs":284}],231:[function(require,module,exports){
+},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","tidal.pegjs":"/Users/charlie/Documents/code/tidal.peg/src/pattern.js"}],"/Users/charlie/Documents/code/gibberish/js/ugen.js":[function(require,module,exports){
 let Gibberish = null
 
 const __ugen = function( __Gibberish ) {
@@ -25956,7 +25855,7 @@ const __ugen = function( __Gibberish ) {
 
 module.exports = __ugen
 
-},{}],232:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibberish/js/ugenTemplate.js":[function(require,module,exports){
 const __proxy = require( './workletProxy.js' )
 const effectProto = require( './fx/effect.js' )
 
@@ -26112,7 +26011,7 @@ module.exports = function( Gibberish ) {
   return factory
 }
 
-},{"./fx/effect.js":190,"./workletProxy.js":234}],233:[function(require,module,exports){
+},{"./fx/effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","./workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js"}],"/Users/charlie/Documents/code/gibberish/js/utilities.js":[function(require,module,exports){
 const genish = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -26254,7 +26153,10 @@ const utilities = {
         const value = messages[ i + 2 ]
         const obj = Gibberish.worklet.ugens.get( id )
 
-        //[>if( propName !== 'output' )<] console.log( propName, value, id )
+        if( Gibberish.worklet.debug === true ) {
+          //if( propName !== 'output' ) console.log( propName, value, id )
+          console.log( propName, value, id )
+        }
 
         if( obj !== undefined && propName.indexOf('.') === -1 && propName !== 'id' ) { 
           if( obj[ propName ] !== undefined ) {
@@ -26310,7 +26212,7 @@ return utilities
 
 }
 
-},{"genish.js":37}],234:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/workletProxy.js":[function(require,module,exports){
 const serialize = require('serialize-javascript')
 
 module.exports = function( Gibberish ) {
@@ -26469,7 +26371,7 @@ return __proxy
 
 }
 
-},{"serialize-javascript":237}],235:[function(require,module,exports){
+},{"serialize-javascript":"/Users/charlie/Documents/code/gibberish/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/big.js/big.js":[function(require,module,exports){
 /* big.js v3.1.3 https://github.com/MikeMcl/big.js/LICENCE */
 ;(function (global) {
     'use strict';
@@ -27617,9 +27519,9 @@ return __proxy
     }
 })(this);
 
-},{}],236:[function(require,module,exports){
-arguments[4][75][0].apply(exports,arguments)
-},{"dup":75}],237:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js":[function(require,module,exports){
+arguments[4]["/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js"][0].apply(exports,arguments)
+},{}],"/Users/charlie/Documents/code/gibberish/node_modules/serialize-javascript/index.js":[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -27788,7 +27690,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],238:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/alterations.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen } = require( './var.js' )
@@ -27896,7 +27798,7 @@ Alterations.Halve.RIGHT = 2
 
 module.exports = Alterations
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],239:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/audio.js":[function(require,module,exports){
 const Audio = {
   __hasInput: false,
   ctx: null,
@@ -27986,7 +27888,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{}],240:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/background.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' )
@@ -28042,7 +27944,7 @@ const BG = function( Scene, SDF ) {
 
 module.exports = BG 
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],241:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/camera.js":[function(require,module,exports){
 const Camera = {
   init( gl, program, handler ) {
     const camera_pos    = gl.getUniformLocation( program, 'camera_pos' )
@@ -28122,10 +28024,11 @@ const Camera = {
 
 module.exports = Camera
 
-},{}],242:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/distanceDeformations.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
+const Transform = require( './transform.js' )
 
 const ops = { 
   Displace( __name ) {
@@ -28139,7 +28042,7 @@ const ops = {
     displaceString += `sin( ${this.amount.emit()}.z * ${name}.z );\n`
 
     const output = {
-      out: `vec2((d1${this.id} + d2${this.id}*${this.scale.emit()})*.5, ${sdf.out}.y)`, 
+      out: `vec2((d1${this.id} + d2${this.id}*${this.size.emit()})*.5, ${sdf.out}.y)`, 
       preface: sdf.preface + sdfStr + displaceString 
     }
 
@@ -28153,7 +28056,7 @@ const ops = {
     let preface=`        float c${this.id} = cos( ${this.amount.emit()}.x * ${name}.y );
         float s${this.id} = sin( ${this.amount.emit()}.x * ${name}.y );
         mat2  m${this.id} = mat2( c${this.id},-s${this.id},s${this.id},c${this.id} );
-        vec3  q${this.id} = vec3( m${this.id} * ${name}.xz, ${name}.y );\n`
+        vec4  q${this.id} = vec4( m${this.id} * ${name}.xz, ${name}.y, 1. );\n`
 
     if( typeof sdf.preface === 'string' ) {
       preface += sdf.preface
@@ -28169,7 +28072,7 @@ const ops = {
     let preface=`        float c${this.id} = cos( ${this.amount.emit()}.x * ${name}.y );
         float s${this.id} = sin( ${this.amount.emit()}.x * ${name}.y );
         mat2  m${this.id} = mat2( c${this.id},-s${this.id},s${this.id},c${this.id} );
-        vec3  q${this.id} = vec3( m${this.id} * ${name}.xz, ${name}.y );\n`
+        vec4  q${this.id} = vec4( m${this.id} * ${name}.xz, ${name}.y, 1. );\n`
 
     if( typeof sdf.preface === 'string' ) {
       preface += sdf.preface
@@ -28177,7 +28080,30 @@ const ops = {
 
     return { preface, out:sdf.out }
   },
+  
+  // XXX todo: something like https://www.shadertoy.com/view/ldSGzR
+  // https://www.dropbox.com/s/l1yl164jb3rhomq/mm_sfgrad_bump.pdf?dl=0
+  Bump( __name ) {
+    let name = __name === undefined ? 'p' : __name
+    const sdf = this.sdf.emit( 'p'+this.id );
+    const tex = this.amount.emit( name )
 
+    Marching.textures.addTexture( this.amount.value )
+
+    const pointString =  `( ${name} * ${this.transform.emit()} ).xyz`;
+
+    let preface=`        vec3 tex${this.id} = getTexture( ${this.amount.value.id}, ${pointString}, vec3(0.), mat4(0.) ) * ${this.size.emit()};
+        vec4 ${'p'+this.id} = vec4(${pointString} + tex${this.id}, 1.);\n`
+
+    sdf.preface += `\n        
+        ${sdf.out}.x -= min(tex${this.id}.x, min(tex${this.id}.y, tex${this.id}.z));\n` 
+
+    if( typeof sdf.preface === 'string' ) {
+      preface += sdf.preface
+    }
+
+    return { preface, out:sdf.out }
+  },
 }
 
 const DistanceOps = {}
@@ -28194,6 +28120,7 @@ for( let name in ops ) {
     op.amount = b
     op.emit = __op
     op.name = name
+    op.transform = Transform()
 
     const defaultValues = [.5,.5,.5]
 
@@ -28205,35 +28132,43 @@ for( let name in ops ) {
       b.type = 'vec3'
     }
     
-    let __var =  param_wrap( 
-      b, 
-      vec3_var_gen( ...defaultValues ) 
-    )
+    if( name !== 'Bumpz' ) {
+      let __var =  param_wrap( 
+        b, 
+        vec3_var_gen( ...defaultValues ) 
+      )
 
-    // for assigning entire new vectors to property
-    Object.defineProperty( op, 'amount', {
-      get() { return __var },
-      set(v) {
-        if( typeof v === 'object' ) {
-          __var.set( v )
-        }else{
-          __var.value.x = v
-          __var.value.y = v
-          __var.value.z = v
-          __var.value.w = v
-          __var.dirty = true
+      // for assigning entire new vectors to property
+      Object.defineProperty( op, 'amount', {
+        get() { return __var },
+        set(v) {
+          if( typeof v === 'object' ) {
+            __var.set( v )
+          }else{
+            __var.value.x = v
+            __var.value.y = v
+            __var.value.z = v
+            __var.value.w = v
+            __var.dirty = true
+          }
         }
-      }
-    })
+      })
 
-    op.params = [{ name:'amount' }]
+      op.params = [{ name:'amount' }]
+    }else{
+      op.params = []
+      op.emit_decl = function() {}
+      op.emit = function() {}
+      op.update_data= function() {}
+      op.upload_location = function() {}
+    }
 
-    if( name === 'Displace' ) {
+    if( name === 'Displace' || name === 'Bump' ) {
       let __var2 =  param_wrap( 
         c, 
         float_var_gen( .03 ) 
       )
-      Object.defineProperty( op, 'scale', {
+      Object.defineProperty( op, 'size', {
         get() { return __var2 },
         set(v) {
           __var2.set( v )
@@ -28241,7 +28176,7 @@ for( let name in ops ) {
         }
       })
 
-      op.params.push({ name:'scale' })
+      op.params.push({ name:'size' })
     }
     op.__desc = { parameters:op.params }
     return op
@@ -28250,87 +28185,115 @@ for( let name in ops ) {
   DistanceOps[ name ].prototype = SceneNode()
 
   DistanceOps[name].prototype.emit_decl = function () {
-    let str =  this.sdf.emit_decl() + this.amount.emit_decl()
-    if( this.name === 'Displace' ) str += this.scale.emit_decl()  
+    let str =  this.sdf.emit_decl() + (this.name !== 'Bump' ? this.amount.emit_decl() : '')
+    str += this.transform.emit_decl()
+    if( this.name === 'Displace' || this.name === 'Bump' ) str += this.size.emit_decl()  
 
     return str
   };
 
   DistanceOps[name].prototype.update_location = function(gl, program) {
     this.sdf.update_location( gl, program )
-    this.amount.update_location( gl, program )
-    if( this.name === 'Displace' ) this.scale.update_location( gl, program ) 
+    if( this.name !== 'Bump' ) this.amount.update_location( gl, program )
+    if( this.name === 'Displace' || this.name === 'Bump') this.size.update_location( gl, program ) 
+    this.transform.update_location( gl, program )
   }
 
   DistanceOps[name].prototype.upload_data = function(gl) {
     this.sdf.upload_data( gl )
-    this.amount.upload_data( gl )
-    if( this.name === 'Displace' ) this.scale.upload_data( gl )
+    if( this.name !== 'Bump' ) this.amount.upload_data( gl )
+    if( this.name === 'Displace' || this.name === 'Bump') this.size.upload_data( gl )
+    this.transform.upload_data( gl )
   }
 }
 
 module.exports = DistanceOps
 
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],243:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./transform.js":"/Users/charlie/Documents/code/marching/js/transform.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/distanceOperations.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
-const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' )
+const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
+const Transform = require( './transform.js' )
+const glslops = require( './distanceOperationsGLSL.js' )
 
 const ops = { 
-  Union( a,b )        { return `opU( ${a}, ${b} )` },
-  SmoothUnion(  a,b,c) { return `opSmoothUnion( ${a}, ${b}, ${c} )` },
-  Intersection( a,b ) { return `opI( ${a}, ${b} )` },
-  SmoothIntersection( a,b,c ) { return `opSmoothIntersection( ${a}, ${b}, ${c} )` },  
-  Difference( a,b ) { return `opS( ${a}, ${b} )` },  
-  SmoothDifference( a,b,c ) { return `opSmoothSubtraction( ${b}, ${a}, ${c} )` },  
-  StairsUnion(  a,b,c,d ) { return `fOpUnionStairs( ${a}, ${b}, ${c}, ${d} )` },
-  StairsIntersection( a,b,c,d ) { return `fOpIntersectionStairs( ${a}, ${b}, ${c}, ${d} )` },
-  StairsDifference( a,b,c,d ) { return `fOpSubstractionStairs( ${a}, ${b}, ${c}, ${d} )` },
-  RoundUnion( a,b,c ) { return `fOpUnionRound( ${a}, ${b}, ${c} )` },
-  RoundDifference( a,b,c ) { return `fOpDifferenceRound( ${a}, ${b}, ${c} )` },
-  RoundIntersection( a,b,c ) { return `fOpIntersectionRound( ${a}, ${b}, ${c} )` },
-  ChamferUnion( a,b,c ) { return `fOpUnionChamfer( ${a}, ${b}, ${c} )` },
-  ChamferDifference( a,b,c ) { return `fOpDifferenceChamfer( ${a}, ${b}, ${c} )` },
-  ChamferIntersection( a,b,c ) { return `fOpIntersectionChamfer( ${a}, ${b}, ${c} )` },
-  Pipe( a,b,c ) { return `fOpPipe( ${a}, ${b}, ${c} )` },
-  Engrave( a,b,c ) { return `fOpEngrave( ${a}, ${b}, ${c} )` },
-  Groove( a,b,c,d ) { return `fOpGroove( ${a}, ${b}, ${c}, ${d} )` },
-  Tongue( a,b,c,d ) { return `fOpTongue( ${a}, ${b}, ${c}, ${d} )` },
+  Union( a,b,c,d,e ) { return `opU( ${a}, ${b}, ${c}, ${d}, ${e} )` },
+  SmoothUnion(  a,b,c,d,e,f) { return `opSmoothUnion( ${a}, ${b}, ${c}, ${d}, ${e}, ${f} )` },
+  Intersection( a,b,c,d,e ) { return `opI( ${a}, ${b}, ${c}, ${d}, ${e} )` },
+  SmoothIntersection( a,b,c,d,e,f ) { return `opSmoothIntersection( ${a}, ${b}, ${c}, ${d}, ${e}, ${f})` },  
+  Difference( a,b,c,d,e ) { return `opS( ${a}, ${b}, ${c}, ${d}, ${e} )` },  
+  SmoothDifference( a,b,c,d,e,f ) { return `opSmoothSubtraction( ${a}, ${b}, ${c}, ${d}, ${e}, ${f})` },  
+  StairsUnion(  a,b,c,d,e,f,g ) { return `fOpUnionStairs( ${a}, ${b}, ${c}, ${d}, ${e}, ${f}, ${g} )` },
+  StairsIntersection( a,b,c,d,e,f,g ) { return `fOpIntersectionStairs( ${a}, ${b}, ${c}, ${d}, ${e}, ${f}, ${g} )` },
+  StairsDifference( a,b,c,d,e,f,g ) { return `fOpSubstractionStairs( ${a}, ${b}, ${c}, ${d}, ${e}, ${f}, ${g} )` },
+  RoundUnion( a,b,c,d,e,f ) { return `fOpUnionRound( ${a}, ${b}, ${c}, ${d}, ${e}, ${f})` },
+  RoundDifference( a,b,c,d,e,f ) { return `fOpDifferenceRound( ${a}, ${b}, ${c}, ${d}, ${e}, ${f})` },
+  RoundIntersection( a,b,c,d,e,f ) { return `fOpIntersectionRound( ${a}, ${b}, ${c}, ${d}, ${e}, ${f})` },
+  ChamferUnion( a,b,c,d,e,f ) { return `fOpUnionChamfer( ${a}, ${b}, ${c}, ${d}, ${e}, ${f} )` },
+  ChamferDifference( a,b,c,d,e,f ) { return `fOpDifferenceChamfer( ${a}, ${b}, ${c}, ${d}, ${e}, ${f})` },
+  ChamferIntersection( a,b,c,d,e,f ) { return `fOpIntersectionChamfer( ${a}, ${b}, ${c}, ${d}, ${e}, ${f})` },
+  Pipe( a,b,c,d,e,f ) { return `fOpPipe( ${a}, ${b}, ${c}, ${d}, ${e}, ${f})` },
+  Engrave( a,b,c,d,e,f ) { return `fOpEngrave( ${a}, ${b}, ${c}, ${d}, ${e}, ${f} )` },
+  Groove( a,b,c,d,e,f,g ) { return `fOpGroove( ${a}, ${b}, ${c}, ${d}, ${e}, ${f}, ${g} )` },
+  Tongue( a,b,c,d,e,f,g ) { return `fOpTongue( ${a}, ${b}, ${c}, ${d}, ${e}, ${f}, ${g} )` },
   Onion( a,b ) { return `opOnion( ${a}, ${b} )` },
-  Switch( a,b,c ) { return `( ${c} < .5 ? ${a} : ${b} )` }
+  Switch( a,b,c,d,e,f ) { return `opSwitch( ${a}, ${b}, ${c} )` }
 }
 
-const DistanceOps = {}
+const emit_float = function( a ) {
+	if (a % 1 === 0)
+		return a.toFixed( 1 )
+	else
+		return a
+}
+
+const DistanceOps = {
+  __glsl:[],
+  __getGLSL() {
+    return this.__glsl.join('\n')
+  },
+  __clear() { this.__glsl.length = 0 }
+}
+
 
 for( let name in ops ) {
 
   // get codegen function
   let op = ops[ name ]
+  const name2 = name + '2'
 
   // create constructor
   DistanceOps[ name ] = function( a,b,c,d ) {
     const op = Object.create( DistanceOps[ name ].prototype )
     op.a = a
     op.b = b
+    op.transform = Transform()
+    op.id = VarAlloc.alloc()
+    op.type = 'domain_op'
 
     let __c = param_wrap( c, float_var_gen(.3) )
 
-    Object.defineProperty( op, 'c', {
-      get() { return __c },
-      set(v) {
-        __c.set( v )
-      }
-    })
+    op.__len = ops[ name ].length
+    if( op.__len > 5 ) {
+      Object.defineProperty( op, 'c', {
+        get() { return __c },
+        set(v) {
+          __c.set( v )
+        }
+      })
+      
+      if( op.__len > 6 ) {
+        let __d = param_wrap( d, float_var_gen(4) )
 
-    let __d = param_wrap( d, float_var_gen(4) )
-
-    Object.defineProperty( op, 'd', {
-      get() { return __d },
-      set(v) {
-        __d.set( v )
+        Object.defineProperty( op, 'd', {
+          get() { return __d },
+          set(v) {
+            __d.set( v )
+          }
+        })
       }
-    })
+    }
 
     op.matId = MaterialID.alloc()
 
@@ -28339,25 +28302,103 @@ for( let name in ops ) {
 
     return op
   } 
+  
+  DistanceOps[ name2 ] = function( ...args ) {
+    // accepts unlimited arguments, but the last one could be a blending coefficient
+    let blend = .25, coeff=4, u
+
+    if( typeof args[ args.length - 1 ] === 'number' ) {
+      blend = args.pop()
+
+      // if there are two non-sdf arguments to the function...
+      if( typeof args[ args.length - 1 ] === 'number' ) {
+        coeff = blend
+        blend = args.pop()
+      }
+
+      u = args.reduce( (state,next) => DistanceOps[ name ]( state, next, blend, coeff ) )
+    }else{
+      u = args.reduce( (state,next) => DistanceOps[ name ]( state, next ) )
+    }
+
+    return u
+  }
 
   DistanceOps[ name ].prototype = SceneNode()
 
-  DistanceOps[ name ].prototype.emit = function ( __name ) {
-    const emitterA = this.a.emit( __name )
-    const emitterB = this.b.emit( __name )
-    const emitterC = this.c !== undefined ? this.c.emit() : null
-    const emitterD = this.d !== undefined ? this.d.emit() : null
+  DistanceOps[ name ].prototype.emit = function ( pname='p' ) {
+    const glslobj = glslops[ name ]
+    
+    // some definitions are a single string, and not split into
+    // separate float and opOut functions
+    if( typeof glslobj === 'string' ) {
+      if( DistanceOps.__glsl.indexOf( glslobj ) === -1 ) {
+        DistanceOps.__glsl.push( glslobj )
+      }
+    }else{
+      // some distance operations are dependent on other ones...
+      // if this one has dependencies add them.
+      // dependencies must be added before adding other functions
+      // so that they're above them in the final GLSL code.
+      if( glslobj.dependencies !== undefined ) {
+        for( let dname of glslobj.dependencies ) {
+          const d = glslops[ dname ]
+          if( DistanceOps.__glsl.indexOf( d.float ) === -1 ) {
+            DistanceOps.__glsl.push( d.float )
+          }
+        }
+      }  
+      if( DistanceOps.__glsl.indexOf( glslobj.float ) === -1 ) {
+        DistanceOps.__glsl.push( glslobj.float )
+      }
+      if( DistanceOps.__glsl.indexOf( glslobj.opOut ) === -1 ) {
+        DistanceOps.__glsl.push( glslobj.opOut )
+      }
+    }
+
+    const tname = `transformDO${this.id}`
+    const prequel = `        vec4 ${tname} = ${pname} * ${this.transform.emit()};\n`
+    
+    // up to seven arguments... sdfa, sdfb, arg1 | sdfa.transform, arg2 | sdfb.transform, op.transform etc.
+    // first two are fixed, rest are variable
+    const emitterA = this.a.emit( tname )
+    const emitterB = this.b.emit( tname )
+    const emitterC = this.c !== undefined ? this.c.emit() : this.a.type === 'domain_op' ? 'do'+this.a.id+'.transform': this.a.transform.emit()
+    const emitterD = this.d !== undefined 
+      ? this.d.emit() 
+      : this.__len === 5 
+        ? this.b.type === 'domain_op' ? 'do'+this.b.id+'.transform': this.b.transform.emit() 
+        : this.a.type === 'domain_op' ? 'do'+this.a.id+'.transform': this.a.transform.emit()
+
+    const emitterE = this.__len <= 5 
+      ? this.transform.emit() 
+      : this.__len === 6 
+        ? this.b.type === 'domain_op' ? 'do'+this.b.id+'.transform': this.b.transform.emit()
+        : this.a.type === 'domain_op' ? 'do'+this.a.id+'.transform': this.a.transform.emit()
+
+    const emitterF = this.__len <= 5 
+      ? null 
+      : this.__len === 6 
+        ? this.transform.emit() 
+        : this.b.type === 'domain_op' ? 'do'+this.b.id+'.transform': this.b.transform.emit()
+ 
+    const emitterG = this.__len <= 6 ? null : this.transform.emit()
+    
+    const body = `
+        opOut do${this.id} = ${op( emitterA.out, emitterB.out, emitterC, emitterD, emitterE, emitterF, emitterG )};
+        do${this.id}.x *= ${this.transform.emit()}_scale;
+    `
 
     const output = {
-      out: op( emitterA.out, emitterB.out, emitterC, emitterD ), 
-      preface: (emitterA.preface || '') + (emitterB.preface || '')
+      out: 'do'+this.id,
+      preface: prequel + (emitterA.preface || '') + (emitterB.preface || '') + body
     }
 
     return output
   }
 
   DistanceOps[name].prototype.emit_decl = function () {
-    let str =  this.a.emit_decl() + this.b.emit_decl()
+    let str =  this.transform.emit_decl() + this.a.emit_decl() + this.b.emit_decl()
     if( this.c !== undefined ) str += this.c.emit_decl()
     if( this.d !== undefined ) str += this.d.emit_decl()
 
@@ -28373,12 +28414,14 @@ for( let name in ops ) {
 
   DistanceOps[name].prototype.update_location = function(gl, program) {
     this.a.update_location( gl, program )
+    this.transform.update_location( gl, program )
     this.b.update_location( gl, program )
     if( this.c !== undefined ) this.c.update_location( gl, program )
     if( this.d !== undefined ) this.d.update_location( gl, program )
   }
 
   DistanceOps[name].prototype.upload_data = function(gl) {
+    this.transform.upload_data( gl )
     this.a.upload_data( gl )
     this.b.upload_data( gl )
     if( this.c !== undefined ) this.c.upload_data( gl )
@@ -28387,96 +28430,467 @@ for( let name in ops ) {
   }
 }
 
-DistanceOps.Union2 = function( ...args ) {
-  const u = args.reduce( (state,next) => DistanceOps.Union( state, next ) )
+//DistanceOps.Union2 = function( ...args ) {
+//  const u = args.reduce( (state,next) => DistanceOps.Union( state, next ) )
 
-  return u
-}
+//  return u
+//}
 
-DistanceOps.SmoothUnion2 = function( ...args ) {
-  // accepts unlimited arguments, but the last one could be a blending coefficient
-  let blend = .8, u
+//DistanceOps.SmoothUnion2 = function( ...args ) {
+//  // accepts unlimited arguments, but the last one could be a blending coefficient
+//  let blend = .8, u
 
-  if( typeof args[ args.length - 1 ] === 'number' ) {
-    blend = args.pop()
-    u = args.reduce( (state,next) => DistanceOps.SmoothUnion( state, next, blend ) )
-  }else{
-    u = args.reduce( (state,next) => DistanceOps.SmoothUnion( state, next ) )
-  }
+//  if( typeof args[ args.length - 1 ] === 'number' ) {
+//    blend = args.pop()
+//    u = args.reduce( (state,next) => DistanceOps.SmoothUnion( state, next, blend ) )
+//  }else{
+//    u = args.reduce( (state,next) => DistanceOps.SmoothUnion( state, next ) )
+//  }
 
-  return u
-}
+//  return u
+//}
 
-DistanceOps.RoundUnion2 = function( ...args ) {
-  // accepts unlimited arguments, but the last one could be a blending coefficient
-  let blend = .25, u
+//DistanceOps.RoundUnion2 = function( ...args ) {
+//  // accepts unlimited arguments, but the last one could be a blending coefficient
+//  let blend = .25, u
 
-  if( typeof args[ args.length - 1 ] === 'number' ) {
-    blend = args.pop()
-    u = args.reduce( (state,next) => DistanceOps.RoundUnion( state, next, blend ) )
-  }else{
-    u = args.reduce( (state,next) => DistanceOps.RoundUnion( state, next ) )
-  }
+//  if( typeof args[ args.length - 1 ] === 'number' ) {
+//    blend = args.pop()
+//    u = args.reduce( (state,next) => DistanceOps.RoundUnion( state, next, blend ) )
+//  }else{
+//    u = args.reduce( (state,next) => DistanceOps.RoundUnion( state, next ) )
+//  }
 
-  return u
-}
+//  return u
+//}
 
-ops.SmoothDifference.code = `      float opSmoothSubtraction( float d1, float d2, float k ) {
-        float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
-        return mix( d2, -d1, h ) + k*h*(1.0-h); 
-      }
-      vec2 opSmoothSubtraction( vec2 d1, vec2 d2, float k ) {
-        float h = clamp( 0.5 - 0.5*(d2.x+d1.x)/k, 0.0, 1.0 );
-        return vec2( mix( d2.x, -d1.x, h ) + k*h*(1.0-h), mix( d2.y, d1.y, h ) );
-      }
-`
+//ops.SmoothDifference.code = `      float opSmoothSubtraction( float d1, float d2, float k ) {
+//        float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
+//        return mix( d2, -d1, h ) + k*h*(1.0-h); 
+//      }
+//      vec2 opSmoothSubtraction( vec2 d1, vec2 d2, float k ) {
+//        float h = clamp( 0.5 - 0.5*(d2.x+d1.x)/k, 0.0, 1.0 );
+//        return vec2( mix( d2.x, -d1.x, h ) + k*h*(1.0-h), mix( d2.y, d1.y, h ) );
+//      }
+//`
 
-ops.SmoothIntersection.code = `      float opSmoothIntersection( float d1, float d2, float k ) {
-        float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
-        return mix( d2, d1, h ) + k*h*(1.0-h); 
-      }
-      vec2  opSmoothIntersection( vec2 d1, vec2 d2, float k ) {
-        float h = clamp( 0.5 - 0.5*(d2.x-d1.x)/k, 0.0, 1.0 );
-        return vec2( mix( d2.x, d1.x, h ) + k*h*(1.0-h), mix( d2.y, d1.y, h ) ); 
-      }
-`      
+//ops.SmoothIntersection.code = `      float opSmoothIntersection( float d1, float d2, float k ) {
+//        float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
+//        return mix( d2, d1, h ) + k*h*(1.0-h); 
+//      }
+//      vec2  opSmoothIntersection( vec2 d1, vec2 d2, float k ) {
+//        float h = clamp( 0.5 - 0.5*(d2.x-d1.x)/k, 0.0, 1.0 );
+//        return vec2( mix( d2.x, d1.x, h ) + k*h*(1.0-h), mix( d2.y, d1.y, h ) ); 
+//      }
+//`      
 
-ops.SmoothUnion.code = `      vec2 smin( vec2 a, vec2 b, float k) {
-        float startx = clamp( 0.5 + 0.5 * ( b.x - a.x ) / k, 0.0, 1.0 );
-        float hx = mix( b.x, a.x, startx ) - k * startx * ( 1.0 - startx );
+//ops.SmoothUnion.code = `      vec2 smin( vec2 a, vec2 b, float k) {
+//        float startx = clamp( 0.5 + 0.5 * ( b.x - a.x ) / k, 0.0, 1.0 );
+//        float hx = mix( b.x, a.x, startx ) - k * startx * ( 1.0 - startx );
 
 
-        // material blending... i am proud.
-        float starty = clamp( (b.x - a.x) / k, 0., 1. );
-        float hy = 1. - (a.y + ( b.y - a.y ) * starty); 
+//        // material blending... i am proud.
+//        float starty = clamp( (b.x - a.x) / k, 0., 1. );
+//        float hy = 1. - (a.y + ( b.y - a.y ) * starty); 
 
-        return vec2( hx, hy ); 
-      }
-      float smin(float a, float b, float k) {
-        float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
-        return mix(b, a, h) - k * h * (1.0 - h);
-      }
-      //float opS( float d1, float d2 ) { return max(d1,-d2); }
-      //vec2  opS( vec2 d1, vec2 d2 ) {
-      //  return d1.x >= -d2.x ? vec2( d1.x, d1.y ) : vec2(-d2.x, d2.y);
-      //}
+//        return vec2( hx, hy ); 
+//      }
+//      float smin(float a, float b, float k) {
+//        float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+//        return mix(b, a, h) - k * h * (1.0 - h);
+//      }
+//      //float opS( float d1, float d2 ) { return max(d1,-d2); }
+//      //vec2  opS( vec2 d1, vec2 d2 ) {
+//      //  return d1.x >= -d2.x ? vec2( d1.x, d1.y ) : vec2(-d2.x, d2.y);
+//      //}
 
-      float opSmoothUnion( float a, float b, float k) {
-        return smin( a, b, k );
-      }
+//      float opSmoothUnion( float a, float b, float k) {
+//        return smin( a, b, k );
+//      }
 
-      vec2 opSmoothUnion( vec2 a, vec2 b, float k) {
-        return smin( a, b, k);
-      }
-`
+//      vec2 opSmoothUnion( vec2 a, vec2 b, float k) {
+//        return smin( a, b, k);
+//      }
+//`
 module.exports = DistanceOps
 
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],244:[function(require,module,exports){
+},{"./distanceOperationsGLSL.js":"/Users/charlie/Documents/code/marching/js/distanceOperationsGLSL.js","./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./transform.js":"/Users/charlie/Documents/code/marching/js/transform.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/distanceOperationsGLSL.js":[function(require,module,exports){
+module.exports = {
+  Union:{
+    float:`
+      float opU( float d1, float d2 ) {
+        return min(d1,d2);
+      }
+      `,
+    opOut:`
+      opOut opU( opOut d1, opOut d2, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o;
+
+        if( d1.x < d2.x ) {
+          o = opOut( d1.x, d1.y, t1 * top );
+        }else{
+          o = opOut( d2.x, d2.y, t2 * top );
+        }
+
+        return o;
+      }
+      `
+  },
+  Intersection:{
+    float:`
+      float opI( float d1, float d2 ) {
+        return max(d1,d2);
+      }
+      `,
+    opOut:`
+      opOut opI( opOut d1, opOut d2, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o;
+
+        if( d1.x > d2.x ) {
+          o = opOut( d1.x, d1.y, t1 * top );
+        }else{
+          o = opOut( d2.x, d2.y, t2 * top );
+        }
+
+        return o;
+      }
+      `
+  },
+
+  Difference:{
+    float:`
+      float opS( float d1, float d2 ) { return max(d1,-d2); }
+      `,
+    opOut:`
+      opOut opS( opOut d1, opOut d2, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o;
+
+        if( d1.x >= -d2.x ) {
+          o = opOut( d1.x, d1.y, t1 * top );
+        }else{
+          o = opOut( -d2.x, d2.y, t2 * top );
+        }
+
+        return o;
+      }
+      `
+  },
+
+  StairsUnion:{
+    float:`
+      float fOpUnionStairs(float a, float b, float r, float n) {
+        float s = r/n;
+        float u = b-r;
+        return min(min(a,b), 0.5 * (u + a + abs ((mod (u - a + s, 2. * s)) - s)));
+      }`,
+    opOut:`
+      opOut fOpUnionStairs( opOut d1, opOut d2, float r, float n, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut(-1., -1., mat4(1.));
+
+        if( d1.x <= d2.x ) {
+          o.y = d1.y; 
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y; 
+          o.transform = t2 * top;
+        }
+
+        o.x = fOpUnionStairs( d1.x, d2.x, r, n );
+
+        return o;
+      }
+      `
+  },
+  StairsIntersection:{
+    dependencies: ['StairsUnion'],
+    float:`
+      // We can just call Union since stairs are symmetric.
+      float fOpIntersectionStairs(float a, float b, float r, float n) {
+        return -fOpUnionStairs(-a, -b, r, n);
+      }
+      `,
+    opOut:`
+      opOut fOpIntersectionStairs( opOut d1, opOut d2, float r, float n, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = -fOpUnionStairs( -d1.x, -d2.x, r, n );
+
+        if( -d1.x <= -d2.x ) {
+          o.y = d1.y;
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y;
+          o.transform = t2 * top;
+        }
+
+        return o;
+      }
+      `
+  },
+  StairsDifference:{
+    dependencies: ['StairsUnion'],
+    float:`
+      float fOpSubstractionStairs(float a, float b, float r, float n) {
+        return -fOpUnionStairs(-a, b, r, n);
+      }`,
+    opOut:`
+      opOut fOpSubstractionStairs( opOut d1, opOut d2, float r, float n, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = -fOpUnionStairs( -d1.x, d2.x, r, n );
+
+        if( -d1.x <= d2.x ) {
+          o.y = d1.y;
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y;
+          o.transform = t2 * top;
+        }
+
+        return o;
+      }
+      `
+  },
+
+  RoundUnion:{
+    float:`
+      float fOpUnionRound(float a, float b, float r) {
+        vec2 u = max(vec2(r - a,r - b), vec2(0));
+        return max(r, min (a, b)) - length(u);
+      }`,
+
+    opOut:`
+      opOut fOpUnionRound( opOut d1, opOut d2, float r, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpUnionRound( d1.x, d2.x, r );
+
+        if( d1.x <= d2.x ) {
+          o.y = d1.y;
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y;
+          o.transform = t2 * top;
+        }
+
+        return o;
+      }
+      `
+  },
+  RoundIntersection:{
+    float:`
+      float fOpIntersectionRound(float a, float b, float r) {
+        vec2 u = max(vec2(r + a,r + b), vec2(0));
+        return min(-r, max (a, b)) + length(u);
+      }`,
+    opOut:`
+      opOut fOpIntersectionRound( opOut d1, opOut d2, float r, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpIntersectionRound( d1.x, d2.x, r );
+
+        if( d1.x >= d2.x ) {
+          o.y = d1.y;
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y;
+          o.transform = t2 * top;
+        }
+
+        return o;
+      }
+      `
+  },
+
+  RoundDifference:{
+    dependencies: ['RoundIntersection'],
+    float:`
+      float fOpDifferenceRound (float a, float b, float r) {
+        return fOpIntersectionRound(a, -b, r);
+      }`,
+    opOut:`
+      opOut fOpDifferenceRound( opOut d1, opOut d2, float r, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpDifferenceRound( d1.x, d2.x, r );
+
+        if( d1.x >= -d2.x ) {
+          o.y = d1.y;
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y;
+          o.transform = t2 * top;
+        }
+
+        return o;
+      }
+      `
+  },
+  ChamferUnion:{
+    float:`
+      float fOpUnionChamfer(float a, float b, float r) {
+        return min(min(a, b), (a - r + b)*sqrt(0.5));
+      }`,
+    opOut:`
+      opOut fOpUnionChamfer( opOut d1, opOut d2, float r, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpUnionChamfer( d1.x, d2.x, r );
+
+        if( d1.x <= d2.x ) {
+          o.y = d1.y;
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y;
+          o.transform = t2 * top;
+        }
+
+        return o;
+      }
+      `
+  },
+  ChamferIntersection:{
+    float:`
+      float fOpIntersectionChamfer(float a, float b, float r) {
+        return max(max(a, b), (a + r + b)*sqrt(0.5));
+      }`,
+    opOut:`
+      opOut fOpIntersectionChamfer( opOut d1, opOut d2, float r, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpIntersectionChamfer( d1.x, d2.x, r );
+
+        if( d1.x >= d2.x ) {
+          o.y = d1.y;
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y;
+          o.transform = t2 * top;
+        }
+
+        return o;
+      }
+      `
+  },
+
+  ChamferDifference:{
+    dependencies:['ChamferIntersection'],
+    float:`
+      float fOpDifferenceChamfer (float a, float b, float r) {
+        return fOpIntersectionChamfer(a, -b, r);
+      }`,
+    opOut:`
+      opOut fOpDifferenceChamfer( opOut d1, opOut d2, float r, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpDifferenceChamfer( d1.x, d2.x, r );
+
+        if( d1.x >= -d2.x ) {
+          o.y = d1.y;
+          o.transform = t1 * top;
+        }else{
+          o.y = d2.y;
+          o.transform = t2 * top;
+        }
+
+        return o;
+      }
+      `
+  },
+  Pipe:`
+      float fOpPipe(float a, float b, float r) {
+        return length(vec2(a, b)) - r;
+      }
+      opOut fOpPipe( opOut d1, opOut d2, float r, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpPipe( d1.x, d2.x, r );
+
+        o.y = d1.y;
+        o.transform = t1 * top;
+
+        return o;
+      }
+      `,
+
+  Engrave:`
+      float fOpEngrave(float a, float b, float r) {
+        return max(a, (a + r - abs(b))*sqrt(0.5));
+      }
+      opOut fOpEngrave( opOut d1, opOut d2, float r, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpEngrave( d1.x, d2.x, r );
+
+        o.y = d1.y;
+        o.transform = t1 * top;
+
+        return o;
+      }
+      `,
+  Groove:`
+      float fOpGroove(float a, float b, float ra, float rb) {
+        return max(a, min(a + ra, rb - abs(b)));
+      }
+      opOut fOpGroove( opOut d1, opOut d2, float r, float n, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpGroove( d1.x, d2.x, r, n );
+
+        o.y = d1.y;
+        o.transform = t1 * top;
+
+        return o;
+      }
+      `,
+
+  Tongue:`
+      float fOpTongue(float a, float b, float ra, float rb) {
+        return min(a, max(a - ra, abs(b) - rb));
+      }
+      opOut fOpTongue( opOut d1, opOut d2, float r, float n, mat4 t1, mat4 t2, mat4 top ) {
+        opOut o = opOut( -1., -1., mat4(1.));
+        o.x = fOpTongue( d1.x, d2.x, r, n );
+
+        o.y = d1.y;
+        o.transform = t1 * top;
+
+        return o;
+      }
+      `,
+  Onion:`
+      float opOnion( in float sdf, in float thickness ){
+        return abs(sdf)-thickness;
+      }
+
+      float opHalve( in float sdf, vec3 p, in int dir ){
+        float _out = 0.;
+        switch( dir ) {
+          case 0:  
+            _out = max( sdf, p.y );
+            break;
+          case 1:
+            _out = max( sdf, -p.y );
+            break;
+          case 2:
+            _out = max( sdf, p.x );
+            break;
+          case 3:
+            _out = max( sdf, -p.x );
+            break;
+        }
+
+        return _out;
+      }
+      `,
+
+  Switch:`
+      opOut opSwitch( opOut a, opOut b, float c ) {
+        if( c < .5 ) {
+          return a;
+        }else{
+          return b;
+        } 
+      }
+      `
+}
+
+},{}],"/Users/charlie/Documents/code/marching/js/domainOperations.js":[function(require,module,exports){
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Vec2, Vec3, Vec4 } = require( './vec.js' )
+const Transform = require( './transform.js' )
 
 const descriptions = {
   Elongation: {
@@ -28505,11 +28919,12 @@ const descriptions = {
     emit( name='p' ) {
       const pId = VarAlloc.alloc()
       const pName = 'p' + pId
+      const pointString =  `( ${name} * ${this.transform.emit()} ).xyz`;
+      let preface =`
+          vec4 ${pName} = vec4( polarRepeat( ${pointString}, ${this.__target.count.emit() } ), 1. ); 
+          ${pName} -= vec4(${this.__target.distance.emit()},0.,0.,0.);\n`
 
-      let preface =`        vec3 ${pName} = polarRepeat( ${name}, ${this.count.emit() } ); 
-          ${pName} -= vec3(${this.distance.emit()},0.,0.);\n`
-
-      const sdf = this.sdf.emit( pName )
+      const sdf = this.sdf.emit( pName, false, this.transform.emit() )
 
       if( typeof sdf.preface === 'string' ) preface += sdf.preface
 
@@ -28519,12 +28934,15 @@ const descriptions = {
   Repetition: {
     parameters: [ { name:'distance', type:'vec3', default:Vec3(0) } ],
     emit( name='p' ) {
-      const pId = this.sdf.matId
+      const pId = VarAlloc.alloc()
       const pName = 'p' + pId
+      const pointString =  `( ${name} * ${this.transform.emit()} ).xyz`;
+      //const s = this.transform.emit_scale()
 
-      let preface =`        vec3 ${pName} = mod( ${name}, ${this.distance.emit()} ) - .5 * ${this.distance.emit() };\n`
+      let preface =`
+        vec4 ${pName} = vec4( mod( ${pointString}, ${this.__target.distance.emit()} ) - .5 * ${this.__target.distance.emit() }, 1. );\n`
 
-      const sdf = this.sdf.emit( pName )
+      const sdf = this.sdf.emit( pName, false, this.transform.emit() )
 
       if( typeof sdf.preface === 'string' ) preface += sdf.preface 
 
@@ -28555,7 +28973,10 @@ const descriptions = {
       const pId = MaterialID.alloc()//this.matId
       const pName = 'q'+pId
 
-      let preface =`        mat4 m${pName} = rotationMatrix(${this.axis.emit()}, -${this.angle.emit()});`
+      let preface =`        
+        mat4 m${pName} = rotationMatrix(${this.axis.emit()}, -${this.angle.emit()});
+        rotations[ 0 ] = m${pName};
+      `
       const center = this.getCenter()
 
       preface += center !== undefined
@@ -28645,6 +29066,8 @@ const getDomainOps = function( SDF ) {
       const op = Object.create( ops[ key ].prototype )
       op.sdf = sdf
       op.parameters = []
+      op.transform = Transform()
+      const target = op.__target = op // sdf.__target !== undefined ? sdf.__target : op
 
       let count = 0
       for( let prop of opDesc.parameters ) {
@@ -28663,7 +29086,7 @@ const getDomainOps = function( SDF ) {
               vec2_var_gen( prop.default )    
             )
 
-            Object.defineProperty( op, prop.name, {
+            Object.defineProperty( target, prop.name, {
               get() { return __var },
               set(v) {
                 if( typeof v === 'object' ) {
@@ -28686,7 +29109,7 @@ const getDomainOps = function( SDF ) {
               vec3_var_gen( prop.default )
             )
 
-            Object.defineProperty( op, prop.name, {
+            Object.defineProperty( target, prop.name, {
               get() { return __var },
               set(v) {
                 if( typeof v === 'object' ) {
@@ -28710,7 +29133,7 @@ const getDomainOps = function( SDF ) {
 
             if( arg === undefined ) arg = prop.default.copy()
 
-            Object.defineProperty( op, prop.name, {
+            Object.defineProperty( target, prop.name, {
               get() { return __var },
               set(v) {
                 if( typeof v === 'object' ) {
@@ -28732,7 +29155,7 @@ const getDomainOps = function( SDF ) {
               float_var_gen( prop.default )
             )
 
-            Object.defineProperty( op, prop.name, {
+            Object.defineProperty( target, prop.name, {
               get() { return __var },
               set(v) {
                 __var.set( v ) 
@@ -28751,12 +29174,13 @@ const getDomainOps = function( SDF ) {
 
     ops[ key ].prototype = SceneNode()
     ops[ key ].prototype.emit = opDesc.emit
-    ops[ key ].prototype.emit_decl = function() {
+    ops[ key ].prototype.emit_decl = function( shouldEmitSDF=true ) {
       let decl = ''
+      decl += this.transform.emit_decl()
       for( let param of this.parameters ) {
-        decl += this[ param.name ].emit_decl() 
+        decl += this.__target[ param.name ].emit_decl() 
       }
-      decl += this.sdf.emit_decl()
+      if( shouldEmitSDF ) decl += this.sdf.emit_decl()
       
       // for rotation etc... any extra glsl function that needs to
       // be added to the shader
@@ -28767,13 +29191,15 @@ const getDomainOps = function( SDF ) {
 
       return decl
     }
-    ops[ key ].prototype.update_location = function( gl, program ) {
-      for( let param of this.parameters ) this[ param.name ].update_location( gl, program)
-      this.sdf.update_location( gl, program )
+    ops[ key ].prototype.update_location = function( gl, program, shouldUpdateSDF=true ) {
+      for( let param of this.parameters ) this.__target[ param.name ].update_location( gl, program)
+      if( shouldUpdateSDF ) this.sdf.update_location( gl, program )
+      this.transform.update_location( gl, program )
     }
-    ops[ key ].prototype.upload_data = function( gl ) {
-      for( let param of this.parameters ) this[ param.name ].upload_data( gl )
-      this.sdf.upload_data( gl )
+    ops[ key ].prototype.upload_data = function( gl, shouldUploadSDF=true ) {
+      for( let param of this.parameters ) this.__target[ param.name ].upload_data( gl )
+      if( shouldUploadSDF ) this.sdf.upload_data( gl )
+      this.transform.upload_data( gl )
     }
   }
   
@@ -28785,7 +29211,404 @@ const getDomainOps = function( SDF ) {
 
 module.exports = getDomainOps
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261}],245:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./transform.js":"/Users/charlie/Documents/code/marching/js/transform.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/external/matrix.js":[function(require,module,exports){
+// matrix.js - taken from https://github.com/evanw/lightgl.js/
+
+// Represents a 4x4 matrix stored in row-major order that uses Float32Arrays
+// when available. Matrix operations can either be done using convenient
+// methods that return a new matrix for the result or optimized methods
+// that store the result in an existing matrix to avoid generating garbage.
+
+var hasFloat32Array = (typeof Float32Array != 'undefined');
+
+// ### new GL.Matrix([elements])
+//
+// This constructor takes 16 arguments in row-major order, which can be passed
+// individually, as a list, or even as four lists, one for each row. If the
+// arguments are omitted then the identity matrix is constructed instead.
+function Matrix() {
+  var m = Array.prototype.concat.apply([], arguments);
+  if (!m.length) {
+    m = [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    ];
+  }
+  this.m = hasFloat32Array ? new Float32Array(m) : m;
+}
+
+Matrix.prototype = {
+  // ### .inverse()
+  //
+  // Returns the matrix that when multiplied with this matrix results in the
+  // identity matrix.
+  inverse: function() {
+    return Matrix.inverse(this, new Matrix());
+  },
+
+  // ### .transpose()
+  //
+  // Returns this matrix, exchanging columns for rows.
+  transpose: function() {
+    return Matrix.transpose(this, new Matrix());
+  },
+
+  // ### .multiply(matrix)
+  //
+  // Returns the concatenation of the transforms for this matrix and `matrix`.
+  // This emulates the OpenGL function `glMultMatrix()`.
+  multiply: function(matrix) {
+    return Matrix.multiply(this, matrix, new Matrix());
+  },
+
+  // ### .transformPoint(point)
+  //
+  // Transforms the vector as a point with a w coordinate of 1. This
+  // means translations will have an effect, for example.
+  transformPoint: function(v) {
+    var m = this.m;
+    return new Vector(
+      m[0] * v.x + m[1] * v.y + m[2] * v.z + m[3],
+      m[4] * v.x + m[5] * v.y + m[6] * v.z + m[7],
+      m[8] * v.x + m[9] * v.y + m[10] * v.z + m[11]
+    ).divide(m[12] * v.x + m[13] * v.y + m[14] * v.z + m[15]);
+  },
+
+  // ### .transformPoint(vector)
+  //
+  // Transforms the vector as a vector with a w coordinate of 0. This
+  // means translations will have no effect, for example.
+  transformVector: function(v) {
+    var m = this.m;
+    return new Vector(
+      m[0] * v.x + m[1] * v.y + m[2] * v.z,
+      m[4] * v.x + m[5] * v.y + m[6] * v.z,
+      m[8] * v.x + m[9] * v.y + m[10] * v.z
+    );
+  }
+};
+
+// ### GL.Matrix.inverse(matrix[, result])
+//
+// Returns the matrix that when multiplied with `matrix` results in the
+// identity matrix. You can optionally pass an existing matrix in `result`
+// to avoid allocating a new matrix. This implementation is from the Mesa
+// OpenGL function `__gluInvertMatrixd()` found in `project.c`.
+Matrix.inverse = function(matrix, result) {
+  result = result || new Matrix();
+  var m = matrix.m, r = result.m;
+
+  r[0] = m[5]*m[10]*m[15] - m[5]*m[14]*m[11] - m[6]*m[9]*m[15] + m[6]*m[13]*m[11] + m[7]*m[9]*m[14] - m[7]*m[13]*m[10];
+  r[1] = -m[1]*m[10]*m[15] + m[1]*m[14]*m[11] + m[2]*m[9]*m[15] - m[2]*m[13]*m[11] - m[3]*m[9]*m[14] + m[3]*m[13]*m[10];
+  r[2] = m[1]*m[6]*m[15] - m[1]*m[14]*m[7] - m[2]*m[5]*m[15] + m[2]*m[13]*m[7] + m[3]*m[5]*m[14] - m[3]*m[13]*m[6];
+  r[3] = -m[1]*m[6]*m[11] + m[1]*m[10]*m[7] + m[2]*m[5]*m[11] - m[2]*m[9]*m[7] - m[3]*m[5]*m[10] + m[3]*m[9]*m[6];
+
+  r[4] = -m[4]*m[10]*m[15] + m[4]*m[14]*m[11] + m[6]*m[8]*m[15] - m[6]*m[12]*m[11] - m[7]*m[8]*m[14] + m[7]*m[12]*m[10];
+  r[5] = m[0]*m[10]*m[15] - m[0]*m[14]*m[11] - m[2]*m[8]*m[15] + m[2]*m[12]*m[11] + m[3]*m[8]*m[14] - m[3]*m[12]*m[10];
+  r[6] = -m[0]*m[6]*m[15] + m[0]*m[14]*m[7] + m[2]*m[4]*m[15] - m[2]*m[12]*m[7] - m[3]*m[4]*m[14] + m[3]*m[12]*m[6];
+  r[7] = m[0]*m[6]*m[11] - m[0]*m[10]*m[7] - m[2]*m[4]*m[11] + m[2]*m[8]*m[7] + m[3]*m[4]*m[10] - m[3]*m[8]*m[6];
+
+  r[8] = m[4]*m[9]*m[15] - m[4]*m[13]*m[11] - m[5]*m[8]*m[15] + m[5]*m[12]*m[11] + m[7]*m[8]*m[13] - m[7]*m[12]*m[9];
+  r[9] = -m[0]*m[9]*m[15] + m[0]*m[13]*m[11] + m[1]*m[8]*m[15] - m[1]*m[12]*m[11] - m[3]*m[8]*m[13] + m[3]*m[12]*m[9];
+  r[10] = m[0]*m[5]*m[15] - m[0]*m[13]*m[7] - m[1]*m[4]*m[15] + m[1]*m[12]*m[7] + m[3]*m[4]*m[13] - m[3]*m[12]*m[5];
+  r[11] = -m[0]*m[5]*m[11] + m[0]*m[9]*m[7] + m[1]*m[4]*m[11] - m[1]*m[8]*m[7] - m[3]*m[4]*m[9] + m[3]*m[8]*m[5];
+
+  r[12] = -m[4]*m[9]*m[14] + m[4]*m[13]*m[10] + m[5]*m[8]*m[14] - m[5]*m[12]*m[10] - m[6]*m[8]*m[13] + m[6]*m[12]*m[9];
+  r[13] = m[0]*m[9]*m[14] - m[0]*m[13]*m[10] - m[1]*m[8]*m[14] + m[1]*m[12]*m[10] + m[2]*m[8]*m[13] - m[2]*m[12]*m[9];
+  r[14] = -m[0]*m[5]*m[14] + m[0]*m[13]*m[6] + m[1]*m[4]*m[14] - m[1]*m[12]*m[6] - m[2]*m[4]*m[13] + m[2]*m[12]*m[5];
+  r[15] = m[0]*m[5]*m[10] - m[0]*m[9]*m[6] - m[1]*m[4]*m[10] + m[1]*m[8]*m[6] + m[2]*m[4]*m[9] - m[2]*m[8]*m[5];
+
+  var det = m[0]*r[0] + m[1]*r[4] + m[2]*r[8] + m[3]*r[12];
+  for (var i = 0; i < 16; i++) r[i] /= det;
+  return result;
+};
+
+// ### GL.Matrix.transpose(matrix[, result])
+//
+// Returns `matrix`, exchanging columns for rows. You can optionally pass an
+// existing matrix in `result` to avoid allocating a new matrix.
+Matrix.transpose = function(matrix, result) {
+  result = result || new Matrix();
+  var m = matrix.m, r = result.m;
+  r[0] = m[0]; r[1] = m[4]; r[2] = m[8]; r[3] = m[12];
+  r[4] = m[1]; r[5] = m[5]; r[6] = m[9]; r[7] = m[13];
+  r[8] = m[2]; r[9] = m[6]; r[10] = m[10]; r[11] = m[14];
+  r[12] = m[3]; r[13] = m[7]; r[14] = m[11]; r[15] = m[15];
+  return result;
+};
+
+// ### GL.Matrix.multiply(left, right[, result])
+//
+// Returns the concatenation of the transforms for `left` and `right`. You can
+// optionally pass an existing matrix in `result` to avoid allocating a new
+// matrix. This emulates the OpenGL function `glMultMatrix()`.
+Matrix.multiply = function(left, right, result) {
+  result = result || new Matrix();
+  var a = left.m, b = right.m, r = result.m;
+
+  r[0] = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
+  r[1] = a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13];
+  r[2] = a[0] * b[2] + a[1] * b[6] + a[2] * b[10] + a[3] * b[14];
+  r[3] = a[0] * b[3] + a[1] * b[7] + a[2] * b[11] + a[3] * b[15];
+
+  r[4] = a[4] * b[0] + a[5] * b[4] + a[6] * b[8] + a[7] * b[12];
+  r[5] = a[4] * b[1] + a[5] * b[5] + a[6] * b[9] + a[7] * b[13];
+  r[6] = a[4] * b[2] + a[5] * b[6] + a[6] * b[10] + a[7] * b[14];
+  r[7] = a[4] * b[3] + a[5] * b[7] + a[6] * b[11] + a[7] * b[15];
+
+  r[8] = a[8] * b[0] + a[9] * b[4] + a[10] * b[8] + a[11] * b[12];
+  r[9] = a[8] * b[1] + a[9] * b[5] + a[10] * b[9] + a[11] * b[13];
+  r[10] = a[8] * b[2] + a[9] * b[6] + a[10] * b[10] + a[11] * b[14];
+  r[11] = a[8] * b[3] + a[9] * b[7] + a[10] * b[11] + a[11] * b[15];
+
+  r[12] = a[12] * b[0] + a[13] * b[4] + a[14] * b[8] + a[15] * b[12];
+  r[13] = a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13];
+  r[14] = a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14];
+  r[15] = a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15];
+
+  return result;
+};
+
+// ### GL.Matrix.identity([result])
+//
+// Returns an identity matrix. You can optionally pass an existing matrix in
+// `result` to avoid allocating a new matrix. This emulates the OpenGL function
+// `glLoadIdentity()`.
+Matrix.identity = function(result) {
+  result = result || new Matrix();
+  var m = result.m;
+  m[0] = m[5] = m[10] = m[15] = 1;
+  m[1] = m[2] = m[3] = m[4] = m[6] = m[7] = m[8] = m[9] = m[11] = m[12] = m[13] = m[14] = 0;
+  return result;
+};
+
+// ### GL.Matrix.perspective(fov, aspect, near, far[, result])
+//
+// Returns a perspective transform matrix, which makes far away objects appear
+// smaller than nearby objects. The `aspect` argument should be the width
+// divided by the height of your viewport and `fov` is the top-to-bottom angle
+// of the field of view in degrees. You can optionally pass an existing matrix
+// in `result` to avoid allocating a new matrix. This emulates the OpenGL
+// function `gluPerspective()`.
+Matrix.perspective = function(fov, aspect, near, far, result) {
+  var y = Math.tan(fov * Math.PI / 360) * near;
+  var x = y * aspect;
+  return Matrix.frustum(-x, x, -y, y, near, far, result);
+};
+
+// ### GL.Matrix.frustum(left, right, bottom, top, near, far[, result])
+//
+// Sets up a viewing frustum, which is shaped like a truncated pyramid with the
+// camera where the point of the pyramid would be. You can optionally pass an
+// existing matrix in `result` to avoid allocating a new matrix. This emulates
+// the OpenGL function `glFrustum()`.
+Matrix.frustum = function(l, r, b, t, n, f, result) {
+  result = result || new Matrix();
+  var m = result.m;
+
+  m[0] = 2 * n / (r - l);
+  m[1] = 0;
+  m[2] = (r + l) / (r - l);
+  m[3] = 0;
+
+  m[4] = 0;
+  m[5] = 2 * n / (t - b);
+  m[6] = (t + b) / (t - b);
+  m[7] = 0;
+
+  m[8] = 0;
+  m[9] = 0;
+  m[10] = -(f + n) / (f - n);
+  m[11] = -2 * f * n / (f - n);
+
+  m[12] = 0;
+  m[13] = 0;
+  m[14] = -1;
+  m[15] = 0;
+
+  return result;
+};
+
+// ### GL.Matrix.ortho(left, right, bottom, top, near, far[, result])
+//
+// Returns an orthographic projection, in which objects are the same size no
+// matter how far away or nearby they are. You can optionally pass an existing
+// matrix in `result` to avoid allocating a new matrix. This emulates the OpenGL
+// function `glOrtho()`.
+Matrix.ortho = function(l, r, b, t, n, f, result) {
+  result = result || new Matrix();
+  var m = result.m;
+
+  m[0] = 2 / (r - l);
+  m[1] = 0;
+  m[2] = 0;
+  m[3] = -(r + l) / (r - l);
+
+  m[4] = 0;
+  m[5] = 2 / (t - b);
+  m[6] = 0;
+  m[7] = -(t + b) / (t - b);
+
+  m[8] = 0;
+  m[9] = 0;
+  m[10] = -2 / (f - n);
+  m[11] = -(f + n) / (f - n);
+
+  m[12] = 0;
+  m[13] = 0;
+  m[14] = 0;
+  m[15] = 1;
+
+  return result;
+};
+
+// ### GL.Matrix.scale(x, y, z[, result])
+//
+// This emulates the OpenGL function `glScale()`. You can optionally pass an
+// existing matrix in `result` to avoid allocating a new matrix.
+Matrix.scale = function(x, y, z, result) {
+  result = result || new Matrix();
+  var m = result.m;
+
+  m[0] = x;
+  m[1] = 0;
+  m[2] = 0;
+  m[3] = 0;
+
+  m[4] = 0;
+  m[5] = y;
+  m[6] = 0;
+  m[7] = 0;
+
+  m[8] = 0;
+  m[9] = 0;
+  m[10] = z;
+  m[11] = 0;
+
+  m[12] = 0;
+  m[13] = 0;
+  m[14] = 0;
+  m[15] = 1;
+
+  return result;
+};
+
+// ### GL.Matrix.translate(x, y, z[, result])
+//
+// This emulates the OpenGL function `glTranslate()`. You can optionally pass
+// an existing matrix in `result` to avoid allocating a new matrix.
+Matrix.translate = function(x, y, z, result) {
+  result = result || new Matrix();
+  var m = result.m;
+
+  m[0] = 1;
+  m[1] = 0;
+  m[2] = 0;
+  m[3] = x;
+
+  m[4] = 0;
+  m[5] = 1;
+  m[6] = 0;
+  m[7] = y;
+
+  m[8] = 0;
+  m[9] = 0;
+  m[10] = 1;
+  m[11] = z;
+
+  m[12] = 0;
+  m[13] = 0;
+  m[14] = 0;
+  m[15] = 1;
+
+  return result;
+};
+
+// ### GL.Matrix.rotate(a, x, y, z[, result])
+//
+// Returns a matrix that rotates by `a` degrees around the vector `x, y, z`.
+// You can optionally pass an existing matrix in `result` to avoid allocating
+// a new matrix. This emulates the OpenGL function `glRotate()`.
+Matrix.rotate = function(a, x, y, z, result) {
+  if (!a || (!x && !y && !z)) {
+    return Matrix.identity(result);
+  }
+
+  result = result || new Matrix();
+  var m = result.m;
+
+  var d = Math.sqrt(x*x + y*y + z*z);
+  a *= Math.PI / 180; x /= d; y /= d; z /= d;
+  var c = Math.cos(a), s = Math.sin(a), t = 1 - c;
+
+  m[0] = x * x * t + c;
+  m[1] = x * y * t - z * s;
+  m[2] = x * z * t + y * s;
+  m[3] = 0;
+
+  m[4] = y * x * t + z * s;
+  m[5] = y * y * t + c;
+  m[6] = y * z * t - x * s;
+  m[7] = 0;
+
+  m[8] = z * x * t - y * s;
+  m[9] = z * y * t + x * s;
+  m[10] = z * z * t + c;
+  m[11] = 0;
+
+  m[12] = 0;
+  m[13] = 0;
+  m[14] = 0;
+  m[15] = 1;
+
+  return result;
+};
+
+// ### GL.Matrix.lookAt(ex, ey, ez, cx, cy, cz, ux, uy, uz[, result])
+//
+// Returns a matrix that puts the camera at the eye point `ex, ey, ez` looking
+// toward the center point `cx, cy, cz` with an up direction of `ux, uy, uz`.
+// You can optionally pass an existing matrix in `result` to avoid allocating
+// a new matrix. This emulates the OpenGL function `gluLookAt()`.
+Matrix.lookAt = function(ex, ey, ez, cx, cy, cz, ux, uy, uz, result) {
+  result = result || new Matrix();
+  var m = result.m;
+
+  var e = new Vector(ex, ey, ez);
+  var c = new Vector(cx, cy, cz);
+  var u = new Vector(ux, uy, uz);
+  var f = e.subtract(c).unit();
+  var s = u.cross(f).unit();
+  var t = f.cross(s).unit();
+
+  m[0] = s.x;
+  m[1] = s.y;
+  m[2] = s.z;
+  m[3] = -s.dot(e);
+
+  m[4] = t.x;
+  m[5] = t.y;
+  m[6] = t.z;
+  m[7] = -t.dot(e);
+
+  m[8] = f.x;
+  m[9] = f.y;
+  m[10] = f.z;
+  m[11] = -f.dot(e);
+
+  m[12] = 0;
+  m[13] = 0;
+  m[14] = 0;
+  m[15] = 1;
+
+  return result;
+};
+
+module.exports = Matrix
+
+},{}],"/Users/charlie/Documents/code/marching/js/float.js":[function(require,module,exports){
 const emit_float = function( a ) {
 	if (a % 1 === 0)
 		return a.toFixed( 1 )
@@ -28808,7 +29631,7 @@ const Float = function( x=0 ) {
 
 module.exports = Float
 
-},{}],246:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/fog.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
@@ -28882,7 +29705,7 @@ const Fogger = function( Scene, SDF ) {
 
 module.exports = Fogger
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260}],247:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/index.js":[function(require,module,exports){
 'use strict'
 
 const Marching = require( './main.js' )
@@ -28897,7 +29720,7 @@ window.Marching = Marching
 
 module.exports = Marching
 
-},{"./main.js":250}],248:[function(require,module,exports){
+},{"./main.js":"/Users/charlie/Documents/code/marching/js/main.js"}],"/Users/charlie/Documents/code/marching/js/int.js":[function(require,module,exports){
 const emit_int = function( a ) {
 	if( a % 1 !== 0 )
 		return Math.round( a )
@@ -28920,7 +29743,7 @@ const Int = function( x=0 ) {
 
 module.exports = Int
 
-},{}],249:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/lighting.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' ),
@@ -28943,8 +29766,8 @@ const Lights = function( SDF ) {
 
     defaultMaterials:`
       Material materials[2] = Material[2](
-        Material( 0, vec3( 1. ), vec3(0.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.) ),
-        Material( 0, vec3( 1. ), vec3(1.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.) )
+        Material( 0, vec3( 1. ), vec3(0.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.), 0 ),
+        Material( 0, vec3( 1. ), vec3(1.,0.,0.), vec3(1.), 8., Fresnel( 0., 1., 2.), 0 )
       );
     `,
 
@@ -29024,7 +29847,7 @@ const Lights = function( SDF ) {
 
     mode:'global',
 
-    gen( shadows=8 ) {
+    gen( shadows=8, geometries ) {
       //const str = this.modes[ this.mode ]( this.lights.length || 2, this.emit_lights(), SDF.materials.emit_materials(), shadows )
    
       const modeConstants = SDF.materials.modeConstants
@@ -29050,7 +29873,16 @@ const Lights = function( SDF ) {
         }
       }
 
-      const lighting = this.shell( this.lights.length || 2, this.emit_lights(), SDF.materials.emit_materials(), shadows )
+      const textures = Marching.textures.__emitFunction()
+      const lighting = this.shell( 
+        this.lights.length || 2, 
+        this.emit_lights(), 
+        SDF.materials.emit_materials(), 
+        shadows,
+        geometries, 
+        textures.glsldefs,
+        textures.mainfunc
+      )
 
       let lightingFuncStr = lightingFunctions.join('\n')
       lightingFuncStr = lightingFuncStr.replace( /(MAX\_LIGHTS)/g, this.lights.length || 2 )
@@ -29091,46 +29923,47 @@ const Lights = function( SDF ) {
     // a switch statement selecting lighting. They are overridden by actual lighting functions if any
     // material in the scene uses a corresponding function.
     defaultFunctionDeclarations: [
-      '    vec3 global( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) { return vec3(0.); }',
+      '    vec3 global( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS], vec3 textureColor ) { return vec3(0.); }',
       '    vec3 normal( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) { return vec3(0.); }',
-      '    vec3 directional( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) { return vec3(0.); }',
+      '    vec3 directional( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS], vec3 textureColor ) { return vec3(0.); }',
       '    vec3 orenn( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) { return vec3(0.); }',
     ],
 
-    shell( numlights, lights, materials, shadow=0 ) {
+    shell( numlights, lights, materials, shadow=0, sdfs, texturePreface, textureBody ) {
       const __shadow = shadow > 0
         ? `diffuseCoefficient *= softshadow( surfacePosition, normalize( light.position ), 0.02, 2.5, ${shadow.toFixed(1)} );` 
         : ''
 
 
-      let preface = glsl(["#define GLSLIFY 1\n  int MAX_LIGHTS = ",";\n    float ao( in vec3 pos, in vec3 nor )\n{\n\tfloat occ = 0.0;\n    float sca = 1.0;\n    for( int i=0; i<5; i++ )\n    {\n        float hr = 0.01 + 0.12 * float( i ) / 4.0;\n        vec3 aopos =  nor * hr + pos;\n        float dd = scene ( aopos ).x;\n        occ += -(dd-hr)*sca;\n        sca *= 0.95;\n    }\n    return clamp( 1.0 - 3.0*occ, 0.0, 1.0 );    \n}\n\n    ",""],numlights)
-
+      let preface = glsl(["#define GLSLIFY 1\n  int MAX_LIGHTS = ",";\n    float ao( in vec3 pos, in vec3 nor ){\n      float occ = 0.0;\n      float sca = 1.0;\n      for( int i=0; i<5; i++ )\n      {\n          float hr = 0.01 + 0.12 * float( i ) / 4.0;\n          vec3 aopos =  nor * hr + pos;\n          float dd = scene ( aopos ).x;\n          occ += -(dd-hr)*sca;\n          sca *= 0.95;\n      }\n      return clamp( 1.0 - 3.0*occ, 0.0, 1.0 );    \n    }\n\n    \n    ","\n    ","\n    ",""],numlights,texturePreface,textureBody)
       let func = `
-    vec3 lighting( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, float materialID ) {
-      // applies to all lights (actually, not 'normal' mode... TODO)
-      //float occlusion = calcAO( surfacePosition, normal );
+
+    vec3 lighting( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, float sdfID, mat4 transform ) {
+      ${sdfs}
+      SDF sdf = sdfs[ int( sdfID ) ];
 
       ${materials}
-      Material mat = materials[ int(materialID) ];
-
+      Material mat = materials[ sdf.materialID ];
 
       int MAX_LIGHTS = ${numlights};     
 
       ${lights}
+
+      vec3 tex = getTexture( int(sdf.textureID), (vec4(surfacePosition,1.)*transform).xyz, normal, transform );
+
       vec3 clr;
       switch( mat.mode ) {
-        case 0: clr = global( surfacePosition, normal, rayOrigin, rayDirection, mat, lights ); break;
+        case 0: clr = global( surfacePosition, normal, rayOrigin, rayDirection, mat, lights, tex ); break;
         case 1: clr = normal; break;
-        case 2: clr = directional( surfacePosition, normal, rayOrigin, rayDirection, mat, lights ); break;
+        case 2: clr = directional( surfacePosition, normal, rayOrigin, rayDirection, mat, lights, tex ); break;
         case 3: clr = orenn( surfacePosition, normal, rayOrigin, rayDirection, mat, lights ); break;
         default:
           clr = normal;
       }
 
-      return clr; //* textureColor.rgb;
+      return clr; 
     }
 `
-
       return [ preface, func ]
     }, 
 
@@ -29138,7 +29971,7 @@ const Lights = function( SDF ) {
       global() {
         const shadow = SDF.__scene.__shadow
 
-        const str = glsl(["#define GLSLIFY 1\n\n\n        vec3 global( vec3 pos, vec3 nor, vec3 ro, vec3 rd, Material mat, Light lights[MAX_LIGHTS] ) {\n          Light light = lights[ 0 ];\n          vec3  ref = reflect( rd, nor ); // reflection angle\n          float occ = ao( pos, nor );\n          vec3  lig = normalize( light.position ); // light position\n          float amb = clamp( 0.5 + 0.5 * nor.y, 0.0, 1.0 );\n          float dif = clamp( dot( nor, lig ), 0.0, 1.0 );\n\n          vec4 textureColor;\n          /*\n          if( mat.textureID > -1 ) {\n            textureColor = texture( textures[ mat.textureID ], pos.xy ); \n          }else{\n            textureColor = vec4(1.);\n          }*/\n          textureColor = vec4(1.);\n\n          // simulated backlight\n          float bac = clamp( dot( nor, normalize( vec3( -lig.x, 0.0 , -lig.z ))), 0.0, 1.0 ) * clamp( 1.0-pos.y, 0.0 ,1.0 );\n\n          // simulated skydome light\n          float dom = smoothstep( -0.1, 0.1, ref.y );\n          float fre = pow( clamp( 1.0 + dot( nor,rd ),0.0,1.0 ), 3.0);\n          float spe = pow( clamp( dot( ref, lig ), 0.0, 1.0 ), 8.0 );\n\n          dif *= softshadow( pos, lig, 0.02, 2.5, "," );\n          dom *= softshadow( pos, ref, 0.02, 2.5, "," );\n\n          vec3 brdf = vec3( 0.0 );\n          brdf += 1.20 * dif * vec3( 1.00,0.90,0.60 ) * mat.diffuse * light.color;\n          brdf += 2.20 * spe * vec3( 1.00,0.90,0.60 ) * dif * mat.specular * light.color;\n          brdf += 0.30 * amb * vec3( 0.50,0.70,1.00 ) * occ * mat.ambient * light.color;\n          brdf += 0.40 * dom * vec3( 0.50,0.70,1.00 );\n          brdf += 0.70 * bac * vec3( 0.25 );\n          brdf += 0.40 * (fre * light.color);\n\n          return brdf * textureColor.xyz;\n        }\n        ",""],shadow.toFixed(1),shadow.toFixed(1))
+        const str = glsl(["#define GLSLIFY 1\n\n\n        vec3 global( vec3 pos, vec3 nor, vec3 ro, vec3 rd, Material mat, Light lights[MAX_LIGHTS], vec3 textureColor ) {\n          Light light = lights[ 0 ];\n          vec3  ref = reflect( rd, nor ); // reflection angle\n          float occ = ao( pos, nor );\n          vec3  lig = normalize( light.position ); // light position\n          float amb = clamp( 0.5 + 0.5 * nor.y, 0.0, 1.0 );\n          float dif = clamp( dot( nor, lig ), 0.0, 1.0 );\n\n          // simulated backlight\n          float bac = clamp( dot( nor, normalize( vec3( -lig.x, 0.0 , -lig.z ))), 0.0, 1.0 ) * clamp( 1.0-pos.y, 0.0 ,1.0 );\n\n          // simulated skydome light\n          float dom = smoothstep( -0.1, 0.1, ref.y );\n          float fre = pow( clamp( 1.0 + dot( nor,rd ),0.0,1.0 ), 3.0);\n          float spe = pow( clamp( dot( ref, lig ), 0.0, 1.0 ), 8.0 );\n\n          dif *= softshadow( pos, lig, 0.02, 2.5, "," );\n          dom *= softshadow( pos, ref, 0.02, 2.5, "," );\n\n          vec3 brdf = textureColor;//vec3( 0.0 );\n          brdf += 1.20 * dif * vec3( 1.00,0.90,0.60 ) * mat.diffuse * light.color;\n          brdf += 2.20 * spe * vec3( 1.00,0.90,0.60 ) * dif * mat.specular * light.color;\n          brdf += 0.30 * amb * vec3( 0.50,0.70,1.00 ) * occ * mat.ambient * light.color;\n          brdf += 0.40 * dom * vec3( 0.50,0.70,1.00 );\n          brdf += 0.70 * bac * vec3( 0.25 );\n          brdf += 0.40 * (fre * light.color);\n\n          return brdf;;\n        }\n        ",""],shadow.toFixed(1),shadow.toFixed(1))
 
         return str
       },
@@ -29150,7 +29983,7 @@ const Lights = function( SDF ) {
           ? `diffuseCoefficient *= softshadow( surfacePosition, normalize( light.position ), 0.02, 2.5, ${shadow.toFixed(1)} );` 
           : ''
 
-        const str = glsl(["#define GLSLIFY 1\n  \n        vec4 texcube( sampler2D sam, in vec3 p, in vec3 n, in float scale ) {\n            vec3 m = pow( abs( n ), vec3(scale) );\n            vec4 x = texture( sam, p.yz );\n            vec4 y = texture( sam, p.zx );\n            vec4 z = texture( sam, p.xy );\n            return (x*m.x + y*m.y + z*m.z) / (m.x + m.y + m.z);\n        }\n        // p = point on surface, p0 = object center\n        vec2 getUVCubic(vec3 p, vec3 p0){\n            \n          // Center the surface position about the zero point.\n          p -= p0;\n            \n          vec3 absp = abs(p);\n            \n          // First conditional: If the point is in one of the sextants to the left or right of the x-axis, the uv cordinate will be (0.5*p.zy)/(p.x).\n          // If you trace a line out to a zy plane that is 0.5 units from the zero origin,  (0.5*p.xyz)/(p.x) will be the result, and\n          // the yz components will be our uv coordinates, hence (0.5*p.zy)/(p.x).\n          vec2 uv = ((absp.x>=absp.y)&&(absp.x>=absp.z)) ? (0.5*p.zy)/(p.x) : ((absp.y>=absp.z)&&(absp.y>=absp.x)) ? (0.5*p.xz)/(p.y) : (-0.5*p.xy)/(p.z);\n            \n          //We still need to determine which side our uv cordinates are on so that the texture orients the right way. Note that there's some \n          // redundancy there, which I'll fix at some stage. For now, it works, so I'm not touching it. :)\n          if( ((p.x<0.)&&(absp.x>=absp.y)&&(absp.x>=absp.z)) || ((p.y<0.)&&(absp.y>=absp.z)&&(absp.y>=absp.x)) || ((p.z>0.)&&(absp.z>=absp.x)&&(absp.z>=absp.y)) ) uv.y*=-1.;\n                 \n          // Mapping the uv range from [-0.5, 0.5] to [0.0, 1.0].\n          return (uv+0.5);\n        }\n\n        vec3 directional( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) {\n          vec3  outputColor   = vec3( 0. );\n   \n          // applies to all lights\n          float occlusion = ao( surfacePosition, normal );\n\n          /*\n          vec4 textureColor;\n          if( mat.textureID > -1 ) {\n            //textureColor = texcube( textures[ mat.textureID ], surfacePosition, normal, 1. );//texture( textures[ mat.textureID ], surfacePosition.xy - normal.xy ); \n            vec2 uv = getUVCubic( surfacePosition, vec3(0.) );//surfacePosition.xz*vec2(0.03,0.07);\n            textureColor = texture( textures[ mat.textureID ], uv );\n          }else{\n            textureColor = vec4(0.);\n          }\n\n          outputColor = textureColor.xyz;\n          */\n\n          for( int i = 0; i < 20000; i++ ) {\n            if( i >= MAX_LIGHTS ) break;\n\n            Light light = lights[ i ];\n\n            vec3 surfaceToLightDirection = normalize( light.position - surfacePosition );\n            \n            // get similarity between normal and direction to light\n            float diffuseCoefficient = dot( normal, surfaceToLightDirection ); \n\n            // get reflection angle for light striking surface\n            vec3 angleOfReflection = reflect( -surfaceToLightDirection, normal );\n\n            // see if reflected light travels to camera and generate coefficient accordingly\n            float specularAngle = clamp( dot( angleOfReflection, -rayDirection ), 0., 1. );\n            float specularCoefficient = pow( specularAngle, mat.shininess );\n\n            // lights should have an attenuation factor\n            float attenuation = 1. / ( light.attenuation * pow( length( light.position - surfacePosition ), 2. ) ); \n\n            // bias, scale, power\n            float fresnel = mat.fresnel.x + mat.fresnel.y * pow( 1.0 + dot( rayDirection, normal ), mat.fresnel.z ); \n\n            ","\n\n            vec3 color = vec3( 0. );\n            color += 1.2 * diffuseCoefficient * mat.diffuse * light.color;\n            color += 2.2 * specularCoefficient * mat.specular * light.color;\n            color += 0.3 * (mat.ambient * light.color) * occlusion;\n            color += (fresnel * light.color);\n\n            // texture\n            //color *= textureColor.xyz;\n\n            // gamma correction must occur before light attenuation\n            // which means it must be applied on a per-light basis unfortunately\n            vec3 gammaCorrectedColor = pow( color, vec3( 1./2.2 ) );\n            vec3 attenuatedColor = 2. * gammaCorrectedColor * attenuation; \n\n            outputColor += attenuatedColor;\n          }\n\n          return outputColor;\n        }\n        ",""],__shadow)
+        const str = glsl(["#define GLSLIFY 1\n  \n        \n        vec3 directional( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS], vec3 textureColor ) {\n          vec3  outputColor   = textureColor;//vec3( 0. );\n   \n          // applies to all lights\n          float occlusion = ao( surfacePosition, normal );\n\n          for( int i = 0; i < 20000; i++ ) {\n            if( i >= MAX_LIGHTS ) break;\n\n            Light light = lights[ i ];\n\n            vec3 surfaceToLightDirection = normalize( light.position - surfacePosition );\n            \n            // get similarity between normal and direction to light\n            float diffuseCoefficient = dot( normal, surfaceToLightDirection ); \n\n            // get reflection angle for light striking surface\n            vec3 angleOfReflection = reflect( -surfaceToLightDirection, normal );\n\n            // see if reflected light travels to camera and generate coefficient accordingly\n            float specularAngle = clamp( dot( angleOfReflection, -rayDirection ), 0., 1. );\n            float specularCoefficient = pow( specularAngle, mat.shininess );\n\n            // lights should have an attenuation factor\n            float attenuation = 1. / ( light.attenuation * pow( length( light.position - surfacePosition ), 2. ) ); \n\n            // bias, scale, power\n            float fresnel = mat.fresnel.x + mat.fresnel.y * pow( 1.0 + dot( rayDirection, normal ), mat.fresnel.z ); \n\n            ","\n\n            vec3 color = vec3( 0. );\n            color += 1.2 * diffuseCoefficient * mat.diffuse * light.color;\n            color += 2.2 * specularCoefficient * mat.specular * light.color;\n            color += 0.3 * (mat.ambient * light.color) * occlusion;\n            color += (fresnel * light.color);\n\n            // texture\n            //color *= textureColor.xyz;\n\n            // gamma correction must occur before light attenuation\n            // which means it must be applied on a per-light basis unfortunately\n            vec3 gammaCorrectedColor = pow( color, vec3( 1./2.2 ) );\n            vec3 attenuatedColor = 2. * gammaCorrectedColor * attenuation; \n\n            outputColor += attenuatedColor;\n          }\n\n          return outputColor;\n        }\n        ",""],__shadow)
 
         return str
       }, 
@@ -29161,7 +29994,7 @@ const Lights = function( SDF ) {
           ? `diffuseCoefficient *= softshadow( surfacePosition, normalize( light.position ), 0.02, 2.5, ${shadow.toFixed(1)} );` 
           : ''
 
-        const str = glsl(["#define GLSLIFY 1\n  \n        vec4 texcube( sampler2D sam, in vec3 p, in vec3 n, in float scale ) {\n            vec3 m = pow( abs( n ), vec3(scale) );\n            vec4 x = texture( sam, p.yz );\n            vec4 y = texture( sam, p.zx );\n            vec4 z = texture( sam, p.xy );\n            return (x*m.x + y*m.y + z*m.z) / (m.x + m.y + m.z);\n        }\n        // p = point on surface, p0 = object center\n        vec2 getUVCubic(vec3 p, vec3 p0){\n            \n          // Center the surface position about the zero point.\n          p -= p0;\n            \n          vec3 absp = abs(p);\n            \n          // First conditional: If the point is in one of the sextants to the left or right of the x-axis, the uv cordinate will be (0.5*p.zy)/(p.x).\n          // If you trace a line out to a zy plane that is 0.5 units from the zero origin,  (0.5*p.xyz)/(p.x) will be the result, and\n          // the yz components will be our uv coordinates, hence (0.5*p.zy)/(p.x).\n          vec2 uv = ((absp.x>=absp.y)&&(absp.x>=absp.z)) ? (0.5*p.zy)/(p.x) : ((absp.y>=absp.z)&&(absp.y>=absp.x)) ? (0.5*p.xz)/(p.y) : (-0.5*p.xy)/(p.z);\n            \n          //We still need to determine which side our uv cordinates are on so that the texture orients the right way. Note that there's some \n          // redundancy there, which I'll fix at some stage. For now, it works, so I'm not touching it. :)\n          if( ((p.x<0.)&&(absp.x>=absp.y)&&(absp.x>=absp.z)) || ((p.y<0.)&&(absp.y>=absp.z)&&(absp.y>=absp.x)) || ((p.z>0.)&&(absp.z>=absp.x)&&(absp.z>=absp.y)) ) uv.y*=-1.;\n                 \n          // Mapping the uv range from [-0.5, 0.5] to [0.0, 1.0].\n          return (uv+0.5);\n        }\n\n        vec3 directional( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) {\n          vec3  outputColor   = vec3( 0. );\n   \n          // applies to all lights\n          float occlusion = ao( surfacePosition, normal );\n\n          vec4 textureColor;\n          if( mat.textureID > -1 ) {\n            //textureColor = texcube( textures[ mat.textureID ], surfacePosition, normal, 1. );//texture( textures[ mat.textureID ], surfacePosition.xy - normal.xy ); \n            vec2 uv = getUVCubic( surfacePosition, vec3(0.) );//surfacePosition.xz*vec2(0.03,0.07);\n            textureColor = texture( textures[ mat.textureID ], uv );\n          }else{\n            textureColor = vec4(0.);\n          }\n\n          outputColor = 0;//textureColor.xyz;\n\n          for( int i = 0; i < 20000; i++ ) {\n            if( i >= MAX_LIGHTS ) break;\n\n            Light light = lights[ i ];\n\n            vec3 surfaceToLightDirection = normalize( light.position - surfacePosition );\n            \n            // get similarity between normal and direction to light\n            float diffuseCoefficient = dot( normal, surfaceToLightDirection ); \n\n            // get reflection angle for light striking surface\n            vec3 angleOfReflection = reflect( -surfaceToLightDirection, normal );\n\n            // see if reflected light travels to camera and generate coefficient accordingly\n            float specularAngle = clamp( dot( angleOfReflection, -rayDirection ), 0., 1. );\n            float specularCoefficient = pow( specularAngle, mat.shininess );\n\n            // lights should have an attenuation factor\n            float attenuation = 1. / ( light.attenuation * pow( length( light.position - surfacePosition ), 2. ) ); \n\n            // bias, scale, power\n            float fresnel = mat.fresnel.x + mat.fresnel.y * pow( 1.0 + dot( rayDirection, normal ), mat.fresnel.z ); \n\n            ","\n\n            vec3 color = vec3( 0. );\n            color += 1.2 * diffuseCoefficient * textureColor.xyz * light.color;\n            color += 2.2 * specularCoefficient * textureColor.xyz * light.color;\n            color += 0.3 * (mat.ambient * light.color) * occlusion;\n            color += (fresnel * light.color);\n\n            // texture\n            //color *= textureColor.xyz;\n\n            // gamma correction must occur before light attenuation\n            // which means it must be applied on a per-light basis unfortunately\n            vec3 gammaCorrectedColor = pow( color, vec3( 1./2.2 ) );\n            vec3 attenuatedColor = 2. * gammaCorrectedColor * attenuation; \n\n            outputColor += attenuatedColor;\n          }\n\n          return outputColor;\n        }\n        ",""],__shadow)
+        const str = glsl(["#define GLSLIFY 1\n  \n\n        vec3 directional( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, Material mat, Light lights[MAX_LIGHTS] ) {\n          vec3  outputColor   = vec3( 0. );\n   \n          // applies to all lights\n          float occlusion = ao( surfacePosition, normal );\n\n          vec4 textureColor;\n          if( mat.textureID > -1 ) {\n            //textureColor = texcube( textures[ mat.textureID ], surfacePosition, normal, 1. );//texture( textures[ mat.textureID ], surfacePosition.xy - normal.xy ); \n            vec2 uv = getUVCubic( surfacePosition, vec3(0.) );//surfacePosition.xz*vec2(0.03,0.07);\n            textureColor = texture( textures[ mat.textureID ], uv );\n          }else{\n            textureColor = vec4(0.);\n          }\n\n          outputColor = 0;//textureColor.xyz;\n\n          for( int i = 0; i < 20000; i++ ) {\n            if( i >= MAX_LIGHTS ) break;\n\n            Light light = lights[ i ];\n\n            vec3 surfaceToLightDirection = normalize( light.position - surfacePosition );\n            \n            // get similarity between normal and direction to light\n            float diffuseCoefficient = dot( normal, surfaceToLightDirection ); \n\n            // get reflection angle for light striking surface\n            vec3 angleOfReflection = reflect( -surfaceToLightDirection, normal );\n\n            // see if reflected light travels to camera and generate coefficient accordingly\n            float specularAngle = clamp( dot( angleOfReflection, -rayDirection ), 0., 1. );\n            float specularCoefficient = pow( specularAngle, mat.shininess );\n\n            // lights should have an attenuation factor\n            float attenuation = 1. / ( light.attenuation * pow( length( light.position - surfacePosition ), 2. ) ); \n\n            // bias, scale, power\n            float fresnel = mat.fresnel.x + mat.fresnel.y * pow( 1.0 + dot( rayDirection, normal ), mat.fresnel.z ); \n\n            ","\n\n            vec3 color = vec3( 0. );\n            color += 1.2 * diffuseCoefficient * textureColor.xyz * light.color;\n            color += 2.2 * specularCoefficient * textureColor.xyz * light.color;\n            color += 0.3 * (mat.ambient * light.color) * occlusion;\n            color += (fresnel * light.color);\n\n            // texture\n            //color *= textureColor.xyz;\n\n            // gamma correction must occur before light attenuation\n            // which means it must be applied on a per-light basis unfortunately\n            vec3 gammaCorrectedColor = pow( color, vec3( 1./2.2 ) );\n            vec3 attenuatedColor = 2. * gammaCorrectedColor * attenuation; \n\n            outputColor += attenuatedColor;\n          }\n\n          return outputColor;\n        }\n        ",""],__shadow)
 
         return str
       }, 
@@ -29186,7 +30019,8 @@ const Lights = function( SDF ) {
 
       },
 
-      normal() { return '' }
+      normal() { return '' },
+      noise() { return '' }
     },
   }
 
@@ -29199,7 +30033,7 @@ module.exports = Lights
 /*
 */
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261,"glslify":270}],250:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/main.js":[function(require,module,exports){
 const SDF = {
   camera:           require( './camera.js' ),
   __primitives:     require( './primitives.js' ),
@@ -29222,6 +30056,7 @@ const SDF = {
 
   // additional callbacks that are run once per frame
   callbacks: [],
+  geometries: [],
 
   // the main drawing callback
   render: null,
@@ -29281,7 +30116,6 @@ const SDF = {
     this.canvas.height = window.innerHeight
     this.gl = this.canvas.getContext( 'webgl2', { antialias:true, alpha:true })
 
-    if( shouldInit === true ) this.initBuffers()
   },
 
   initBuffers() {
@@ -29360,12 +30194,11 @@ const SDF = {
     // with an id #.
 
     scene.output.__emit = scene.output.emit.bind( scene.output )
-    scene.output.emit = ()=> {
-      const emitted = scene.output.__emit()
+    scene.output.emit = function( ...args ) {
+      const emitted = scene.output.__emit(...args)
       const output = {
-        out:`  vec2( _out.x, _out.y )`,
-
-        preface: (emitted.preface || '') + `        vec2 _out = ${emitted.out};\n`
+        out:     emitted.out,
+        preface: emitted.preface || '' 
       }
 
       return output 
@@ -29383,9 +30216,7 @@ const SDF = {
       variablesDeclaration += processor.emit_decl()
     }
 
-    variablesDeclaration += this.materials.emit_decl() 
-    variablesDeclaration += this.textures.emit_decl() 
-    variablesDeclaration += this.lighting.emit_decl() 
+
 
     this.postprocessing = __scene.postprocessing
 
@@ -29440,6 +30271,7 @@ const SDF = {
   clear() {
     if( this.callbacks !== undefined ) this.callbacks.length = 0
     if( this.render !== null ) this.render.running = false
+    this.geometries.length = 0
 
     const gl = this.gl
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT )
@@ -29447,9 +30279,12 @@ const SDF = {
 
   initWebGL( vs_source, fs_source, width, height,shouldAnimate=false ) {
     const gl = this.gl
+    //if( shouldInit === true ) this.initBuffers()
+    this.initBuffers()
 
-	  const program = this.program = this.createProgram( vs_source, fs_source )
-	  gl.useProgram(program);
+
+    const program = this.program = this.createProgram( vs_source, fs_source )
+    gl.useProgram(program);
 
     const loc_a_pos = gl.getAttribLocation(program, "a_pos");
     const loc_a_uv = gl.getAttribLocation(program, "a_uv");
@@ -29470,8 +30305,6 @@ const SDF = {
     gl.vertexAttribPointer(loc_a_pos, 3, gl.FLOAT, false, 20, 0)
     gl.vertexAttribPointer(loc_a_uv, 2, gl.FLOAT, false, 20, 12)
 
-
-    console.log( 'w:',width, 'h:',height )
     gl.viewport( 0,0,width,height )
     gl.uniform2f( loc_u_resolution, width, height )
 
@@ -29526,7 +30359,7 @@ const SDF = {
 
 module.exports = SDF
 
-},{"./alterations.js":238,"./audio.js":239,"./camera.js":241,"./distanceDeformations.js":242,"./distanceOperations.js":243,"./domainOperations.js":244,"./lighting.js":249,"./material.js":251,"./noise.js":252,"./primitives.js":254,"./renderFragmentShader.js":255,"./scene.js":256,"./texture.js":258,"./var.js":260,"./vec.js":261}],251:[function(require,module,exports){
+},{"./alterations.js":"/Users/charlie/Documents/code/marching/js/alterations.js","./audio.js":"/Users/charlie/Documents/code/marching/js/audio.js","./camera.js":"/Users/charlie/Documents/code/marching/js/camera.js","./distanceDeformations.js":"/Users/charlie/Documents/code/marching/js/distanceDeformations.js","./distanceOperations.js":"/Users/charlie/Documents/code/marching/js/distanceOperations.js","./domainOperations.js":"/Users/charlie/Documents/code/marching/js/domainOperations.js","./lighting.js":"/Users/charlie/Documents/code/marching/js/lighting.js","./material.js":"/Users/charlie/Documents/code/marching/js/material.js","./noise.js":"/Users/charlie/Documents/code/marching/js/noise.js","./primitives.js":"/Users/charlie/Documents/code/marching/js/primitives.js","./renderFragmentShader.js":"/Users/charlie/Documents/code/marching/js/renderFragmentShader.js","./scene.js":"/Users/charlie/Documents/code/marching/js/scene.js","./texture.js":"/Users/charlie/Documents/code/marching/js/texture.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/material.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' ),
@@ -29544,7 +30377,8 @@ const __Materials = function( SDF ) {
       'global',
       'normal',
       'phong',
-      'orenn'
+      'orenn',
+      'noise'
     ],
 
     default: 'global',
@@ -29679,9 +30513,9 @@ const __Materials = function( SDF ) {
       for( let mat of this.materials ) {
         const fresnel = `Fresnel( ${f(mat.fresnel.x)}, ${f(mat.fresnel.y)}, ${f(mat.fresnel.z)} )`
 
-        const texid = SDF.textures.textures.indexOf( mat.texture )
+        const texid = 0//SDF.textures.textures.indexOf( mat.texture )
         str += mat.texture === null 
-          ? `\n        Material( ${this.modeConstants.indexOf( mat.mode )}, ${mat.ambient.emit()}, ${mat.diffuse.emit()}, ${mat.specular.emit()}, ${mat.shininess.emit()}, ${mat.fresnel.emit()}, -1 ),` 
+          ? `\n        Material( ${this.modeConstants.indexOf( mat.mode )}, ${mat.ambient.emit()}, ${mat.diffuse.emit()}, ${mat.specular.emit()}, ${mat.shininess.emit()}, ${mat.fresnel.emit()}, ${ texid } ),` 
           : `\n        Material( ${this.modeConstants.indexOf( mat.mode )}, ${mat.ambient.emit()}, ${mat.diffuse.emit()}, ${mat.specular.emit()}, ${mat.shininess.emit()}, ${mat.fresnel.emit()}, ${ texid } ),` 
       }
       
@@ -29747,7 +30581,8 @@ const __Materials = function( SDF ) {
     'white glow' : Materials.material( 'phong',  Vec3(.015), Vec3(1), Vec3(1), 16, Vec3(0,200,5) ),
     glue    : Materials.material( 'phong',  Vec3(.015), Vec3(1), Vec3(1), 16, Vec3(0,15,-.1) ),
 
-    normal  : Materials.material( 'normal' )
+    normal  : Materials.material( 'normal' ),
+    noise   : Materials.material( 'noise',  Vec3( .15 ), Vec3(1,0,0), Vec3(1), 8, Vec3( 0, 1, .5 ))
   })
 
   return Materials
@@ -29755,7 +30590,7 @@ const __Materials = function( SDF ) {
 
 module.exports = __Materials
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261,"glslify":270}],252:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/noise.js":[function(require,module,exports){
 const glsl = require( 'glslify' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
@@ -29842,19 +30677,17 @@ return Noise
 
 module.exports = getNoise 
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"glslify":270}],253:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/primitiveDescriptions.js":[function(require,module,exports){
 const glsl = require( 'glslify' )
 
 module.exports = {
   Box: {
     parameters:[
       { name:'size', type:'vec3', default:[1,1,1] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-	    return `sdBox( ${pName} - ${this.center.emit()}, ${this.size.emit()} )`;
+	    return `sdBox( ${pName}, ${this.size.emit()} )`;
     },
 
     glslify:glsl(["#define GLSLIFY 1\n    float sdBox( vec3 p, vec3 b )\n{\n  vec3 d = abs(p) - b;\n  return min(max(d.x,max(d.y,d.z)),0.0) +\n         length(max(d,0.0));\n}\n\n"])
@@ -29864,12 +30697,10 @@ module.exports = {
   Cone: {
     parameters:[
       { name:'dimensions', type:'vec3', default:[.8,.6,.3] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdCone( ${pName} - ${this.center.emit()}, ${this.dimensions.emit()} )`
+      return `sdCone( ${pName}, ${this.dimensions.emit()} )`
     },
     glslify:glsl(["#define GLSLIFY 1\n    float sdCone( in vec3 p, in vec3 c )\n{\n    vec2 q = vec2( length(p.xz), p.y );\n    float d1 = -p.y-c.z;\n    float d2 = max( dot(q,c.xy), p.y);\n    return length(max(vec2(d1,d2),0.0)) + min(max(d1,d2), 0.);\n}\n\n"])
   }, 
@@ -29877,12 +30708,10 @@ module.exports = {
 	Cylinder: {
     parameters:[
       { name:'dimensions', type:'vec2', default:[.8,.6] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdCappedCylinder( ${pName} - ${this.center.emit()}, ${this.dimensions.emit()} )`
+      return `sdCappedCylinder( ${pName}, ${this.dimensions.emit()} )`
     },
 
     glslify:`    float sdCappedCylinder( vec3 p, vec2 h ) {
@@ -29896,11 +30725,10 @@ module.exports = {
       { name:'start', type:'vec3', default:[0,0,0] },
       { name:'end', type:'vec3', default:[.8,1,0] },
       { name:'radius', type:'float', default:.5 },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdCapsule( ${pName},  ${this.start.emit()}, ${this.end.emit()}, ${this.radius.emit()} )`
+      return `sdCapsule( ${pName}, ${this.start.emit()}, ${this.end.emit()}, ${this.radius.emit()} )`
     },
     glslify:glsl(["#define GLSLIFY 1\n      float sdCapsule( vec3 p, vec3 a, vec3 b, float r )\n{\n    vec3 pa = p - a, ba = b - a;\n    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );\n    return length( pa - ba*h ) - r;\n}\n\n"])
 
@@ -29911,25 +30739,21 @@ module.exports = {
  	HexPrism: {
     parameters:[
       { name:'dimensions', type:'vec2', default:[.8,.6] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdHexPrism( ${pName} - ${this.center.emit()}, ${this.dimensions.emit()} )`
+      return `sdHexPrism( ${pName}, ${this.dimensions.emit()} )`
     },
     glslify:glsl(["#define GLSLIFY 1\n      float sdHexPrism( vec3 p, vec2 h )\n{\n    vec3 q = abs(p);\n    return max(q.z-h.y,max((q.x*0.866025+q.y*0.5),q.y)-h.x);\n}\n\n"])
   },
 
   Julia: {
     parameters:[
-      { name:'c0', type:'float', default:0 },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
+      { name:'fold', type:'float', default:0 },
     ],
 
     primitiveString( pName ) { 
-      return `julia( ${pName} - ${this.center.emit()}, ${this.c0.emit()} )`
+      return `julia( ${pName}, ${this.fold.emit()} )`
     },
 
     // https://www.shadertoy.com/view/MsfGRr
@@ -29942,12 +30766,10 @@ module.exports = {
       { name:'radius', type:'float', default:.01 },
       { name:'threshold', type:'float', default:.004 },
       { name:'scale', type:'float', default:2 },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `kifs( ${pName} - ${this.center.emit()}, ${this.count.emit()}, ${this.fold.emit()}, ${this.radius.emit()}, ${this.threshold.emit()}, ${this.scale.emit()} )`
+      return `kifs( ${pName}, ${this.count.emit()}, ${this.fold.emit()}, ${this.radius.emit()}, ${this.threshold.emit()}, ${this.scale.emit()} )`
     },
 
     // adapted from http://roy.red/folding-the-koch-snowflake-.html
@@ -29957,12 +30779,10 @@ module.exports = {
   Mandelbulb: {
     parameters:[
       { name:'c0', type:'float', default:8 },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `mandelbulb( ${pName} - ${this.center.emit()}, ${this.c0.emit()} )`
+      return `mandelbulb( ${pName}, ${this.c0.emit()} )`
     },
 
     // adapted from: https://www.shadertoy.com/view/ltfSWn
@@ -29975,8 +30795,6 @@ module.exports = {
       { name:'fold', type:'float', default:.1 },
       { name:'scale', type:'float', default:3.},
       { name:'iterations', type:'float', default:5 },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     glslify:`float mandelbox( float MR2, float SCALE, float ITER, vec3 position ){
@@ -29993,19 +30811,17 @@ module.exports = {
   }`,
 
     primitiveString( pName ) {
-      return `mandelbox( ${this.fold.emit()}, ${this.scale.emit()}, ${this.iterations.emit()}, ${pName} - ${this.center.emit()} )`
+      return `mandelbox( ${this.fold.emit()}, ${this.scale.emit()}, ${this.iterations.emit()}, ${pName} )`
     }
   },
 
 	Octahedron: {
     parameters:[
       { name:'radius', type:'float', default:1 },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdOctahedron( ${pName} - ${this.center.emit()}, ${this.radius.emit()} )`
+      return `sdOctahedron( ${pName}, ${this.radius.emit()} )`
     },
 
     glslify:`    float sdOctahedron(vec3 p, float h) {
@@ -30019,7 +30835,6 @@ module.exports = {
     parameters:[
       { name:'normal', type:'vec3', default:[0,1,0] },
       { name:'distance', type:'float', default:1 },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
@@ -30035,12 +30850,10 @@ module.exports = {
       { name:'v2', type:'vec3', default:[.5,-.5,0] },
       { name:'v3', type:'vec3', default:[.5,.5,0] },
       { name:'v4', type:'vec3', default:[-.5,.5,0] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `udQuad( ${pName} - ${this.center.emit()}, ${this.v1.emit()}, ${this.v2.emit()}, ${this.v3.emit()}, ${this.v4.emit()} )`
+      return `udQuad( ${pName}, ${this.v1.emit()}, ${this.v2.emit()}, ${this.v3.emit()}, ${this.v4.emit()} )`
     },
     glslify:glsl(["#define GLSLIFY 1\n    float dot2( in vec3 v ) { return dot(v,v); }\nfloat udQuad( vec3 p, vec3 a, vec3 b, vec3 c, vec3 d )\n{\n    vec3 ba = b - a; vec3 pa = p - a;\n    vec3 cb = c - b; vec3 pb = p - b;\n    vec3 dc = d - c; vec3 pc = p - c;\n    vec3 ad = a - d; vec3 pd = p - d;\n    vec3 nor = cross( ba, ad );\n\n    return sqrt(\n    (sign(dot(cross(ba,nor),pa)) +\n     sign(dot(cross(cb,nor),pb)) +\n     sign(dot(cross(dc,nor),pc)) +\n     sign(dot(cross(ad,nor),pd))<3.0)\n     ?\n     min( min( min(\n     dot2(ba*clamp(dot(ba,pa)/dot2(ba),0.0,1.0)-pa),\n     dot2(cb*clamp(dot(cb,pb)/dot2(cb),0.0,1.0)-pb) ),\n     dot2(dc*clamp(dot(dc,pc)/dot2(dc),0.0,1.0)-pc) ),\n     dot2(ad*clamp(dot(ad,pd)/dot2(ad),0.0,1.0)-pd) )\n     :\n     dot(nor,pa)*dot(nor,pa)/dot2(nor) );\n}\n\n"])
   }, 
@@ -30049,25 +30862,20 @@ module.exports = {
     parameters:[
       { name:'size', type:'vec3', default:[1,1,1] },
       { name:'radius', type:'float', default:1 },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `udRoundBox( ${pName} -${this.center.emit()}, ${this.size.emit()},  ${this.radius.emit()} )`
+      return `udRoundBox( ${pName}, ${this.size.emit()},  ${this.radius.emit()} )`
     }, 
     glslify:glsl(["#define GLSLIFY 1\n    float udRoundBox( vec3 p, vec3 b, float r )\n{\n  return length(max(abs(p)-b,0.0))-r;\n}\n\n"])
   }, 
   Sphere:{
     parameters:[
       { name:'radius', type:'float', default:1 },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      //{ name:'color', type:'float', default:Color(0,0,255) }
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdSphere( ${pName} - ${this.center.emit()}, ${this.radius.emit()} )`
+      return `sdSphere( ${pName}, ${this.radius.emit()} )`
     },
     glslify:glsl(["#define GLSLIFY 1\n    float sdSphere( vec3 p, float s )\n{\n  return length( p ) - s;\n}\n\n"])
   },
@@ -30086,24 +30894,21 @@ module.exports = {
       { name:'n3_2', type:'float', default:1 },
       { name:'a_2', type:'float', default:1 },
       { name:'b_2', type:'float', default:1 },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `superformula( ${pName} - ${this.center.emit()}, ${this.m_1.emit()}, ${this.n1_1.emit()},${this.n2_1.emit()},${this.n3_1.emit()},${this.a_1.emit()},${this.b_1.emit()}, ${this.m_2.emit()}, ${this.n1_2.emit()},${this.n2_2.emit()},${this.n3_2.emit()},${this.a_2.emit()},${this.b_2.emit()} )`
+      return `superformula( ${pName}, ${this.m_1.emit()}, ${this.n1_1.emit()},${this.n2_1.emit()},${this.n3_1.emit()},${this.a_1.emit()},${this.b_1.emit()}, ${this.m_2.emit()}, ${this.n1_2.emit()},${this.n2_2.emit()},${this.n3_2.emit()},${this.a_2.emit()},${this.b_2.emit()} )`
     },
     glslify:glsl(["#define GLSLIFY 1\n    float SuperFormula( float phi, float m, float n1, float n2, float n3, float a, float b ){\n\t\n\tfloat t1 = abs((1.0 / a) * cos(m * phi / 4.0));\n\tt1 = pow(t1, n2);\n\n\tfloat t2 = abs((a / b) * sin(m * phi / 4.0));\n\tt2 = pow(t2, n3);\n\n\tfloat t3 = t1 + t2;\n\n\tfloat r = pow(t3, -1.0 / n1);\n\n\treturn r;\n}\n\n float superformula( vec3 p, float m_1, float n1_1, float n2_1, float n3_1, float a_1, float b_1, float m_2, float n1_2, float n2_2, float n3_2, float a_2, float b_2 ) {\n    float d = length( p );\n    float theta = atan(p.y / p.x);\n    float phi = asin(p.z / d);\n    float r1 = SuperFormula( theta, m_1, n1_1, n2_1, n3_1, a_1, b_1 );\n    float r2 = SuperFormula( phi, m_2, n1_2, n2_2, n3_2, a_2, b_2 );\n    vec3 q = r2 * vec3(r1 * cos(theta) * cos(phi), r1 * sin(theta) * cos(phi), sin(phi));\n    d = d - length(q);\n\n    return d;\n  }    \n",""]) },
 
   Torus:{
     parameters:[
       { name:'radii',  type:'vec2', default:[.5,.1] },
-      { name:'center', type:'vec3', default:[0,0,0] },
       { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdTorus( ${pName} - ${this.center.emit()}, ${this.radii.emit()} )`
+      return `sdTorus( ${pName}, ${this.radii.emit()} )`
     },
     glslify:glsl(["#define GLSLIFY 1\n    float sdTorus( vec3 p, vec2 t )\n{\n  vec2 q = vec2(length(p.xz)-t.x,p.y);\n  return length(q)-t.y;\n}\n\n"])
 
@@ -30111,12 +30916,10 @@ module.exports = {
   Torus88:{
     parameters:[
       { name:'radii',  type:'vec2', default:[.5,.1] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdTorus88( ${pName} - ${this.center.emit()}, ${this.radii.emit()} )`
+      return `sdTorus88( ${pName}, ${this.radii.emit()} )`
     },
     glslify:`float sdTorus88( vec3 p, vec2 t ) {
         vec2 q = vec2( length8( p.xz ) - t.x, p.y );
@@ -30126,12 +30929,10 @@ module.exports = {
   Torus82:{
     parameters:[
       { name:'radii',  type:'vec2', default:[.5,.1] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdTorus82( ${pName} - ${this.center.emit()}, ${this.radii.emit()} )`
+      return `sdTorus82( ${pName}, ${this.radii.emit()} )`
     },
     glslify:`float sdTorus82( vec3 p, vec2 t ) {
         vec2 q = vec2( length( p.xz ) - t.x, p.y );
@@ -30143,12 +30944,10 @@ module.exports = {
       { name:'v1', type:'vec3', default:[0,-.5,0] },
       { name:'v2', type:'vec3', default:[-.5,.0,0] },
       { name:'v3', type:'vec3', default:[.5,.0,0] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `udTriangle( ${pName} - ${this.center.emit()}, ${this.v1.emit()}, ${this.v2.emit()}, ${this.v3.emit()} )`
+      return `udTriangle( ${pName}, ${this.v1.emit()}, ${this.v2.emit()}, ${this.v3.emit()} )`
     },
     glslify:glsl(["#define GLSLIFY 1\n    float dot2( in vec3 v ) { return dot(v,v); }\nfloat udTriangle( vec3 p, vec3 a, vec3 b, vec3 c )\n{\n    vec3 ba = b - a; vec3 pa = p - a;\n    vec3 cb = c - b; vec3 pb = p - b;\n    vec3 ac = a - c; vec3 pc = p - c;\n    vec3 nor = cross( ba, ac );\n\n    return sqrt(\n    (sign(dot(cross(ba,nor),pa)) +\n     sign(dot(cross(cb,nor),pb)) +\n     sign(dot(cross(ac,nor),pc))<2.0)\n     ?\n     min( min(\n     dot2(ba*clamp(dot(ba,pa)/dot2(ba),0.0,1.0)-pa),\n     dot2(cb*clamp(dot(cb,pb)/dot2(cb),0.0,1.0)-pb) ),\n     dot2(ac*clamp(dot(ac,pc)/dot2(ac),0.0,1.0)-pc) )\n     :\n     dot(nor,pa)*dot(nor,pa)/dot2(nor) );\n}\n\n"])
   }, 
@@ -30156,17 +30955,15 @@ module.exports = {
   TriPrism: {
     parameters:[
       { name:'dimensions', type:'vec2', default:[.5,.5] },
-      { name:'center', type:'vec3', default:[0,0,0] },
-      { name:'material', type:'mat', default:null }
     ],
 
     primitiveString( pName ) { 
-      return `sdTriPrism( ${pName} - ${this.center.emit()}, ${this.dimensions.emit()})`
+      return `sdTriPrism( ${pName}, ${this.dimensions.emit()})`
     },
     glslify:glsl(["#define GLSLIFY 1\n      float sdTriPrism( vec3 p, vec2 h )\n{\n    vec3 q = abs(p);\n    return max(q.z-h.y,max(q.x*0.866025+p.y*0.5,-p.y)-h.x*0.5);\n}\n\n"])
 
   }, 
-  VoxelSphere:{
+  /*VoxelSphere:{
     parameters:[
       { name:'radius', type:'float', default:1 },
       { name:'resolution', type:'float', default:20 },
@@ -30175,18 +30972,35 @@ module.exports = {
     ],
 
     primitiveString( pName ) { 
-      return `VoxelSphere( ${pName} - ${this.center.emit()}, ${this.radius.emit()}, ${this.resolution.emit()} )`
+      return `VoxelSphere( ${pName}, ${this.radius.emit()}, ${this.resolution.emit()} )`
     },
-    glslify:glsl(["#define GLSLIFY 1\nfloat sdBox( vec3 p, vec3 b ){\n        vec3 d = abs(p) - b;\n        return min(max(d.x,max(d.y,d.z)),0.0) +\n               length(max(d,0.0));\n      }\n      float VoxelSphere( vec3 p, float radius, float resolution ) {\n        //vec3 ref = p * resolution;\n        //ref = round( ref );\n        //return ( length( ref ) - resolution * radius ) / resolution;\n\n        float dist = round( length( p ) - radius * resolution) / resolution;\n        //if( dist < resolution ) {\n        //  dist = sdBox( vec3(0.), vec3(resolution) );\n        //}\n\n        return dist; \n    }",""])
-  },
+    glslify:glsl`float sdBox( vec3 p, vec3 b ){
+        vec3 d = abs(p) - b;
+        return min(max(d.x,max(d.y,d.z)),0.0) +
+               length(max(d,0.0));
+      }
+      float VoxelSphere( vec3 p, float radius, float resolution ) {
+        //vec3 ref = p * resolution;
+        //ref = round( ref );
+        //return ( length( ref ) - resolution * radius ) / resolution;
+
+        float dist = round( length( p ) - radius * resolution) / resolution;
+        //if( dist < resolution ) {
+        //  dist = sdBox( vec3(0.), vec3(resolution) );
+        //}
+
+        return dist; 
+    }`
+  },*/
 
 }
 
-},{"glslify":270}],254:[function(require,module,exports){
+},{"glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/primitives.js":[function(require,module,exports){
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc }  = require( './var.js' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Vec2, Vec3, Vec4 } = require( './vec.js' )
+const Transform = require( './transform.js' )
 
 const createPrimitives = function( SDF ) {
 
@@ -30198,7 +31012,6 @@ const createPrimitives = function( SDF ) {
     vec4: vec4_var_gen,
   }
 
-
   const vars = { 
     vec2: Vec2,
     vec3: Vec3,
@@ -30208,8 +31021,49 @@ const createPrimitives = function( SDF ) {
   // load descriptions of all primtives
   const descriptions = require( './primitiveDescriptions.js' )
 
-  const Primitives = {
-    descriptions
+  const Primitives = { 
+    descriptions,
+
+    textureMemo: [],
+
+    emit_geometries() {
+      const head = Array.isArray( SDF.__scene.__prerender ) ? SDF.__scene.__prerender[0] : SDF.__scene.__prerender
+      const geos = Primitives.crawlNode( head, [] )
+
+      geos.forEach( (geo,i) => {
+        geo.__sdfID = i 
+        if( geo.__textureObj !== undefined ) {
+          SDF.textures.addTexture( geo.__textureObj )
+        }
+      })
+
+      const length = geos.length
+      const materials = SDF.materials.materials
+
+      let decl = `SDF sdfs[${length}] = SDF[${length}](\n`
+      geos.forEach( (geo, i) => {
+        const textureID = geo.__textureObj === undefined ? 50000 : geo.__textureObj.id
+        decl += `        SDF( ${materials.indexOf( geo.__material )}, ${geo.transform.varName}, ${textureID} )`
+        if( i < geos.length - 1 ) decl += ','
+        decl += '\n'
+      })
+
+      decl += `      );\n`
+
+      return decl
+    },
+
+    crawlNode( node, arr ) {
+      if( node.type === 'geometry' ) {
+        arr.push( node )
+      }else{
+        if( node.a !== undefined ) Primitives.crawlNode( node.a, arr )
+        if( node.b !== undefined ) Primitives.crawlNode( node.b, arr )
+        if( node.sdf !== undefined ) Primitives.crawlNode( node.sdf, arr )
+      }
+
+      return arr
+    }
   }
 
   const createPrimitive = function( name, desc ) {
@@ -30219,22 +31073,19 @@ const createPrimitives = function( SDF ) {
     Primitives[ name ] = function( ...args ) {
       const p = Object.create( Primitives[ name ].prototype )
       p.params = params
+      p.transform = Transform()
+      p.type = 'geometry'
+      p.name = name
 
+      p.__material = null
+      p.__textureID  = 500000
+      
       let count = 0
 
       // wrap each param in a Var object for codegen
       for( let param of params ) {
         if( param.name === 'color' ) {
           p.color = args[ count ] === undefined ? param.default : args[ count++ ]
-          continue
-        }else if( param.name === 'material' ) {
-          p.material = args[ count++ ] 
-          p.material = SDF.materials.addMaterial( p.material )
-          //if( SDF.materials.materials.indexOf( p.material ) === -1 ) {
-          //  console.log( 'pushing material' )
-          //  p.material.id = MaterialID.alloc()
-          //  SDF.materials.materials.push( p.material )
-          //}
           continue
         }
         if( param.type === 'obj' ) {
@@ -30301,27 +31152,38 @@ const createPrimitives = function( SDF ) {
         }
       }
 
-      let mat = p.material
-      Object.defineProperty( p, 'material', {
-        configurable:true,
-        get() { return mat },
-        set(v) {
-          mat = SDF.materials.addMaterial( v )
-        }
-      })
-      // id used for sdf code
       p.id = VarAlloc.alloc()
 
       p.__desc = desc
+      p.__setMaterial = function(mat) {
+        if( typeof mat === 'string' ) mat = SDF.Material[ mat ]
+        this.__material = this.mat = SDF.materials.addMaterial( mat )
+      }
+
+      p.__setTexture = function(tex,props) {
+        if( typeof tex === 'string' ) {
+          this.texture = p.texture.bind( this )
+          this.__textureObj = this.tex = SDF.Texture( tex,props,this.texture )
+          this.__textureID = this.__textureObj.id
+        }else{
+          this.__textureObj = this.tex = Object.assign( tex, props )
+          this.__textureID = this.__textureObj.id
+        }
+      }
+
+      if( p.__material === null ) p.__setMaterial()
+
+      SDF.geometries.push( p )
 
       return p
     }
 
     // define prototype to use
     Primitives[ name ].prototype = SceneNode()
-
+    Primitives[ name ].prototype.type = 'geometry'
+    
     // create codegen string
-    Primitives[ name ].prototype.emit = function ( __name ) {
+    Primitives[ name ].prototype.emit = function ( __name, shouldRepeat=true, transform = null, shouldApplyTransform=true ) {
       let shaderCode = desc.glslify.indexOf('#') > -1 ? desc.glslify.slice(18) : desc.glslify
       if( SDF.requiredGeometries.indexOf( shaderCode ) === - 1 ) {
         SDF.requiredGeometries.push( shaderCode )
@@ -30331,23 +31193,40 @@ const createPrimitives = function( SDF ) {
         return { preface:'', out:name+this.matId }
       }
 
-      const pname = __name === undefined ? 'p' : __name
+      const pname = __name === undefined || __name === null ? 'p' : __name
 
-      const id = SDF.materials.__materials.indexOf( this.material )
+      //const id = SDF.materials.__materials.indexOf( this.__material )
+      const id = this.__sdfID
+      const s = this.transform.emit_scale()
+      
+      let pointString = shouldApplyTransform === true ? `( ${pname} * ${this.transform.emit()} ).xyz` : pname
+      if( this.__repeat !== undefined && shouldRepeat === true ) {
+        return this.__repeat.emit( pname )// + pointString
+      }else if(this.__polarRepeat !== undefined && shouldRepeat === true) {
+        return this.__polarRepeat.emit( pname )
+      }else {
+        const transformString = transform === null ? this.transform.emit() : `${transform} * ${this.transform.emit()}`
+        const primitive = `
+        opOut ${name}${this.id} = opOut( ${desc.primitiveString.call( this,  pointString )} * ${s}, ${id}., ${transformString});
+      `
+        SDF.memo[ this.id ] = name + this.id
 
-      const primitive = `        vec2 ${name}${this.id} = vec2(${desc.primitiveString.call( this, pname )}, ${id} );\n`
-
-      SDF.memo[ this.id ] = name + this.id
-
-      return { preface:primitive, out:name+this.id  }
+        return { preface:primitive, out:name+this.id  }
+      }
     }
     
     // declare any uniform variables
     Primitives[ name ].prototype.emit_decl = function() {
       let decl = ''
+      decl += this.transform.emit_decl()
+
+      //debugger
+      if( this.__repeat !== undefined ) decl += this.__repeat.emit_decl( false )
+      if( this.__polarRepeat !== undefined ) decl += this.__polarRepeat.emit_decl( false )
+
       for( let param of params ) {
         if( param.name !== 'material' )
-          decl += this[ param.name ].emit_decl()
+          decl += this[ param.name ].emit_decl( )
       }
 
       return decl
@@ -30360,6 +31239,10 @@ const createPrimitives = function( SDF ) {
             this[ param.name ].update_location( gl,program )
         }
       }
+
+      if( this.__repeat !== undefined ) this.__repeat.update_location( gl, program, false )
+      if( this.__polarRepeat !== undefined ) this.__polarRepeat.update_location( gl, program, false )
+      this.transform.update_location( gl, program )
     }
 
     Primitives[ name ].prototype.upload_data = function( gl ) {
@@ -30367,6 +31250,9 @@ const createPrimitives = function( SDF ) {
         if( param.type !== 'obj' && param.name !== 'material' )
           this[ param.name ].upload_data( gl )
       }
+
+      if( this.__polarRepeat !== undefined ) this.__polarRepeat.upload_data( gl, false )
+      this.transform.upload_data( gl )
     }
     
     return Primitives[ name ]
@@ -30384,16 +31270,16 @@ const createPrimitives = function( SDF ) {
 
 module.exports = createPrimitives
 
-},{"./primitiveDescriptions.js":253,"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261}],255:[function(require,module,exports){
+},{"./primitiveDescriptions.js":"/Users/charlie/Documents/code/marching/js/primitiveDescriptions.js","./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./transform.js":"/Users/charlie/Documents/code/marching/js/transform.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/renderFragmentShader.js":[function(require,module,exports){
 const glsl = require( 'glslify' )
 
-module.exports = function( variables, scene, preface, geometries, lighting, postprocessing, steps=90, minDistance=.001, maxDistance=20 ) {
-    const fs_source = glsl(["     #version 300 es\n      precision highp float;\n#define GLSLIFY 1\n\n\n      float PI = 3.141592653589793;\n\n      in vec2 v_uv;\n\n      struct Light {\n        vec3 position;\n        vec3 color;\n        float attenuation;\n      };\n\n      struct Material {\n        int  mode;\n        vec3 ambient;\n        vec3 diffuse;\n        vec3 specular;\n        float shininess;\n        vec3 fresnel;\n        int textureID;\n      };     \n\n      uniform float time;\n      uniform vec2 resolution;\n      uniform vec3 camera_pos;\n      uniform vec3 camera_normal;\n      uniform float camera_rot;\n\n      ","\n\n      // must be before geometries!\n      float length8( vec2 p ) { \n        return float( pow( pow(p.x,8.)+pow(p.y,8.), 1./8. ) ); \n      }\n\n      /* GEOMETRIES */\n      ","\n\n      vec2 scene(vec3 p);\n\n      // Originally sourced from https://www.shadertoy.com/view/ldfSWs\n// Thank you Iñigo :)\n\nvec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir, float maxd, float precis) {\n  float latest = precis * 2.0;\n  float dist   = +0.0;\n  float type   = -1.0;\n  vec2  res    = vec2(-1.0, -1.0);\n\n  for (int i = 0; i < "," ; i++) {\n    if (latest < precis || dist > maxd) break;\n\n    vec2 result = scene(rayOrigin + rayDir * dist);\n\n    latest = result.x;\n    type   = result.y;\n    dist  += latest;\n  }\n\n  if (dist < maxd) {\n    res = vec2(dist, type);\n  }\n\n  return res;\n}\n\nvec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir) {\n  return calcRayIntersection(rayOrigin, rayDir, 20.0, 0.001);\n}\n\n      // Originally sourced from https://www.shadertoy.com/view/ldfSWs\n// Thank you Iñigo :)\n\nvec3 calcNormal(vec3 pos, float eps) {\n  const vec3 v1 = vec3( 1.0,-1.0,-1.0);\n  const vec3 v2 = vec3(-1.0,-1.0, 1.0);\n  const vec3 v3 = vec3(-1.0, 1.0,-1.0);\n  const vec3 v4 = vec3( 1.0, 1.0, 1.0);\n\n  return normalize( v1 * scene ( pos + v1*eps ).x +\n                    v2 * scene ( pos + v2*eps ).x +\n                    v3 * scene ( pos + v3*eps ).x +\n                    v4 * scene ( pos + v4*eps ).x );\n}\n\nvec3 calcNormal(vec3 pos) {\n  return calcNormal(pos, 0.002);\n}\n\n      mat3 calcLookAtMatrix(vec3 origin, vec3 target, float roll) {\n  vec3 rr = vec3(sin(roll), cos(roll), 0.0);\n  vec3 ww = normalize(target - origin);\n  vec3 uu = normalize(cross(ww, rr));\n  vec3 vv = normalize(cross(uu, ww));\n\n  return mat3(uu, vv, ww);\n}\n\nvec3 getRay(mat3 camMat, vec2 screenPos, float lensLength) {\n  return normalize(camMat * vec3(screenPos, lensLength));\n}\n\nvec3 getRay(vec3 origin, vec3 target, vec2 screenPos, float lensLength) {\n  mat3 camMat = calcLookAtMatrix(origin, target, 0.0);\n  return getRay(camMat, screenPos, lensLength);\n}\n\n      vec2 squareFrame(vec2 screenSize) {\n  vec2 position = 2.0 * (gl_FragCoord.xy / screenSize.xy) - 1.0;\n  position.x *= screenSize.x / screenSize.y;\n  return position;\n}\n\nvec2 squareFrame(vec2 screenSize, vec2 coord) {\n  vec2 position = 2.0 * (coord.xy / screenSize.xy) - 1.0;\n  position.x *= screenSize.x / screenSize.y;\n  return position;\n}\n\nvoid orbitCamera(\n  in float camAngle,\n  in float camHeight,\n  in float camDistance,\n  in vec2 screenResolution,\n  out vec3 rayOrigin,\n  out vec3 rayDirection\n) {\n  vec2 screenPos = squareFrame(screenResolution);\n  vec3 rayTarget = vec3(0.0);\n\n  rayOrigin = vec3(\n    camDistance * sin(camAngle),\n    camHeight,\n    camDistance * cos(camAngle)\n  );\n\n  rayDirection = getRay(rayOrigin, rayTarget, screenPos, 2.0);\n}\n\n      // OPS\n      float opU( float d1, float d2 )\n{\n    return min(d1,d2);\n}\n\nvec2 opU( vec2 d1, vec2 d2 ){\n\treturn ( d1.x < d2.x ) ? d1 : d2;\n}\n\n      float opI( float d1, float d2 ) {\n        return max(d1,d2);\n      }\n\n      vec2 opI( vec2 d1, vec2 d2 ) {\n        return ( d1.x > d2.x ) ? d1 : d2; //max(d1,d2);\n      }\n\n      float opS( float d1, float d2 ) { return max(d1,-d2); }\n      vec2  opS( vec2 d1, vec2 d2 ) {\n        return d1.x >= -d2.x ? vec2( d1.x, d1.y ) : vec2(-d2.x, d2.y);\n      }\n\n      /* ******** from http://mercury.sexy/hg_sdf/ ********* */\n\n      float fOpUnionStairs(float a, float b, float r, float n) {\n        float s = r/n;\n        float u = b-r;\n        return min(min(a,b), 0.5 * (u + a + abs ((mod (u - a + s, 2. * s)) - s)));\n      }\n      vec2 fOpUnionStairs(vec2 a, vec2 b, float r, float n) {\n        float s = r/n;\n        float u = b.x-r;\n        return vec2( min(min(a.x,b.x), 0.5 * (u + a.x + abs ((mod (u - a.x + s, 2. * s)) - s))), a.y );\n      }\n\n      // We can just call Union since stairs are symmetric.\n      float fOpIntersectionStairs(float a, float b, float r, float n) {\n        return -fOpUnionStairs(-a, -b, r, n);\n      }\n\n      float fOpSubstractionStairs(float a, float b, float r, float n) {\n        return -fOpUnionStairs(-a, b, r, n);\n      }\n\n      vec2 fOpIntersectionStairs(vec2 a, vec2 b, float r, float n) {\n        return vec2( -fOpUnionStairs(-a.x, -b.x, r, n), a.y );\n      }\n\n      vec2 fOpSubstractionStairs(vec2 a, vec2 b, float r, float n) {\n        return vec2( -fOpUnionStairs(-a.x, b.x, r, n), a.y );\n      }\n\n      float fOpUnionRound(float a, float b, float r) {\n        vec2 u = max(vec2(r - a,r - b), vec2(0));\n        return max(r, min (a, b)) - length(u);\n      }\n\n      float fOpIntersectionRound(float a, float b, float r) {\n        vec2 u = max(vec2(r + a,r + b), vec2(0));\n        return min(-r, max (a, b)) + length(u);\n      }\n\n      float fOpDifferenceRound (float a, float b, float r) {\n        return fOpIntersectionRound(a, -b, r);\n      }\n\n      vec2 fOpUnionRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpUnionRound( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpIntersectionRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpIntersectionRound( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpDifferenceRound( vec2 a, vec2 b, float r ) {\n        return vec2( fOpDifferenceRound( a.x, b.x, r ), a.y );\n      }\n\n      float fOpUnionChamfer(float a, float b, float r) {\n        return min(min(a, b), (a - r + b)*sqrt(0.5));\n      }\n\n      float fOpIntersectionChamfer(float a, float b, float r) {\n        return max(max(a, b), (a + r + b)*sqrt(0.5));\n      }\n\n      float fOpDifferenceChamfer (float a, float b, float r) {\n        return fOpIntersectionChamfer(a, -b, r);\n      }\n      vec2 fOpUnionChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpUnionChamfer( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpIntersectionChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpIntersectionChamfer( a.x, b.x, r ), a.y );\n      }\n      vec2 fOpDifferenceChamfer( vec2 a, vec2 b, float r ) {\n        return vec2( fOpDifferenceChamfer( a.x, b.x, r ), a.y );\n      }\n\n      float fOpPipe(float a, float b, float r) {\n        return length(vec2(a, b)) - r;\n      }\n      float fOpEngrave(float a, float b, float r) {\n        return max(a, (a + r - abs(b))*sqrt(0.5));\n      }\n\n      float fOpGroove(float a, float b, float ra, float rb) {\n        return max(a, min(a + ra, rb - abs(b)));\n      }\n      float fOpTongue(float a, float b, float ra, float rb) {\n        return min(a, max(a - ra, abs(b) - rb));\n      }\n\n      vec2 fOpPipe( vec2 a, vec2 b, float r ) { return vec2( fOpPipe( a.x, b.x, r ), a.y ); }\n      vec2 fOpEngrave( vec2 a, vec2 b, float r ) { return vec2( fOpEngrave( a.x, b.x, r ), a.y ); }\n      vec2 fOpGroove( vec2 a, vec2 b, float ra, float rb ) { return vec2( fOpGroove( a.x, b.x, ra, rb ), a.y ); }\n      vec2 fOpTongue( vec2 a, vec2 b, float ra, float rb ) { return vec2( fOpTongue( a.x, b.x, ra, rb ), a.y ); }\n\n      float opOnion( in float sdf, in float thickness ){\n        return abs(sdf)-thickness;\n      }\n\n      float opHalve( in float sdf, vec3 p, in int dir ){\n        float _out = 0.;\n        switch( dir ) {\n          case 0:  \n            _out = max( sdf, p.y );\n            break;\n          case 1:\n            _out = max( sdf, -p.y );\n            break;\n          case 2:\n            _out = max( sdf, p.x );\n            break;\n          case 3:\n            _out = max( sdf, -p.x );\n            break;\n        }\n\n        return _out;\n      }\n\n      vec4 opElongate( in vec3 p, in vec3 h ) {\n        //return vec4( p-clamp(p,-h,h), 0.0 ); // faster, but produces zero in the interior elongated box\n        \n        vec3 q = abs(p)-h;\n        return vec4( max(q,0.0), min(max(q.x,max(q.y,q.z)),0.0) );\n      }\n\n      vec3 polarRepeat(vec3 p, float repetitions) {\n        float angle = 2.*PI/repetitions;\n        float a = atan(p.z, p.x) + angle/2.;\n        float r = length(p.xz);\n        float c = floor(a/angle);\n        a = mod(a,angle) - angle/2.;\n        vec3 _p = vec3( cos(a) * r, p.y,  sin(a) * r );\n        // For an odd number of repetitions, fix cell index of the cell in -x direction\n        // (cell index would be e.g. -5 and 5 in the two halves of the cell):\n        if (abs(c) >= (repetitions/2.)) c = abs(c);\n        return _p;\n      }\n\n      /* ******************************************************* */\n\n      // added k value to glsl-sdf-ops/soft-shadow\n      float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax, in float k ){\n        float res = 1.0;\n        float t = mint;\n\n        for( int i = 0; i < 16; i++ ) {\n          float h = scene( ro + rd * t ).x;\n          res = min( res, k * h / t );\n          t += clamp( h, 0.02, 0.10 );\n          if( h<0.001 || t>tmax ) break;\n        }\n\n        return clamp( res, 0.0, 1.0 );\n      }\n\n","\n\n      vec2 scene(vec3 p) {\n","\n        return ",";\n      }\n \n\n      out vec4 col;\n\n      void main() {\n        vec2 pos = v_uv * 2.0 - 1.0;\n        pos.x *= ( resolution.x / resolution.y );\n        vec3 color = bg; \n        vec3 ro = camera_pos;\n        vec3 rd = camera_normal;\n\n        //vec3 rd = camera( ro, camera_normal, pos, 2.0 );\n        orbitCamera( camera_rot, ro.y, ro.z, resolution, ro, rd );\n        \n        //camera( ro, camera_normal, pos, 2.0 );\n\n        vec2 t = calcRayIntersection( ro, rd, ",", "," );\n        if( t.x > -0.5 ) {\n          vec3 pos = ro + rd * t.x;\n          vec3 nor = calcNormal( pos );\n\n          color = lighting( pos, nor, ro, rd, t.y ); \n        }\n\n        ","\n        \n\n        col = vec4( color, 1.0 );\n      }",""],variables,geometries,steps,lighting,preface,scene,maxDistance,minDistance,postprocessing)
+module.exports = function( variables, scene, preface, geometries, lighting, postprocessing, steps=90, minDistance=.001, maxDistance=20, ops ) {
+    const fs_source = glsl(["     #version 300 es\n      precision highp float;\n#define GLSLIFY 1\n\n\n      float PI = 3.141592653589793;\n\n      in vec2 v_uv;\n\n      struct Light {\n        vec3 position;\n        vec3 color;\n        float attenuation;\n      };\n\n      int rotationCount = 1;\n\n      mat4 rotations[4] = mat4[4](\n        mat4(0.), mat4(0.), mat4(0.), mat4(0.)\n      );\n\n      struct Material {\n        int  mode;\n        vec3 ambient;\n        vec3 diffuse;\n        vec3 specular;\n        float shininess;\n        vec3 fresnel;\n        int textureID;\n      };     \n\n      struct SDF {\n        int materialID;\n        mat4 transform;\n        int textureID;\n      };\n\n      struct opOut {\n        float x;\n        float y;\n        mat4  transform;\n      };\n\n      uniform float time;\n      uniform vec2 resolution;\n      uniform vec3 camera_pos;\n      uniform vec3 camera_normal;\n      uniform float camera_rot;\n\n      ","\n\n      // must be before geometries!\n      float length8( vec2 p ) { \n        return float( pow( pow(p.x,8.)+pow(p.y,8.), 1./8. ) ); \n      }\n\n      ","\n\n      /* GEOMETRIES */\n      ","\n\n      opOut scene(vec3 p);\n\n      \n      // Adapted from from https://www.shadertoy.com/view/ldfSWs\n\n      opOut calcRayIntersection( vec3 rayOrigin, vec3 rayDir, float maxd, float precis ) {\n        float latest = precis * 2.0;\n        float dist   = +0.0;\n        float type   = -1.0;\n        opOut result;\n        opOut res = opOut( -1., -1., mat4(1.) );\n\n        for (int i = 0; i < "," ; i++) {\n          if (latest < precis || dist > maxd) break;\n\n          result = scene(rayOrigin + rayDir * dist );\n\n          latest = result.x;\n          type   = result.y;\n          dist  += latest;\n        }\n\n        if( dist < maxd ) {\n          result.x= dist;\n          res = result;\n        }\n\n        return res;\n      }\n\n      opOut calcRayIntersection(vec3 rayOrigin, vec3 rayDir) {\n        return calcRayIntersection(rayOrigin, rayDir, 20.0, 0.001);\n      }\n\n      // adapted from https://www.shadertoy.com/view/ldfSWs\n      vec3 calcNormal(vec3 pos, float eps) {\n        const vec3 v1 = vec3( 1.0,-1.0,-1.0);\n        const vec3 v2 = vec3(-1.0,-1.0, 1.0);\n        const vec3 v3 = vec3(-1.0, 1.0,-1.0);\n        const vec3 v4 = vec3( 1.0, 1.0, 1.0);\n\n        return normalize( v1 * scene ( pos + v1*eps ).x+\n                          v2 * scene ( pos + v2*eps ).x+\n                          v3 * scene ( pos + v3*eps ).x+\n                          v4 * scene ( pos + v4*eps ).x);\n      }\n\n      vec3 calcNormal(vec3 pos) {\n        return calcNormal(pos, 0.002);\n      }\n\n      mat3 calcLookAtMatrix(vec3 origin, vec3 target, float roll) {\n        vec3 rr = vec3(sin(roll), cos(roll), 0.0);\n        vec3 ww = normalize(target - origin);\n        vec3 uu = normalize(cross(ww, rr));\n        vec3 vv = normalize(cross(uu, ww));\n\n        return mat3(uu, vv, ww);\n      }\n\n      vec3 getRay(mat3 camMat, vec2 screenPos, float lensLength) {\n        return normalize(camMat * vec3(screenPos, lensLength));\n      }\n\n      vec3 getRay(vec3 origin, vec3 target, vec2 screenPos, float lensLength) {\n        mat3 camMat = calcLookAtMatrix(origin, target, 0.0);\n        return getRay(camMat, screenPos, lensLength);\n      }\n\n      vec2 squareFrame(vec2 screenSize) {\n        vec2 position = 2.0 * (gl_FragCoord.xy / screenSize.xy) - 1.0;\n        position.x *= screenSize.x / screenSize.y;\n        return position;\n      }\n\n      vec2 squareFrame(vec2 screenSize, vec2 coord) {\n        vec2 position = 2.0 * (coord.xy / screenSize.xy) - 1.0;\n        position.x *= screenSize.x / screenSize.y;\n        return position;\n      }\n\n      void orbitCamera(\n        in float camAngle,\n        in float camHeight,\n        in float camDistance,\n        in vec2 screenResolution,\n        out vec3 rayOrigin,\n        out vec3 rayDirection\n      ) {\n        vec2 screenPos = squareFrame(screenResolution);\n        vec3 rayTarget = vec3(0.0);\n\n        rayOrigin = vec3(\n          camDistance * sin(camAngle),\n          camHeight,\n          camDistance * cos(camAngle)\n        );\n\n        rayDirection = getRay(rayOrigin, rayTarget, screenPos, 2.0);\n      }\n\n      vec4 opElongate( in vec3 p, in vec3 h ) {\n        //return vec4( p-clamp(p,-h,h), 0.0 ); // faster, but produces zero in the interior elongated box\n        \n        vec3 q = abs(p)-h;\n        return vec4( max(q,0.0), min(max(q.x,max(q.y,q.z)),0.0) );\n      }\n\n      vec3 polarRepeat(vec3 p, float repetitions) {\n        float angle = 2.*PI/repetitions;\n        float a = atan(p.z, p.x) + angle/2.;\n        float r = length(p.xz);\n        float c = floor(a/angle);\n        a = mod(a,angle) - angle/2.;\n        vec3 _p = vec3( cos(a) * r, p.y,  sin(a) * r );\n        // For an odd number of repetitions, fix cell index of the cell in -x direction\n        // (cell index would be e.g. -5 and 5 in the two halves of the cell):\n        if (abs(c) >= (repetitions/2.)) c = abs(c);\n        return _p;\n      }\n\n      /* ******************************************************* */\n\n      // added k value to glsl-sdf-ops/soft-shadow\n      float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax, in float k ){\n        float res = 1.0;\n        float t = mint;\n\n        for( int i = 0; i < 12; i++ ) {\n          float h = scene( ro + rd * t ).x;\n          res = min( res, k * h / t );\n          t += clamp( h, 0.02, 0.10 );\n          if( h<0.001 || t>tmax ) break;\n        }\n\n        return clamp( res, 0.0, 1.0 );\n      }\n\n","\n\n      opOut scene(vec3 _p ) {\n        vec4 p = vec4( _p, 1. );\n","\n        return ",";\n      }\n \n\n      out vec4 col;\n\n      void main() {\n        vec2 pos = v_uv * 2.0 - 1.0;\n        pos.x *= ( resolution.x / resolution.y );\n        vec3 color = bg; \n        vec3 ro = camera_pos;\n        vec3 rd = camera_normal;\n\n        orbitCamera( camera_rot, ro.y, ro.z, resolution, ro, rd );\n        \n        opOut t = calcRayIntersection( ro, rd, ",", "," );\n \n        if( t.x > -0.5 ) {\n          vec3 pos = ro + rd * t.x;\n          vec3 nor = calcNormal( pos );\n\n          color = lighting( pos, nor, ro, rd, t.y, t.transform ); \n        }\n\n        ","\n        \n        col = vec4( color, 1.0 );\n      }",""],variables,ops,geometries,steps,lighting,preface,scene,maxDistance,minDistance,postprocessing)
 
     return fs_source
   }
 
-},{"glslify":270}],256:[function(require,module,exports){
+},{"glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/scene.js":[function(require,module,exports){
 const getFog = require( './fog.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const __lighting = require( './lighting.js' )
@@ -30407,6 +31293,12 @@ const getScene = function( SDF ) {
     MaterialID.clear()
 
     SDF.lighting.lights = []
+
+    scene.__prerender = objs
+    if( objs.length > 1 ) {
+      // reduce objects to nested Unions
+      scene.__prerender = objs.reduce( ( current, next ) => SDF.Union( current, next ) )
+    }
 
     Object.assign( scene, { 
       objs, 
@@ -30453,7 +31345,7 @@ const getScene = function( SDF ) {
       this.threshold( .1 / (quality * quality * quality ) )
       this.steps( quality * 20 )
       this.farPlane( quality * 5 )
-      //this.resolution( Math.min( .2 * quality, 2 ) )
+      this.resolution( Math.min( .2 * quality, 2 ) )
 
       return this
     },
@@ -30471,9 +31363,16 @@ const getScene = function( SDF ) {
       }
       this.animate( animate )
 
-      const lighting = SDF.lighting.gen( this.__shadow )
+      SDF.distanceOps.__clear()
+      SDF.textures.clear()
+      const geometries = SDF.primitives.emit_geometries()
 
-      const [ variablesDeclaration, sceneRendering, postprocessing ] = SDF.generateSDF( this )
+      let [ variablesDeclaration, sceneRendering, postprocessing ] = SDF.generateSDF( this )
+
+      const lighting = SDF.lighting.gen( this.__shadow, geometries )
+      variablesDeclaration += SDF.materials.emit_decl() 
+      variablesDeclaration += SDF.textures.emit_decl() 
+      variablesDeclaration += SDF.lighting.emit_decl() 
 
       this.fs = SDF.renderFragmentShader( 
         variablesDeclaration, 
@@ -30482,7 +31381,8 @@ const getScene = function( SDF ) {
         SDF.requiredGeometries.join('\n') + SDF.requiredOps.join('\n'),
         lighting,
         postprocessing, 
-        this.__steps, this.__threshold, this.__farPlane.toFixed(1)
+        this.__steps, this.__threshold, this.__farPlane.toFixed(1),
+        SDF.distanceOps.__getGLSL()
       )
 
       SDF.start( this.fs, this.width, this.height, this.__animate )
@@ -30502,7 +31402,7 @@ const getScene = function( SDF ) {
 
 module.exports = getScene 
 
-},{"./background.js":240,"./fog.js":246,"./lighting.js":249,"./utils.js":259,"./var.js":260}],257:[function(require,module,exports){
+},{"./background.js":"/Users/charlie/Documents/code/marching/js/background.js","./fog.js":"/Users/charlie/Documents/code/marching/js/fog.js","./lighting.js":"/Users/charlie/Documents/code/marching/js/lighting.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/sceneNode.js":[function(require,module,exports){
 // SceneNode
 
 let SceneNode = ()=> Object.create( SceneNode.prototype )
@@ -30538,63 +31438,241 @@ SceneNode.prototype = {
     }
 
     return center
+  },
+
+  move( ...args ) {
+    return this.translate( ...args )
+  },
+
+  rotate( angle, x,y,z ) {
+    this.transform.rotation.angle = angle
+    if( x !== undefined ) this.transform.rotation.axis.x = x
+    if( y !== undefined ) this.transform.rotation.axis.y = y
+    if( z !== undefined ) this.transform.rotation.axis.z = z
+  
+    return this
+  },
+
+  translate( x,y,z ) {
+    if( x !== undefined && x !== null ) this.transform.translation.x = x
+    if( y !== undefined && y !== null ) this.transform.translation.y = y
+    if( z !== undefined && z !== null ) this.transform.translation.z = z
+  
+    return this
+  },
+
+  scale( amount ) {
+    if( amount !== undefined ) this.transform.scale = amount
+    return this
+  },
+
+  material( mat ) {
+    this.__setMaterial( mat )
+    return this
+  },
+
+  texture( tex,props ) {
+    this.__setTexture( tex,props )
+    return this
   }
 }
 
+const ops = [ 'repeat', 'polarRepeat', 'elongation' ]
+
+ops.forEach( op => {
+  const constructorName = op[0].toUpperCase() + op.slice(1)
+  SceneNode.prototype[ op ] = function( ...args ) {
+    this[ op ] = this[ op ].bind( this )
+    Object.assign( this[ op ], SceneNode.prototype )
+    this.__target = this[ op ]
+    this[ '__'+op ] = Marching[ constructorName ]( this, ...args, this[ op ] )
+    this[ op ].transform = this[ '__'+op ].transform
+    return this
+  }
+})
+
 module.exports = SceneNode
 
-},{}],258:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/texture.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       getPixels = require( 'get-pixels' ),
       createTexture = require( 'gl-texture2d' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
-      { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' ),
+      { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc }  = require( './var.js' ), 
       { Vec2, Vec3, Vec4 } = require( './vec.js' )
 
-const glsl = require( 'glslify' )
 
 const __Textures = function( SDF ) {
+  const gens = { 
+    int:   int_var_gen,
+    float: float_var_gen,
+    vec2: vec2_var_gen,
+    vec3: vec3_var_gen,
+    vec4: vec4_var_gen,
+  }
+
+  const vars = { 
+    vec2: Vec2,
+    vec3: Vec3,
+    vec4: Vec4
+  }
 
   const Textures = {
     textures:[],
     __textures:[],
 
+    __texturePrefaces:[],
+    __textureBodies:  [],
+
+    __types: require( './textureDescriptions.js' ),
+    __wrap : require( './textureWrap.js' ), 
+    
+    __emitFunction() {
+      let pushedWrap = false
+
+      let decl = `
+      vec3 getTexture( int id, vec3 pos, vec3 nor, mat4 transform ) {
+        vec3 tex;
+        vec2 pos2;
+        switch( id ) {\n`
+
+      Textures.__textureBodies.length = 0
+
+      let funcdefs = ''
+      this.textures.forEach( (t,i) => {
+        const mode = t.wrap !== true && t.glsl !== undefined ? '3d' : '2d'
+
+        // add texture wrap function if needed
+        if( mode === '2d' && pushedWrap === false ) {
+          Textures.__textureBodies.push( Textures.__wrap )
+          pushedWrap = true
+        }
+
+        const glsl = mode === '3d' ? t.glsl : t.glsl2d 
+        if( Textures.__textureBodies.indexOf( glsl ) === -1 ) { 
+          Textures.__textureBodies.push( glsl )
+        }
+
+        const args = t.parameters.map( p => t.__target[ p.name ].emit() ) 
+        const functionName = mode === '2d' ? t.name + '2d' : t.name 
+
+        decl +=`
+          case ${i}:
+            ${mode === '2d' ? `     pos2 = getUVCubic( pos );\n` : ''} 
+            tex = ${functionName}( ${mode === '2d' ?'pos2':'pos'}, nor${ args.length > 0 ? ',' + args.join(',') : ''} );
+            break;\n`            
+
+      })
+
+      decl += `
+          default:
+            tex = vec3(0.);
+            break;
+        }
+
+        return tex;
+      }\n`
+
+      return { glsldefs: Textures.__textureBodies.join( '\n' ), mainfunc:decl }
+    },
+
+    clear() {
+      Textures.textures.length = 0
+    },
+
     addTexture( tex ) {
-      if( tex === undefined ) tex = Textures.texture.default
+      // we have to dirty the texture so that its data
+      // will be uploaded to new shaders, otherwise the
+      // texture will only work the first time it's used, when
+      // it's dirty on initialization.
+      Textures.dirty( tex )
 
-      if( Textures.textures.indexOf( tex ) === -1 ) {
+      // if texture with same name is already found, replace it,
+      // otherwise push texture
+      //const oldTex = Textures.textures.find( __tex => tex.name === __tex.name )
+      //if( oldTex !== undefined ) {
+      //  const idx = Textures.textures.indexOf( oldTex )
+      //  Textures.textures.splice( idx, 1, tex )
+
+      //  tex.id = idx 
+      //}else{
         tex.id = Textures.textures.length
-
-        // we have to dirty the texture so that its data
-        // will be uploaded to new shaders, otherwise the
-        // texture will only work the first time it's used, when
-        // it's dirty on initialization.
-        Textures.dirty( tex )
-
         Textures.textures.push( tex )
-      } 
+      //}
 
       return tex
     },
 
-    texture( filenameOrPreset, props ){
-      const isPreset = filenameOrPreset.indexOf( '.' ) === -1
-      const defaults = { wrap:SDF.gl.MIRRORED_REPEAT }
-      const tex = { isPreset, name:filenameOrPreset }
+    texture( presetName='noise', props={}, target=null ){
+      //const isPreset = filenameOrPreset.indexOf( '.' ) === -1
+      //const defaults = { wrap:SDF.gl.MIRRORED_REPEAT }
 
-      Object.assign( tex, defaults, props )
+      if( Textures.__types[ presetName ] === undefined ) {
+        console.log( `the texture type '${presetName}' does not exist.` )
+      }
+      const tex = Object.assign( { wrap:false }, Textures.__types[ presetName ], props )
 
-      tex.image = getPixels( filenameOrPreset, (err,pixels) => {
-        if( err !== null ) {
-          console.error( err )
-          return
+      if( target === null ) target = tex
+      tex.__target = target
+
+      for( let param of tex.parameters ) {
+        const defaultValues = param.default
+        const isArray = Array.isArray( defaultValues )
+
+        let count = 0
+        if( isArray ) {
+          let val = props[ param.name ], __var
+
+          if( typeof val === 'number' ) {
+            __var = Var( vars[ param.type ]( val ), null, 'vec3' )
+          }else{
+            const initvalues = val !== undefined ? val : defaultValues
+            __var = Var( vars[ param.type ]( ...initvalues ), null, param.type )
+          }
+
+          // for assigning entire new vectors to property
+          Object.defineProperty( target, param.name, {
+            configurable:true,
+            get() { return __var },
+            set(v) {
+              if( typeof v === 'object' ) {
+                __var.set( v )
+              }else{
+                __var.value.x = v
+                __var.value.y = v
+                __var.value.z = v
+                __var.value.w = v
+                __var.dirty = true
+              }
+            }
+          })
+
+        }else{
+          let __var  = param_wrap( 
+            props[ param.name ], 
+            gens[ param.type ]( defaultValues ) 
+          )
+
+          //__var.set( defaultValues )
+          Object.defineProperty( target, param.name, {
+            configurable:true,
+            get() { return __var },
+            set(v) {
+              __var.set( v )
+            }
+          })
         }
-        tex.pixels = pixels
-        tex.gltexture = createTexture( SDF.gl, pixels )
-        tex.gltexture.wrap = tex.wrap
-      })
+      }
 
-      Textures.addTexture( tex )
+      //tex.image = getPixels( filenameOrPreset, (err,pixels) => {
+      //  if( err !== null ) {
+      //    console.error( err )
+      //    return
+      //  }
+      //  tex.pixels = pixels
+      //  tex.gltexture = createTexture( SDF.gl, pixels )
+      //  tex.gltexture.wrap = tex.wrap
+      //})
 
       return tex 
     },
@@ -30604,31 +31682,63 @@ const __Textures = function( SDF ) {
     emit_decl() {
       if( this.textures.length === 0 ) return ``//uniform sampler2D textures[1];` 
 
-      let str = `uniform sampler2D textures[${this.textures.length}];\n\n` //= Texture[${this.textures.length}](`
+      //let str = `uniform sampler2D textures[${this.textures.length}];\n\n` //= Texture[${this.textures.length}](`
+      let decl = ''
 
-      return str
+      const memo = []
+      this.textures.forEach( (tex,i) => {
+        if( memo.indexOf( tex ) === -1 ) {
+          for( let param of tex.parameters ) {
+            if( param.name !== 'material' )
+              decl += tex.__target[ param.name ].emit_decl()
+          }
+          memo.push( tex )
+        }
+      })
+
+      return decl
     },
     
     update_location( gl, program ) {
       if( this.textures.length > 0 ) {
-        this.textures.sort( (a,b) => a.id > b.id ? 1 : -1 ) 
-
-        for( let tex of this.textures ) {
-          tex.loc = gl.getUniformLocation( program, `textures[${tex.id}]` )
-          tex.gltexture.bind( tex.id )
-        }
-
-        this.__textures = this.textures.slice( 0 )
-        this.textures.length = 0
+        this.textures.forEach( (tex,i) => {
+          for( let param of tex.parameters ) {
+            if( param.type !== 'obj' ) {
+              if( param.name !== 'material' ) 
+                tex.__target[ param.name ].update_location( gl,program )
+            }
+          }
+        })
       }
+
+      //if( this.textures.length > 0 ) {
+      //  this.textures.sort( (a,b) => a.id > b.id ? 1 : -1 ) 
+
+      //  for( let tex of this.textures ) {
+      //    tex.loc = gl.getUniformLocation( program, `textures[${tex.id}]` )
+      //    tex.gltexture.bind( tex.id )
+      //  }
+
+      //  this.__textures = this.textures.slice( 0 )
+      //  this.textures.length = 0
+      //}
     },
 
-    upload_data( gl, program='' ) {
-      for( let tex of this.__textures ) {
-        gl.uniform1i( tex.loc,tex.id )
+    upload_data( gl, program ) {
+      if( this.textures.length > 0 ) {
+        this.textures.forEach( (tex,i) => {
+          for( let param of tex.parameters ) {
+            if( param.type !== 'obj' && param.name !== 'material' )
+              tex.__target[ param.name ].upload_data( gl )
+          }
+        })
       }
     }
 
+  }
+
+  Textures.texture.create = function( props ) {
+    Textures.__types[ props.name ] = props
   }
 
   const f = value => value % 1 === 0 ? value.toFixed(1) : value 
@@ -30638,7 +31748,456 @@ const __Textures = function( SDF ) {
 
 module.exports = __Textures
 
-},{"./sceneNode.js":257,"./utils.js":259,"./var.js":260,"./vec.js":261,"get-pixels":268,"gl-texture2d":269,"glslify":270}],259:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./textureDescriptions.js":"/Users/charlie/Documents/code/marching/js/textureDescriptions.js","./textureWrap.js":"/Users/charlie/Documents/code/marching/js/textureWrap.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","get-pixels":"/Users/charlie/Documents/code/marching/node_modules/get-pixels/dom-pixels.js","gl-texture2d":"/Users/charlie/Documents/code/marching/node_modules/gl-texture2d/texture.js"}],"/Users/charlie/Documents/code/marching/js/textureDescriptions.js":[function(require,module,exports){
+const glsl = require( 'glslify' )
+
+const textures = {
+  checkers: {
+    name:'checkers',
+    glsl:`          
+        vec3 checkers( vec3 pos, vec3 normal, float size, vec3 color1, vec3 color2 ) {
+          vec3 tex;
+          pos  = pos * size;
+          if ((int(floor(pos.x) + floor(pos.y) + floor(pos.z)) & 1) == 0) {
+            tex = color1;//vec3(.5);
+          }else{
+            tex = color2;//vec3(0.);
+          }
+
+          return tex;
+        }`,
+    glsl2d:`
+        vec3 checkers2d( vec2 uv, vec3 normal, float size, vec3 color1, vec3 color2 ) {
+          float fmodResult = mod(floor(size * uv.x) + floor(size * uv.y), 2.0);
+          float fin = max(sign(fmodResult), 0.0); 
+
+          return vec3(fin);
+        }
+    `,
+    parameters: [
+      { name:'scale', type:'float', default:5 },
+      { name:'color1', type:'vec3', default:[1,1,1] },
+      { name:'color2', type:'vec3', default:[0,0,0] }
+    ],
+  },
+  noise: {
+    name:'noise',
+    glsl:glsl(["#define GLSLIFY 1\n          \n        //\n// Description : Array and textureless GLSL 2D/3D/4D simplex\n//               noise functions.\n//      Author : Ian McEwan, Ashima Arts.\n//  Maintainer : ijm\n//     Lastmod : 20110822 (ijm)\n//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.\n//               Distributed under the MIT License. See LICENSE file.\n//               https://github.com/ashima/webgl-noise\n//\n\nvec3 mod289(vec3 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 mod289(vec4 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 permute(vec4 x) {\n     return mod289(((x*34.0)+1.0)*x);\n}\n\nvec4 taylorInvSqrt(vec4 r)\n{\n  return 1.79284291400159 - 0.85373472095314 * r;\n}\n\nfloat snoise(vec3 v)\n  {\n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n// First corner\n  vec3 i  = floor(v + dot(v, C.yyy) );\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\n// Other corners\n  vec3 g = step(x0.yzx, x0.xyz);\n  vec3 l = 1.0 - g;\n  vec3 i1 = min( g.xyz, l.zxy );\n  vec3 i2 = max( g.xyz, l.zxy );\n\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\n  vec3 x1 = x0 - i1 + C.xxx;\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n// Permutations\n  i = mod289(i);\n  vec4 p = permute( permute( permute(\n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))\n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n  float n_ = 0.142857142857; // 1.0/7.0\n  vec3  ns = n_ * D.wyz - D.xzx;\n\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n  vec4 x_ = floor(j * ns.z);\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\n  vec4 x = x_ *ns.x + ns.yyyy;\n  vec4 y = y_ *ns.x + ns.yyyy;\n  vec4 h = 1.0 - abs(x) - abs(y);\n\n  vec4 b0 = vec4( x.xy, y.xy );\n  vec4 b1 = vec4( x.zw, y.zw );\n\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\n  vec4 s0 = floor(b0)*2.0 + 1.0;\n  vec4 s1 = floor(b1)*2.0 + 1.0;\n  vec4 sh = -step(h, vec4(0.0));\n\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\n  vec3 p0 = vec3(a0.xy,h.x);\n  vec3 p1 = vec3(a0.zw,h.y);\n  vec3 p2 = vec3(a1.xy,h.z);\n  vec3 p3 = vec3(a1.zw,h.w);\n\n//Normalise gradients\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n  p0 *= norm.x;\n  p1 *= norm.y;\n  p2 *= norm.z;\n  p3 *= norm.w;\n\n// Mix final noise value\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n  m = m * m;\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),\n                                dot(p2,x2), dot(p3,x3) ) );\n  }\n\n        vec3 noise( vec3 pos, vec3 normal, float scale, float strength, float time ) {\n          float n = snoise( pos*scale );\n          return vec3( n ) * strength;\n        }",""]),
+    glsl2d:glsl(["#define GLSLIFY 1\n    \n        //\n// Description : Array and textureless GLSL 2D/3D/4D simplex\n//               noise functions.\n//      Author : Ian McEwan, Ashima Arts.\n//  Maintainer : ijm\n//     Lastmod : 20110822 (ijm)\n//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.\n//               Distributed under the MIT License. See LICENSE file.\n//               https://github.com/ashima/webgl-noise\n//\n\nvec3 mod289(vec3 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 mod289(vec4 x) {\n  return x - floor(x * (1.0 / 289.0)) * 289.0;\n}\n\nvec4 permute(vec4 x) {\n     return mod289(((x*34.0)+1.0)*x);\n}\n\nvec4 taylorInvSqrt(vec4 r)\n{\n  return 1.79284291400159 - 0.85373472095314 * r;\n}\n\nfloat snoise(vec3 v)\n  {\n  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\n// First corner\n  vec3 i  = floor(v + dot(v, C.yyy) );\n  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\n// Other corners\n  vec3 g = step(x0.yzx, x0.xyz);\n  vec3 l = 1.0 - g;\n  vec3 i1 = min( g.xyz, l.zxy );\n  vec3 i2 = max( g.xyz, l.zxy );\n\n  //   x0 = x0 - 0.0 + 0.0 * C.xxx;\n  //   x1 = x0 - i1  + 1.0 * C.xxx;\n  //   x2 = x0 - i2  + 2.0 * C.xxx;\n  //   x3 = x0 - 1.0 + 3.0 * C.xxx;\n  vec3 x1 = x0 - i1 + C.xxx;\n  vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y\n  vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y\n\n// Permutations\n  i = mod289(i);\n  vec4 p = permute( permute( permute(\n             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))\n           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\n// Gradients: 7x7 points over a square, mapped onto an octahedron.\n// The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)\n  float n_ = 0.142857142857; // 1.0/7.0\n  vec3  ns = n_ * D.wyz - D.xzx;\n\n  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)\n\n  vec4 x_ = floor(j * ns.z);\n  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\n  vec4 x = x_ *ns.x + ns.yyyy;\n  vec4 y = y_ *ns.x + ns.yyyy;\n  vec4 h = 1.0 - abs(x) - abs(y);\n\n  vec4 b0 = vec4( x.xy, y.xy );\n  vec4 b1 = vec4( x.zw, y.zw );\n\n  //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;\n  //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;\n  vec4 s0 = floor(b0)*2.0 + 1.0;\n  vec4 s1 = floor(b1)*2.0 + 1.0;\n  vec4 sh = -step(h, vec4(0.0));\n\n  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\n  vec3 p0 = vec3(a0.xy,h.x);\n  vec3 p1 = vec3(a0.zw,h.y);\n  vec3 p2 = vec3(a1.xy,h.z);\n  vec3 p3 = vec3(a1.zw,h.w);\n\n//Normalise gradients\n  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n  p0 *= norm.x;\n  p1 *= norm.y;\n  p2 *= norm.z;\n  p3 *= norm.w;\n\n// Mix final noise value\n  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n  m = m * m;\n  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),\n                                dot(p2,x2), dot(p3,x3) ) );\n  }\n\n        vec3 noise2d( vec2 st, vec3 nor, float scale, float strength, float time ) {\n          float col = snoise( vec3( st, time ) * scale );\n\n          return vec3(col) * strength;\n        }\n",""]) ,
+    parameters: [
+      { name:'scale', type:'float', default:2 },
+      { name:'strength', type:'float', default:.1 },
+      { name:'time', type:'float', default:1 }
+    ],
+  },
+  // adapted from https://thebookofshaders.com/10/
+  truchet: {
+    name:'truchet',
+    glsl2d:`    
+        float random_truchet(in vec2 _st) {
+          return fract(sin(dot(_st.xy,
+                         vec2(12.9898,78.233)))*
+                        43758.5453123);
+        }
+
+        vec2 truchetPattern(in vec2 _st, in float _index){
+            _index = fract(((_index-0.5)*2.0));
+            if (_index > 0.75) {
+                _st = vec2(1.0) - _st;
+            } else if (_index > 0.5) {
+                _st = vec2(1.0-_st.x,_st.y);
+            } else if (_index > 0.25) {
+                _st = 1.0-vec2(1.0-_st.x,_st.y);
+            }
+            return _st;
+        }
+
+        vec3 truchet2d( vec2 st, vec3 nor, float scale, vec3 color ) {
+            st = st * scale;
+            vec2 ipos = floor(st);  // integer
+            vec2 fpos = fract(st);  // fraction
+
+            vec2 tile = truchetPattern(fpos, random_truchet( ipos ));
+
+            float col = smoothstep(tile.x-0.3,tile.x,tile.y)-smoothstep(tile.x,tile.x+.3,tile.y);
+            return color * col;
+        }
+
+` ,
+    parameters: [
+      { name:'scale', type:'float', default:10 },
+      { name:'color', type:'vec3', default:[1,1,1] }
+    ],
+  },
+  dots: {
+    name:'dots',
+    glsl:`          
+        vec3 dots( vec3 pos, vec3 nor, float count, float radius, vec3 color ) {
+          vec3 tex;
+          tex = vec3( color - smoothstep( radius, radius+.02, length(fract(pos*(round(count/2.)+.5)) -.5 )) );
+          return tex;
+        }` ,
+    glsl2d:`
+      vec2 tile(vec2 _st, float _zoom){
+        _st *= _zoom;
+        return fract(_st);
+      }
+
+      float circle(vec2 _st, float _radius){
+        vec2 pos = vec2(0.5)-_st;
+        _radius *= 0.75;
+        return 1.-smoothstep(_radius-(_radius*0.05),_radius+(_radius*0.05),dot(pos,pos)*3.14);
+      }
+    
+      vec3 dots2d( vec2 _st, vec3 nor, float scale, float radius, vec3 color ) {
+        vec2 st = tile(_st,scale);
+        vec3 fin = vec3(circle(st, radius)) * color;
+        return fin;
+      }
+    `,
+    parameters: [
+      { name:'scale', type:'float', default:5 },
+      { name:'radius', type:'float', default:.3 },
+      { name:'color', type:'vec3', default:[1,1,1] }
+    ],
+  },
+  stripes: {
+    name:'stripes',
+    glsl:`          
+        vec3 stripes( vec3 pos, vec3 nor, float scale, vec3 color ) {
+          vec3 tex;
+          tex = vec3( color - smoothstep(0.3, 0.32, length(fract((pos.x+pos.y+pos.z)*scale) -.5 )) );
+          return tex;
+        }` ,
+    parameters: [
+      { name:'scale', type:'float', default:5 },
+      { name:'color', type:'vec3', default:[1,1,1] }
+    ],
+  },
+  cellular: {
+    name:'cellular',
+    glsl:glsl(["#define GLSLIFY 1\n\n        // Permutation polynomial: (34x^2 + x) mod 289\nvec3 permute(vec3 x) {\n  return mod((34.0 * x + 1.0) * x, 289.0);\n}\n\nvec3 dist(vec3 x, vec3 y, vec3 z,  bool manhattanDistance) {\n  return manhattanDistance ?  abs(x) + abs(y) + abs(z) :  (x * x + y * y + z * z);\n}\n\nvec2 worley(vec3 P, float jitter, bool manhattanDistance) {\nfloat K = 0.142857142857; // 1/7\nfloat Ko = 0.428571428571; // 1/2-K/2\nfloat  K2 = 0.020408163265306; // 1/(7*7)\nfloat Kz = 0.166666666667; // 1/6\nfloat Kzo = 0.416666666667; // 1/2-1/6*2\n\n\tvec3 Pi = mod(floor(P), 289.0);\n \tvec3 Pf = fract(P) - 0.5;\n\n\tvec3 Pfx = Pf.x + vec3(1.0, 0.0, -1.0);\n\tvec3 Pfy = Pf.y + vec3(1.0, 0.0, -1.0);\n\tvec3 Pfz = Pf.z + vec3(1.0, 0.0, -1.0);\n\n\tvec3 p = permute(Pi.x + vec3(-1.0, 0.0, 1.0));\n\tvec3 p1 = permute(p + Pi.y - 1.0);\n\tvec3 p2 = permute(p + Pi.y);\n\tvec3 p3 = permute(p + Pi.y + 1.0);\n\n\tvec3 p11 = permute(p1 + Pi.z - 1.0);\n\tvec3 p12 = permute(p1 + Pi.z);\n\tvec3 p13 = permute(p1 + Pi.z + 1.0);\n\n\tvec3 p21 = permute(p2 + Pi.z - 1.0);\n\tvec3 p22 = permute(p2 + Pi.z);\n\tvec3 p23 = permute(p2 + Pi.z + 1.0);\n\n\tvec3 p31 = permute(p3 + Pi.z - 1.0);\n\tvec3 p32 = permute(p3 + Pi.z);\n\tvec3 p33 = permute(p3 + Pi.z + 1.0);\n\n\tvec3 ox11 = fract(p11*K) - Ko;\n\tvec3 oy11 = mod(floor(p11*K), 7.0)*K - Ko;\n\tvec3 oz11 = floor(p11*K2)*Kz - Kzo; // p11 < 289 guaranteed\n\n\tvec3 ox12 = fract(p12*K) - Ko;\n\tvec3 oy12 = mod(floor(p12*K), 7.0)*K - Ko;\n\tvec3 oz12 = floor(p12*K2)*Kz - Kzo;\n\n\tvec3 ox13 = fract(p13*K) - Ko;\n\tvec3 oy13 = mod(floor(p13*K), 7.0)*K - Ko;\n\tvec3 oz13 = floor(p13*K2)*Kz - Kzo;\n\n\tvec3 ox21 = fract(p21*K) - Ko;\n\tvec3 oy21 = mod(floor(p21*K), 7.0)*K - Ko;\n\tvec3 oz21 = floor(p21*K2)*Kz - Kzo;\n\n\tvec3 ox22 = fract(p22*K) - Ko;\n\tvec3 oy22 = mod(floor(p22*K), 7.0)*K - Ko;\n\tvec3 oz22 = floor(p22*K2)*Kz - Kzo;\n\n\tvec3 ox23 = fract(p23*K) - Ko;\n\tvec3 oy23 = mod(floor(p23*K), 7.0)*K - Ko;\n\tvec3 oz23 = floor(p23*K2)*Kz - Kzo;\n\n\tvec3 ox31 = fract(p31*K) - Ko;\n\tvec3 oy31 = mod(floor(p31*K), 7.0)*K - Ko;\n\tvec3 oz31 = floor(p31*K2)*Kz - Kzo;\n\n\tvec3 ox32 = fract(p32*K) - Ko;\n\tvec3 oy32 = mod(floor(p32*K), 7.0)*K - Ko;\n\tvec3 oz32 = floor(p32*K2)*Kz - Kzo;\n\n\tvec3 ox33 = fract(p33*K) - Ko;\n\tvec3 oy33 = mod(floor(p33*K), 7.0)*K - Ko;\n\tvec3 oz33 = floor(p33*K2)*Kz - Kzo;\n\n\tvec3 dx11 = Pfx + jitter*ox11;\n\tvec3 dy11 = Pfy.x + jitter*oy11;\n\tvec3 dz11 = Pfz.x + jitter*oz11;\n\n\tvec3 dx12 = Pfx + jitter*ox12;\n\tvec3 dy12 = Pfy.x + jitter*oy12;\n\tvec3 dz12 = Pfz.y + jitter*oz12;\n\n\tvec3 dx13 = Pfx + jitter*ox13;\n\tvec3 dy13 = Pfy.x + jitter*oy13;\n\tvec3 dz13 = Pfz.z + jitter*oz13;\n\n\tvec3 dx21 = Pfx + jitter*ox21;\n\tvec3 dy21 = Pfy.y + jitter*oy21;\n\tvec3 dz21 = Pfz.x + jitter*oz21;\n\n\tvec3 dx22 = Pfx + jitter*ox22;\n\tvec3 dy22 = Pfy.y + jitter*oy22;\n\tvec3 dz22 = Pfz.y + jitter*oz22;\n\n\tvec3 dx23 = Pfx + jitter*ox23;\n\tvec3 dy23 = Pfy.y + jitter*oy23;\n\tvec3 dz23 = Pfz.z + jitter*oz23;\n\n\tvec3 dx31 = Pfx + jitter*ox31;\n\tvec3 dy31 = Pfy.z + jitter*oy31;\n\tvec3 dz31 = Pfz.x + jitter*oz31;\n\n\tvec3 dx32 = Pfx + jitter*ox32;\n\tvec3 dy32 = Pfy.z + jitter*oy32;\n\tvec3 dz32 = Pfz.y + jitter*oz32;\n\n\tvec3 dx33 = Pfx + jitter*ox33;\n\tvec3 dy33 = Pfy.z + jitter*oy33;\n\tvec3 dz33 = Pfz.z + jitter*oz33;\n\n\tvec3 d11 = dist(dx11, dy11, dz11, manhattanDistance);\n\tvec3 d12 =dist(dx12, dy12, dz12, manhattanDistance);\n\tvec3 d13 = dist(dx13, dy13, dz13, manhattanDistance);\n\tvec3 d21 = dist(dx21, dy21, dz21, manhattanDistance);\n\tvec3 d22 = dist(dx22, dy22, dz22, manhattanDistance);\n\tvec3 d23 = dist(dx23, dy23, dz23, manhattanDistance);\n\tvec3 d31 = dist(dx31, dy31, dz31, manhattanDistance);\n\tvec3 d32 = dist(dx32, dy32, dz32, manhattanDistance);\n\tvec3 d33 = dist(dx33, dy33, dz33, manhattanDistance);\n\n\tvec3 d1a = min(d11, d12);\n\td12 = max(d11, d12);\n\td11 = min(d1a, d13); // Smallest now not in d12 or d13\n\td13 = max(d1a, d13);\n\td12 = min(d12, d13); // 2nd smallest now not in d13\n\tvec3 d2a = min(d21, d22);\n\td22 = max(d21, d22);\n\td21 = min(d2a, d23); // Smallest now not in d22 or d23\n\td23 = max(d2a, d23);\n\td22 = min(d22, d23); // 2nd smallest now not in d23\n\tvec3 d3a = min(d31, d32);\n\td32 = max(d31, d32);\n\td31 = min(d3a, d33); // Smallest now not in d32 or d33\n\td33 = max(d3a, d33);\n\td32 = min(d32, d33); // 2nd smallest now not in d33\n\tvec3 da = min(d11, d21);\n\td21 = max(d11, d21);\n\td11 = min(da, d31); // Smallest now in d11\n\td31 = max(da, d31); // 2nd smallest now not in d31\n\td11.xy = (d11.x < d11.y) ? d11.xy : d11.yx;\n\td11.xz = (d11.x < d11.z) ? d11.xz : d11.zx; // d11.x now smallest\n\td12 = min(d12, d21); // 2nd smallest now not in d21\n\td12 = min(d12, d22); // nor in d22\n\td12 = min(d12, d31); // nor in d31\n\td12 = min(d12, d32); // nor in d32\n\td11.yz = min(d11.yz,d12.xy); // nor in d12.yz\n\td11.y = min(d11.y,d12.z); // Only two more to go\n\td11.y = min(d11.y,d11.z); // Done! (Phew!)\n\treturn sqrt(d11.xy); // F1, F2\n\n}\n\n        vec3 cellular( vec3 pos, vec3 nor, float scale, float jitter, float mode, float strength, float time ) {\n          vec2 w = worley( pos * scale + time, jitter, false );\n          vec3 o;\n          if( mode == 0. ) {\n            o = vec3( w.x );\n          } else if ( mode == 1. ) {\n            o = vec3( w.y );\n          } else{\n            o = vec3( w.y - w.x );\n          }\n\n          return o * strength;\n        }\n    ",""]),
+    glsl2d:glsl(["#define GLSLIFY 1\n\n        // Permutation polynomial: (34x^2 + x) mod 289\nvec3 permute(vec3 x) {\n  return mod((34.0 * x + 1.0) * x, 289.0);\n}\n\nvec3 dist(vec3 x, vec3 y, vec3 z,  bool manhattanDistance) {\n  return manhattanDistance ?  abs(x) + abs(y) + abs(z) :  (x * x + y * y + z * z);\n}\n\nvec2 worley(vec3 P, float jitter, bool manhattanDistance) {\nfloat K = 0.142857142857; // 1/7\nfloat Ko = 0.428571428571; // 1/2-K/2\nfloat  K2 = 0.020408163265306; // 1/(7*7)\nfloat Kz = 0.166666666667; // 1/6\nfloat Kzo = 0.416666666667; // 1/2-1/6*2\n\n\tvec3 Pi = mod(floor(P), 289.0);\n \tvec3 Pf = fract(P) - 0.5;\n\n\tvec3 Pfx = Pf.x + vec3(1.0, 0.0, -1.0);\n\tvec3 Pfy = Pf.y + vec3(1.0, 0.0, -1.0);\n\tvec3 Pfz = Pf.z + vec3(1.0, 0.0, -1.0);\n\n\tvec3 p = permute(Pi.x + vec3(-1.0, 0.0, 1.0));\n\tvec3 p1 = permute(p + Pi.y - 1.0);\n\tvec3 p2 = permute(p + Pi.y);\n\tvec3 p3 = permute(p + Pi.y + 1.0);\n\n\tvec3 p11 = permute(p1 + Pi.z - 1.0);\n\tvec3 p12 = permute(p1 + Pi.z);\n\tvec3 p13 = permute(p1 + Pi.z + 1.0);\n\n\tvec3 p21 = permute(p2 + Pi.z - 1.0);\n\tvec3 p22 = permute(p2 + Pi.z);\n\tvec3 p23 = permute(p2 + Pi.z + 1.0);\n\n\tvec3 p31 = permute(p3 + Pi.z - 1.0);\n\tvec3 p32 = permute(p3 + Pi.z);\n\tvec3 p33 = permute(p3 + Pi.z + 1.0);\n\n\tvec3 ox11 = fract(p11*K) - Ko;\n\tvec3 oy11 = mod(floor(p11*K), 7.0)*K - Ko;\n\tvec3 oz11 = floor(p11*K2)*Kz - Kzo; // p11 < 289 guaranteed\n\n\tvec3 ox12 = fract(p12*K) - Ko;\n\tvec3 oy12 = mod(floor(p12*K), 7.0)*K - Ko;\n\tvec3 oz12 = floor(p12*K2)*Kz - Kzo;\n\n\tvec3 ox13 = fract(p13*K) - Ko;\n\tvec3 oy13 = mod(floor(p13*K), 7.0)*K - Ko;\n\tvec3 oz13 = floor(p13*K2)*Kz - Kzo;\n\n\tvec3 ox21 = fract(p21*K) - Ko;\n\tvec3 oy21 = mod(floor(p21*K), 7.0)*K - Ko;\n\tvec3 oz21 = floor(p21*K2)*Kz - Kzo;\n\n\tvec3 ox22 = fract(p22*K) - Ko;\n\tvec3 oy22 = mod(floor(p22*K), 7.0)*K - Ko;\n\tvec3 oz22 = floor(p22*K2)*Kz - Kzo;\n\n\tvec3 ox23 = fract(p23*K) - Ko;\n\tvec3 oy23 = mod(floor(p23*K), 7.0)*K - Ko;\n\tvec3 oz23 = floor(p23*K2)*Kz - Kzo;\n\n\tvec3 ox31 = fract(p31*K) - Ko;\n\tvec3 oy31 = mod(floor(p31*K), 7.0)*K - Ko;\n\tvec3 oz31 = floor(p31*K2)*Kz - Kzo;\n\n\tvec3 ox32 = fract(p32*K) - Ko;\n\tvec3 oy32 = mod(floor(p32*K), 7.0)*K - Ko;\n\tvec3 oz32 = floor(p32*K2)*Kz - Kzo;\n\n\tvec3 ox33 = fract(p33*K) - Ko;\n\tvec3 oy33 = mod(floor(p33*K), 7.0)*K - Ko;\n\tvec3 oz33 = floor(p33*K2)*Kz - Kzo;\n\n\tvec3 dx11 = Pfx + jitter*ox11;\n\tvec3 dy11 = Pfy.x + jitter*oy11;\n\tvec3 dz11 = Pfz.x + jitter*oz11;\n\n\tvec3 dx12 = Pfx + jitter*ox12;\n\tvec3 dy12 = Pfy.x + jitter*oy12;\n\tvec3 dz12 = Pfz.y + jitter*oz12;\n\n\tvec3 dx13 = Pfx + jitter*ox13;\n\tvec3 dy13 = Pfy.x + jitter*oy13;\n\tvec3 dz13 = Pfz.z + jitter*oz13;\n\n\tvec3 dx21 = Pfx + jitter*ox21;\n\tvec3 dy21 = Pfy.y + jitter*oy21;\n\tvec3 dz21 = Pfz.x + jitter*oz21;\n\n\tvec3 dx22 = Pfx + jitter*ox22;\n\tvec3 dy22 = Pfy.y + jitter*oy22;\n\tvec3 dz22 = Pfz.y + jitter*oz22;\n\n\tvec3 dx23 = Pfx + jitter*ox23;\n\tvec3 dy23 = Pfy.y + jitter*oy23;\n\tvec3 dz23 = Pfz.z + jitter*oz23;\n\n\tvec3 dx31 = Pfx + jitter*ox31;\n\tvec3 dy31 = Pfy.z + jitter*oy31;\n\tvec3 dz31 = Pfz.x + jitter*oz31;\n\n\tvec3 dx32 = Pfx + jitter*ox32;\n\tvec3 dy32 = Pfy.z + jitter*oy32;\n\tvec3 dz32 = Pfz.y + jitter*oz32;\n\n\tvec3 dx33 = Pfx + jitter*ox33;\n\tvec3 dy33 = Pfy.z + jitter*oy33;\n\tvec3 dz33 = Pfz.z + jitter*oz33;\n\n\tvec3 d11 = dist(dx11, dy11, dz11, manhattanDistance);\n\tvec3 d12 =dist(dx12, dy12, dz12, manhattanDistance);\n\tvec3 d13 = dist(dx13, dy13, dz13, manhattanDistance);\n\tvec3 d21 = dist(dx21, dy21, dz21, manhattanDistance);\n\tvec3 d22 = dist(dx22, dy22, dz22, manhattanDistance);\n\tvec3 d23 = dist(dx23, dy23, dz23, manhattanDistance);\n\tvec3 d31 = dist(dx31, dy31, dz31, manhattanDistance);\n\tvec3 d32 = dist(dx32, dy32, dz32, manhattanDistance);\n\tvec3 d33 = dist(dx33, dy33, dz33, manhattanDistance);\n\n\tvec3 d1a = min(d11, d12);\n\td12 = max(d11, d12);\n\td11 = min(d1a, d13); // Smallest now not in d12 or d13\n\td13 = max(d1a, d13);\n\td12 = min(d12, d13); // 2nd smallest now not in d13\n\tvec3 d2a = min(d21, d22);\n\td22 = max(d21, d22);\n\td21 = min(d2a, d23); // Smallest now not in d22 or d23\n\td23 = max(d2a, d23);\n\td22 = min(d22, d23); // 2nd smallest now not in d23\n\tvec3 d3a = min(d31, d32);\n\td32 = max(d31, d32);\n\td31 = min(d3a, d33); // Smallest now not in d32 or d33\n\td33 = max(d3a, d33);\n\td32 = min(d32, d33); // 2nd smallest now not in d33\n\tvec3 da = min(d11, d21);\n\td21 = max(d11, d21);\n\td11 = min(da, d31); // Smallest now in d11\n\td31 = max(da, d31); // 2nd smallest now not in d31\n\td11.xy = (d11.x < d11.y) ? d11.xy : d11.yx;\n\td11.xz = (d11.x < d11.z) ? d11.xz : d11.zx; // d11.x now smallest\n\td12 = min(d12, d21); // 2nd smallest now not in d21\n\td12 = min(d12, d22); // nor in d22\n\td12 = min(d12, d31); // nor in d31\n\td12 = min(d12, d32); // nor in d32\n\td11.yz = min(d11.yz,d12.xy); // nor in d12.yz\n\td11.y = min(d11.y,d12.z); // Only two more to go\n\td11.y = min(d11.y,d11.z); // Done! (Phew!)\n\treturn sqrt(d11.xy); // F1, F2\n\n}\n\n        vec3 cellular( vec3 pos, vec3 nor, float scale, float jitter, float mode, float strength ) {\n          vec2 w = worley( pos, jitter, false );\n          vec3 o;\n          if( mode == 0. ) {\n            o = vec3( w.x );\n          } else if ( mode == 1. ) {\n            o = vec3( w.y );\n          } else{\n            o = vec3( w.y - w.x );\n          }\n\n          return o * strength;\n        }\n\n        vec3 cellular2d( vec2 st, vec3 nor, float scale, float jitter, float mode, float strength, float time ) {\n          return cellular( vec3(st * scale, time), nor, scale, jitter, mode, strength );\n        }\n    ",""]),
+    parameters: [
+      { name:'scale', type:'float', default:1 },
+      { name:'jitter', type:'float', default:1 },
+      { name:'mode',  type:'float', default: 0 },
+      { name:'strength', type:'float', default:2 },
+      { name:'time', type:'float', default:1 }
+    ],     
+  },
+
+  voronoi: {
+    name:'voronoi',
+    parameters: [
+      { name:'scale', type:'float', default:1 },
+      { name:'res', type:'float', default:100 },
+      { name:'time', type:'float', default:1 },
+      { name:'mode', type:'float', default:0 }
+    ],
+    glsl:`
+    vec3 voronoi_hash(vec3 p) {
+      return fract(
+          sin(vec3(dot(p, vec3(1.0, 57.0, 113.0)), dot(p, vec3(57.0, 113.0, 1.0)),
+                   dot(p, vec3(113.0, 1.0, 57.0)))) *
+          43758.5453);
+    }
+
+    vec3 voronoi_3d(const in vec3 x, float _res ) {
+      vec3 p = floor(x);
+      vec3 f = fract(x);
+
+      float id = 0.0;
+      vec2 res = vec2( _res );
+      for (int k = -1; k <= 1; k++) {
+        for (int j = -1; j <= 1; j++) {
+          for (int i = -1; i <= 1; i++) {
+            vec3 b = vec3(float(i), float(j), float(k));
+            vec3 r = vec3(b) - f + voronoi_hash(p + b);
+            float d = dot(r, r);
+
+            float cond = max(sign(res.x - d), 0.0);
+            float nCond = 1.0 - cond;
+
+            float cond2 = nCond * max(sign(res.y - d), 0.0);
+            float nCond2 = 1.0 - cond2;
+
+            id = (dot(p + b, vec3(1.0, 57.0, 113.0)) * cond) + (id * nCond);
+            res = vec2(d, res.x) * cond + res * nCond;
+
+            res.y = cond2 * d + nCond2 * res.y;
+          }
+        }
+      }
+
+      return vec3(sqrt(res), abs(id));
+    }
+
+    vec3 voronoi( vec3 pos, vec3 nor, float scale, float res ) {
+      vec3 v = voronoi_3d( pos * scale, res );
+      return vec3( v.x );
+    }
+`,
+    glsl2d:glsl(["#define GLSLIFY 1\n    \n    vec3 voronoi_hash(vec3 p) {\n      return fract(\n          sin(vec3(dot(p, vec3(1.0, 57.0, 113.0)), dot(p, vec3(57.0, 113.0, 1.0)),\n                   dot(p, vec3(113.0, 1.0, 57.0)))) * 43758.5453);\n    }\n\n    vec3 voronoi_3d(const in vec3 x, float _res ) {\n      vec3 p = floor(x);\n      vec3 f = fract(x);\n\n      float id = 0.0;\n      vec2 res = vec2( _res );\n      for (int k = -1; k <= 1; k++) {\n        for (int j = -1; j <= 1; j++) {\n          for (int i = -1; i <= 1; i++) {\n            vec3 b = vec3(float(i), float(j), float(k));\n            vec3 r = vec3(b) - f + voronoi_hash(p + b);\n            float d = dot(r, r);\n\n            float cond = max(sign(res.x - d), 0.0);\n            float nCond = 1.0 - cond;\n\n            float cond2 = nCond * max(sign(res.y - d), 0.0);\n            float nCond2 = 1.0 - cond2;\n\n            id = (dot(p + b, vec3(1.0, 57.0, 113.0)) * cond) + (id * nCond);\n            res = vec2(d, res.x) * cond + res * nCond;\n\n            res.y = cond2 * d + nCond2 * res.y;\n          }\n        }\n      }\n\n      return vec3(sqrt(res), abs(id));\n    }\n\n    vec3 voronoi2d( vec2 st, vec3 nor, float scale, float res, float time, float mode ) {\n      vec3 v = voronoi_3d( vec3(st* scale, time), res );\n      vec3 fin;\n      if( mode == 0. ) fin = vec3(v.x);\n      if( mode == 1. ) fin = vec3(v.y);\n      if( mode == 2. ) fin = vec3(v.y - v.x); \n\n      return fin;\n    }\n\n",""]) ,
+  },
+  // adapted from https://thebookofshaders.com/edit.php#09/zigzag.frag
+  zigzag: {
+    name:'zigzag',
+    glsl2d:`    
+       vec2 mirrorTile(vec2 _st, float _zoom){
+         _st *= _zoom;
+         if (fract(_st.y * 0.5) > 0.5){
+           _st.x = _st.x+0.5;
+           _st.y = 1.0-_st.y;
+         }
+         return fract(_st);
+       }
+
+       float fillY(vec2 _st, float _pct,float _antia){
+         return smoothstep( _pct-_antia, _pct, _st.y);
+       }
+
+       vec3 zigzag2d( vec2 st, vec3 nor, float scale, float time ) {
+         st = mirrorTile(st*vec2(1.,2.),scale);
+         float x = st.x*2.;
+         float a = floor(1.+sin(x*3.14));
+         float b = floor(1.+sin((x+1.)*3.14));
+         float f = fract(x);
+
+         vec3 color = vec3( fillY(st,mix(a,b,f),0.01) ); 
+
+         return vec3(color);
+       }
+` ,
+    parameters: [
+      { name:'scale', type:'float', default:5 },
+      { name:'time', type:'float', default:1 }
+    ],
+  }
+}
+
+module.exports = textures
+
+},{"glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/textureWrap.js":[function(require,module,exports){
+module.exports = `
+    // p = point on surface, p0 = object center
+    vec2 getUVCubic(vec3 p ){
+      vec3 absp = abs(p);
+        
+      // First conditional: If the point is in one of the sextants to the 
+      // left or right of the x-axis, the uv cordinate will be (0.5*p.zy)/(p.x).
+      // If you trace a line out to a zy plane that is 0.5 units from the zero origin,  
+      // (0.5*p.xyz)/(p.x) will be the result, and
+      // the yz components will be our uv coordinates, hence (0.5*p.zy)/(p.x).
+
+      vec2 uv = ((absp.x>=absp.y)&&(absp.x>=absp.z)) 
+        ? (0.5*p.zy)/(p.x) 
+        : ((absp.y>=absp.z)&&(absp.y>=absp.x)) ? (0.5*p.xz)/(p.y) : (-0.5*p.xy)/(p.z);
+
+      //We still need to determine which side our uv cordinates are on so
+      //that the texture orients the right way. Note that there's some 
+      // redundancy there, which I'll fix at some stage. For now, it works, so I'm not touching it. :)
+      if( ((p.x<0.)&&(absp.x>=absp.y)&&(absp.x>=absp.z)) 
+       || ((p.y<0.)&&(absp.y>=absp.z)&&(absp.y>=absp.x)) 
+       || ((p.z>0.)&&(absp.z>=absp.x)&&(absp.z>=absp.y)) ) uv.y*=-1.;
+             
+      // Mapping the uv range from [-0.5, 0.5] to [0.0, 1.0].
+      return (uv+0.5);
+    }
+    `
+
+},{}],"/Users/charlie/Documents/code/marching/js/transform.js":[function(require,module,exports){
+const { param_wrap, MaterialID } = require( './utils.js' )
+const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc }  = require( './var.js' )
+const Matrix = require( './external/matrix.js' )
+
+const MatrixWrap = function () {
+  const m = Object.create( MatrixWrap.prototype )
+  m.dirty = true
+  m.translation = {}
+  m.scale = {}
+  m.rotation = {
+    axis: {}
+  }
+
+  let tx = 0, ty = 0, tz = 0
+  Object.defineProperties( m.translation, {
+    x: {
+      get() { return tx },
+      set(v){
+        tx = v
+        //m.__data = m.__data.multiply( Matrix.translate( tx, ty, tz ) )
+        m.dirty = true
+      }
+    },
+    y: {
+      get() { return ty },
+      set(v){
+        ty = v
+        //m.__data = m.__data.multiply( Matrix.translate( tx, ty, tz ) )
+        m.dirty = true
+      }
+    },
+    z: {
+      get() { return tz },
+      set(v){
+        tz = v
+        //m.__data = m.__data.multiply( Matrix.translate( tx, ty, tz ) )
+        m.dirty = true
+      }
+    },
+  })
+
+  // scaling must be sent as separate uniform to avoid sdf over estimation 
+  let scale = 1
+  Object.defineProperty( m,'scale', {
+    get() { return scale },
+    set(v){
+      scale = v
+      //m.__data = m.__data.multiply( Matrix.rotate( angle, rx, ry, rz ) )
+      m.dirty = true
+    } 
+  })
+
+  /* FOR NON-UNIFORM SCALING:
+   *
+   * 1. comment out scale property above
+   * 2. uncomment scale property below
+   * 3. change emit_decl to use a vec3 for scale
+   * 4. change upload_data to upload a 3f
+   * 5. In "primitives.js", replace line 155 (part of emit) to use compensated scaling
+   */ 
+
+  //let sx = 1, sy = 1, sz = 1
+  //Object.defineProperties( m.scale, {
+  //  x: {
+  //    get() { return sx },
+  //    set(v){
+  //      sx = v
+  //      //m.__data = m.__data.multiply( Matrix.scale( sx, sy, sz ) )
+  //      m.dirty = true
+  //    }
+  //  },
+  //  y: {
+  //    get() { return sy },
+  //    set(v){
+  //      sy = v
+  //      //m.__data = m.__data.multiply( Matrix.scale( sx, sy, sz ) )
+  //      m.dirty = true
+  //    }
+  //  },
+  //  z: {
+  //    get() { return sz },
+  //    set(v){
+  //      sz = v
+  //      //m.__data = m.__data.multiply( Matrix.scale( sx, sy, sz ) )
+  //      m.dirty = true
+  //    }
+  //  },
+  //})
+
+  let angle = 0
+  Object.defineProperty( m.rotation, 'angle', {
+    get() { return angle },
+    set(v){
+      angle = v
+      //m.__data = m.__data.multiply( Matrix.rotate( angle, rx, ry, rz ) )
+      m.dirty = true
+    } 
+  })
+
+  let rx = 1, ry = 1, rz = 1
+  Object.defineProperties( m.rotation.axis, {
+    x: {
+      get() { return rx },
+      set(v){
+        rx = v
+        //m.__data = m.__data = Matrix.rotate( angle, rx, ry, rz, m.__data )
+        m.dirty = true
+      }
+    },
+    y: {
+      get() { return ry },
+      set(v){
+        ry = v
+        //m.__data = m.__data = Matrix.rotate( angle, rx, ry, rz, m.__data )
+        m.dirty = true
+      }
+    },
+    z: {
+      get() { return rz },
+      set(v){
+        rz = v
+        //m.__data = m.__data = Matrix.rotate( angle, rx, ry, rz, m.__data )
+        m.dirty = true
+      }
+    },
+  })
+
+  m.__id   = VarAlloc.alloc()  
+  m.__data = Matrix.identity()
+  m.__dirty = function() {}
+  m.varName = 'transform' + m.__id
+
+  return m
+}
+
+MatrixWrap.prototype = {
+  type: 'matrix',
+
+  emit() { return this.varName },
+
+  emit_scale() { return this.varName + '_scale' },
+
+  emit_decl() { 
+    const decl =  `    uniform mat4 ${this.varName};
+    uniform float ${this.varName}_scale;
+    ` 
+
+    return decl
+  },
+
+	update_location(gl, program) {
+    //if( this.value.isGen ) {
+    //  this.value.update_location( gl, program )
+    //  return
+    //}
+		this.loc = gl.getUniformLocation( program, this.varName )
+		this.loc_scale = gl.getUniformLocation( program, this.varName+'_scale' )
+	},	
+
+	upload_data(gl) {
+		if( !this.dirty ) return
+		
+    //if( this.value.isGen ) {
+    //  this.value.upload_data( gl  )
+    //  this.dirty = false
+    //  return
+    //}
+    
+
+    this.__data = Matrix.identity()
+
+    this.__data = this.__data.multiply( Matrix.translate( this.translation.x, this.translation.y, this.translation.z ) ) 
+    this.__data = this.__data.multiply( Matrix.rotate( this.rotation.angle, this.rotation.axis.x, this.rotation.axis.y, this.rotation.axis.z ) )
+    this.__data = this.__data.multiply( Matrix.scale( this.scale, this.scale, this.scale ) )
+
+    const inverse = Matrix.inverse( this.__data )
+    gl.uniformMatrix4fv( this.loc, false, inverse.m )
+    
+    //gl.uniform3f(this.loc_scale, this.scale.x, this.scale.y, this.scale.z )
+    
+    // scaling must be sent as separate uniform to avoid sdf over estimation 
+    gl.uniform1f(this.loc_scale, this.scale )
+
+		this.dirty = false
+	}
+
+}
+
+module.exports = MatrixWrap
+
+},{"./external/matrix.js":"/Users/charlie/Documents/code/marching/js/external/matrix.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/utils.js":[function(require,module,exports){
 const Var = require('./var.js').Var
 
 // Wrapper
@@ -30661,7 +32220,7 @@ const MaterialID = {
 
 module.exports = { param_wrap, MaterialID }
 
-},{"./var.js":260}],260:[function(require,module,exports){
+},{"./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/var.js":[function(require,module,exports){
 const { Vec2, Vec3, Vec4 } = require( './vec.js' )
 const float = require( './float.js' )
 const int   = require( './int.js' )
@@ -30823,7 +32382,7 @@ function vec2_var_gen(x, y,name=null) {
   return ()=> Var( Vec2(x, y), name  ) 
 }
 
-function vec3_var_gen(x, y, z,name=null) { 
+function vec3_var_gen(x=0, y, z,name=null) { 
   if( y === undefined ) y = x
   if( z === undefined ) z = x
   return ()=> Var( Vec3(x, y, z), name ) 
@@ -30866,9 +32425,7 @@ function vec4_var_gen( x, y, z, w, name=null ) {
 }
 */
 
-},{"./float.js":245,"./int.js":248,"./vec.js":261}],261:[function(require,module,exports){
-const float = require( './float.js' )
-
+},{"./float.js":"/Users/charlie/Documents/code/marching/js/float.js","./int.js":"/Users/charlie/Documents/code/marching/js/int.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/vec.js":[function(require,module,exports){
 const Vec2 = function (x=0, y=0) {
   const v = Object.create( Vec2.prototype )
   v.x = x; v.y = y
@@ -31121,7 +32678,7 @@ Vec4.prototype = {
 
 module.exports = { Vec2, Vec3, Vec4 } 
 
-},{"./float.js":245}],262:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/bit-twiddle/twiddle.js":[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -31327,7 +32884,7 @@ exports.nextCombination = function(v) {
 }
 
 
-},{}],263:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js":[function(require,module,exports){
 "use strict"
 
 var createThunk = require("./lib/thunk.js")
@@ -31438,7 +32995,7 @@ function compileCwise(user_args) {
 
 module.exports = compileCwise
 
-},{"./lib/thunk.js":265}],264:[function(require,module,exports){
+},{"./lib/thunk.js":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/thunk.js"}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/compile.js":[function(require,module,exports){
 "use strict"
 
 var uniq = require("uniq")
@@ -31798,7 +33355,7 @@ function generateCWiseOp(proc, typesig) {
 }
 module.exports = generateCWiseOp
 
-},{"uniq":280}],265:[function(require,module,exports){
+},{"uniq":"/Users/charlie/Documents/code/marching/node_modules/uniq/uniq.js"}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/thunk.js":[function(require,module,exports){
 "use strict"
 
 // The function below is called when constructing a cwise function object, and does the following:
@@ -31886,7 +33443,7 @@ function createThunk(proc) {
 
 module.exports = createThunk
 
-},{"./compile.js":264}],266:[function(require,module,exports){
+},{"./compile.js":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/compile.js"}],"/Users/charlie/Documents/code/marching/node_modules/data-uri-to-buffer/index.js":[function(require,module,exports){
 (function (Buffer){
 
 /**
@@ -31944,7 +33501,7 @@ function dataUriToBuffer (uri) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":122}],267:[function(require,module,exports){
+},{"buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/dup/dup.js":[function(require,module,exports){
 "use strict"
 
 function dupe_array(count, value, i) {
@@ -31994,7 +33551,7 @@ function dupe(count, value) {
 }
 
 module.exports = dupe
-},{}],268:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/get-pixels/dom-pixels.js":[function(require,module,exports){
 (function (Buffer,process){
 'use strict'
 
@@ -32132,7 +33689,7 @@ module.exports = function getPixels(url, type, cb) {
   }
 }
 }).call(this,{"isBuffer":require("../../../gibber.audio.lib/node_modules/is-buffer/index.js")},require('_process'))
-},{"../../../gibber.audio.lib/node_modules/is-buffer/index.js":128,"_process":132,"data-uri-to-buffer":266,"ndarray":276,"ndarray-pack":274,"omggif":277,"path":130,"through":278}],269:[function(require,module,exports){
+},{"../../../gibber.audio.lib/node_modules/is-buffer/index.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","data-uri-to-buffer":"/Users/charlie/Documents/code/marching/node_modules/data-uri-to-buffer/index.js","ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js","ndarray-pack":"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/convert.js","omggif":"/Users/charlie/Documents/code/marching/node_modules/omggif/omggif.js","path":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/path-browserify/index.js","through":"/Users/charlie/Documents/code/marching/node_modules/through/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-texture2d/texture.js":[function(require,module,exports){
 'use strict'
 
 var ndarray = require('ndarray')
@@ -32695,7 +34252,7 @@ function createTexture2D(gl) {
   throw new Error('gl-texture2d: Invalid arguments for texture2d constructor')
 }
 
-},{"ndarray":276,"ndarray-ops":273,"typedarray-pool":279}],270:[function(require,module,exports){
+},{"ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js","ndarray-ops":"/Users/charlie/Documents/code/marching/node_modules/ndarray-ops/ndarray-ops.js","typedarray-pool":"/Users/charlie/Documents/code/marching/node_modules/typedarray-pool/pool.js"}],"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js":[function(require,module,exports){
 module.exports = function(strings) {
   if (typeof strings === 'string') strings = [strings]
   var exprs = [].slice.call(arguments,1)
@@ -32707,7 +34264,7 @@ module.exports = function(strings) {
   return parts.join('')
 }
 
-},{}],271:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/iota-array/iota.js":[function(require,module,exports){
 "use strict"
 
 function iota(n) {
@@ -32719,9 +34276,9 @@ function iota(n) {
 }
 
 module.exports = iota
-},{}],272:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"dup":128}],273:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/is-buffer/index.js":[function(require,module,exports){
+arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js"][0].apply(exports,arguments)
+},{}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-ops/ndarray-ops.js":[function(require,module,exports){
 "use strict"
 
 var compile = require("cwise-compiler")
@@ -33184,7 +34741,7 @@ exports.equals = compile({
 
 
 
-},{"cwise-compiler":263}],274:[function(require,module,exports){
+},{"cwise-compiler":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/convert.js":[function(require,module,exports){
 "use strict"
 
 var ndarray = require("ndarray")
@@ -33207,10 +34764,10 @@ module.exports = function convert(arr, result) {
   return result
 }
 
-},{"./doConvert.js":275,"ndarray":276}],275:[function(require,module,exports){
+},{"./doConvert.js":"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/doConvert.js","ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/doConvert.js":[function(require,module,exports){
 module.exports=require('cwise-compiler')({"args":["array","scalar","index"],"pre":{"body":"{}","args":[],"thisVars":[],"localVars":[]},"body":{"body":"{\nvar _inline_1_v=_inline_1_arg1_,_inline_1_i\nfor(_inline_1_i=0;_inline_1_i<_inline_1_arg2_.length-1;++_inline_1_i) {\n_inline_1_v=_inline_1_v[_inline_1_arg2_[_inline_1_i]]\n}\n_inline_1_arg0_=_inline_1_v[_inline_1_arg2_[_inline_1_arg2_.length-1]]\n}","args":[{"name":"_inline_1_arg0_","lvalue":true,"rvalue":false,"count":1},{"name":"_inline_1_arg1_","lvalue":false,"rvalue":true,"count":1},{"name":"_inline_1_arg2_","lvalue":false,"rvalue":true,"count":4}],"thisVars":[],"localVars":["_inline_1_i","_inline_1_v"]},"post":{"body":"{}","args":[],"thisVars":[],"localVars":[]},"funcName":"convert","blockSize":64})
 
-},{"cwise-compiler":263}],276:[function(require,module,exports){
+},{"cwise-compiler":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js":[function(require,module,exports){
 var iota = require("iota-array")
 var isBuffer = require("is-buffer")
 
@@ -33555,7 +35112,7 @@ function wrappedNDArrayCtor(data, shape, stride, offset) {
 
 module.exports = wrappedNDArrayCtor
 
-},{"iota-array":271,"is-buffer":272}],277:[function(require,module,exports){
+},{"iota-array":"/Users/charlie/Documents/code/marching/node_modules/iota-array/iota.js","is-buffer":"/Users/charlie/Documents/code/marching/node_modules/is-buffer/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/omggif/omggif.js":[function(require,module,exports){
 // (c) Dean McNamee <dean@gmail.com>, 2013.
 //
 // https://github.com/deanm/omggif
@@ -34364,7 +35921,7 @@ function GifReaderLZWOutputIndexStream(code_stream, p, output, output_length) {
 // CommonJS.
 try { exports.GifWriter = GifWriter; exports.GifReader = GifReader } catch(e) {}
 
-},{}],278:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/through/index.js":[function(require,module,exports){
 (function (process){
 var Stream = require('stream')
 
@@ -34476,7 +36033,7 @@ function through (write, end, opts) {
 
 
 }).call(this,require('_process'))
-},{"_process":132,"stream":152}],279:[function(require,module,exports){
+},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-browserify/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/typedarray-pool/pool.js":[function(require,module,exports){
 (function (global,Buffer){
 'use strict'
 
@@ -34693,7 +36250,7 @@ exports.clearCache = function clearCache() {
   }
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"bit-twiddle":262,"buffer":122,"dup":267}],280:[function(require,module,exports){
+},{"bit-twiddle":"/Users/charlie/Documents/code/marching/node_modules/bit-twiddle/twiddle.js","buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js","dup":"/Users/charlie/Documents/code/marching/node_modules/dup/dup.js"}],"/Users/charlie/Documents/code/marching/node_modules/uniq/uniq.js":[function(require,module,exports){
 "use strict"
 
 function unique_pred(list, compare) {
@@ -34752,7 +36309,7 @@ function unique(list, compare, sorted) {
 
 module.exports = unique
 
-},{}],281:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/dist/tidal.js":[function(require,module,exports){
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -37112,7 +38669,7 @@ module.exports = {
   parse:       peg$parse
 };
 
-},{}],282:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/bjork/index.js":[function(require,module,exports){
 function bjorklund(slots, pulses){
   var pattern = [],
       count = [],
@@ -37153,7 +38710,7 @@ module.exports = function(m, k){
   else return bjorklund(k, m);
 };
 
-},{}],283:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js":[function(require,module,exports){
 /**
  * @license Fraction.js v4.0.12 09/09/2015
  * http://www.xarg.org/2014/03/rational-numbers-in-javascript/
@@ -37989,7 +39546,7 @@ module.exports = function(m, k){
 
 })(this);
 
-},{}],284:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/src/pattern.js":[function(require,module,exports){
 const parse = require('../dist/tidal.js').parse
 const query = require('./queryArc.js' ).queryArc
 const Fraction = require( 'fraction.js' )
@@ -38049,7 +39606,7 @@ const Pattern = ( patternString, opts ) => {
 
 module.exports = Pattern
 
-},{"../dist/tidal.js":281,"./queryArc.js":285,"fraction.js":283}],285:[function(require,module,exports){
+},{"../dist/tidal.js":"/Users/charlie/Documents/code/tidal.peg/dist/tidal.js","./queryArc.js":"/Users/charlie/Documents/code/tidal.peg/src/queryArc.js","fraction.js":"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js"}],"/Users/charlie/Documents/code/tidal.peg/src/queryArc.js":[function(require,module,exports){
 const Fraction = require( 'fraction.js' )
 const util     = require( 'util' )
 const bjork    = require( 'bjork' ) 
@@ -38597,5 +40154,5 @@ const handlers = {
 
 module.exports.queryArc = queryArc
 
-},{"bjork":282,"fraction.js":283,"util":164}]},{},[78])(78)
+},{"bjork":"/Users/charlie/Documents/code/tidal.peg/node_modules/bjork/index.js","fraction.js":"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/util.js"}]},{},["/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js"])("/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js")
 });
