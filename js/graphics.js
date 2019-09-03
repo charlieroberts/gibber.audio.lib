@@ -18,6 +18,7 @@ const Graphics = {
   __fogAmount:   0,
   __background:  Marching.vectors.Vec3(0),
   __onrender:    [],
+  __protomethods:['translate','scale','rotate','texture','material'],
 
   camera : {
     pos: { x:0, y:0, z:5 },
@@ -63,6 +64,7 @@ const Graphics = {
 
     obj.march = Marching.createScene.bind( Marching )
     obj.Material = Marching.Material
+    obj.Texture  = Marching.Texture
     obj.Camera = Graphics.camera
     obj.Fog = Graphics.fog.bind( Graphics )
     obj.Background = Graphics.background.bind( Graphics )
@@ -177,11 +179,18 @@ const Graphics = {
         emit: wrapped.emit.bind( wrapped ),
         emit_decl: wrapped.emit_decl.bind( wrapped ),
         update_location: wrapped.update_location.bind( wrapped ),
-        //
+
+        // XXX should this just be a proxy for the wrapped object?
+        type:      wrapped.type,
+        transform: wrapped.transform,
+        material:  wrapped.material,
+        texture:   wrapped.texture,
 
         tidals:[],
 
-        render( animate=null ) {
+        render( animate=null, quality = null ) {
+
+          if( quality !== null ) Graphics.quality = quality
 
           if( Graphics.initialized === false ) {
             Graphics.run()
@@ -193,7 +202,6 @@ const Graphics = {
           }
           scene = scene.background( Graphics.__background )
 
-          //Graphics.scene = [ name, args ] 
           Graphics.scene = scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
 
           Graphics.__onrender.forEach( v => v() )
@@ -203,8 +211,33 @@ const Graphics = {
 
           return instance
         }
-
       }
+
+      if( wrapped.sdf !== undefined ) instance.sdf = wrapped.sdf
+      if( wrapped.a !== undefined ) instance.a = wrapped.a
+      if( wrapped.b !== undefined ) instance.b = wrapped.b
+      
+      // this id number is for communicating
+      // with the worklet / sequencing
+      let __id = wrapped.id || 0
+      Object.defineProperty( wrapped, 'id', {
+        get() { return __id },
+        set(v) {
+          __id = instance.id = v
+        }
+      })
+
+      instance.id = wrapped.id
+
+      // this is the primary id that is used inside of
+      // the generated GLSL shader
+      let __sdfID = 0
+      Object.defineProperty( instance, '__sdfID', {
+        get() { return __sdfID },
+        set(v) {
+          __sdfID = wrapped.__sdfID = v
+        }
+      })
 
       if( wrapped.upload_data !== undefined ) instance.upload_data = wrapped.upload_data.bind( wrapped )
 
@@ -220,6 +253,71 @@ const Graphics = {
 
       }
 
+      for( let param of Graphics.__protomethods ) {
+        if( wrapped[ param ] !== undefined ) {
+          // texture properties are dynamically created when the
+          // function is called, so we want to wait for that function
+          // call before wrapping...
+          if( param !== 'texture' && param !== 'material' ) {
+            instance[ param ] = function( ...args ) {
+              wrapped[ param ]( ...args )
+
+              return instance
+            }
+          }else if( param === 'texture' ) { 
+            instance.texture = wrapped.texture = function( ...args ) {
+              const tex = typeof args[0] === 'string' ? Marching.Texture( ...args ) : args[0]
+              instance.__textureObj = wrapped.__textureObj = tex
+
+              for( let p of tex.parameters ) {
+                Graphics.createProperty( 
+                  instance.texture, 
+                  p.name, 
+                  tex[ p.name ],
+                  tex 
+                )
+                instance.texture.tidals = wrapped.texture.tidals = []
+                instance.texture.__sequencers = wrapped.texture.__sequencers = []
+                instance.texture.__id = wrapped.texture.__id = __wrapped.__id = Gibber.Gibberish.utilities.getUID()
+                Gibber.Gibberish.worklet.ugens.set( instance.texture.__id, instance.texture )
+              }
+
+
+              return instance 
+            }
+          }else{
+            const __wrapped = wrapped.material
+            instance.material = wrapped.material = function( ...args ) {
+              const mat = typeof args[0] !== 'string'
+                ? Marching.Material( ...args )
+                : Marching.Material[ args[0] ]
+              
+              instance.__material = wrapped.__material = Marching.materials.addMaterial( mat )
+              
+              // mmmm... how do you sequence lighting params anyways?
+              /*
+              for( let p of mat.parameters ) {
+                Graphics.createProperty( 
+                  instance.material, 
+                  p.name, 
+                  mat[ p.name ],
+                  mat 
+                )
+                instance.material.tidals = wrapped.material.tidals = []
+                instance.material.__sequencers = wrapped.material.__sequencers = []
+                instance.material.__id = wrapped.material.__id = __wrapped.__id = Gibber.Gibberish.utilities.getUID()
+                Gibber.Gibberish.worklet.ugens.set( instance.material.__id, instance.material )
+              }*/
+
+
+              return instance 
+            }
+
+          }
+        }
+      }
+
+
       // hack to make audio sequencing work with graphical objects
       Gibber.Gibberish.worklet.ugens.set( instance.__id, instance )
 
@@ -229,7 +327,7 @@ const Graphics = {
 
   createMapping( from, to, name, wrappedTo ) {
     if( from.type === 'audio' ) {
-      const f = to[ '__' + name ].follow = Follow({ input: from })
+      const f = to[ '__' + name ].follow = Follow({ input: from, bufferSize:4096 })
 
       Marching.callbacks.push( time => {
         if( f.output !== undefined ) {
@@ -271,7 +369,8 @@ const Graphics = {
           const val = gen()
           to[ name ] = val
           //console.log( 'val:', val, to[ name ].value.widget !== undefined )
-          Environment.codeMarkup.waveform.updateWidget( to[ name ].value.widget, val, false )
+          const target = to[ name ].value.widget !== undefined ? to[ name ].value.widget : from.widget
+          Environment.codeMarkup.waveform.updateWidget( target, val, false )
         }
       }else{
         // assignment hack while DOM creation is taking place,
@@ -317,10 +416,10 @@ const Graphics = {
       name,
       valueOf() { return __getter() },
 
-      map( from, mult, offset ) {
-        obj[ '__' + name ].value = from
-        obj[ '__' + name ].offset = offset
-        obj[ '__' + name ].multiplier = mult
+      map( from, mult=null, offset=null ) {
+        obj[ name ] = from
+        if( mult !== null )   obj[ name ].offset = offset
+        if( offset !== null ) obj[ name ].multiplier = mult
       },
 
       fade( from, to, time ) {
@@ -419,7 +518,7 @@ const Graphics = {
 
     // determine if property is of type vector. if so, we need to create properties for the
     // x,y,z, and w values (depending on the size of the vector.
-    if( wrapped[ name ].type !== undefined && wrapped[ name ].type.indexOf( 'vec' ) > -1 ) {
+    if( wrapped[ name ] !== undefined && wrapped[ name ].type !== undefined && wrapped[ name ].type.indexOf( 'vec' ) > -1 ) {
       const props = ['x','y','z','w']
       const size = parseInt( wrapped[ name ].type[3] )
 
