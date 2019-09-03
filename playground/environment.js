@@ -1,4 +1,11 @@
 const codeMarkup = require( './codeMarkup.js' )
+/*const CodeMirror = require( 'codemirror' )
+
+require( '../node_modules/codemirror/mode/javascript/javascript.js' )
+require( '../node_modules/codemirror/addon/edit/matchbrackets.js' )
+require( '../node_modules/codemirror/addon/edit/closebrackets.js' )
+require( '../node_modules/codemirror/addon/hint/show-hint.js' )
+require( '../node_modules/codemirror/addon/hint/javascript-hint.js' )*/
 
 let cm, cmconsole, exampleCode, 
     isStereo = false,
