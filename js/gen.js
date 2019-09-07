@@ -393,7 +393,7 @@ const Gen  = {
       graph, 
       propertyNames,
       type:'gen',
-      id: Gen.getUID(),
+      id: Gibber.Gibberish.utilities.getUID(),
       rendered:null,
 
       render( samplerate=44100, type='audio' ) {
@@ -546,6 +546,7 @@ const Gen  = {
     out.id = temp
     out.__isGen = out.__wrapped__.__isGen = true
     out.type = 'gen'
+
     return out
   }
 }

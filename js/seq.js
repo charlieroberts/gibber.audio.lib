@@ -3,7 +3,7 @@ const Gibberish = require( 'gibberish-dsp' )
 module.exports = function( Audio ) {
 
   const Seq = function( props ) { 
-    const __values  = props.values
+    let   __values  = props.values
     const __timings = props.timings
     const delay     = props.delay
     const target    = props.target
@@ -12,6 +12,8 @@ module.exports = function( Audio ) {
     let   rate      = props.rate || 1
     let   density   = props.density || 1
     let   autotrig  = false
+
+    if( __values.type === 'gen' ) __values = __values.render()
 
     let values
     if( Array.isArray( __values ) ) {
