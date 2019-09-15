@@ -31,7 +31,9 @@ const removeSeq = function( obj, seq ) {
 }
 
 const createMapping = function( from, to, name, wrappedTo ) {
-  if( from.type === 'audio' ) {
+  if( from.__useMapping === false ) {
+    wrappedTo[ name ] = from
+  }else if( from.type === 'audio' ) {
     const f = to[ '__' + name ].follow = Follow({ input: from })
 
     let m = f.multiplier
@@ -48,7 +50,9 @@ const createMapping = function( from, to, name, wrappedTo ) {
 
     wrappedTo[ name ] = f
   }else if( from.type === 'gen' ) {
-    const gen = from.render()
+    // gen objects can be referred to without the graphics/audio abstraction,
+    // in which case they will have no .render() function, and don't need to be rendered
+    const gen = from.render !== undefined ? from.render() : from
 
     wrappedTo[ name ] = gen
   }
@@ -163,6 +167,8 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
       }
 
       let value = Gibber.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
+      // this is a key to not use an envelope follower for mapping
+      value.__useMapping = false
 
       prop.value = value
 
@@ -311,7 +317,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       // XXX we have to pass id in the values dictionary under 
       // certain conditions involoving gen ugens, but we don't 
       // want .id to be sequencable!
-      if( propertyName !== 'id' ){
+      if( propertyName !== 'id' && propertyName !== 'type' ){
         createProperty( obj, propertyName, __wrappedObject, timeProps, Audio )
 
         // create per-voice version of property... what properties should be excluded?
@@ -511,7 +517,9 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           dest.mods.push( obj )
 
           const sum = dest.mods.concat( dest.preModValue )
-          dest.ugen[ dest.name ].value = Gibberish.binops.Add( ...sum ) 
+          const add = Gibber.binops.Add( ...sum ) 
+          add.__useMapping = false
+          dest.ugen[ dest.name ] = add
 
           obj.__wrapped__.connected.push( [ dest.ugen[ dest.name ], obj ] )
         }else{
