@@ -165,6 +165,46 @@ const Graphics = {
   },
 
 
+  texture( ...args ) {
+    const tex = typeof args[0] === 'string' ? Marching.Texture( ...args ) : args[0]
+    instance.__textureObj = wrapped.__textureObj = tex
+
+    for( let p of tex.parameters ) {
+      Graphics.createProperty( 
+        instance.texture, 
+        p.name, 
+        tex[ p.name ],
+        tex 
+      )
+    }
+
+    instance.texture.tidals = wrapped.texture.tidals = []
+    instance.texture.__sequencers = wrapped.texture.__sequencers = []
+    instance.texture.__id = wrapped.texture.__id = __wrapped.__id = Gibber.Gibberish.utilities.getUID()
+    Gibber.Gibberish.worklet.ugens.set( instance.texture.__id, instance.texture )
+
+    return instance 
+  },
+
+   light( ...args ) {
+    const light = Marching.Light( ...args )
+    instance.__lightObj = wrapped.__lightObj = light 
+
+    Graphics.createProperty( 
+      instance.light, 
+      p.name, 
+      tex[ p.name ],
+      tex 
+    )
+    instance.light.tidals = wrapped.light.tidals = []
+    instance.light.__sequencers = wrapped.light.__sequencers = []
+    instance.light.__id = wrapped.light.__id = __wrapped.__id = Gibber.Gibberish.utilities.getUID()
+    Gibber.Gibberish.worklet.ugens.set( instance.light.__id, instance.light )
+
+
+    return instance 
+  }, 
+
   make( name, op ) {
     this[ name ] = function( ...args ) {
       // XXX do these need to be proxies? We're basically creating
@@ -288,8 +328,11 @@ const Graphics = {
           }else{
             const __wrapped = wrapped.material
             instance.material = wrapped.material = function( ...args ) {
+              // check for presets and for passing a constructed material object
               const mat = typeof args[0] !== 'string'
-                ? Marching.Material( ...args )
+                ? args[0].type === 'material'
+                  ? args[0]               
+                  : Marching.Material( ...args )
                 : Marching.Material[ args[0] ]
               
               instance.__material = wrapped.__material = Marching.materials.addMaterial( mat )
@@ -369,7 +412,8 @@ const Graphics = {
           const val = gen()
           to[ name ] = val
           //console.log( 'val:', val, to[ name ].value.widget !== undefined )
-          const target = to[ name ].value.widget !== undefined ? to[ name ].value.widget : from.widget
+          let target = to[ name ].value.widget !== undefined ? to[ name ].value.widget : from.widget
+          if( target === undefined ) target = to[ name ].value.mark.replacedWith
           Environment.codeMarkup.waveform.updateWidget( target, val, false )
         }
       }else{
@@ -426,7 +470,7 @@ const Graphics = {
         if( from === null ) {
           from = obj[ '__'+name ].value
           while( typeof from === 'object' ) {
-            from = from.value
+            from = from.value || from.x
           }
         }
 
