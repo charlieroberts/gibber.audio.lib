@@ -78,9 +78,9 @@ const Theory = {
         1
       )
 
-      Gibber.createProperty( this, 'mode', 'aeolian', null, 1 )
-      Gibber.createProperty( this, 'offset', 0, null, 1 )
-      Gibber.createProperty( this, 'degree', 'i', null, 1 )
+      Gibber.createProperty( this, 'mode', 'aeolian', null, 5 )
+      Gibber.createProperty( this, 'offset', 0, null, 5 )
+      Gibber.createProperty( this, 'degree', 'i', null, 5 )
 
       //setTimeout( ()=> Theory.tuning = 'et', 250 )
       this.tuning = 'et'
