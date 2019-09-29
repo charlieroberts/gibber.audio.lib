@@ -54,11 +54,8 @@ module.exports = {
     antialias:false,
     presetInit: function( audio ) {
       this.fx.add( audio.effects.Chorus('warbly') )
-      //this.fx.add( audio.effects.Delay({ time:1/12, feedback:.65 }) )
-      //this.mod = audio.Gen.make( audio.Gen.ugens.abs( audio.Gen.ugens.cycle(4) ) ).connect( this.pulsewidth )
-      this.mod = audio.Gen.make( audio.Gen.ugens.add( .5, audio.Gen.ugens.mul( audio.Gen.ugens.cycle(8), .275 ) ) )
-      this.mod.connect( this.pulsewidth )
-
+      this.pwmod = audio.Gen.make( audio.Gen.ugens.mul( audio.Gen.ugens.cycle(8), .275 ) )
+      this.pwmod.connect( this.pulsewidth )
     }
   },
 
@@ -126,5 +123,13 @@ module.exports = {
 
   chirp: { filterType:2, cutoff:.325, decay:1/16 }, 
 
-  'square.perc': { waveform:'square', shape:'exponential', antialias:true, filterType:2, cutoff:.25, decay:1/8 },
+  'square.perc': { 
+    waveform:'square', 
+    shape:'exponential', 
+    antialias:true, 
+    filterType:2, 
+    cutoff:.25, 
+    decay:1/8,
+    panVoices:true
+  },
 }

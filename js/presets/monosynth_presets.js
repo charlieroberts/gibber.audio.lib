@@ -148,8 +148,6 @@ module.exports = {
   easy : {
     attack: audio=> audio.Clock.ms(1),
     decay:2,
-    octave2:0,
-    octave3:0,
     cutoff:.3,
     glide:.9995,
   },
@@ -160,11 +158,10 @@ module.exports = {
     presetInit: function() {
       this.fx.add( Gibber.effects.Delay( Clock.time(1/6), .3) )
     },
-    amp:.3,
-    octave2:0,
-    octave3:0,
-    cutoff:1.5,
-    glide:.9995,
+    cutoff:.125,
+    glide:1000,
+    detune2:.001,
+    detun3:-.001,
     filterType:1,
     filterMult:4,
     Q:.5,
@@ -183,6 +180,23 @@ module.exports = {
     filterType:1,
     filterMult:3,
     Q:.75,
+  },
+
+  'chords.short': {
+    attack: audio=> audio.Clock.ms(1),
+    decay:1/8,
+    presetInit: function() {
+      this.delay = audio.effects.Delay({ delay:Clock.time(1/8), feedback:.5, wetdry:.25 }) 
+      this.fx.push( this.delay )
+    },
+    amp:.3,
+    octave2:0,
+    octave3:0,
+    cutoff:.35,
+    glide:1,
+    filterType:1,
+    filterMult:3,
+    Q:.5,
   },
 
   jump: { 

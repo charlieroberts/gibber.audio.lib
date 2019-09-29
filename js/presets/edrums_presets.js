@@ -20,6 +20,17 @@ module.exports = {
     }
   },
 
+  warbly: {
+    presetInit( audio ) {
+      const bc = audio.effects.BitCrusher({ input:this, sampleRate:.35, bitDepth:.5, isStereo:true })
+      this.fx.add( bc )
+      this.bitcrusher = bc
+      const flanger = audio.effects.Flanger({ input:this, frequency:.8, feedback:.935, isStereo:true })
+      this.fx.add( flanger )
+      this.flanger = flanger
+      this.gain.value *= 1.35
+   }
+  },
   hpf: {
     presetInit( audio ) {
       const hpf = audio.filters.Filter12Biquad({ input:this, mode:1, cutoff:.35, isStereo:true })
