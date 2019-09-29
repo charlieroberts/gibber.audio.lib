@@ -5,7 +5,7 @@ const Clock = {
   __beatCount:0,
   id:null,
   nogibberish:true,
-  bpm:120,
+  bpm:140,
   seq:null,
 
   store:function() { 
