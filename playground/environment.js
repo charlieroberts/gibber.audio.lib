@@ -50,10 +50,13 @@ window.onload = function() {
 
     return p
   }
+  const filter = function( doc, query, request,error,data ) {
+    debugger
+  } 
 
   let server
   Promise.all( [ getURL("./terndefs/gibber.audio.def.json" ), getURL("./terndefs/gibber.graphics.def.json" ) ] ).then( defs => {
-    environment.server = server = new CodeMirror.TernServer({defs: defs.map( JSON.parse ), options:{ hintDelay:5000 } })
+    environment.server = server = new CodeMirror.TernServer({defs: defs.map( JSON.parse ), options:{ hintDelay:5000, responseFilter:filter } })
 
     cm.setOption("extraKeys", {
       "Ctrl-Space": function(cm) { server.complete(cm) },
@@ -70,6 +73,7 @@ window.onload = function() {
     cm.on( 'change', function( cm, change ) {
       if( environment.showCompletions === true ) {
         if( change.text[ change.text.length - 1 ] === '.' ) {
+          //console.log( 'complete' )
           server.complete( cm )
         }
       }

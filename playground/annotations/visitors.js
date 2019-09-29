@@ -58,9 +58,13 @@ module.exports = function( Marker ) {
 
           let leftName = left.name
           if( leftName === undefined ) {
+            // XXX OMG fix this so it's not hard coded for a maximum depth of four
+            // handles up to object.object.object.property
             if( left.type === 'MemberExpression' ) {
               if( left.object.object === undefined ) {
                 leftName = left.object.name + '.' + (left.property.type === 'Literal' ? left.property.raw : left.property.name )
+              }else if( left.object.object.object !== undefined ) {
+                leftName = left.object.object.object.name + '.' + left.object.object.property.name + '.' + left.object.property.name + '.' + left.property.name
               }else{
                 leftName = left.object.object.name + '.' + left.object.property.name + '.' + left.property.name
               }

@@ -54,7 +54,7 @@ const Waveform = {
     widget.ctx.strokeStyle = COLORS.STROKE
     widget.ctx.font = '10px monospace'
     widget.ctx.lineWidth = 1
-    widget.gen = patternObject !== null ? patternObject : walkState.gen//Gibber.Gen.lastConnected.shift()
+    widget.gen = patternObject !== null ? patternObject.value : walkState.gen.value//Gibber.Gen.lastConnected.shift()
     widget.values = []
     widget.storage = []
     widget.min = 10000
@@ -67,14 +67,17 @@ const Waveform = {
       widget.gen = patternObject.__fadeObj 
     }
     // is it a fade?
-    if( widget.gen.from !== undefined ) {
+    if( widget.gen !== undefined && widget.gen.from !== undefined ) {
       widget.min = widget.gen.from.value
       widget.max = widget.gen.to.value
       widget.isFade = isFade = true
-      widget.gen = widget.gen.__wrapped__ !== undefined ? widget.gen.__wrapped : widget.gen
+      widget.gen = widget.gen.__wrapped__ !== undefined ? widget.gen.__wrapped__ : widget.gen
       widget.values = widget.gen.values
+    }else{
+      // XXX what? so hacky...
+      widget.gen = patternObject
     }
-    
+
     if( widget.gen === null || widget.gen === undefined ) {
       if( node.expression !== undefined && node.expression.type === 'AssignmentExpression' ) {
         isAssignment = true
@@ -116,6 +119,8 @@ const Waveform = {
       }
     }
 
+    //if( widget.gen.id === undefined ) widget.gen.id = Gibber.Gibberish.utilities.getUID()
+
     widget.mark = cm.markText({ line, ch:ch }, { line, ch:ch+1 }, { replacedWith:widget })
     widget.mark.__clear = widget.mark.clear
 
@@ -136,6 +141,8 @@ const Waveform = {
 
     if( widget.gen !== null && widget.gen !== undefined ) {
       //console.log( 'paramID = ', widget.gen.paramID ) 
+      if( widget.gen.id === undefined ) widget.gen.id = patternObject.id 
+
       Waveform.widgets[ widget.gen.id ] = widget
       widget.gen.widget = widget
       widget.gen.__onclear = ()=> widget.mark.clear()
@@ -296,7 +303,7 @@ const Waveform = {
             widget.ctx.lineTo( widget.padding + widget.waveWidth, widget.height )
           }
 
-          const value = widget.values[0]
+          const value = widget.gen.values[0]
           if( !isNaN( value ) ) {
             let percent = isReversed === true ? Math.abs( (value-widget.gen.to) / range ) : Math.abs( (value-widget.gen.from) / range ) 
 

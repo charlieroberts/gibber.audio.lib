@@ -88,8 +88,6 @@ module.exports = function( Marker ) {
       }
     }
 
-    markPattern( pattern )
-
     const clearCycle = name => {
       if( markers[ name ] ) {
         let cycle = markers[ name ].cycle
@@ -112,6 +110,10 @@ module.exports = function( Marker ) {
       cycle() 
       clearCycle( name )
     }
+
+    tidal.update.uid = pattern.uid
+
+    markPattern( pattern )
 
     let value = null
     Object.defineProperty( tidal.update, 'value', {

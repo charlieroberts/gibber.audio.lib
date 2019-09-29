@@ -71,15 +71,15 @@
     "geometry": {
       "!proto":"operation",
       "material": {
-        "!type": "fn(materialType: material|string, properties?: object)",
+        "!type": "fn(materialType: material|string, properties?: object) -> this",
         "!doc": "Set the material used by the object. A string can be passed as the first argument in order to select a material preset, otherwise a material instance should be passed. The optional properties object modifies whatever is passed as the first argument, either the preset or the material instance."
       },
       "texture": {
-        "!type": "fn(textureType: texture|string, properties?: object)",
+        "!type": "fn(textureType: texture|string, properties?: object) -> this",
         "!doc": "Set the texture used by the object. A string can be passed as the first argument in order to select a matexture preset, otherwise a texture instance should be passed. The optional properties object modifies whatever is passed as the first argument, either the preset or the texture instance."
       },
       "render": {
-        "!type": "fn(shouldAnimate?: bool) -> this"
+        "!type": "fn(shouldAnimate?: bool, quality?: number) -> this"
       }
     },
     "material": {
@@ -131,6 +131,9 @@
       "size": {
         "!type":"vec3",
         "!doc" :"The size of the box in three dimensions."
+      },
+      "render": {
+        "!type": "fn(shouldAnimate?: bool, quality?: number) -> this"
       }
     },
     "cone": {
@@ -380,6 +383,14 @@
       "!type": "material",
       "!doc":  "If no material is assigned to a geometry, what ever is assigned to Material.default will be used for lighting. You can assign your own material to this property to change the default material."
     }
+  },
+  "Box":{
+    "!type": "fn(size?: number) -> box",
+    "!doc": "Constructor for a box.",   
+  },
+  "Cylinder":{
+    "!type": "fn(dimensions?: number|array) -> cylinder",
+    "!doc": "Constructor for a box."   
   },
   "Sphere":{
     "!type": "fn(radius?: number) -> sphere",

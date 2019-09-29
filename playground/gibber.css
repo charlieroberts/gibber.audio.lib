@@ -88,10 +88,12 @@ span.cm-string {color: rgb(225, 225, 225) !important }
 .CodeMirror pre {
   background-color: rgba( 0,0,0,.75 ) !important;
 
+  line-height:1.25em;
+
   float:left !important;
   clear:left !important;
 
-  font-family:Menlo, sans-serif !important;
+  font-family:Menlo, monospace !important;
 }
 
 body { 
@@ -140,7 +142,6 @@ h1 {
 
 #header span { font-size: .8em; }
 
-/*#editor { width:100%; box-sizing:border-box; display:inline-block; height:calc( 100% - 3em); [>border-right:1px solid #666;<] padding-left:1em  }*/
 #editor { 
   width:100%; 
   box-sizing:border-box; 
@@ -236,7 +237,7 @@ li.CodeMirror-hint-active {
 }
 
 .CodeMirror-selected {
-  background:rgba(84,84,84,.5) !important;
+  background:rgba(84,84,84,1) !important;
 }
 
 .CodeMirror-highlight {

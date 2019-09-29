@@ -193,7 +193,9 @@ module.exports = function( Marker ) {
     }
 
     Marker._addPatternFilter( patternObject )
-    patternObject._onchange = () => { Marker._updatePatternContents( patternObject, patternName, target ) }
+    patternObject._onchange = () => { 
+      Marker._updatePatternContents( patternObject, patternName, target ) 
+    }
   }
     
   return ArrayExpression
