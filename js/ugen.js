@@ -389,7 +389,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         obj[ methodName ].sequencers = []
         obj[ methodName ].tidals = []
 
-        obj[ methodName ].seq = function( values, timings, number=0, delay=0 ) {
+        obj[ methodName ].seq = function( values, timings, number=0, delay=0, priority=0 ) {
           let prevSeq = obj[ methodName ].sequencers[ number ] 
           if( prevSeq !== undefined ) { 
             const idx = obj.__sequencers.indexOf( prevSeq )
@@ -399,7 +399,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             // removeSeq( obj, prevSeq )
           }
 
-          let s = Audio.Seq({ values, timings, target:__wrappedObject, key:methodName })
+          let s = Audio.Seq({ values, timings, target:__wrappedObject, key:methodName, priority })
           
           s.start( Audio.Clock.time( delay ) )
           obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
