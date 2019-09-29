@@ -193,10 +193,11 @@ const Audio = {
     Object.assign( this, drums )
   },
 
-  addSequencing( obj, methodName, priority ) {
+  addSequencing( obj, methodName, priority=0 ) {
 
     if( Gibberish.mode === 'worklet' ) {
       obj[ methodName ].sequencers = []
+      obj[ methodName ].tidals = []
 
       obj[ methodName ].seq = function( values, timings, number=0, delay=0 ) {
         let prevSeq = obj[ methodName ].sequencers[ number ] 
@@ -210,6 +211,29 @@ const Audio = {
         // return object for method chaining
         return obj
       }
+      obj[ methodName ].tidal= function( pattern, number=0, delay=0 ) {
+          let prevSeq = obj[ methodName ].tidals[ number ] 
+          if( prevSeq !== undefined ) { 
+            const idx = obj.__tidals.indexOf( prevSeq )
+            obj.__tidals.splice( idx, 1 )
+            prevSeq.stop()
+            prevSeq.clear()
+            // removeSeq( obj, prevSeq )
+          }
+
+          let s = Audio.Tidal({ pattern, target:obj, key:methodName })
+          
+          s.start( Audio.Clock.time( delay ) )
+          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
+          obj.__tidals.push( s )
+
+          // XXX need to clean this up! this is solely here for annotations, and to 
+          // match what I did for ensembles... 
+          obj[ methodName ].__tidal = s
+
+          // return object for method chaining
+          return obj
+        }
 
       return obj[ methodName ].sequencers
     }
