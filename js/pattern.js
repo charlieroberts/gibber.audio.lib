@@ -92,7 +92,8 @@ const patternWrapper = function( Gibber ) {
     let isGen = args[0].__isGen
 
     if( isGen === true ) { 
-      //args[0].connect( Gibberish.output, 0 ) 
+      // must have a priority or it screws us codegen for analysis
+      args[0].priority = 0
       Gibberish.analyzers.push( args[0] )
       Gibberish.dirty( Gibberish.analyzers )
     }
@@ -357,6 +358,7 @@ const patternWrapper = function( Gibber ) {
           }
         }
         if( Gibberish.mode === 'processor' ) {
+          console.log( 'ID:', fnc.id )
           Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
           Gibberish.processor.messages.push( fnc.id, '_onchange', true )
         }      
@@ -567,6 +569,14 @@ const patternWrapper = function( Gibber ) {
     // TODO: Gibber.createProxyProperties( fnc, { 'stepSize':0, 'start':0, 'end':0 })
     
     fnc.__proto__ = PatternProto 
+
+    let pn = ''
+    Object.defineProperty( fnc, 'patternName', {
+      get() { return pn },
+      set(__pn) {
+        pn = __pn
+      }
+    })
 
     // 'isPattern' is a hack to force pattern initialization arguments to be submitted as
     // a list, instead of in a property dictionary. When 'isPattern' is true, gibberish
