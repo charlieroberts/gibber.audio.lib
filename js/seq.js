@@ -108,10 +108,8 @@ module.exports = function( Audio ) {
     values.__patternType = 'values'
     if( timings !== null )
       timings.__patternType = 'timings'
+
     //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
-    // XXX we need to add priority to Sequencer2; this priority will determine the order
-    // that sequencers are added to the callback, ensuring that sequencers with higher
-    // priority will fire first.
 
     // XXX need to fix so that we can use the clock rate as the base
     const seq = Gibberish.Sequencer2({ values, timings, density, target, key, priority, rate:1/*Audio.Clock.audioClock*/, clear, autotrig, mainthreadonly:props.mainthreadonly })
