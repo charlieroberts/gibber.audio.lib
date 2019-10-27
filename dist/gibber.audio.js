@@ -9639,10 +9639,8 @@ module.exports = function( Audio ) {
     values.__patternType = 'values'
     if( timings !== null )
       timings.__patternType = 'timings'
+
     //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
-    // XXX we need to add priority to Sequencer2; this priority will determine the order
-    // that sequencers are added to the callback, ensuring that sequencers with higher
-    // priority will fire first.
 
     // XXX need to fix so that we can use the clock rate as the base
     const seq = Gibberish.Sequencer2({ values, timings, density, target, key, priority, rate:1/*Audio.Clock.audioClock*/, clear, autotrig, mainthreadonly:props.mainthreadonly })
@@ -9950,10 +9948,38 @@ const Theory = {
     this.initProperties()
   },
 
+  // adapted from https://gist.github.com/stuartmemo/3766449
+  __noteToFreq( note ) {
+    note = note.toUpperCase() 
+
+    let notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'],
+        octave,
+        keyNumber
+
+    if (note.length === 3) {
+      octave = note.charAt(2)
+    } else {
+      octave = note.charAt(1)
+    }
+    keyNumber = notes.indexOf(note.slice(0, -1))
+    if (keyNumber < 3) {
+      keyNumber = keyNumber + 12 + ((octave - 1) * 12) + 1
+    } else {
+      keyNumber = keyNumber + ((octave - 1) * 12) + 1
+    }
+
+    return 440 * Math.pow(2, (keyNumber- 49) / 12)
+  },
   initProperties: function() {
     if( Gibberish.mode === 'worklet' ) {
       Gibber.createProperty( 
-        this, 'root', 440, null,1
+        this, 'root', 440, function() {
+          if( typeof Theory.__root.value === 'string' ) {
+            Theory.root = Theory.__noteToFreq( Theory.__root.value )
+          } 
+        },
+        
+        1
       )
 
       Gibber.createProperty( 
@@ -34434,7 +34460,8 @@ const createPrimitives = function( SDF ) {
       let decl = `SDF sdfs[${length}] = SDF[${length}](\n`
       geos.forEach( (geo, i) => {
         const textureID = geo.__textureObj === undefined ? 50000 : geo.__textureObj.id
-        decl += `        SDF( ${materials.indexOf( geo.__material )}, ${geo.transform.varName}, ${textureID}, ${geo.repeat !== null ? geo.repeat.distance.emit() : 'vec3(0.)'}, ${geo.repeat !== null ? geo.repeat.transform.emit() : `mat4(1.)`} )`
+        const hasRepeat = geo.repeat !== null && geo.repeat !== undefined
+        decl += `        SDF( ${materials.indexOf( geo.__material )}, ${geo.transform.varName}, ${textureID}, ${hasRepeat ? geo.repeat.distance.emit() : 'vec3(0.)'}, ${hasRepeat ? geo.repeat.transform.emit() : `mat4(1.)`} )`
         if( i < geos.length - 1 ) decl += ','
         decl += '\n'
       })

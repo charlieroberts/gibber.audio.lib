@@ -27287,63 +27287,63 @@ lead.note.seq(
     window.onclick = null
     window.onkeypress = null
   }
-  
+
   window.onclick = start
   window.onkeypress = start
 
- 
-/*
-  let select = document.querySelector( 'select' ),
-    files = [
-    ]
+  const select = document.querySelector( 'select' ),
+        files = [
+          ['intro demo', 'intro.js'],
+          ['tutorial #1: running/stopping code', 'intro.tutorial.js'],
+          ['tutorial #2: creating objects', 'creating.objects.js'],
+          ['music tutorial #1: scales/tunings', 'scales.tunings.js']  
+        ]
 
-  select.onchange = function( e ) {
-    loadexample( files[ select.selectedIndex ] )
+  for( let file of files ) {
+    const opt = document.createElement('option')
+    opt.innerText = file[0]
+    select.appendChild( opt )
   }
 
-  let loadexample = function( filename ) {
-    var req = new XMLHttpRequest()
+  select.onchange = function( e ) {
+    loadexample( files[ select.selectedIndex ][1] )
+  }
+
+  const loadexample = function( filename ) {
+    const  req = new XMLHttpRequest()
     req.open( 'GET', './examples/'+filename, true )
     req.onload = function() {
-      var js = req.responseText
+      const js = req.responseText
       window.Environment.editor.setValue( js )
     }
 
     req.send()
   }
-*/
-  //loadexample( 'deepnote.js' )
-
-  //setupSplit()
 }
 
+/*const setupSplit = function() {
+  const splitDiv = document.querySelector( '#splitbar' ),
+        editor   = document.querySelector( '#editor'   ),
+        sidebar  = document.querySelector( '#console'  )
 
-const setupSplit = function() {
-  let splitDiv = document.querySelector( '#splitbar' ),
-      editor   = document.querySelector( '#editor'   ),
-      sidebar  = document.querySelector( '#console'  ),
-      mousemove, mouseup
-
-  mouseup = evt => {
+  const mouseup = evt => {
     window.removeEventListener( 'mousemove', mousemove )
     window.removeEventListener( 'mouseup', mouseup )
   }
 
-  mousemove = evt => {
-    let splitPos = evt.clientX
+  const mousemove = evt => {
+    const splitPos = evt.clientX
 
     editor.style.width = splitPos + 'px'
     sidebar.style.left = splitPos  + 'px'
     sidebar.style.width = (window.innerWidth - splitPos) + 'px'
   }
 
-
   splitDiv.addEventListener( 'mousedown', evt => {
     window.addEventListener( 'mousemove', mousemove )
     window.addEventListener( 'mouseup', mouseup )
   })
-
-}
+}*/
 
 const fixCallback = function( cb ) {
   const cbarr = cb.split( '\n' )
@@ -27472,8 +27472,10 @@ let hidden = false
 const toggleGUI = function() {
   hidden = !hidden
   if( hidden === true ) {
+    document.getElementsByTagName('header')[0].style.display = 'none'
     cm.getWrapperElement().style.display = 'none'
   }else{
+    document.getElementsByTagName('header')[0].style.display = 'block'
     cm.getWrapperElement().style.display = 'block'
   }
 }
@@ -27543,6 +27545,61 @@ CodeMirror.keyMap.playground =  {
     
     Gibber.shouldDelay = false
   },
+  'Shift-Enter'( cm ) {
+    try {
+      const selectedCode = getSelectionCodeColumn( cm, false )
+
+      window.genish = Gibber.Gen.ugens
+      //var code = shouldUseJSDSP ? Babel.transform(selectedCode.code, { presets: [], plugins:['jsdsp'] }).code : selectedCode.code
+      let code = `{
+  'use jsdsp'
+  ${selectedCode.code}
+}`
+      code = Babel.transform(code, { presets: [], plugins:['jsdsp'] }).code 
+
+      flash( cm, selectedCode.selection )
+
+      const func = new Function( code )
+
+      Gibber.shouldDelay = false 
+
+      const preWindowMembers = Object.keys( window )
+      func()
+      const postWindowMembers = Object.keys( window )
+
+      if( preWindowMembers.length !== postWindowMembers.length ) {
+        createProxies( preWindowMembers, postWindowMembers, window )
+      }
+      
+      //const func = new Function( selectedCode.code ).bind( Gibber.currentTrack ),
+      const markupFunction = () => {
+        Environment.codeMarkup.process( 
+          selectedCode.code, 
+          selectedCode.selection, 
+          cm, 
+          Gibber.currentTrack 
+        ) 
+      }
+
+      markupFunction.origin = func
+
+      if( !Environment.debug ) {
+        Gibber.Scheduler.functionsToExecute.push( func )
+        if( Environment.annotations === true ) {
+          Gibber.Scheduler.functionsToExecute.push( markupFunction  )
+        }
+      }else{
+        //func()
+        if( Environment.annotations === true ) markupFunction()
+      }
+    } catch (e) {
+      console.log( e )
+      return
+    }
+    
+    Gibber.shouldDelay = false
+  },
+
   'Alt-Enter'( cm ) {
     try {
       var selectedCode = getSelectionCodeColumn( cm, true )
