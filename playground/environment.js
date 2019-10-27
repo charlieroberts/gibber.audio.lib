@@ -1,12 +1,26 @@
 const codeMarkup = require( './codeMarkup.js' )
-/*const CodeMirror = require( 'codemirror' )
+const CodeMirror = require( 'codemirror' )
 
-require( '../node_modules/codemirror/mode/javascript/javascript.js' )
-require( '../node_modules/codemirror/addon/edit/matchbrackets.js' )
-require( '../node_modules/codemirror/addon/edit/closebrackets.js' )
-require( '../node_modules/codemirror/addon/hint/show-hint.js' )
-require( '../node_modules/codemirror/addon/hint/javascript-hint.js' )*/
+require("../node_modules/codemirror/addon/dialog/dialog.js")
+require("../node_modules/acorn/dist/acorn.js")
+require("../node_modules/acorn-loose/dist/acorn-loose.js")
+require("../node_modules/acorn-walk/dist/walk.js")
+require("../node_modules/tern/doc/demo/polyfill.js")
+require("../node_modules/tern/lib/signal.js")
 
+// seemingly required as global by codemirror addon (sheesh)
+window.tern = require("../node_modules/tern/lib/tern.js")
+require("../node_modules/tern/lib/def.js")
+require("../node_modules/tern/lib/comment.js")
+require("../node_modules/tern/lib/infer.js")
+require("../node_modules/tern/plugin/doc_comment.js")
+require("../node_modules/codemirror/mode/javascript/javascript.js")
+require("../node_modules/codemirror/addon/edit/matchbrackets.js")
+require("../node_modules/codemirror/addon/edit/closebrackets.js")
+require("../node_modules/codemirror/addon/hint/show-hint.js")
+require("../node_modules/codemirror/addon/hint/javascript-hint.js")
+require("../node_modules/codemirror/addon/tern/tern.js")
+    
 let cm, cmconsole, exampleCode, 
     isStereo = false,
     environment = {
