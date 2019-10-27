@@ -126,7 +126,7 @@ module.exports = {
   'square.perc': { 
     waveform:'square', 
     shape:'exponential', 
-    antialias:true, 
+    //antialias:true, 
     filterType:2, 
     cutoff:.25, 
     decay:1/8,

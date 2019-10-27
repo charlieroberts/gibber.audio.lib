@@ -4925,7 +4925,7 @@ module.exports = function (Gibberish) {
 
     /****** left / mono output ********/
 
-    let l = isStereo === true ? input[0] : input;
+    let l = genish.eq(isStereo, true) ? input[0] : input;
     in1a0 = genish.mul(l, a[0]);
     x0a1 = genish.mul(x[0], a[1]);
     x1a2 = genish.mul(x[1], a[2]);
@@ -7127,7 +7127,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzer.js":76,"./analysis/analyzers.js":77,"./envelopes/envelopes.js":82,"./filters/filters.js":91,"./fx/effect.js":99,"./fx/effects.js":100,"./instruments/instrument.js":113,"./instruments/instruments.js":114,"./instruments/polyMixin.js":118,"./instruments/polytemplate.js":119,"./misc/binops.js":124,"./misc/bus.js":125,"./misc/bus2.js":126,"./misc/monops.js":127,"./misc/panner.js":128,"./misc/time.js":129,"./oscillators/oscillators.js":132,"./scheduling/scheduler.js":136,"./scheduling/seq2.js":137,"./scheduling/sequencer.js":138,"./scheduling/tidal.js":139,"./ugen.js":140,"./ugenTemplate.js":141,"./utilities.js":142,"./workletProxy.js":143,"genish.js":37,"memory-helper":147}],108:[function(require,module,exports){
+},{"./analysis/analyzer.js":76,"./analysis/analyzers.js":77,"./envelopes/envelopes.js":82,"./filters/filters.js":91,"./fx/effect.js":99,"./fx/effects.js":100,"./instruments/instrument.js":113,"./instruments/instruments.js":114,"./instruments/polyMixin.js":118,"./instruments/polytemplate.js":119,"./misc/binops.js":124,"./misc/bus.js":125,"./misc/bus2.js":126,"./misc/monops.js":127,"./misc/panner.js":128,"./misc/time.js":129,"./oscillators/oscillators.js":132,"./scheduling/scheduler.js":136,"./scheduling/seq2.js":137,"./scheduling/sequencer.js":138,"./scheduling/tidal.js":139,"./ugen.js":140,"./ugenTemplate.js":141,"./utilities.js":142,"./workletProxy.js":143,"genish.js":37,"memory-helper":146}],108:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -7341,7 +7341,7 @@ module.exports = function (Gibberish) {
         const synthWithGain = genish.mul(genish.mul(filteredOsc, g.in('gain')), Loudness);
 
         let panner;
-        if (props.panVoices === true) {
+        if (genish.eq(props.panVoices, true)) {
           panner = g.pan(synthWithGain, synthWithGain, g.in('pan'));
           syn.graph = [panner.left, panner.right];
           syn.isStereo = true;
@@ -8311,7 +8311,7 @@ module.exports = function (Gibberish) {
 
         let synthWithGain = genish.mul(filteredOsc, g.in('gain'));
 
-        if (syn.panVoices === true) {
+        if (genish.eq(syn.panVoices, true)) {
           panner = g.pan(synthWithGain, synthWithGain, g.in('pan'));
           syn.graph = [panner.left, panner.right];
           syn.isStereo = true;
@@ -9191,50 +9191,50 @@ const g = genish;
 const polyBlep = function (__frequency, argumentProps) {
   'use jsdsp';
 
-  if (argumentProps === undefined) argumentProps = { type: 'saw' };
+  if (genish.eq(argumentProps, undefined)) argumentProps = { type: 'saw' };
 
   const mem = g.history(0);
   const type = argumentProps.type;
-  const frequency = __frequency === undefined ? 220 : __frequency;
+  const frequency = genish.eq(__frequency, undefined) ? 220 : __frequency;
   const dt = genish.div(frequency, g.gen.samplerate);
 
   const t = g.accum(dt, 0, { min: 0 });
   let osc;
 
   // triangle waves are integrated square waves, so the below case accomodates both types
-  if (type === 'triangle' || type === 'square') {
+  if (genish.eq(type, 'triangle') || genish.eq(type, 'square')) {
     // lt NOT gt to get correct phase
     osc = genish.sub(genish.mul(2, g.lt(t, .5)), 1);
   } else {
-    osc = genish.sub(genish.mul(2, t), 1);
+    osc = 2 * t - 1;
   }
   const case1 = g.lt(t, dt);
-  const case2 = g.gt(t, genish.sub(1, dt));
-  const adjustedT = g.switch(case1, genish.div(t, dt), g.switch(case2, genish.div(genish.sub(t, 1), dt), t));
+  const case2 = g.gt(t, 1 - dt);
+  const adjustedT = g.switch(case1, t / dt, g.switch(case2, (t - 1) / dt, t));
 
   // if/elseif/else with nested ternary operators
-  const blep = g.switch(case1, genish.sub(genish.sub(genish.add(adjustedT, adjustedT), genish.mul(adjustedT, adjustedT)), 1), g.switch(case2, genish.add(genish.add(genish.add(genish.mul(adjustedT, adjustedT), adjustedT), adjustedT), 1),
+  const blep = g.switch(case1, adjustedT + adjustedT - adjustedT * adjustedT - 1, g.switch(case2, adjustedT * adjustedT + adjustedT + adjustedT + 1,
   // final else case is 0
   0));
 
   // triangle waves are integrated square waves, so the below case accomodates both types
   if (type !== 'saw') {
-    osc = genish.add(osc, blep);
-    const t_2 = g.memo(g.mod(genish.add(t, .5), 1));
+    osc = osc + blep;
+    const t_2 = g.memo(g.mod(t + .5, 1));
     const case1_2 = g.lt(t_2, dt);
-    const case2_2 = g.gt(t_2, genish.sub(1, dt));
-    const adjustedT_2 = g.switch(case1_2, genish.div(t_2, dt), g.switch(case2_2, genish.div(genish.sub(t_2, 1), dt), t_2));
+    const case2_2 = g.gt(t_2, 1 - dt);
+    const adjustedT_2 = g.switch(case1_2, t_2 / dt, g.switch(case2_2, (t_2 - 1) / dt, t_2));
 
-    const blep2 = g.switch(case1_2, genish.sub(genish.sub(genish.add(adjustedT_2, adjustedT_2), genish.mul(adjustedT_2, adjustedT_2)), 1), g.switch(case2_2, genish.add(genish.add(genish.add(genish.mul(adjustedT_2, adjustedT_2), adjustedT_2), adjustedT_2), 1), 0));
-    osc = genish.sub(osc, blep2);
+    const blep2 = g.switch(case1_2, adjustedT_2 + adjustedT_2 - adjustedT_2 * adjustedT_2 - 1, g.switch(case2_2, adjustedT_2 * adjustedT_2 + adjustedT_2 + adjustedT_2 + 1, 0));
+    osc = osc - blep2;
 
     // leaky integrator to create triangle from square wave
     if (type === 'triangle') {
-      osc = genish.add(genish.mul(dt, osc), genish.mul(genish.sub(1, dt), mem.out));
+      osc = dt * osc + (1 - dt) * mem.out;
       mem.in(osc);
     }
   } else {
-    osc = genish.sub(osc, blep);
+    osc = osc - blep;
   }
 
   return osc;
@@ -10505,7 +10505,7 @@ return __proxy
 
 }
 
-},{"serialize-javascript":149}],144:[function(require,module,exports){
+},{"serialize-javascript":148}],144:[function(require,module,exports){
 /* big.js v3.1.3 https://github.com/MikeMcl/big.js/LICENCE */
 ;(function (global) {
     'use strict';
@@ -11656,33 +11656,8 @@ return __proxy
 },{}],145:[function(require,module,exports){
 
 },{}],146:[function(require,module,exports){
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
-},{}],147:[function(require,module,exports){
 arguments[4][75][0].apply(exports,arguments)
-},{"dup":75}],148:[function(require,module,exports){
+},{"dup":75}],147:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -11868,7 +11843,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],149:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -11883,6 +11858,7 @@ var PLACE_HOLDER_REGEXP = new RegExp('"@__(F|R|D|M|S)-' + UID + '-(\\d+)__@"', '
 
 var IS_NATIVE_CODE_REGEXP = /\{\s*\[native code\]\s*\}/g;
 var IS_PURE_FUNCTION = /function.*?\(/;
+var IS_ARROW_FUNCTION = /.*?=>.*?/;
 var UNSAFE_CHARS_REGEXP   = /[<>\/\u2028\u2029]/g;
 
 var RESERVED_SYMBOLS = ['*', 'async'];
@@ -11963,6 +11939,11 @@ module.exports = function serialize(obj, options) {
           return serializedFn;
       }
 
+      // arrow functions, example: arg1 => arg1+5
+      if(IS_ARROW_FUNCTION.test(serializedFn)) {
+          return serializedFn;
+      }
+
       var argsStartsAt = serializedFn.indexOf('(');
       var def = serializedFn.substr(0, argsStartsAt)
         .trim()
@@ -12035,6 +12016,31 @@ module.exports = function serialize(obj, options) {
 
         return serializeFunc(fn);
     });
+}
+
+},{}],149:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
 }
 
 },{}],150:[function(require,module,exports){
@@ -12634,7 +12640,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":150,"_process":148,"inherits":146}],152:[function(require,module,exports){
+},{"./support/isBuffer":150,"_process":147,"inherits":149}],152:[function(require,module,exports){
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -12836,9 +12842,9 @@ function peg$parse(input, options) {
           value,
           'rotation': rotation.length > 0 ? rotation[ 0 ] : null
         }
-
+       
         const withLoc = addLoc( result, location() ) 
-        withLoc.value.uid = withLoc.uid
+        //withLoc.value.uid = withLoc.uid
         return withLoc
       },
       peg$c17 = function(body) { return body },
@@ -16897,7 +16903,7 @@ const log      = util.inspect
 const srand    = require( 'seedrandom' )
 
 const rnd = function( phase ) {
-  console.log( 'phase', phase.toFraction() )
+  //console.log( 'phase', phase.toFraction() )
   return new srand( phase.toFraction() )()
 }
 
@@ -17257,14 +17263,14 @@ const handlers = {
 
   degrade( state, pattern, phase, duration ) {
     const rnum = rnd( state.phase )
-    console.log( 'rnd:', rnum, state.phase.toFraction() )
+    //console.log( 'rnd:', rnum, state.phase.toFraction() )
     if( rnum > .5 ) {
       const evt = { 
         arc:Arc( phase, phase.add( duration ) ), 
         value:pattern.value.value
       }
 
-      console.log( 'adding', evt )
+      //console.log( 'adding', evt )
 
       if( pattern.uid !== undefined ) evt.uid = pattern.uid
 

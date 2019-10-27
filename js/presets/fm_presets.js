@@ -8,6 +8,15 @@ module.exports = {
     octave:-2
   },
 
+  kick:{
+    attack : 1/4096,
+    index : 5,
+    cmRatio : 4/3,
+    decay : 1/4,
+    octave : -3,
+    shape:'exponential'
+  },
+
   'bass.electro' : {
     cmRatio:1,
     index:3,
