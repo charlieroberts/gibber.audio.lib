@@ -228,7 +228,7 @@ const Graphics = {
 
         tidals:[],
 
-        render( animate=null, quality = null ) {
+        render( quality = null, animate = null ) {
 
           if( quality !== null ) Graphics.quality = quality
 
