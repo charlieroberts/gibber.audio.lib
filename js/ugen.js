@@ -338,7 +338,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     // wrap methods and add sequencing to them
     if( description.methods !== null ) {
       for( let methodName of description.methods ) {
-        if( methodName !== 'note' ) {
+        if( methodName !== 'note' || description.name.indexOf('Sampler') > -1 || description.name.indexOf('Freesound') > -1  ) {
           obj[ methodName ] = __wrappedObject[ methodName ].bind( __wrappedObject )
         }else{
           // in this block we are monkey patching the note method of Gibberish synths so that
