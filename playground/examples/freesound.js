@@ -39,14 +39,11 @@ b = Freesound('crickets').fx.add( Freeverb() )
 b.loops = 1
 b.gain = .75
 
-// query for the term 90, which will most likely return a file at 90bpm.>
-// sort the returned results from best to worst, the top result is picked by default
-// set the duration to be 0 to 15 seconds.
+// sort the returned results from best to worst according to user rating; 
+// the top result is picked by default.
+// set the query duration to files between 0–15 seconds.
 c = Freesound({ query:'atari', rating:'downloads_desc', filter:'duration:[0.0 TO 15.0]' })
 c.fx.add( Delay({ time:1/16, feedback:.15 }) )
-c.trigger( 1 )
-c.note( .5 )
-c.gain = .5
 // sequence the Freesound object to trigger notes at different
 // playback speeds and pan
 c.note.seq( [1,.25,.5,2], [1/2,1/4,1] )

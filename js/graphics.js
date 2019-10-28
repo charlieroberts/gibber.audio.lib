@@ -99,7 +99,8 @@ const Graphics = {
     Object.assign( this, Marching.vectors )
     Marching.export( this.__native )
 
-    Gibber.subscribe( 'clear', Marching.clear.bind( Marching ) )
+    this.clear = Marching.clear.bind( Marching ) 
+    Gibber.subscribe( 'clear', this.clear )
   },
 
   run() {

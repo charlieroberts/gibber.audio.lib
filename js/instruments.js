@@ -84,10 +84,10 @@ const Instruments = {
       methods:[ 'chord','note','trigger' ],
     },
     PolyConga:{
-      methods:[ 'note','trigger' ],
+      methods:[ 'chord','note','trigger' ],
     },
     PolyTom:{
-      methods:[ 'note','trigger' ],
+      methods:[ 'chord','note','trigger' ],
     },
   },
   

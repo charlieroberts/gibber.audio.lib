@@ -27296,6 +27296,7 @@ lead.note.seq(
           ['intro demo', 'intro.js'],
           ['tutorial #1: running/stopping code', 'intro.tutorial.js'],
           ['tutorial #2: creating objects', 'creating.objects.js'],
+          ['tutorial #3: basic sequencing', 'sequencing.js'],
           ['music tutorial #1: scales/tunings', 'scales.tunings.js'],
           ['music tutorial #2: arpeggios and signals', 'arp.js' ], 
           ['music tutorial #3: freesound', 'freesound.js' ], 
