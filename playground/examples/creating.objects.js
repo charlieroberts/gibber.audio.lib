@@ -73,14 +73,14 @@ syn.note( 0 )
 // We can pass our own property values to 
 // constructors. For example:
 
-syn = Synth({ octave:-2, waveform:'pwm', Q:.9 })
+syn = Synth({ octave:-2, Q:.9, decay:1 })
 syn.note( 0 )
 
 // really, the above is just a shorthand for:
 syn = Synth()
 syn.octave = -2
-syn.waveform = 'pwm'
 syn.Q = .9
+syn.decay = 1
 syn.note( 0 )
 
 // We can also pass a preset first, and then 
