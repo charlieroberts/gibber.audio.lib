@@ -6972,7 +6972,17 @@ const Gen  = {
       render( samplerate=44100, type='audio' ) {
         if( type === 'audio' ) {
           if( this.rendered === null ) { 
-            this.rendered = Gen.__make( this.graph, this.propertyNames )
+            this.rendered = Gen.__make( this.graph, this.propertyNames, this )
+            const props = this.rendered.__wrapped__.__properties__
+            for( let key in props ) { 
+              Object.defineProperty( this, key, {
+                get() { return this.rendered[ key] },
+                set(v){
+                  this.rendered[ key ] = v 
+                }
+              })
+            } 
+            this.rendered.widget = this.widget
           }
 
           return this.rendered
@@ -7011,7 +7021,7 @@ const Gen  = {
     return defer
   },
 
-  __make( graph, propertyNames ) {
+  __make( graph, propertyNames, target ) {
     const ugen = Gibber.Gibberish.prototypes.Ugen
     const g = Gibber.Gibberish.genish
 
