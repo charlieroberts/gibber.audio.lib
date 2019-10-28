@@ -48,12 +48,13 @@ fractal = Julia().scale(2).texture('dots', { scale:50 }).render()
 fractal.fold.seq( [1,2,3,5], 1/2 )
 fractal.texture.scale.seq( [2,20,50,100], 1/4 )
 
+// stop the fractal sequences and clear all graphics from screen
+fractal.stop()
+Graphics.clear()
+
 // If you experimented with running multiple variations of the note 
 // sequences you might have noticed that only one runs at a time. For example,
 // if you run these two lines:
-
-fractal.stop()
-Graphics.clear()
 
 syn.stop()
 syn.note.seq( 7, 1/4 )

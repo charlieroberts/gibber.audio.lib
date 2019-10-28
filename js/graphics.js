@@ -231,6 +231,16 @@ const Graphics = {
 
         tidals:[],
 
+        stop() {
+          this.__sequencers.forEach( s => s.stop() )
+          this.texture.__sequencers.forEach( s => s.stop() )
+        },
+
+        start() {
+          this.__sequencers.forEach( s => s.start() )
+          this.texture.__sequencers.forEach( s => s.start() )
+        },
+
         render( quality = null, animate = null ) {
 
           if( quality !== null ) Graphics.quality = quality
@@ -365,7 +375,6 @@ const Graphics = {
           }
         }
       }
-
 
       // hack to make audio sequencing work with graphical objects
       Gibber.Gibberish.worklet.ugens.set( instance.__id, instance )
@@ -534,6 +543,7 @@ const Graphics = {
         })
         .start( Gibber.Clock.time( delay ) )
 
+        obj.__sequencers.push( obj[ '__'+name ][ number ] )
         // return object for method chaining
         return obj
       },
@@ -559,6 +569,7 @@ const Graphics = {
 
         obj[ '__' + name ].sequencers[ number ] = obj[ '__' + name ][ number ] =  obj[ '__'+name].tidals[ number ] = s
 
+        obj.__sequencers.push( s )
         obj.tidals.push( s )
 
         // return object for method chaining
