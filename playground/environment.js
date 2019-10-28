@@ -274,7 +274,8 @@ lead.note.seq(
           ['tutorial #2: creating objects', 'creating.objects.js'],
           ['music tutorial #1: scales/tunings', 'scales.tunings.js'],
           ['music tutorial #2: arpeggios and signals', 'arp.js' ], 
-          ['graphics tutorial #1: intro to constructive solid geometry', 'graphics.intro.js' ]  
+          ['graphics tutorial #1: intro to constructive solid geometry', 'graphics.intro.js' ],  
+          ['graphics tutorial #2: lighting and materials', 'graphics.lighting.js' ]  
         ]
 
   for( let file of files ) {

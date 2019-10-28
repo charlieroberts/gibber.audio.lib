@@ -19,6 +19,7 @@ const Graphics = {
   __background:  Marching.vectors.Vec3(0),
   __onrender:    [],
   __protomethods:['translate','scale','rotate','texture','material'],
+  __lights:[],
 
   camera : {
     pos: { x:0, y:0, z:5 },
@@ -68,6 +69,7 @@ const Graphics = {
     obj.Camera = Graphics.camera
     obj.Fog = Graphics.fog.bind( Graphics )
     obj.Background = Graphics.background.bind( Graphics )
+    obj.Light = Graphics.light.bind( Graphics ) 
   },
 
   init( props, __Gibber ) {
@@ -186,9 +188,9 @@ const Graphics = {
     return instance 
   },
 
-   light( ...args ) {
+  light( ...args ) {
     const light = Marching.Light( ...args )
-    instance.__lightObj = wrapped.__lightObj = light 
+    /*instance.__lightObj = wrapped.__lightObj = light 
 
     Graphics.createProperty( 
       instance.light, 
@@ -199,10 +201,10 @@ const Graphics = {
     instance.light.tidals = wrapped.light.tidals = []
     instance.light.__sequencers = wrapped.light.__sequencers = []
     instance.light.__id = wrapped.light.__id = __wrapped.__id = Gibber.Gibberish.utilities.getUID()
-    Gibber.Gibberish.worklet.ugens.set( instance.light.__id, instance.light )
+    Gibber.Gibberish.worklet.ugens.set( instance.light.__id, instance.light )*/
+    Graphics.__lights.push( light )
 
-
-    return instance 
+    return light
   }, 
 
   make( name, op ) {
@@ -241,7 +243,10 @@ const Graphics = {
             scene = scene.fog( Graphics.__fogAmount, Graphics.__fogColor, false )
           }
           scene = scene.background( Graphics.__background )
-
+          if( Graphics.__lights.length !== 0 ) {
+            scene = scene.light( ...Graphics.__lights )
+            Graphics.__lights.length = 0
+          }
           Graphics.scene = scene.render( Graphics.quality, animate !== null ? animate : Graphics.animate )
 
           Graphics.__onrender.forEach( v => v() )
