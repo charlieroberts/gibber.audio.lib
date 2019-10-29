@@ -103,9 +103,11 @@ const Graphics = {
       Marching.clear()
 
       const sheet = window.document.styleSheets[ window.document.styleSheets.length - 1 ]
-      sheet.deleteRule(
-        sheet.cssRules.length - 1
-      )
+      if( sheet.cssRules.length > 0 ) {
+        sheet.deleteRule(
+          sheet.cssRules.length - 1
+        )
+      }
     }
     Gibber.subscribe( 'clear', this.clear )
   },
