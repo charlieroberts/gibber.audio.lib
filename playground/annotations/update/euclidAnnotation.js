@@ -105,8 +105,7 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
   patternObject._onchange = () => {
     //let delay = Utility.beatsToMs( 1,  Gibber.Scheduler.bpm )
 
-    // markStart is a closure variable that will be used in the call
-    // to mark()
+    // markStart is a closure variable that will be used in the call to mark()
     markStart = track.markup.textMarkers[ className ][ 0 ].find()
     markEnd   = track.markup.textMarkers[ className ][ patternObject.values.length - 1  ].find()
 

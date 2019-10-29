@@ -50,9 +50,11 @@ const Marker = {
         }
         obj = obj[ key ]
         if( findSeq === true && obj !== undefined ){
-          if( obj[ seqNumber ] !== undefined && obj[ seqNumber ].type === 'seq' ) {
+          // path length check is for -2 to take into account .seq at end of path
+          if( obj[ seqNumber ] !== undefined && obj[ seqNumber ].type === 'seq' && i === path.length - 2 ) {
             obj = obj[ seqNumber ]
             findSeq = false
+
             break;
           }
         }
