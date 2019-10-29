@@ -99,7 +99,14 @@ const Graphics = {
     Object.assign( this, Marching.vectors )
     Marching.export( this.__native )
 
-    this.clear = Marching.clear.bind( Marching ) 
+    this.clear = () => {
+      Marching.clear()
+
+      const sheet = window.document.styleSheets[ window.document.styleSheets.length - 1 ]
+      sheet.deleteRule(
+        sheet.cssRules.length - 1
+      )
+    }
     Gibber.subscribe( 'clear', this.clear )
   },
 
@@ -264,6 +271,14 @@ const Graphics = {
           Graphics.__onrender.length = 0
 
           Graphics.camera.init()
+
+          if( Gibber.Environment ) {
+            const sheet = window.document.styleSheets[ window.document.styleSheets.length - 1 ]
+            sheet.insertRule(
+              '.CodeMirror pre { background-color: rgba( 0,0,0,.75 ) !important; }', 
+              sheet.cssRules.length
+            )
+          }
 
           return instance
         }
