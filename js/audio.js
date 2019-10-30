@@ -23,6 +23,7 @@ const Audio = {
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
   Graphics: require( './graphics.js' ),
+  Make: require( './make.js' ),
   initialized:false,
   autoConnect:true,
   shouldDelay:false,
@@ -59,6 +60,8 @@ const Audio = {
       obj.Seq = this.Seq
       obj.Tidal = this.Tidal
       obj.Graphics = this.Graphics
+      obj.Make = this.Make
+      obj.Gibberish = this.Gibberish
     }else{
       Audio.exportTarget = obj
     } 
@@ -95,7 +98,7 @@ const Audio = {
         Audio.WavePattern = WavePattern( Gibber )
         Audio.ctx = ctx
         Audio.Main = Gibberish.output
-
+        
         // must wait for Gen to be initialized
         Audio.Clock.init( Audio.Gen, Audio )
 
@@ -188,6 +191,7 @@ const Audio = {
     this.Hex = require( './hex.js' )( Gibber )
     this.Triggers = require( './triggers.js' )( Gibber )
     this.Automata = __Automata( this )
+    this.Make = this.Make( this )
     
     const drums = require( './drums.js' )( this )
     Object.assign( this, drums )

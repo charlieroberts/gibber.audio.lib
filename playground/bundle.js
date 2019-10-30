@@ -27303,6 +27303,7 @@ lead.note.seq(
           ['music tutorial #1: scales/tunings', 'scales.tunings.js'],
           ['music tutorial #2: arpeggios and signals', 'arp.js' ], 
           ['music tutorial #3: freesound', 'freesound.js' ], 
+          ['music tutorial #4: creating synths', 'make.js' ], 
           ['graphics tutorial #1: intro to constructive solid geometry', 'graphics.intro.js' ],  
           ['graphics tutorial #2: lighting and materials', 'graphics.lighting.js' ]  
         ]
