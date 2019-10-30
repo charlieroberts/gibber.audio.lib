@@ -7121,7 +7121,7 @@ let Gibberish = {
 
 }
 
-Gibberish.prototypes.Ugen = require( './ugen.js' )( Gibberish )
+Gibberish.prototypes.Ugen = Gibberish.prototypes.ugen = require( './ugen.js' )( Gibberish )
 Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 
@@ -7465,14 +7465,15 @@ Object.assign( instrument, {
     // if binop is should be used...
     if( isNaN( this.frequency ) ) { 
       // and if we are assigning binop for the first time...
-      if( this.frequency.isop !== true ) {
-        let obj = Gibberish.processor.ugens.get( this.frequency.id )
+
+      let obj = Gibberish.processor.ugens.get( this.frequency.id )
+      if( obj.isop !== true ) {
         obj.inputs[0] = freq
-        this.frequency = obj
       }else{
-        this.frequency.inputs[0] = freq
+        obj.inputs[1] = freq
         Gibberish.dirty( this )
       }
+      this.frequency = obj
     }else{
       this.frequency = freq
     }
@@ -9285,10 +9286,8 @@ const Scheduler = {
   phase: 0,
 
   queue: new Queue( ( a, b ) => {
-    if( a.time === b.time ) { //a.time.eq( b.time ) ) {
+    if( a.time === b.time ) { 
       return a.priority < b.priority ? -1 : a.priority > b.priority ? 1 : 0;
-//b.priority - a.priority 
-
     }else{
       return a.time - b.time //a.time.minus( b.time )
     }
@@ -17647,7 +17646,7 @@ class GibberishProcessor extends AudioWorkletProcessor {
       console.log( Gibberish.callback.toString() )
     }else if( event.data.address === 'addConstructor' ) {
       const wrapper = eval( '(' + event.data.constructorString + ')' )
-      Gibberish[ event.data.name ] = wrapper( Gibberish )
+      Gibberish[ event.data.name ] = wrapper( Gibberish, Gibberish.genish )
     }else if( event.data.address === 'addMethod' ) {
       const target = this.ugens.get( event.data.id )
 
