@@ -41,6 +41,7 @@ const Audio = {
       this.Graphics.export( obj )
 
       obj.gen = this.Gen.make
+      obj.lfo = this.Gen.composites.lfo
       obj.Ensemble = this.Ensemble
       obj.Drums = this.Drums
       obj.EDrums = this.EDrums

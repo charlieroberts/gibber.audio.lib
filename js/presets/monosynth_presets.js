@@ -161,7 +161,7 @@ module.exports = {
     cutoff:.125,
     glide:1000,
     detune2:.001,
-    detun3:-.001,
+    detune3:-.001,
     filterType:1,
     filterMult:4,
     Q:.5,

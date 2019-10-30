@@ -26651,8 +26651,6 @@ const Marker = {
         if( oldWidget !== null ) {
           // re-assign existing widget
           __obj.widget = oldWidget
-          //delete Marker.waveform.widgets[ oldWidget.gen.id ]
-          //debugger
           // leave function so that a new widget isn't created
           return
         }else if( __obj.widget !== undefined ) {
@@ -27300,6 +27298,7 @@ lead.note.seq(
           ['tutorial #3: basic sequencing', 'sequencing.js'],
           ['tutorial #4: patterns', 'pattern.js'],
           ['tutorial #5: tidalcycles', 'tidal.js' ],
+          ['tutorial #6: modulation', 'modulation.js' ],
           ['music tutorial #1: scales/tunings', 'scales.tunings.js'],
           ['music tutorial #2: arpeggios and signals', 'arp.js' ], 
           ['music tutorial #3: freesound', 'freesound.js' ], 

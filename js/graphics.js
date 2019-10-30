@@ -445,7 +445,10 @@ const Graphics = {
           to[ name ] = val
           //console.log( 'val:', val, to[ name ].value.widget !== undefined )
           let target = to[ name ].value.widget !== undefined ? to[ name ].value.widget : from.widget
-          if( target === undefined ) target = to[ name ].value.mark.replacedWith
+
+          if( target === undefined && to[ name ].value.mark !== undefined ) 
+            target = to[ name ].value.mark.replacedWith
+
           Environment.codeMarkup.waveform.updateWidget( target, val, false )
         }
       }else{

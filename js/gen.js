@@ -32,7 +32,7 @@ const Gen  = {
     Gen.names.push( ...monops )
     Gen.names.push( ...Object.keys( Gen.constants ) )
     Gen.names.push( ...Object.keys( Gen.functions ) )
-    Gen.names.push( ...Object.keys( Gen.composites ) )
+    //Gen.names.push( ...Object.keys( Gen.composites ) )
     Gen.names.push( 'gen' )
 
     //Gibber.subscribe( 'clear', ()=> Gen.lastConnected.length = 0 )
@@ -293,18 +293,39 @@ const Gen  = {
   },
 
   composites: { 
-    lfo( frequency = .1, amp = .5, center = .5 ) {
-      const g = Gen.ugens
+    lfo( type = 'sine', frequency = 2, amp = .5, center = .5 ) {
+      const g = Gen.ugens 
+      const gibberish= Gibber.Gibberish
+      let osc
 
-      let _cycle = g.cycle( frequency ),
-          _mul   = g.mul( _cycle, amp ),
-          _add   = g.add( center, _mul ) 
+      switch( type ) {
+        case 'saw':
+          osc = g.phasor( frequency )
+          break;
+        case 'square':
+          osc = g.gt( g.phasor( frequency ), 0 ) 
+          break;
+        //case 'triangle':
+        //  // 1 - 4 * Math.abs(( (i / 1024) + 0.25) % 1 - 0.5)
+        //  osc = g.sub( 1, g.mul( 4, g.abs( g.sub( g.mod( g.add( g.abs(g.phasor( frequency )), .25 ), 1 ), .5 ) ) ) )
+        //  break;
+        case 'noise':
+          osc = g.noise()
+          break;
+        case 'sine':
+        default:
+          osc = g.cycle( frequency )
+          break;
+      }
+
+      const _mul   = g.mul( osc, amp ),
+            _add   = g.add( center, _mul ) 
        
       _add.frequency = (v) => {
         if( v === undefined ) {
-          return _cycle[ 0 ]()
+          return osc[ 0 ]()
         }else{
-          _cycle[0]( v )
+          osc[0]( v )
         }
       }
 
@@ -324,11 +345,11 @@ const Gen  = {
         }
       }
 
-      Gibber.addSequencingToMethod( _add, 'frequency', 0, null, 'max' )
-      Gibber.addSequencingToMethod( _add, 'amp' )
-      Gibber.addSequencingToMethod( _add, 'center' )
+      //Gibber.addSequencing( _add, 'frequency' )
+      //Gibber.addSequencing( _add, 'amp' )
+      //Gibber.addSequencing( _add, 'center' )
 
-      return _add
+      return Gen.make( _add, ['center', 'frequency', 'gain'] )
     },
 
     fade( time = 1, from = 1, to = 0 ) {
@@ -399,10 +420,11 @@ const Gen  = {
       render( samplerate=44100, type='audio' ) {
         if( type === 'audio' ) {
           if( this.rendered === null ) { 
-            this.rendered = Gen.__make( this.graph, this.propertyNames, this )
+            this.rendered = Gen.__make( this.graph, this.propertyNames, defer )
             const props = this.rendered.__wrapped__.__properties__
             for( let key in props ) { 
               Object.defineProperty( this, key, {
+                configurable:true,
                 get() { return this.rendered[ key] },
                 set(v){
                   this.rendered[ key ] = v 
@@ -438,7 +460,7 @@ const Gen  = {
       connect( target ) {
         if( target.type === 'audio' ) {
           if( this.rendered === null ) { 
-            this.rendered = Gen.__make( this.graph, this.propertyNames )
+            this.rendered = Gen.__make( this.graph, this.propertyNames, defer )
           }
           this.rendered.connect( target )
         }
@@ -531,23 +553,18 @@ const Gen  = {
           Object.defineProperty( out, propertyName, {
             get() { return out[ '__' + propertyName ] },
             set(v){
-              // XXX need to accomodate non-scalar values
-              // i.e. mappings
-
               if( v === undefined || v === null ) return
-              //if( typeof v === 'number' && isNaN(v) ) {
-              //  if( obj.__isGen !== true ) {
-              //    console.warn('An invalid property assignment was attempted. Did you forget to use property.value?')
-              //    return
-              //  }
-              //}
-
-              //if( v !== null && typeof v !== 'object' ) 
               out[ '__' + propertyName ].value = v
-              //else
-              //  obj[ '__' + propertyName ] = v
             }
           })
+          Object.defineProperty( target, propertyName, {
+            get() { return out[ '__' + propertyName ] },
+            set(v){
+              if( v === undefined || v === null ) return
+              out[ '__' + propertyName ].value = v
+            }
+          })
+
         } 
       }
     }
