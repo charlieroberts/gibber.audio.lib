@@ -456,7 +456,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     const __fx = []
     __fx.__push = __fx.push.bind( __fx )
     __fx.add = function( ...args ) {
-      obj.fx.push( ...args )
+      args.forEach( fx => obj.fx.push( fx ) )
       return obj
     }
     obj.fx = new Proxy( __fx, {
