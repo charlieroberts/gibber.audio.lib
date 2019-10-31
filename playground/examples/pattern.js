@@ -50,8 +50,7 @@ Gibber.clear()
 
 // below is a catalog of all the possible 
 // pattern transformations.
-b = Synth( 'bleep' )
-  .note.seq( [0,3,2,1,5,4,3,6], 1/8 )
+b = Synth( 'bleep' ).note.seq( [0,3,2,1,5,4,3,6], 1/8 )
 
 // only play first four notes of pattern
 b.note[0].values.range(0,3)
