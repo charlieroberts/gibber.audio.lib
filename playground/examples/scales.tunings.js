@@ -63,7 +63,7 @@ Theory.degree = 'ivo'
 Theory.degree = 'IV7'
 
 // sequence them
-Theorng = 'ji_12'
+Theory.tuning = 'ji_12'
 // pythagorean tuning, 12-step
 Theory.tuning = 'pyth_12'
 // well-tempered tuning, 12-step
