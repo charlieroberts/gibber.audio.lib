@@ -4,7 +4,7 @@ audio fx and busses
    
 This tutorial walks through adding
 effects to synths and also looks at
-straegies for routing sound.
+strategies for routing sound.
     
 ** __--__--__--__--__--__--__--__*/
 
