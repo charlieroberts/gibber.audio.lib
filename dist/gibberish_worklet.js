@@ -5343,7 +5343,7 @@ module.exports = function( Gibberish ) {
       AllPass     : require( './allpass.js' )
     },
 
-    factory( input, cutoff, resonance, saturation = null, _props, isStereo = false ) {
+    factory( input, cutoff, saturation, _props, isStereo = false ) {
       let filteredOsc 
 
       //if( props.filterType === 1 ) {
@@ -5361,7 +5361,7 @@ module.exports = function( Gibberish ) {
           filteredOsc = g.zd24( input, g.min( g.in('Q'), .9999 ), cutoff, 0 ) // g.max(.005, g.min( cutoff, 1 ) ) )
           break;
         case 2:
-          filteredOsc = g.diodeZDF( input, g.min( g.in('Q'), .9999 ), cutoff, g.in('saturation'), isStereo ) 
+          filteredOsc = g.diodeZDF( input, g.min( g.in('Q'), .9999 ), cutoff, saturation, isStereo ) 
           break;
         case 3:
           filteredOsc = g.svf( input, cutoff, g.sub( 1, g.in('Q')), props.filterMode, isStereo ) 
@@ -6867,6 +6867,7 @@ let Gibberish = {
     callbackBody.push( '\n\treturn ' + lastLine.split( '=' )[0].split( ' ' )[1] )
 
     if( this.debug === true ) console.log( 'callback:\n', callbackBody.join('\n') )
+    
     this.callbackNames.push( 'mem' )
     this.callbackUgens.push( this.memory.heap )
     this.callback = Function( ...this.callbackNames, callbackBody.join( '\n' ) )//.bind( null, ...this.callbackUgens )
@@ -7305,7 +7306,8 @@ module.exports = function (Gibberish) {
         sustainLevel = g.in('sustainLevel'),
         release = g.in('release'),
         loudness = g.in('loudness'),
-        triggerLoudness = g.in('__triggerLoudness');
+        triggerLoudness = g.in('__triggerLoudness'),
+        saturation = g.in('saturation');
 
     const props = Object.assign({}, FM.defaults, inputProps);
     Object.assign(syn, props);
@@ -7328,16 +7330,13 @@ module.exports = function (Gibberish) {
         feedbackssd.in(modOscWithEnvAvg);
 
         const carrierOsc = Gibberish.oscillators.factory(syn.carrierWaveform, g.add(slidingFreq, modOscWithEnvAvg), syn.antialias);
-        const carrierOscWithEnv = genish.mul(carrierOsc, env);
+
+        // XXX horrible hack below to "use" saturation even when not using a diode filter 
+        const carrierOscWithEnv = genish.mul(carrierOsc, env); // props.filterType === 2 ? carrierOsc * env : g.mul(carrierOsc, g.mul(env,saturation) )
 
         const baseCutoffFreq = genish.mul(g.in('cutoff'), genish.div(frequency, genish.div(g.gen.samplerate, 16)));
         const cutoff = g.min(genish.mul(genish.mul(baseCutoffFreq, g.pow(2, genish.mul(g.in('filterMult'), Loudness))), env), .995);
-        const filteredOsc = Gibberish.filters.factory(carrierOscWithEnv, cutoff, g.in('Q'), g.in('saturation'), syn);
-        //const baseCutoffFreq = g.in('cutoff') * frequency
-        //const cutoff =  baseCutoffFreq * g.pow( 2, g.in('filterMult') * loudness ) * env
-        //const cutoff = g.add( g.in('cutoff'), g.mul( g.in('filterMult'), env ) )
-        //const filteredOsc = Gibberish.filters.factory( carrierOscWithEnv, cutoff, g.in('Q'), g.in('saturation'), syn )
-
+        const filteredOsc = Gibberish.filters.factory(carrierOscWithEnv, cutoff, saturation, syn);
         const synthWithGain = genish.mul(genish.mul(filteredOsc, g.in('gain')), Loudness);
 
         let panner;
@@ -7692,7 +7691,8 @@ module.exports = function (Gibberish) {
           release = g.in('release'),
           loudness = g.in('loudness'),
           triggerLoudness = g.in('__triggerLoudness'),
-          Loudness = g.mul(loudness, triggerLoudness);
+          Loudness = g.mul(loudness, triggerLoudness),
+          saturation = g.in('saturation');
 
     const props = Object.assign({}, Mono.defaults, argumentProps);
     Object.assign(syn, props);
@@ -7722,10 +7722,12 @@ module.exports = function (Gibberish) {
       //const baseCutoffFreq = g.in('cutoff') * (frequency /  (g.gen.samplerate / 16 ))
       //const cutoff = baseCutoffFreq * g.pow( 2, g.in('filterMult') * loudness ) * env 
       const oscSum = g.add(...oscs),
-            oscWithEnv = g.mul(oscSum, env),
+
+      // XXX horrible hack below to "use" saturation even when not using a diode filter 
+      oscWithEnv = props.filterType === 2 ? g.mul(oscSum, env) : g.mul(oscSum, g.mul(env, saturation)),
             baseCutoffFreq = g.mul(g.in('cutoff'), g.div(frequency, g.gen.samplerate / 16)),
             cutoff = g.mul(g.mul(baseCutoffFreq, g.pow(2, g.mul(g.in('filterMult'), Loudness))), env),
-            filteredOsc = Gibberish.filters.factory(oscWithEnv, cutoff, g.in('Q'), g.in('saturation'), syn);
+            filteredOsc = Gibberish.filters.factory(oscWithEnv, cutoff, g.in('saturation'), syn);
 
       if (props.panVoices) {
         const panner = g.pan(filteredOsc, filteredOsc, g.in('pan'));
@@ -8299,6 +8301,7 @@ module.exports = function (Gibberish) {
       {
         'use jsdsp';
         let oscWithEnv = genish.mul(genish.mul(genish.mul(osc, env), loudness), triggerLoudness),
+            saturation = g.in('saturation'),
             panner;
 
         //baseCutoffFreq = g.mul( g.in('cutoff'), g.div( frequency, g.gen.samplerate / 16 ) ),
@@ -8308,9 +8311,10 @@ module.exports = function (Gibberish) {
         // 16 is an unfortunate empirically derived magic number...
         const baseCutoffFreq = genish.mul(g.in('cutoff'), genish.div(frequency, genish.div(g.gen.samplerate, 16)));
         const cutoff = g.min(genish.mul(genish.mul(baseCutoffFreq, g.pow(2, genish.mul(genish.mul(g.in('filterMult'), loudness), triggerLoudness))), env), .995);
-        const filteredOsc = Gibberish.filters.factory(oscWithEnv, cutoff, g.in('Q'), g.in('saturation'), props);
+        const filteredOsc = Gibberish.filters.factory(oscWithEnv, cutoff, saturation, props);
 
         let synthWithGain = genish.mul(filteredOsc, g.in('gain'));
+        if (props.filterType !== 2) synthWithGain = genish.mul(synthWithGain, saturation);
 
         if (syn.panVoices === true) {
           panner = g.pan(synthWithGain, synthWithGain, g.in('pan'));
@@ -8330,7 +8334,7 @@ module.exports = function (Gibberish) {
     syn.__requiresRecompilation = ['waveform', 'antialias', 'filterType', 'filterMode', 'useADSR', 'shape'];
     syn.__createGraph();
 
-    const out = Gibberish.factory(syn, syn.graph, ['instruments', 'synth'], props);
+    const out = Gibberish.factory(syn, syn.graph, ['instruments', 'synth'], props, null, true, ['saturation']);
 
     return out;
   };
@@ -9097,7 +9101,7 @@ module.exports = function( Gibberish ) {
       switch( type ) {
         case 'pwm':
           let pulsewidth = g.in('pulsewidth')
-          if( antialias === true ) {
+          if( antialias == true ) {
             osc = feedbackOsc( frequency, 1, pulsewidth, { type:1 })
           }else{
             let phase = g.phasor( frequency, 0, { min:0 } )
@@ -9105,7 +9109,7 @@ module.exports = function( Gibberish ) {
           }
           break;
         case 'saw':
-          if( antialias === false ) {
+          if( antialias == false ) {
             osc = g.phasor( frequency )
           }else{
             //osc = feedbackOsc( frequency, 1 )
@@ -9116,7 +9120,7 @@ module.exports = function( Gibberish ) {
           osc = g.cycle( frequency )
           break;
         case 'square':
-          if( antialias === true ) {
+          if( antialias == true ) {
             //osc = feedbackOsc( frequency, 1, .5, { type:1 })
             osc = polyBlep( frequency, { type })
           }else{
@@ -9124,7 +9128,7 @@ module.exports = function( Gibberish ) {
           }
           break;
         case 'triangle':
-          if( antialias === true ) {
+          if( antialias == true ) {
             osc = polyBlep( frequency, { type })
           }else{
             osc = g.wavetable( frequency, { buffer:Oscillators.Triangle.buffer, name:'triangle' } )
@@ -9995,7 +9999,7 @@ const effectProto = require( './fx/effect.js' )
 module.exports = function( Gibberish ) {
   const proxy = __proxy( Gibberish )
   
-  const factory = function( ugen, graph, __name, values, cb=null, shouldProxy = true ) {
+  const factory = function( ugen, graph, __name, values, cb=null, shouldProxy = true, extraInputs=null ) {
     ugen.callback = cb === null ? Gibberish.genish.gen.createCallback( graph, Gibberish.memory, false, true ) : cb
 
     let name = Array.isArray( __name ) ? __name[ __name.length - 1 ] : __name
@@ -10011,6 +10015,12 @@ module.exports = function( Gibberish ) {
       __properties__:values,
       __addresses__:{}
     })
+
+    //if( extraInputs !== null ) {
+    //  ugen.inputNames.delete( 'memory' )
+    //  extraInputs.forEach( v => ugen.inputNames.add( v )  )
+    //  ugen.inputNames.add( 'memory' )
+    //}
     
     ugen.ugenName += ugen.id
     ugen.callback.ugenName = ugen.ugenName // XXX hacky
