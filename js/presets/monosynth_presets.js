@@ -60,6 +60,7 @@ module.exports = {
     decay:1,
     cutoff:.2,
   },
+
   pluckEcho: {
     presetInit : function( audio ) { this.fx.push( audio.effects.Delay({ time:1/6, feedback:.65 }) )  },
     attack: audio => audio.Clock.ms(.1),
