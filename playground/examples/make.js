@@ -12,8 +12,8 @@ for this tutorial we'll skip using
 Gibberish so we can focus on one
 library at a time. We'll make
 a sine oscillator with vibrato,
-where we can sequence frqeuency,
-modulation frqeueency, and modulation
+where we can sequence frequency,
+modulation frequency, and modulation
 depth.
     
 ** __--__--__--__--__--__--__--__*/
@@ -53,7 +53,7 @@ def = {
 
 MySine = Make( def )
 
-// craete and connect an instance of MySine
+// create and connect an instance of MySine
 // warning: this will be loud!
 ms = MySine()
 ms.connect()

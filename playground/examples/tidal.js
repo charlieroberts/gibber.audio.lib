@@ -50,7 +50,7 @@ drums.tidal( '[kd ch]*2 sd [kd*2 sd] oh' )
 // pattern to alternate which member is played.
 drums.tidal( '< kd sd kd oh > ch*2' )
 
-// we can use thte {} brackets to play two 
+// we can use 'curly' {} brackets to play two 
 // sounds at once
 drums.tidal( '< kd sd kd {oh,kd} > ch*2' )
 

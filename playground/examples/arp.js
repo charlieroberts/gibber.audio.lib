@@ -63,12 +63,12 @@ arp.p1 = .00005
 arp.p3 = 14
 
 // The p2 value resets the accum waveform whenever it 
-// exceeds one. You probably won't use this very ofen
+// exceeds one. You probably won't use this very often
 // in gibber, but it's important to remember to skip it
-// when using these number. This is true for other genish
+// when using these numbers. This is true for other genish
 // functions that build on top of accum, like beats and phasor.
 
-// Let's use phasor() next. Phasor is basically the samee as accum,
+// Let's use phasor() next. Phasor is basically the same as accum,
 // but it accepts a frequency value instead of an amount ot increment.
 // Gibber has a btof() function that converts beats to a frequency;
 // let's use this to create a beat-synced arpeggiator:
