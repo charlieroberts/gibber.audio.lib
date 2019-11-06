@@ -6692,7 +6692,7 @@ const Graphics = {
   __fogAmount:   0,
   __background:  Marching.vectors.Vec3(0),
   __onrender:    [],
-  __protomethods:['translate','scale','rotate','texture','material'],
+  __protomethods:['translate','scale','rotate','texture','material', 'bump'],
   __lights:[],
 
   camera : {
