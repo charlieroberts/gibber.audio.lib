@@ -6679,6 +6679,7 @@ let Gibberish = {
   },
 
   workletPath: './gibberish_worklet.js',
+
   init( memAmount, ctx, mode=null, sac=null ) {
 
     let numBytes = isNaN( memAmount ) ? 20 * 60 * 44100 : memAmount
@@ -6711,8 +6712,16 @@ let Gibberish = {
         }).then( ()=> {
           Gibberish.preventProxy = true
           Gibberish.load()
-          Gibberish.output = this.Bus2()
           Gibberish.preventProxy = false
+          Gibberish.output = this.Bus2()
+
+          // Gibberish.output needs to be assign so that ugens can
+          // connect to it by default. There's no other way to assign it
+          // outside of evaling code at this point.
+          Gibberish.worklet.port.postMessage({ 
+            address:'eval', 
+            code:`Gibberish.output = this.ugens.get(${Gibberish.output.id});` 
+          })
 
           resolve()
         })
@@ -6723,8 +6732,6 @@ let Gibberish = {
 
     }else if( this.mode === 'processor' ) {
       Gibberish.load()
-      Gibberish.output = this.Bus2()
-      Gibberish.callback = Gibberish.generateCallback()
     }
   },
 
@@ -7332,7 +7339,7 @@ module.exports = function (Gibberish) {
         const carrierOsc = Gibberish.oscillators.factory(syn.carrierWaveform, g.add(slidingFreq, modOscWithEnvAvg), syn.antialias);
 
         // XXX horrible hack below to "use" saturation even when not using a diode filter 
-        const carrierOscWithEnv = genish.mul(carrierOsc, env); // props.filterType === 2 ? carrierOsc * env : g.mul(carrierOsc, g.mul(env,saturation) )
+        const carrierOscWithEnv = props.filterType === 2 ? genish.mul(carrierOsc, env) : g.mul(carrierOsc, g.mul(env, saturation));
 
         const baseCutoffFreq = genish.mul(g.in('cutoff'), genish.div(frequency, genish.div(g.gen.samplerate, 16)));
         const cutoff = g.min(genish.mul(genish.mul(baseCutoffFreq, g.pow(2, genish.mul(g.in('filterMult'), Loudness))), env), .995);
@@ -9999,7 +10006,7 @@ const effectProto = require( './fx/effect.js' )
 module.exports = function( Gibberish ) {
   const proxy = __proxy( Gibberish )
   
-  const factory = function( ugen, graph, __name, values, cb=null, shouldProxy = true, extraInputs=null ) {
+  const factory = function( ugen, graph, __name, values, cb=null, shouldProxy = true ) {
     ugen.callback = cb === null ? Gibberish.genish.gen.createCallback( graph, Gibberish.memory, false, true ) : cb
 
     let name = Array.isArray( __name ) ? __name[ __name.length - 1 ] : __name
@@ -10016,12 +10023,6 @@ module.exports = function( Gibberish ) {
       __addresses__:{}
     })
 
-    //if( extraInputs !== null ) {
-    //  ugen.inputNames.delete( 'memory' )
-    //  extraInputs.forEach( v => ugen.inputNames.add( v )  )
-    //  ugen.inputNames.add( 'memory' )
-    //}
-    
     ugen.ugenName += ugen.id
     ugen.callback.ugenName = ugen.ugenName // XXX hacky
     ugen.callback.id = ugen.id

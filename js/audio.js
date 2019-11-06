@@ -93,7 +93,6 @@ const Audio = {
         Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
         Audio.Theory.init( Gibber )
-        Audio.Master = Gibberish.out
         Audio.Ugen = Ugen
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Gibber )

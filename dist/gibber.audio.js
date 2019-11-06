@@ -4532,7 +4532,6 @@ const Audio = {
         Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
         Audio.Theory.init( Gibber )
-        Audio.Master = Gibberish.out
         Audio.Ugen = Ugen
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Gibber )
@@ -20351,6 +20350,7 @@ let Gibberish = {
   },
 
   workletPath: './gibberish_worklet.js',
+
   init( memAmount, ctx, mode=null, sac=null ) {
 
     let numBytes = isNaN( memAmount ) ? 20 * 60 * 44100 : memAmount
@@ -20383,8 +20383,16 @@ let Gibberish = {
         }).then( ()=> {
           Gibberish.preventProxy = true
           Gibberish.load()
-          Gibberish.output = this.Bus2()
           Gibberish.preventProxy = false
+          Gibberish.output = this.Bus2()
+
+          // Gibberish.output needs to be assign so that ugens can
+          // connect to it by default. There's no other way to assign it
+          // outside of evaling code at this point.
+          Gibberish.worklet.port.postMessage({ 
+            address:'eval', 
+            code:`Gibberish.output = this.ugens.get(${Gibberish.output.id});` 
+          })
 
           resolve()
         })
@@ -20395,8 +20403,6 @@ let Gibberish = {
 
     }else if( this.mode === 'processor' ) {
       Gibberish.load()
-      Gibberish.output = this.Bus2()
-      Gibberish.callback = Gibberish.generateCallback()
     }
   },
 
@@ -21004,7 +21010,7 @@ module.exports = function (Gibberish) {
         const carrierOsc = Gibberish.oscillators.factory(syn.carrierWaveform, g.add(slidingFreq, modOscWithEnvAvg), syn.antialias);
 
         // XXX horrible hack below to "use" saturation even when not using a diode filter 
-        const carrierOscWithEnv = genish.mul(carrierOsc, env); // props.filterType === 2 ? carrierOsc * env : g.mul(carrierOsc, g.mul(env,saturation) )
+        const carrierOscWithEnv = props.filterType === 2 ? genish.mul(carrierOsc, env) : g.mul(carrierOsc, g.mul(env, saturation));
 
         const baseCutoffFreq = genish.mul(g.in('cutoff'), genish.div(frequency, genish.div(g.gen.samplerate, 16)));
         const cutoff = g.min(genish.mul(genish.mul(baseCutoffFreq, g.pow(2, genish.mul(g.in('filterMult'), Loudness))), env), .995);
