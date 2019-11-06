@@ -27292,7 +27292,8 @@ lead.note.seq(
 
   const select = document.querySelector( 'select' ),
         files = [
-          ['intro demo', 'intro.js'],
+          ['demo #1: intro', 'intro.js'],
+          ['demo #2: acid', 'acid.js'],
           ['tutorial #1: running/stopping code', 'intro.tutorial.js'],
           ['tutorial #2: creating objects', 'creating.objects.js'],
           ['tutorial #3: basic sequencing', 'sequencing.js'],

@@ -4520,7 +4520,7 @@ const Audio = {
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AudioContext({ latencyHint:.05 })
+        ctx = new AudioContext({ latencyHint:.075 })
         //ctx = new AudioContext()
       }
 
@@ -8742,13 +8742,25 @@ module.exports = {
 module.exports = {
 
   'short.dry' : { 
-    attack: audio => audio.Clock.ms(1) / 4, 
+    attack: audio => audio.Clock.ms(.25), 
     decay: 1/12,
     cutoff:.3,
     filterType:1,
     filterMult:3
   },
-  
+
+  arpy : {
+    antialias:true,
+    attack: audio => audio.Clock.ms(.5),
+    decay: 1/16, 
+    gain:0.2,
+    cutoff:.15,
+    filterMult:1,
+    Q:.3,
+    filterType:1,
+    filterMode:1
+  },
+
   lead : {
     presetInit : function( audio ) { this.fx.push( audio.effects.Delay({ time:1/6, feedback:.65 }) )  },
     attack: audio => audio.Clock.ms(.5),
@@ -9163,6 +9175,15 @@ module.exports = {
     decay:1/8,
     panVoices:true
   },
+  rhodes:{
+    waveform:'sine',
+    presetInit( audio ) {
+      this.tremolo = audio.effects.Tremolo()
+      this.fx.add( this.tremolo )
+    },
+    decay:4,
+    shape:'exponential'
+  }
 }
 
 },{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js":[function(require,module,exports){
