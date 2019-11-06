@@ -132,4 +132,13 @@ module.exports = {
     decay:1/8,
     panVoices:true
   },
+  rhodes:{
+    waveform:'sine',
+    presetInit( audio ) {
+      this.tremolo = audio.effects.Tremolo()
+      this.fx.add( this.tremolo )
+    },
+    decay:4,
+    shape:'exponential'
+  }
 }
