@@ -27305,7 +27305,8 @@ lead.note.seq(
           ['music tutorial #4: freesound', 'freesound.js' ], 
           ['music tutorial #5: creating synths', 'make.js' ], 
           ['graphics tutorial #1: intro to constructive solid geometry', 'graphics.intro.js' ],  
-          ['graphics tutorial #2: lighting and materials', 'graphics.lighting.js' ]  
+          ['graphics tutorial #2: lighting and materials', 'graphics.lighting.js' ], 
+          ['graphics tutorial #3: textures', 'texture.js' ]  
         ]
 
   for( let file of files ) {
