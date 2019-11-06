@@ -8334,21 +8334,23 @@ const Presets = {
           // use, for example, to query the current sample rate.
           output[ key ] = typeof value === 'function' ? value( Audio ) : value
         }
-
-        // if there is an extra argument to modify the preset...
-        if( args.length > 1 ) {
-          Object.assign( output, args[1] )
-        }
         
         if( preset.presetInit !== undefined ) {
           output.__presetInit__ = preset.presetInit 
         } 
+      }else{
+        console.warn( `The preset ${args[0]} for the ${description.name} does not exist.` )
+      }
+      // if there is an extra argument to modify the preset...
+      if( args.length > 1 ) {
+        Object.assign( output, args[1] )
       }
     }else{
       output = {}
     }
     
     if( description.__defaults__ !== undefined ) {
+      console.log( 'defaults:', description.__defaults__ )
       Object.assign( output, description.__defaults__ )
     }
 
