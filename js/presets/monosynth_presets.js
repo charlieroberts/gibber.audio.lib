@@ -1,13 +1,25 @@
 module.exports = {
 
   'short.dry' : { 
-    attack: audio => audio.Clock.ms(1) / 4, 
+    attack: audio => audio.Clock.ms(.25), 
     decay: 1/12,
     cutoff:.3,
     filterType:1,
     filterMult:3
   },
-  
+
+  arpy : {
+    antialias:true,
+    attack: audio => audio.Clock.ms(.5),
+    decay: 1/16, 
+    gain:0.2,
+    cutoff:.15,
+    filterMult:1,
+    Q:.3,
+    filterType:1,
+    filterMode:1
+  },
+
   lead : {
     presetInit : function( audio ) { this.fx.push( audio.effects.Delay({ time:1/6, feedback:.65 }) )  },
     attack: audio => audio.Clock.ms(.5),
