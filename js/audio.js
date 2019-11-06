@@ -81,7 +81,7 @@ const Audio = {
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AudioContext({ latencyHint:.05 })
+        ctx = new AudioContext({ latencyHint:.075 })
         //ctx = new AudioContext()
       }
 
