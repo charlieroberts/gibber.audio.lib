@@ -27364,7 +27364,8 @@ lead.note.seq(
           ['music tutorial #2: effects and busses', 'effects.js'],
           ['music tutorial #3: arpeggios and signals', 'arp.js' ], 
           ['music tutorial #4: freesound', 'freesound.js' ], 
-          ['music tutorial #5: creating synths', 'make.js' ], 
+          ['music tutorial #5: step sequencing', 'steps.js' ], 
+          ['music tutorial #6: creating synths', 'make.js' ], 
           ['graphics tutorial #1: intro to constructive solid geometry', 'graphics.intro.js' ],  
           ['graphics tutorial #2: lighting and materials', 'graphics.lighting.js' ], 
           ['graphics tutorial #3: textures', 'texture.js' ]  

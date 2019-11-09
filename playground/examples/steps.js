@@ -64,5 +64,6 @@ steps = Steps({
   2: 'xxx',  
   3: '.x.x.',   
   5: 'x..xx...x.x..x.x', 
+  7: Euclid(3,9),
   14: 2
 }, syn )
