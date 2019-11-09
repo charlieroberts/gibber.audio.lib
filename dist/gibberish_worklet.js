@@ -10265,6 +10265,20 @@ const utilities = {
     })
   },
 
+  future( fnc, time, dict ) {
+    const keys = Object.keys( dict )
+    const code = `
+      const fnc = ${fnc.toString()}
+      const args = [${keys.map( key => dict[ key ].id ).join(',')}]
+      const objs = args.map( v => Gibberish.processor.ugens.get(v) )
+      Gibberish.scheduler.add( ${time}, ()=> fnc( ...objs ), 1 )
+    ` 
+    Gibberish.worklet.port.postMessage({ 
+      address:'eval', 
+      code
+    })
+  },
+
   workletHandlers: {
     get( event ) {
       let name = event.data.name
@@ -10345,6 +10359,7 @@ const utilities = {
 
   export( obj ) {
     obj.wrap = this.wrap
+    obj.future = this.future
   },
 
   getUID() { 

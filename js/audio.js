@@ -63,6 +63,7 @@ const Audio = {
       obj.Graphics = this.Graphics
       obj.Make = this.Make
       obj.Gibberish = this.Gibberish
+      obj.future = this.Gibberish.utilities.future
     }else{
       Audio.exportTarget = obj
     } 
