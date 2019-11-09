@@ -17,6 +17,9 @@ let Hex = function( hexString, time = 1/16, rotation ) {
     }
   }else{
     onesAndZeros = hexString.toString(2)
+    while( onesAndZeros.length < 16 ) {
+      onesAndZeros = '0'+onesAndZeros
+    }
   }
 
   let __onesAndZeros = onesAndZeros.split('') 
