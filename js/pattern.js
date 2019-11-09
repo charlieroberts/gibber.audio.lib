@@ -89,7 +89,7 @@ const patternWrapper = function( Gibber ) {
      */
 
     let isFunction = args.length === 1 && typeof args[0] === 'function'
-    let isGen = args[0].__isGen
+    let isGen = typeof args[0] === 'object' && args[0].__isGen
 
     if( isGen === true ) { 
       // must have a priority or it screws us codegen for analysis
@@ -586,7 +586,7 @@ const patternWrapper = function( Gibber ) {
 
     if( args.filters ) {
       args.filters.forEach( f => out.addFilter( f ) )
-    }else if( args[0].filters ) {
+    }else if( typeof args[0] === 'object' && args[0].filters ) {
       args[0].filters.forEach( f => out.addFilter( f ) )
     }
 

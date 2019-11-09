@@ -23,7 +23,8 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
       step.loc.start.ch   = step.loc.end.column - 1
       step.loc.end.ch     = step.loc.end.column 
 
-      const pattern = hexSteps.seqs[ steps[ key ].key.value ].timings
+      const nodename = steps[ key ].key.value === undefined ? steps[ key ].key.name : steps[ key ].key.value
+      const pattern = hexSteps.seqs[ nodename ].timings
 
       // we estimate whether or not a comma was used to separate between
       // key / value pairs. If there's more than one pattern and this
@@ -55,7 +56,7 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
 
       let className = objectClassName + '_' + key 
 
-      let marker
+      let marker, span
      
       if( pattern.type === 'Euclid' || pattern.type === 'Hex' ) {
         marker = cm.markText( step.loc.start, step.loc.end, { className } )
@@ -66,14 +67,69 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
           step.offset = { vertical:1, horizontal:0 }
         }
 
-        //patternNode, state, seq, patternType, container=null, index=0, isLookup=false 
-        Marker.patternMarkupFunctions[ step.type ](
-          step, state, hexSteps.seqs[ steps[ key ].key.value ], 'timings'
-        )
+        ////patternNode, state, seq, patternType, container=null, index=0, isLookup=false 
+        if( typeof step.value !== 'string' ) {
+          Marker.patternMarkupFunctions[ step.type ](
+            step, state, hexSteps.seqs[ nodename ], 'timings'
+          )
+        }else{
+
+          //module.exports = function( node, cm, track, objectName, state, cb ) {
+          marker = cm.markText( step.loc.start, step.loc.end, { className } )
+          track.markup.textMarkers.step[ key ] = marker
+
+          track.markup.textMarkers.step[ key ].pattern = []
+          const mark = ( _step, _key, _cm, _track ) => {
+            for( let i = 0; i < _step.value.length; i++ ) {
+              let pos = { loc:{ start:{}, end:{}} }
+              Object.assign( pos.loc.start, _step.loc.start )
+              Object.assign( pos.loc.end  , _step.loc.end   )
+              pos.loc.start.ch = pos.loc.start.column + 1
+              pos.loc.start.ch += i
+              pos.loc.end.ch = pos.loc.start.ch + 1
+              let posMark = _cm.markText( pos.loc.start, pos.loc.end, { className:`step_${_key}_${i} euclid` })
+              _track.markup.textMarkers.step[ _key ].pattern[ i ] = posMark
+            }
+          }
+
+          mark( step, key, cm, track )
+
+          let count = 0, update, tm
+
+          const _key = nodename, 
+                patternObject = window[ objectName ].seqs[ _key ].values
+
+          update = () => {
+            let currentIdx = count++ % step.value.length
+
+            if( span !== undefined ) {
+              span.remove( 'euclid0' )
+              span.remove( 'euclid1' )
+            }
+
+            let spanName = `.step_${key}_${currentIdx}`,
+                currentValue = step.value[ currentIdx ]
+
+            span = $( spanName )
+
+            if( currentValue !== '.' ) {
+              span.add( 'euclid0' )
+              span.add( 'euclid1' )
+            }
+
+            tm = setTimeout( ()=> { 
+              span.remove( 'euclid1' ) 
+              span.add( 'euclid0' )
+            }, 50 )
+          }
+
+          pattern.update = update
+          pattern.patternName = className
+        }
       }
 
       // store value changes in array and then pop them every time the annotation is updated
-      //pattern.update.value = []
+      // pattern.update.value = []
       
       if( pattern.update.currentIndex === undefined ) {
         let currentIndex = 0
@@ -96,6 +152,10 @@ module.exports = function( node, cm, track, objectName, state, cb ) {
         //track.markup.textMarkers.string = cm.markText( nodePosStart, nodePosEnd, { className:'euclid' })
         pattern.reset()
         if( typeof __clear === 'function' ) __clear.call( pattern )
+        if( span !== undefined ) {
+          span.remove( 'euclid0' ) 
+          span.remove( 'euclid1' ) 
+        }
       }
 
       Gibber.subscribe( 'clear', pattern.clear )

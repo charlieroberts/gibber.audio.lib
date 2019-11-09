@@ -4502,7 +4502,6 @@ const Audio = {
       obj.Graphics = this.Graphics
       obj.Make = this.Make
       obj.Gibberish = this.Gibberish
-      console.log( 'future:', Gibberish.future )
       obj.future = this.Gibberish.utilities.future
     }else{
       Audio.exportTarget = obj
@@ -7326,6 +7325,9 @@ let Hex = function( hexString, time = 1/16, rotation ) {
     }
   }else{
     onesAndZeros = hexString.toString(2)
+    while( onesAndZeros.length < 16 ) {
+      onesAndZeros = '0'+onesAndZeros
+    }
   }
 
   let __onesAndZeros = onesAndZeros.split('') 
@@ -7749,7 +7751,7 @@ const patternWrapper = function( Gibber ) {
      */
 
     let isFunction = args.length === 1 && typeof args[0] === 'function'
-    let isGen = args[0].__isGen
+    let isGen = typeof args[0] === 'object' && args[0].__isGen
 
     if( isGen === true ) { 
       // must have a priority or it screws us codegen for analysis
@@ -8246,7 +8248,7 @@ const patternWrapper = function( Gibber ) {
 
     if( args.filters ) {
       args.filters.forEach( f => out.addFilter( f ) )
-    }else if( args[0].filters ) {
+    }else if( typeof args[0] === 'object' && args[0].filters ) {
       args[0].filters.forEach( f => out.addFilter( f ) )
     }
 
@@ -9351,7 +9353,7 @@ module.exports = function( Audio ) {
 
 },{"gibberish-dsp":185}],112:[function(require,module,exports){
 module.exports = function( Gibber ) {
-  
+ 
 const Steps = {
   type:'Steps',
   create( _steps, target ) {
@@ -9360,28 +9362,52 @@ const Steps = {
     stepseq.seqs = {}
 
     for ( let _key in _steps ) {
-      debugger
       let values = _steps[ _key ]
-      const key = parseInt( _key )
+      const parsedKey = parseInt( _key )
+      const key =  isNaN( parsedKey ) ? _key : parsedKey
 
       //let seq = Gibber.Seq( key, Gibber.Hex( values ), 'midinote', track, 0 )
       //seq.trackID = track.id
 
+      let usesStringValues = false
       if( values.isPattern !== true ) {
         if( Array.isArray( values ) ) {
           values = Gibber.Pattern( ...values )
+        }else if( typeof values === 'string' ) {
+          values = values.split('')
+          usesStringValues = true
         }else{
           values = Gibber.Pattern( values )
         }
       }
 
       const seq = Gibber.Seq({
-        'values':key,
-        timings:values,
+        values: usesStringValues ? values : key,
+        timings: usesStringValues ?  [ 1  / values.length ] : values,
         'key': target.__isEnsemble !== true ? 'note' : 'play', 
         target, 
         priority:0
       })
+
+      if( usesStringValues ) {
+        seq.values.addFilter( new Function( 'args', 'ptrn', 
+         `let sym = args[ 0 ],
+              velocity = parseInt( sym, 16 ) / 15
+
+          if( isNaN( velocity ) ) {
+            velocity = 0
+          }
+
+          // TODO: is there a better way to get access to beat, beatOffset and scheduler?
+          if( velocity !== 0 ) {
+            ptrn.seq.target.loudness = velocity
+          }
+
+          args[ 0 ] = sym === '.' ? -987654321 : ${typeof key === 'string' ? `'${key}'` : key }
+
+          return args
+        `) )
+      }
 
       stepseq.seqs[ _key ] = seq
       stepseq[ _key ] = seq.timings
@@ -9425,13 +9451,13 @@ const Steps = {
     }
   },
 
-  /*
-   *rotate( amt ) {
-   *  for( let key in this.seqs ) { 
-   *    this.seqs[ key ].values.rotate( amt )
-   *  }
-   *},
-   */
+
+  //rotate( amt ) {
+  //  for( let key in this.seqs ) { 
+  //    this.seqs[ key ].values.rotate( amt )
+  //  }
+  //},
+
 }
 
 const groupMethodNames = [ 
@@ -9446,101 +9472,103 @@ return Steps.create
 
 
 
-//module.exports = function( Gibber ) {
+/*
+const Steps = {
+  type:'Steps',
+  create( _steps, target ) {
+    let stepseq = Object.create( Steps )
   
-//const Steps = {
-//  type:'Steps',
-//  create( _steps, target ) {
-//    let stepseq = Object.create( Steps )
-    
-//    stepseq.seqs = {}
+    stepseq.seqs = {}
 
-//    //  create( values, timings, key, object = null, priority=0 )
-//    for( let _key in _steps ) {
-//      const values = _steps[ _key ].split(''),
-//            key = parseInt( _key )
+    //  create( values, timings, key, object = null, priority=0 )
+    for( let _key in _steps ) {
+      const values = _steps[ _key ].split('')
+      const parsedKey = parseInt( _key )
+      const key =  isNaN(parsedKey) ? _key : parsedKey
 
-//      const seq = Gibber.Seq({
-//        values, 
-//        timings:[1 / values.length],
-//        'key': target.__isEnsemble !== true ? 'note' : 'play', 
-//        target, 
-//        priority:0
-//      })
+      debugger
+      const seq = Gibber.Seq({
+        values, 
+        timings:[1 / values.length],
+        'key': target.__isEnsemble !== true ? 'note' : 'play', 
+        target, 
+        priority:0
+      })
 
-//      // need to define custom function to use key as value
-//      seq.values.addFilter( new Function( 'args', 'ptrn', 
-//       `let sym = args[ 0 ],
-//            velocity = parseInt( sym, 16 ) / 15
+      // need to define custom function to use key as value
+      seq.values.addFilter( new Function( 'args', 'ptrn', 
+       `let sym = args[ 0 ],
+            velocity = parseInt( sym, 16 ) / 15
 
-//        if( isNaN( velocity ) ) {
-//          velocity = 0
-//        }
+        if( isNaN( velocity ) ) {
+          velocity = 0
+        }
 
-//        // TODO: is there a better way to get access to beat, beatOffset and scheduler?
-//        if( velocity !== 0 ) {
-//          ptrn.seq.target.loudness = velocity
-//        }
+        // TODO: is there a better way to get access to beat, beatOffset and scheduler?
+        if( velocity !== 0 ) {
+          ptrn.seq.target.loudness = velocity
+        }
 
-//        args[ 0 ] = sym === '.' ? ptrn.DNR : ${key}
+        args[ 0 ] = sym === '.' ? ptrn.DNR : ${typeof key === 'string' ? `'${key}'` : key }
 
-//        return args
-//      `) )
+        return args
+      `) )
 
-//      stepseq.seqs[ _key ] = seq
-//      stepseq[ _key ] = seq.values
-//    }
+      stepseq.seqs[ _key ] = seq
+      stepseq[ _key ] = seq.values
+    }
 
-//    stepseq.start()
-//    //stepseq.addPatternMethods()
+    stepseq.start()
+    //stepseq.addPatternMethods()
 
-//    return stepseq
-//  },
+    return stepseq
+  },
+
+  addPatternMethods() {
+    groupMethodNames.map( (name) => {
+      this[ name ] = function( ...args ) {
+        for( let key in this.seqs ) {
+          this.seqs[ key ].values[ name ].apply( this, args )
+        }
+      }
   
-//  addPatternMethods() {
-//    groupMethodNames.map( (name) => {
-//      this[ name ] = function( ...args ) {
-//        for( let key in this.seqs ) {
-//          this.seqs[ key ].values[ name ].apply( this, args )
-//        }
-//      }
-    
-//      Gibber.addSequencingToMethod( this, name, 1 )
-//    })
-//  },
+      Gibber.addSequencingToMethod( this, name, 1 )
+    })
+  },
 
-//  start() {
-//    for( let key in this.seqs ) { 
-//      this.seqs[ key ].start()
-//    }
-//  },
+  start() {
+    for( let key in this.seqs ) { 
+      this.seqs[ key ].start()
+    }
+  },
 
-//  stop() {
-//    for( let key in this.seqs ) { 
-//      this.seqs[ key ].stop()
-//    }
-//  },
+  stop() {
+    for( let key in this.seqs ) { 
+      this.seqs[ key ].stop()
+    }
+  },
 
-//  clear() { this.stop() },
+  clear() { this.stop() },
 
-  /*
-   *rotate( amt ) {
-   *  for( let key in this.seqs ) { 
-   *    this.seqs[ key ].values.rotate( amt )
-   *  }
-   *},
-   */
-//}
 
-//const groupMethodNames = [ 
-//  'rotate', 'reverse', 'transpose', 'range',
-//  'shuffle', 'scale', 'repeat', 'switch', 'store', 
-//  'reset','flip', 'invert', 'set'
-//]
+rotate( amt ) {
+  for( let key in this.seqs ) { 
+    this.seqs[ key ].values.rotate( amt )
+  }
+},
+}
 
-//return Steps.create
+const groupMethodNames = [ 
+  'rotate', 'reverse', 'transpose', 'range',
+  'shuffle', 'scale', 'repeat', 'switch', 'store', 
+  'reset','flip', 'invert', 'set'
+]
 
-//}
+return Steps.create
+
+}
+
+*/
 
 },{}],113:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
