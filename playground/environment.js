@@ -271,7 +271,7 @@ lead.note.seq(
         files = [
           ['demo #1: intro', 'intro.js'],
           ['demo #2: acid', 'acid.js'],
-          ['demo #2: geometry melds', 'meld.js'],
+          ['demo #3: geometry melds', 'meld.js'],
           ['tutorial #1: running/stopping code', 'intro.tutorial.js'],
           ['tutorial #2: creating objects', 'creating.objects.js'],
           ['tutorial #3: basic sequencing', 'sequencing.js'],

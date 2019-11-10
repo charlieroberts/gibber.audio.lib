@@ -9756,7 +9756,7 @@ const Sequencer = props => {
           timing = seq.__events[0].arc.start.sub( startTime ).valueOf() 
         }
         
-        timing *= Gibberish.ctx.sampleRate / Sequencer.clock.cps
+        timing *= Math.ceil( Gibberish.ctx.sampleRate / Sequencer.clock.cps ) + 1 
 
         if( seq.__isRunning === true && !isNaN( timing ) && timing > 0 ) {
           // XXX this supports an edge case in Gibber, where patterns like Euclid / Hex return
@@ -12877,7 +12877,8 @@ function peg$parse(input, options) {
       peg$c19 = peg$literalExpectation("?", false),
       peg$c20 = function(value) {
         const out = { type:'degrade', value }
-        return addLoc( out, location() )
+        return out
+        //return addLoc( out, location() )
       },
       peg$c21 = "*",
       peg$c22 = peg$literalExpectation("*", false),
@@ -12896,16 +12897,30 @@ function peg$parse(input, options) {
       peg$c24 = "/",
       peg$c25 = peg$literalExpectation("/", false),
       peg$c26 = function(value, rate) {
-        const r =  { type:'slow', rate, value }
+        /*const r =  { type:'slow', rate, value }*/
 
-        if( options.addLocations === true ) {
-          r.location = {
-            start:value.location.start,
-            end: rate.location.end
-          }
+        //if( options.addLocations === true ) {
+        //  r.location = {
+        //    start:value.location.start,
+        //    end: rate.location.end
+        //  }
+        //}
+        //const group = value.type === 'group'
+        //  ? value
+        const group = { type:'group', values:[ value ] }
+
+        const onestep = {
+          type:'onestep',
+          values:[ group ]
         }
-        
-        return r 
+
+        for( let i = 0; i < rate.value - 1; i++ ) {
+          group.values.push({ type:'rest' })
+        }
+
+        addLoc( onestep, location() )
+        return onestep
+        /*return r */
       },
       peg$c27 = "{",
       peg$c28 = peg$literalExpectation("{", false),
@@ -17101,14 +17116,14 @@ const getPhaseIncr = pattern => {
     case 'polymeter': incr = Fraction( 1, pattern.left.values.length ); break;
     case 'number': case 'string': incr = Fraction( 1 ); break;
     case 'onestep': incr = null; break;
-    case 'slow': incr = Fraction(1*pattern.rate.value); break; 
     default:
       if( pattern.values === undefined ){
         incr = Fraction(1)
       } else {
-        let len = 0
-        pattern.values.forEach( v => len += v.type === 'slow' ? v.rate.value : 1 )
-        incr = Fraction( 1, len ) 
+        incr = Fraction( 1, pattern.values.length )
+        //let len = 0
+        //pattern.values.forEach( v => len += v.type === 'slow' ? v.rate.value : 1 )
+        //incr = Fraction( 1, len ) 
       }
       break;
 
@@ -17301,7 +17316,8 @@ const handlers = {
   },
 
   degrade( state, pattern, phase, duration ) {
-    const rnum = rnd( state.phase )
+    // attempt to seed random... rnd( state.phase )
+    const rnum = Math.random()
     //console.log( 'rnd:', rnum, state.phase.toFraction() )
     if( rnum > .5 ) {
       const evt = { 
