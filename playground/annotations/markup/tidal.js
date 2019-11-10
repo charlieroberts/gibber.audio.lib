@@ -33,6 +33,9 @@ module.exports = function( Marker ) {
       }else if( pattern.values !== undefined ) {
         // recursively mark patterns
         pattern.values.forEach( markPattern )
+      }else if( pattern.left !== undefined ) { // polymeter
+        markPattern( pattern.left )
+        markPattern( pattern.right )
       }else if( pattern.value !== undefined ) {
         let val = pattern.value //typeof pattern.value === 'string' ? pattern.value.trim() : pattern.value
         let uid = pattern.uid
