@@ -281,6 +281,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             future( seq => seq.stop(), time, { seq })
           }
         }
+        return this
       },
       start( time=null ) {
         if( time === null ) {
@@ -296,6 +297,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             future( seq => seq.start(), time, { seq })
           }
         }
+
+        return this
       },
       clear() {
         for( let seq of this.__sequencers ) {
@@ -582,7 +585,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     }
 
     // only connect if shouldNotConneect does not equal true (for LFOs and other modulation sources)
-    if( obj.__wrapped__.type === 'instrument' || obj.__wrapped__.type === 'oscillator' ) {
+    if( obj.__wrapped__.type === 'instrument' || obj.__wrapped__.type === 'oscillator' || description.name.indexOf('Poly') > -1 ) {
       if( typeof properties !== 'object' || properties.shouldNotConnect !== true ) {
         
         if( Audio.autoConnect === true ) {

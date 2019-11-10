@@ -4492,7 +4492,7 @@ const Audio = {
       obj.Master = this.Master
       obj.Arp = this.Arp
       obj.Automata = this.Automata
-      obj.Main = this.Main
+      obj.Out = this.Out
       obj.Steps = this.Steps
       obj.HexSteps = this.HexSteps
       obj.Hex = this.Hex
@@ -4537,7 +4537,7 @@ const Audio = {
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Gibber )
         Audio.ctx = ctx
-        Audio.Main = Gibberish.output
+        Audio.Out = Gibberish.output
         
         // must wait for Gen to be initialized
         Audio.Clock.init( Audio.Gen, Audio )
@@ -10339,6 +10339,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             future( seq => seq.stop(), time, { seq })
           }
         }
+        return this
       },
       start( time=null ) {
         if( time === null ) {
@@ -10354,6 +10355,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             future( seq => seq.start(), time, { seq })
           }
         }
+
+        return this
       },
       clear() {
         for( let seq of this.__sequencers ) {
@@ -10640,7 +10643,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     }
 
     // only connect if shouldNotConneect does not equal true (for LFOs and other modulation sources)
-    if( obj.__wrapped__.type === 'instrument' || obj.__wrapped__.type === 'oscillator' ) {
+    if( obj.__wrapped__.type === 'instrument' || obj.__wrapped__.type === 'oscillator' || description.name.indexOf('Poly') > -1 ) {
       if( typeof properties !== 'object' || properties.shouldNotConnect !== true ) {
         
         if( Audio.autoConnect === true ) {

@@ -6,7 +6,7 @@ Clock.bpm = 140
 verb = Bus2('spaceverb')
  
 perc = PolySynth('square.perc')
-perc.connect( verb, .35 ).connect()
+perc.connect( verb, .35 )
 perc.spread(1)
  
 perc.note.seq( 

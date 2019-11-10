@@ -70,7 +70,7 @@ syn.note.seq( 0, 1/4 )
 
 // create a PolySynth that can play multiple notes at a time
 
-syn = PolyConga().connect()
+syn = PolyConga()
 syn.note.seq( 0, 1 ) // assumes ID of 0
 syn.note.seq( 2, 1/2, 1 ) 
 syn.note.seq( 3, 1/3, 2 ) 

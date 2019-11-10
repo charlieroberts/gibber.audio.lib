@@ -20,7 +20,7 @@ bass.cutoff = gen( 0.5 + cycle(0.07) * 0.45 )
 drums = Drums()
 drums.fx.add( Distortion({ pregain:1.5, postgain:1 }) )
  
-drums.tidal('kd {kd, sd} kd {kd, sd}')
+drums.tidal('kd [kd, sd] kd [kd, sd]')
  
 hat = Hat({ gain:.075 })
 hat.trigger.seq( [1,.5], [1/8, 1/16] )
@@ -28,7 +28,7 @@ hat.decay = gen( .02 + cycle( beats(16) * 4 ) * .0125 )
 hat.fx.add( Distortion({ pregain:100, postgain:.1 }) )
  
 pad = PolySynth('rhodes', { decay:8, gain:.15 })
-pad.fx[0].connect( Main, .125)
+pad.fx[0].connect( Out, .125)
 pad.fx[0].connect( verb, 1 )
 pad.chord.seq([[0,2,4,6], [1,2,4,7]], 4 )
  

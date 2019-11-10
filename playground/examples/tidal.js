@@ -74,7 +74,7 @@ drums.tidal( '<kd*16 kd*24> sd [kd*2 sd] <oh ch*3 ch*12>' )
 Clock.bpm = 140
 verb = Bus2('spaceverb')
 
-syn = PolySynth('square.perc').connect( verb, .25 ).connect()
+syn = PolySynth('square.perc').connect( verb, .25 )
 syn.note.tidal( '0 [1 2]*2 <4 3>*2 5' )
 syn.pan.tidal( '0 .5 .99' )
 syn.cutoff.tidal( '.45 .95 .325 1.5' )

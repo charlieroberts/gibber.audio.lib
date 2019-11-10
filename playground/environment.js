@@ -272,18 +272,22 @@ lead.note.seq(
           ['demo #1: intro', 'intro.js'],
           ['demo #2: acid', 'acid.js'],
           ['demo #3: geometry melds', 'meld.js'],
+
           ['tutorial #1: running/stopping code', 'intro.tutorial.js'],
           ['tutorial #2: creating objects', 'creating.objects.js'],
           ['tutorial #3: basic sequencing', 'sequencing.js'],
           ['tutorial #4: patterns', 'pattern.js'],
           ['tutorial #5: tidalcycles', 'tidal.js' ],
           ['tutorial #6: modulation', 'modulation.js' ],
+
           ['music tutorial #1: scales/tunings', 'scales.tunings.js'],
           ['music tutorial #2: effects and busses', 'effects.js'],
           ['music tutorial #3: arpeggios and signals', 'arp.js' ], 
-          ['music tutorial #4: freesound', 'freesound.js' ], 
-          ['music tutorial #5: step sequencing', 'steps.js' ], 
-          ['music tutorial #6: creating synths', 'make.js' ], 
+          ['music tutorial #4: polyphony', 'polyphony.js' ], 
+          ['music tutorial #5: freesound', 'freesound.js' ], 
+          ['music tutorial #6: step sequencing', 'steps.js' ], 
+          ['music tutorial #7: creating synths', 'make.js' ], 
+
           ['graphics tutorial #1: intro to constructive solid geometry', 'graphics.intro.js' ],  
           ['graphics tutorial #2: lighting and materials', 'graphics.lighting.js' ], 
           ['graphics tutorial #3: textures', 'texture.js' ]  
