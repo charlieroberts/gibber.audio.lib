@@ -272,6 +272,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           for( let seq of this.__sequencers ) seq.stop()
           for( let seq of this.__tidals ) seq.stop()
         }else{
+          time = Audio.Clock.time( time )
           for( let seq of this.__sequencers ) {
             future( seq => seq.stop(), time, { seq })
           }
@@ -286,6 +287,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           for( let seq of this.__sequencers ) seq.start()
           for( let seq of this.__tidals ) seq.start()
         }else{
+          time = Audio.Clock.time( time )
           for( let seq of this.__sequencers ) {
             future( seq => seq.start(), time, { seq })
           }
