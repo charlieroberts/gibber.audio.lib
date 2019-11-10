@@ -17,5 +17,10 @@ module.exports = {
     postgain:.35,
     shape1:3,
     shape2:10
+  },
+
+  medium: {
+    pregain:40,
+    postgain:.125/4
   }
 }
