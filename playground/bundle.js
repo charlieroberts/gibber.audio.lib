@@ -24960,6 +24960,9 @@ module.exports = function( Marker ) {
       }else if( pattern.values !== undefined ) {
         // recursively mark patterns
         pattern.values.forEach( markPattern )
+      }else if( pattern.left !== undefined ) { // polymeter
+        markPattern( pattern.left )
+        markPattern( pattern.right )
       }else if( pattern.value !== undefined ) {
         let val = pattern.value //typeof pattern.value === 'string' ? pattern.value.trim() : pattern.value
         let uid = pattern.uid
@@ -27354,6 +27357,7 @@ lead.note.seq(
         files = [
           ['demo #1: intro', 'intro.js'],
           ['demo #2: acid', 'acid.js'],
+          ['demo #2: geometry melds', 'meld.js'],
           ['tutorial #1: running/stopping code', 'intro.tutorial.js'],
           ['tutorial #2: creating objects', 'creating.objects.js'],
           ['tutorial #3: basic sequencing', 'sequencing.js'],
