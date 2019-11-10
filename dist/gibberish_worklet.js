@@ -12924,6 +12924,8 @@ function peg$parse(input, options) {
           type: 'polymeter' 
         }
 
+        addLoc( result.left, location() )
+        addLoc( result.right, location() )
         addLoc( result, location() )
 
         return result
@@ -17099,7 +17101,17 @@ const getPhaseIncr = pattern => {
     case 'polymeter': incr = Fraction( 1, pattern.left.values.length ); break;
     case 'number': case 'string': incr = Fraction( 1 ); break;
     case 'onestep': incr = null; break;
-    default: incr = pattern.values !== undefined ? Fraction( 1, pattern.values.length ) : Fraction(1); break;
+    case 'slow': incr = Fraction(1*pattern.rate.value); break; 
+    default:
+      if( pattern.values === undefined ){
+        incr = Fraction(1)
+      } else {
+        let len = 0
+        pattern.values.forEach( v => len += v.type === 'slow' ? v.rate.value : 1 )
+        incr = Fraction( 1, len ) 
+      }
+      break;
+
   }
 
   return incr
@@ -17142,8 +17154,9 @@ const handlers = {
         const events = processPattern( 
           member, 
           Fraction(1), 
-          member.type !== 'slow' ? Fraction(0) : phase.clone(), 
-          null, //getPhaseIncr(member), 
+          //member.type !== 'slow' ? Fraction(0) : phase.clone(), 
+          Fraction(0),
+          null, //getPhaseIncr(member),
           null, 
           false//shouldRemap( member )
         )
@@ -17167,6 +17180,7 @@ const handlers = {
       }
 
       // assuming we are starting / ending at a regular phase increment value...
+      
       if( phase.mod( phaseIncr ).valueOf() === 0 ) {
         phase = advancePhase( phase, phaseIncr, end )
       }else{
@@ -17340,7 +17354,7 @@ const handlers = {
     const speed = pattern.rate.value
 
     let events
-    if( phase.valueOf() % speed === 0 ) {
+    //if( phase.valueOf() % speed === 0 ) {
       // XXX why do we need this edge case?
       const phaseDiff = phase.sub( phase.div( speed ) )
 
@@ -17350,11 +17364,23 @@ const handlers = {
         //  phase.div( speed ),
         //  duration.div( speed )
         //)
-        events = processPattern(
+        //console.log( duration, phase, speed )
+        //events = processPattern(
+        //  pattern.value,
+        //  duration.mul( speed ),
+        //  phase.div( speed )
+        //)       
+        events = queryArc(
           pattern.value,
-          duration,//.div( speed ),
-          phase.div( speed )
-        )       
+          Fraction(0),
+          duration.div( speed ) 
+        ).map( evt => {
+          const diff = evt.arc.end.sub( evt.arc.start )
+          evt.arc.start = evt.arc.start.add( phase )
+          evt.arc.end   = evt.arc.start.add( duration.mul( speed ) ).add( phase )
+          //console.log( diff, duration.mul( speed ), evt.arc.start, evt.arc.end )
+          return evt
+        })
       }else{
         events = handlers.layers( state, pattern.value, phase.div( speed ), duration.div( speed ) )
       }
@@ -17367,15 +17393,15 @@ const handlers = {
       //    return evt
       //  })
       //}
-      events = events.map( evt => {
-        evt.arc.start = evt.arc.start.add( phaseDiff )
-        evt.arc.end   = evt.arc.end.add( phaseDiff )
-        //evt.arc.start = evt.arc.start.add( phase )
-        //evt.arc.end   = evt.arc.end.add( phase )
-        return evt
-      })
+      //events = events.map( evt => {
+      //  evt.arc.start = evt.arc.start.add( phaseDiff )
+      //  evt.arc.end   = evt.arc.end.add( phaseDiff )
+      //  //evt.arc.start = evt.arc.start.add( phase )
+      //  //evt.arc.end   = evt.arc.end.add( phase )
+      //  return evt
+      //})
       //.filter( evt => evt.arc.start.valueOf() < phase.add( duration ).valueOf() )
-    }
+    //}
     //console.log( 'slow:', log( events, { depth:3 }), phase.add( duration ).toFraction() )
 
     if( events !== undefined ) state = state.concat( events )
