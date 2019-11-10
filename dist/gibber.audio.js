@@ -10325,13 +10325,33 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       __tidals: [],
       type:'audio',
 
-      stop() {
-        for( let seq of this.__sequencers ) seq.stop()
-        for( let seq of this.__tidals ) seq.stop()
+      stop( time=null ) {
+        if( time === null ) {
+          for( let seq of this.__sequencers ) seq.stop()
+          for( let seq of this.__tidals ) seq.stop()
+        }else{
+          for( let seq of this.__sequencers ) {
+            future( seq => seq.stop(), time, { seq })
+          }
+
+          for( let seq of this.__tidals ) {
+            future( seq => seq.stop(), time, { seq })
+          }
+        }
       },
-      start() {
-        for( let seq of this.__sequencers ) seq.start()
-        for( let seq of this.__tidals ) seq.start()
+      start( time=null ) {
+        if( time === null ) {
+          for( let seq of this.__sequencers ) seq.start()
+          for( let seq of this.__tidals ) seq.start()
+        }else{
+          for( let seq of this.__sequencers ) {
+            future( seq => seq.start(), time, { seq })
+          }
+
+          for( let seq of this.__tidals ) {
+            future( seq => seq.start(), time, { seq })
+          }
+        }
       },
       clear() {
         for( let seq of this.__sequencers ) {
