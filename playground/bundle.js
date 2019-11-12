@@ -27363,7 +27363,7 @@ lead.note.seq(
           ['tutorial #2: creating objects', 'creating.objects.js'],
           ['tutorial #3: basic sequencing', 'sequencing.js'],
           ['tutorial #4: patterns', 'pattern.js'],
-          ['tutorial #5: audiovisual mappings', 'mappings.js'],
+          ['tutorial #5: audiovisual mappings', 'mapping.js'],
           ['tutorial #6: tidalcycles', 'tidal.js' ],
           ['tutorial #7: modulation', 'modulation.js' ],
 
