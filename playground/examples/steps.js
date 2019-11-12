@@ -57,7 +57,7 @@ s = Steps({
 verb = Bus2('spaceverb')
 syn  = PolySynth('square.perc')
   .connect( verb, .25 )
-  .connect( Main, .5 )
+  .connect( Out, .5 )
 
 steps = Steps({
   0: 'xx',         

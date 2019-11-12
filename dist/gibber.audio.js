@@ -18014,7 +18014,7 @@ Object.assign( analyzer, {
 
 module.exports = analyzer
 
-},{"../ugen.js":218}],155:[function(require,module,exports){
+},{"../ugen.js":219}],155:[function(require,module,exports){
 module.exports = function( Gibberish ) {
   const { In, Out, SSD } = require( './singlesampledelay.js'  )( Gibberish )
 
@@ -18222,7 +18222,7 @@ module.exports = function (Gibberish) {
 
   return Follow;
 };
-},{"../ugen.js":218,"./analyzer.js":154,"genish.js":37}],157:[function(require,module,exports){
+},{"../ugen.js":219,"./analyzer.js":154,"genish.js":37}],157:[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       proxy    = require( '../workletProxy.js' ),
@@ -18339,7 +18339,7 @@ return { In, Out, SSD }
 
 }
 
-},{"../ugen.js":218,"../workletProxy.js":221,"./analyzer.js":154,"genish.js":37}],158:[function(require,module,exports){
+},{"../ugen.js":219,"../workletProxy.js":222,"./analyzer.js":154,"genish.js":37}],158:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -18367,7 +18367,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":218,"genish.js":37}],159:[function(require,module,exports){
+},{"../ugen.js":219,"genish.js":37}],159:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -18412,7 +18412,7 @@ module.exports = function( Gibberish ) {
   return ADSR
 }
 
-},{"../ugen.js":218,"genish.js":37}],160:[function(require,module,exports){
+},{"../ugen.js":219,"genish.js":37}],160:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -18481,7 +18481,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":218,"genish.js":37}],162:[function(require,module,exports){
+},{"../ugen.js":219,"genish.js":37}],162:[function(require,module,exports){
 /*
  * https://github.com/antimatter15/heapqueue.js/blob/master/heapqueue.js
  *
@@ -19008,7 +19008,7 @@ Object.assign( filter, {
 
 module.exports = filter
 
-},{"../ugen.js":218}],168:[function(require,module,exports){
+},{"../ugen.js":219}],168:[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -19799,7 +19799,7 @@ Object.assign( effect, {
 
 module.exports = effect
 
-},{"../ugen.js":218}],178:[function(require,module,exports){
+},{"../ugen.js":219}],178:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const effects = {
@@ -19813,7 +19813,7 @@ module.exports = function( Gibberish ) {
     RingMod     : require( './ringMod.js'   )( Gibberish ),
     Tremolo     : require( './tremolo.js'   )( Gibberish ),
     Chorus      : require( './chorus.js'    )( Gibberish ),
-    Wavefolder  : require( './wavefolder.js')( Gibberish ),
+    Wavefolder  : require( './wavefolder.js')( Gibberish )[0],
     Shuffler    : require( './bufferShuffler.js'  )( Gibberish ),
     //Gate        : require( './gate.js'      )( Gibberish ),
   }
@@ -20330,7 +20330,8 @@ const wavestage = in1 => {
 
 module.exports = function (Gibberish) {
 
-  let Wavefolder = inputProps => {
+  const Wavefolder = inputProps => {
+
     let props = Object.assign({}, effect.defaults, Wavefolder.defaults, inputProps),
         wavefolder = Object.create(effect),
         out;
@@ -20380,6 +20381,7 @@ module.exports = function (Gibberish) {
     wavefolder.__requiresRecompilation = ['input'];
 
     out = Gibberish.factory(wavefolder, wavefolder.graph, ['fx', 'wavefolder'], props);
+
     return out;
   };
 
@@ -20389,7 +20391,7 @@ module.exports = function (Gibberish) {
     postgain: 1
   };
 
-  return Wavefolder;
+  return [Wavefolder, wavestage];
 };
 },{"./effect.js":177,"genish.js":37}],185:[function(require,module,exports){
 let MemoryHelper = require( 'memory-helper' ),
@@ -20888,7 +20890,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzer.js":154,"./analysis/analyzers.js":155,"./envelopes/envelopes.js":160,"./filters/filters.js":169,"./fx/effect.js":177,"./fx/effects.js":178,"./instruments/instrument.js":191,"./instruments/instruments.js":192,"./instruments/polyMixin.js":196,"./instruments/polytemplate.js":197,"./misc/binops.js":202,"./misc/bus.js":203,"./misc/bus2.js":204,"./misc/monops.js":205,"./misc/panner.js":206,"./misc/time.js":207,"./oscillators/oscillators.js":210,"./scheduling/scheduler.js":214,"./scheduling/seq2.js":215,"./scheduling/sequencer.js":216,"./scheduling/tidal.js":217,"./ugen.js":218,"./ugenTemplate.js":219,"./utilities.js":220,"./workletProxy.js":221,"genish.js":37,"memory-helper":223}],186:[function(require,module,exports){
+},{"./analysis/analyzer.js":154,"./analysis/analyzers.js":155,"./envelopes/envelopes.js":160,"./filters/filters.js":169,"./fx/effect.js":177,"./fx/effects.js":178,"./instruments/instrument.js":192,"./instruments/instruments.js":193,"./instruments/polyMixin.js":197,"./instruments/polytemplate.js":198,"./misc/binops.js":203,"./misc/bus.js":204,"./misc/bus2.js":205,"./misc/monops.js":206,"./misc/panner.js":207,"./misc/time.js":208,"./oscillators/oscillators.js":211,"./scheduling/scheduler.js":215,"./scheduling/seq2.js":216,"./scheduling/sequencer.js":217,"./scheduling/tidal.js":218,"./ugen.js":219,"./ugenTemplate.js":220,"./utilities.js":221,"./workletProxy.js":222,"genish.js":37,"memory-helper":223}],186:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -20958,7 +20960,119 @@ module.exports = function (Gibberish) {
 
   return Clap;
 };
-},{"./instrument.js":191,"genish.js":37}],187:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],187:[function(require,module,exports){
+const g = require('genish.js'),
+      instrument = require('./instrument.js'),
+      __wavefold = require('../fx/wavefolder.js');
+
+const genish = g;
+
+module.exports = function (Gibberish) {
+  const wavefold = __wavefold(Gibberish)[1];
+
+  const Complex = inputProps => {
+    const syn = Object.create(instrument);
+
+    const frequency = g.in('frequency'),
+          loudness = g.in('loudness'),
+          triggerLoudness = g.in('__triggerLoudness'),
+          glide = g.in('glide'),
+          slidingFreq = g.slide(frequency, glide, glide),
+          attack = g.in('attack'),
+          decay = g.in('decay'),
+          sustain = g.in('sustain'),
+          sustainLevel = g.in('sustainLevel'),
+          release = g.in('release'),
+          pregain = g.in('pregain'),
+          postgain = g.in('postgain');
+
+    const props = Object.assign({}, Complex.defaults, inputProps);
+    Object.assign(syn, props);
+
+    syn.__createGraph = function () {
+      const osc = Gibberish.oscillators.factory(syn.waveform, slidingFreq, syn.antialias);
+
+      const env = Gibberish.envelopes.factory(props.useADSR, props.shape, attack, decay, sustain, sustainLevel, release, props.triggerRelease);
+
+      const saturation = g.in('saturation');
+
+      // below doesn't work as it attempts to assign to release property triggering codegen...
+      // syn.release = ()=> { syn.env.release() }
+
+      {
+        'use jsdsp';
+        let oscWithEnv = genish.mul(genish.mul(genish.mul(osc, env), loudness), triggerLoudness),
+            panner;
+
+        let foldedOsc = wavefold(wavefold(wavefold(wavefold(genish.mul(genish.mul(oscWithEnv, genish.mul(pregain, env)), .333)))));
+        foldedOsc = genish.mul(g.tanh(genish.mul(foldedOsc, .6)), postgain);
+
+        // 16 is an unfortunate empirically derived magic number...
+        const baseCutoffFreq = genish.mul(g.in('cutoff'), genish.div(frequency, genish.div(g.gen.samplerate, 16)));
+        const cutoff = g.min(genish.mul(genish.mul(baseCutoffFreq, g.pow(2, genish.mul(genish.mul(g.in('filterMult'), loudness), triggerLoudness))), env), .995);
+        const filteredOsc = Gibberish.filters.factory(foldedOsc, cutoff, saturation, props);
+
+        let complexWithGain = genish.mul(filteredOsc, g.in('gain'));
+        // XXX ugly, ugly hack
+        if (props.filterType !== 2) complexWithGain = genish.mul(complexWithGain, saturation);
+
+        if (syn.panVoices === true) {
+          panner = g.pan(complexWithGain, complexWithGain, g.in('pan'));
+          syn.graph = [panner.left, panner.right];
+        } else {
+          syn.graph = complexWithGain;
+        }
+
+        syn.env = env;
+        syn.osc = osc;
+        syn.filter = filteredOsc;
+      }
+    };
+
+    syn.__requiresRecompilation = ['waveform', 'antialias', 'filterType', 'filterMode', 'useADSR', 'shape'];
+    syn.__createGraph();
+
+    const out = Gibberish.factory(syn, syn.graph, ['instruments', 'complex'], props);
+
+    return out;
+  };
+
+  Complex.defaults = {
+    waveform: 'triangle',
+    attack: 44,
+    decay: 22050,
+    sustain: 44100,
+    sustainLevel: .6,
+    release: 22050,
+    useADSR: false,
+    shape: 'exponential',
+    triggerRelease: false,
+    gain: .5,
+    pulsewidth: .25,
+    frequency: 220,
+    pan: .5,
+    antialias: true,
+    panVoices: false,
+    loudness: 1,
+    __triggerLoudness: 1,
+    glide: 1,
+    saturation: 1,
+    filterMult: 2,
+    Q: .25,
+    cutoff: .5,
+    filterType: 1,
+    filterMode: 0,
+    isStereo: false,
+    pregain: 4,
+    postgain: 1
+
+    // do not include velocity, which shoudl always be per voice
+  };let PolyComplex = Gibberish.PolyTemplate(Complex, ['frequency', 'attack', 'decay', 'pulsewidth', 'pan', 'gain', 'glide', 'saturation', 'filterMult', 'Q', 'cutoff', 'resonance', 'antialias', 'filterType', 'waveform', 'filterMode', '__triggerLoudness', 'loudness', 'pregain', 'postgain']);
+  PolyComplex.defaults = Complex.defaults;
+
+  return [Complex, PolyComplex];
+};
+},{"../fx/wavefolder.js":184,"./instrument.js":192,"genish.js":37}],188:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -20999,7 +21113,7 @@ module.exports = function( Gibberish ) {
   return [ Conga, PolyConga ]
 }
 
-},{"./instrument.js":191,"genish.js":37}],188:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],189:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21043,7 +21157,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":191,"genish.js":37}],189:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],190:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -21158,7 +21272,7 @@ module.exports = function (Gibberish) {
 
   return [FM, PolyFM];
 };
-},{"./instrument.js":191,"genish.js":37}],190:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],191:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21212,7 +21326,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":191,"genish.js":37}],191:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],192:[function(require,module,exports){
 const ugen = require( '../ugen.js' )()
 
 const instrument = Object.create( ugen )
@@ -21253,7 +21367,7 @@ Object.assign( instrument, {
 
 module.exports = instrument
 
-},{"../ugen.js":218}],192:[function(require,module,exports){
+},{"../ugen.js":219}],193:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
 const instruments = {
@@ -21270,6 +21384,7 @@ instruments.Clave.defaults.frequency = 2500
 instruments.Clave.defaults.decay = .5;
 
 [ instruments.Synth, instruments.PolySynth ]     = require( './synth.js' )( Gibberish );
+[ instruments.Complex, instruments.PolyComplex]  = require( './complex.js' )( Gibberish );
 [ instruments.Monosynth, instruments.PolyMono ]  = require( './monosynth.js' )( Gibberish );
 [ instruments.FM, instruments.PolyFM ]           = require( './fm.js' )( Gibberish );
 [ instruments.Sampler, instruments.PolySampler ] = require( './sampler.js' )( Gibberish );
@@ -21288,7 +21403,7 @@ return instruments
 
 }
 
-},{"./clap.js":186,"./conga.js":187,"./cowbell.js":188,"./fm.js":189,"./hat.js":190,"./karplusstrong.js":193,"./kick.js":194,"./monosynth.js":195,"./sampler.js":198,"./snare.js":199,"./synth.js":200,"./tom.js":201}],193:[function(require,module,exports){
+},{"./clap.js":186,"./complex.js":187,"./conga.js":188,"./cowbell.js":189,"./fm.js":190,"./hat.js":191,"./karplusstrong.js":194,"./kick.js":195,"./monosynth.js":196,"./sampler.js":199,"./snare.js":200,"./synth.js":201,"./tom.js":202}],194:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -21380,7 +21495,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":191,"genish.js":37}],194:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],195:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21431,7 +21546,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":191,"genish.js":37}],195:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],196:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js'),
       feedbackOsc = require('../oscillators/fmfeedbackosc.js');
@@ -21544,7 +21659,7 @@ module.exports = function (Gibberish) {
 
   return [Mono, PolyMono];
 };
-},{"../oscillators/fmfeedbackosc.js":209,"./instrument.js":191,"genish.js":37}],196:[function(require,module,exports){
+},{"../oscillators/fmfeedbackosc.js":210,"./instrument.js":192,"genish.js":37}],197:[function(require,module,exports){
 // XXX TOO MANY GLOBAL GIBBERISH VALUES
 
 const Gibberish = require( '../index.js' )
@@ -21632,7 +21747,7 @@ module.exports = {
   triggerNote:null
 }
 
-},{"../index.js":185}],197:[function(require,module,exports){
+},{"../index.js":185}],198:[function(require,module,exports){
 /*
  * This files creates a factory generating polysynth constructors.
  */
@@ -21753,7 +21868,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../workletProxy.js":221,"genish.js":37}],198:[function(require,module,exports){
+},{"../workletProxy.js":222,"genish.js":37}],199:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -21974,7 +22089,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./instrument.js":191,"genish.js":37}],199:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],200:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
   
@@ -22025,7 +22140,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":191,"genish.js":37}],200:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],201:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -22063,10 +22178,6 @@ module.exports = function (Gibberish) {
         let oscWithEnv = genish.mul(genish.mul(genish.mul(osc, env), loudness), triggerLoudness),
             saturation = g.in('saturation'),
             panner;
-
-        //baseCutoffFreq = g.mul( g.in('cutoff'), g.div( frequency, g.gen.samplerate / 16 ) ),
-        //cutoff = g.mul( g.mul( baseCutoffFreq, g.pow( 2, g.mul( g.in('filterMult'), loudness ) )), env ),
-        //filteredOsc = Gibberish.filters.factory( oscWithEnv, cutoff, g.in('Q'), g.in('saturation'), syn )
 
         // 16 is an unfortunate empirically derived magic number...
         const baseCutoffFreq = genish.mul(g.in('cutoff'), genish.div(frequency, genish.div(g.gen.samplerate, 16)));
@@ -22131,7 +22242,7 @@ module.exports = function (Gibberish) {
 
   return [Synth, PolySynth];
 };
-},{"./instrument.js":191,"genish.js":37}],201:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],202:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -22182,7 +22293,7 @@ module.exports = function( Gibberish ) {
   return Tom
 }
 
-},{"./instrument.js":191,"genish.js":37}],202:[function(require,module,exports){
+},{"./instrument.js":192,"genish.js":37}],203:[function(require,module,exports){
 const ugenproto = require( '../ugen.js' )(),
      __proxy     = require( '../workletProxy.js' ),
      g = require( 'genish.js' )
@@ -22297,7 +22408,7 @@ module.exports = function( Gibberish ) {
   return Binops
 }
 
-},{"../ugen.js":218,"../workletProxy.js":221,"genish.js":37}],203:[function(require,module,exports){
+},{"../ugen.js":219,"../workletProxy.js":222,"genish.js":37}],204:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )(),
     __proxy= require( '../workletProxy.js' )
@@ -22380,7 +22491,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":218,"../workletProxy.js":221,"genish.js":37}],204:[function(require,module,exports){
+},{"../ugen.js":219,"../workletProxy.js":222,"genish.js":37}],205:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       __proxy = require( '../workletProxy.js' )
@@ -22519,7 +22630,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":218,"../workletProxy.js":221,"genish.js":37}],205:[function(require,module,exports){
+},{"../ugen.js":219,"../workletProxy.js":222,"genish.js":37}],206:[function(require,module,exports){
 const  g    = require( 'genish.js'  ),
        ugen = require( '../ugen.js' )()
 
@@ -22581,7 +22692,7 @@ module.exports = function( Gibberish ) {
   return Monops
 }
 
-},{"../ugen.js":218,"genish.js":37}],206:[function(require,module,exports){
+},{"../ugen.js":219,"genish.js":37}],207:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 const ugen = require( '../ugen.js' )()
@@ -22618,7 +22729,7 @@ return Panner
 
 }
 
-},{"../ugen.js":218,"genish.js":37}],207:[function(require,module,exports){
+},{"../ugen.js":219,"genish.js":37}],208:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const Time = {
@@ -22647,7 +22758,7 @@ module.exports = function( Gibberish ) {
   return Time
 }
 
-},{}],208:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       noise = genish.noise;
@@ -22667,7 +22778,7 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":37}],209:[function(require,module,exports){
+},{"genish.js":37}],210:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
@@ -22743,7 +22854,7 @@ let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
 
 module.exports = feedbackOsc
 
-},{"genish.js":37}],210:[function(require,module,exports){
+},{"genish.js":37}],211:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       feedbackOsc = require( './fmfeedbackosc.js' ),
@@ -22923,7 +23034,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":218,"./brownnoise.js":208,"./fmfeedbackosc.js":209,"./pinknoise.js":211,"./polyblep.js":212,"./wavetable.js":213,"genish.js":37}],211:[function(require,module,exports){
+},{"../ugen.js":219,"./brownnoise.js":209,"./fmfeedbackosc.js":210,"./pinknoise.js":212,"./polyblep.js":213,"./wavetable.js":214,"genish.js":37}],212:[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       data = genish.data,
@@ -22948,7 +23059,7 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":37}],212:[function(require,module,exports){
+},{"genish.js":37}],213:[function(require,module,exports){
 const genish = require('genish.js');
 const g = genish;
 
@@ -23006,7 +23117,7 @@ const polyBlep = function (__frequency, argumentProps) {
 };
 
 module.exports = polyBlep;
-},{"genish.js":37}],213:[function(require,module,exports){
+},{"genish.js":37}],214:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )()
 
@@ -23040,9 +23151,8 @@ module.exports = function( Gibberish ) {
   return Wavetable
 }
 
-},{"../ugen.js":218,"genish.js":37}],214:[function(require,module,exports){
+},{"../ugen.js":219,"genish.js":37}],215:[function(require,module,exports){
 const Queue = require( '../external/priorityqueue.js' )
-const Big   = require( 'big.js' )
 
 let Gibberish = null
 
@@ -23117,7 +23227,7 @@ Object.defineProperty( Scheduler, 'shouldSync', {
 
 module.exports = Scheduler
 
-},{"../external/priorityqueue.js":162,"big.js":222}],215:[function(require,module,exports){
+},{"../external/priorityqueue.js":162}],216:[function(require,module,exports){
 const g = require( 'genish.js' ),
       __proxy = require( '../workletProxy.js' ),
       ugen = require( '../ugen.js' )()
@@ -23316,7 +23426,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":218,"../workletProxy.js":221,"genish.js":37}],216:[function(require,module,exports){
+},{"../ugen.js":219,"../workletProxy.js":222,"genish.js":37}],217:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 
 module.exports = function( Gibberish ) {
@@ -23411,7 +23521,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":221}],217:[function(require,module,exports){
+},{"../workletProxy.js":222}],218:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 const Pattern = require( 'tidal.pegjs' )
 
@@ -23605,7 +23715,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":221,"tidal.pegjs":284}],218:[function(require,module,exports){
+},{"../workletProxy.js":222,"tidal.pegjs":284}],219:[function(require,module,exports){
 let Gibberish = null
 
 const __ugen = function( __Gibberish ) {
@@ -23752,7 +23862,7 @@ const __ugen = function( __Gibberish ) {
 
 module.exports = __ugen
 
-},{}],219:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 const __proxy = require( './workletProxy.js' )
 const effectProto = require( './fx/effect.js' )
 
@@ -23908,7 +24018,7 @@ module.exports = function( Gibberish ) {
   return factory
 }
 
-},{"./fx/effect.js":177,"./workletProxy.js":221}],220:[function(require,module,exports){
+},{"./fx/effect.js":177,"./workletProxy.js":222}],221:[function(require,module,exports){
 const genish = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -24124,7 +24234,7 @@ return utilities
 
 }
 
-},{"genish.js":37}],221:[function(require,module,exports){
+},{"genish.js":37}],222:[function(require,module,exports){
 const serialize = require('serialize-javascript')
 
 module.exports = function( Gibberish ) {
@@ -24283,1155 +24393,7 @@ return __proxy
 
 }
 
-},{"serialize-javascript":224}],222:[function(require,module,exports){
-/* big.js v3.1.3 https://github.com/MikeMcl/big.js/LICENCE */
-;(function (global) {
-    'use strict';
-
-/*
-  big.js v3.1.3
-  A small, fast, easy-to-use library for arbitrary-precision decimal arithmetic.
-  https://github.com/MikeMcl/big.js/
-  Copyright (c) 2014 Michael Mclaughlin <M8ch88l@gmail.com>
-  MIT Expat Licence
-*/
-
-/***************************** EDITABLE DEFAULTS ******************************/
-
-    // The default values below must be integers within the stated ranges.
-
-    /*
-     * The maximum number of decimal places of the results of operations
-     * involving division: div and sqrt, and pow with negative exponents.
-     */
-    var DP = 20,                           // 0 to MAX_DP
-
-        /*
-         * The rounding mode used when rounding to the above decimal places.
-         *
-         * 0 Towards zero (i.e. truncate, no rounding).       (ROUND_DOWN)
-         * 1 To nearest neighbour. If equidistant, round up.  (ROUND_HALF_UP)
-         * 2 To nearest neighbour. If equidistant, to even.   (ROUND_HALF_EVEN)
-         * 3 Away from zero.                                  (ROUND_UP)
-         */
-        RM = 1,                            // 0, 1, 2 or 3
-
-        // The maximum value of DP and Big.DP.
-        MAX_DP = 1E6,                      // 0 to 1000000
-
-        // The maximum magnitude of the exponent argument to the pow method.
-        MAX_POWER = 1E6,                   // 1 to 1000000
-
-        /*
-         * The exponent value at and beneath which toString returns exponential
-         * notation.
-         * JavaScript's Number type: -7
-         * -1000000 is the minimum recommended exponent value of a Big.
-         */
-        E_NEG = -7,                   // 0 to -1000000
-
-        /*
-         * The exponent value at and above which toString returns exponential
-         * notation.
-         * JavaScript's Number type: 21
-         * 1000000 is the maximum recommended exponent value of a Big.
-         * (This limit is not enforced or checked.)
-         */
-        E_POS = 21,                   // 0 to 1000000
-
-/******************************************************************************/
-
-        // The shared prototype object.
-        P = {},
-        isValid = /^-?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
-        Big;
-
-
-    /*
-     * Create and return a Big constructor.
-     *
-     */
-    function bigFactory() {
-
-        /*
-         * The Big constructor and exported function.
-         * Create and return a new instance of a Big number object.
-         *
-         * n {number|string|Big} A numeric value.
-         */
-        function Big(n) {
-            var x = this;
-
-            // Enable constructor usage without new.
-            if (!(x instanceof Big)) {
-                return n === void 0 ? bigFactory() : new Big(n);
-            }
-
-            // Duplicate.
-            if (n instanceof Big) {
-                x.s = n.s;
-                x.e = n.e;
-                x.c = n.c.slice();
-            } else {
-                parse(x, n);
-            }
-
-            /*
-             * Retain a reference to this Big constructor, and shadow
-             * Big.prototype.constructor which points to Object.
-             */
-            x.constructor = Big;
-        }
-
-        Big.prototype = P;
-        Big.DP = DP;
-        Big.RM = RM;
-        Big.E_NEG = E_NEG;
-        Big.E_POS = E_POS;
-
-        return Big;
-    }
-
-
-    // Private functions
-
-
-    /*
-     * Return a string representing the value of Big x in normal or exponential
-     * notation to dp fixed decimal places or significant digits.
-     *
-     * x {Big} The Big to format.
-     * dp {number} Integer, 0 to MAX_DP inclusive.
-     * toE {number} 1 (toExponential), 2 (toPrecision) or undefined (toFixed).
-     */
-    function format(x, dp, toE) {
-        var Big = x.constructor,
-
-            // The index (normal notation) of the digit that may be rounded up.
-            i = dp - (x = new Big(x)).e,
-            c = x.c;
-
-        // Round?
-        if (c.length > ++dp) {
-            rnd(x, i, Big.RM);
-        }
-
-        if (!c[0]) {
-            ++i;
-        } else if (toE) {
-            i = dp;
-
-        // toFixed
-        } else {
-            c = x.c;
-
-            // Recalculate i as x.e may have changed if value rounded up.
-            i = x.e + i + 1;
-        }
-
-        // Append zeros?
-        for (; c.length < i; c.push(0)) {
-        }
-        i = x.e;
-
-        /*
-         * toPrecision returns exponential notation if the number of
-         * significant digits specified is less than the number of digits
-         * necessary to represent the integer part of the value in normal
-         * notation.
-         */
-        return toE === 1 || toE && (dp <= i || i <= Big.E_NEG) ?
-
-          // Exponential notation.
-          (x.s < 0 && c[0] ? '-' : '') +
-            (c.length > 1 ? c[0] + '.' + c.join('').slice(1) : c[0]) +
-              (i < 0 ? 'e' : 'e+') + i
-
-          // Normal notation.
-          : x.toString();
-    }
-
-
-    /*
-     * Parse the number or string value passed to a Big constructor.
-     *
-     * x {Big} A Big number instance.
-     * n {number|string} A numeric value.
-     */
-    function parse(x, n) {
-        var e, i, nL;
-
-        // Minus zero?
-        if (n === 0 && 1 / n < 0) {
-            n = '-0';
-
-        // Ensure n is string and check validity.
-        } else if (!isValid.test(n += '')) {
-            throwErr(NaN);
-        }
-
-        // Determine sign.
-        x.s = n.charAt(0) == '-' ? (n = n.slice(1), -1) : 1;
-
-        // Decimal point?
-        if ((e = n.indexOf('.')) > -1) {
-            n = n.replace('.', '');
-        }
-
-        // Exponential form?
-        if ((i = n.search(/e/i)) > 0) {
-
-            // Determine exponent.
-            if (e < 0) {
-                e = i;
-            }
-            e += +n.slice(i + 1);
-            n = n.substring(0, i);
-
-        } else if (e < 0) {
-
-            // Integer.
-            e = n.length;
-        }
-
-        nL = n.length;
-
-        // Determine leading zeros.
-        for (i = 0; i < nL && n.charAt(i) == '0'; i++) {
-        }
-
-        if (i == nL) {
-
-            // Zero.
-            x.c = [ x.e = 0 ];
-        } else {
-
-            // Determine trailing zeros.
-            for (; nL > 0 && n.charAt(--nL) == '0';) {
-            }
-
-            x.e = e - i - 1;
-            x.c = [];
-
-            // Convert string to array of digits without leading/trailing zeros.
-            //for (e = 0; i <= nL; x.c[e++] = +n.charAt(i++)) {
-            for (; i <= nL; x.c.push(+n.charAt(i++))) {
-            }
-        }
-
-        return x;
-    }
-
-
-    /*
-     * Round Big x to a maximum of dp decimal places using rounding mode rm.
-     * Called by div, sqrt and round.
-     *
-     * x {Big} The Big to round.
-     * dp {number} Integer, 0 to MAX_DP inclusive.
-     * rm {number} 0, 1, 2 or 3 (DOWN, HALF_UP, HALF_EVEN, UP)
-     * [more] {boolean} Whether the result of division was truncated.
-     */
-    function rnd(x, dp, rm, more) {
-        var u,
-            xc = x.c,
-            i = x.e + dp + 1;
-
-        if (rm === 1) {
-
-            // xc[i] is the digit after the digit that may be rounded up.
-            more = xc[i] >= 5;
-        } else if (rm === 2) {
-            more = xc[i] > 5 || xc[i] == 5 &&
-              (more || i < 0 || xc[i + 1] !== u || xc[i - 1] & 1);
-        } else if (rm === 3) {
-            more = more || xc[i] !== u || i < 0;
-        } else {
-            more = false;
-
-            if (rm !== 0) {
-                throwErr('!Big.RM!');
-            }
-        }
-
-        if (i < 1 || !xc[0]) {
-
-            if (more) {
-
-                // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-                x.e = -dp;
-                x.c = [1];
-            } else {
-
-                // Zero.
-                x.c = [x.e = 0];
-            }
-        } else {
-
-            // Remove any digits after the required decimal places.
-            xc.length = i--;
-
-            // Round up?
-            if (more) {
-
-                // Rounding up may mean the previous digit has to be rounded up.
-                for (; ++xc[i] > 9;) {
-                    xc[i] = 0;
-
-                    if (!i--) {
-                        ++x.e;
-                        xc.unshift(1);
-                    }
-                }
-            }
-
-            // Remove trailing zeros.
-            for (i = xc.length; !xc[--i]; xc.pop()) {
-            }
-        }
-
-        return x;
-    }
-
-
-    /*
-     * Throw a BigError.
-     *
-     * message {string} The error message.
-     */
-    function throwErr(message) {
-        var err = new Error(message);
-        err.name = 'BigError';
-
-        throw err;
-    }
-
-
-    // Prototype/instance methods
-
-
-    /*
-     * Return a new Big whose value is the absolute value of this Big.
-     */
-    P.abs = function () {
-        var x = new this.constructor(this);
-        x.s = 1;
-
-        return x;
-    };
-
-
-    /*
-     * Return
-     * 1 if the value of this Big is greater than the value of Big y,
-     * -1 if the value of this Big is less than the value of Big y, or
-     * 0 if they have the same value.
-    */
-    P.cmp = function (y) {
-        var xNeg,
-            x = this,
-            xc = x.c,
-            yc = (y = new x.constructor(y)).c,
-            i = x.s,
-            j = y.s,
-            k = x.e,
-            l = y.e;
-
-        // Either zero?
-        if (!xc[0] || !yc[0]) {
-            return !xc[0] ? !yc[0] ? 0 : -j : i;
-        }
-
-        // Signs differ?
-        if (i != j) {
-            return i;
-        }
-        xNeg = i < 0;
-
-        // Compare exponents.
-        if (k != l) {
-            return k > l ^ xNeg ? 1 : -1;
-        }
-
-        i = -1;
-        j = (k = xc.length) < (l = yc.length) ? k : l;
-
-        // Compare digit by digit.
-        for (; ++i < j;) {
-
-            if (xc[i] != yc[i]) {
-                return xc[i] > yc[i] ^ xNeg ? 1 : -1;
-            }
-        }
-
-        // Compare lengths.
-        return k == l ? 0 : k > l ^ xNeg ? 1 : -1;
-    };
-
-
-    /*
-     * Return a new Big whose value is the value of this Big divided by the
-     * value of Big y, rounded, if necessary, to a maximum of Big.DP decimal
-     * places using rounding mode Big.RM.
-     */
-    P.div = function (y) {
-        var x = this,
-            Big = x.constructor,
-            // dividend
-            dvd = x.c,
-            //divisor
-            dvs = (y = new Big(y)).c,
-            s = x.s == y.s ? 1 : -1,
-            dp = Big.DP;
-
-        if (dp !== ~~dp || dp < 0 || dp > MAX_DP) {
-            throwErr('!Big.DP!');
-        }
-
-        // Either 0?
-        if (!dvd[0] || !dvs[0]) {
-
-            // If both are 0, throw NaN
-            if (dvd[0] == dvs[0]) {
-                throwErr(NaN);
-            }
-
-            // If dvs is 0, throw +-Infinity.
-            if (!dvs[0]) {
-                throwErr(s / 0);
-            }
-
-            // dvd is 0, return +-0.
-            return new Big(s * 0);
-        }
-
-        var dvsL, dvsT, next, cmp, remI, u,
-            dvsZ = dvs.slice(),
-            dvdI = dvsL = dvs.length,
-            dvdL = dvd.length,
-            // remainder
-            rem = dvd.slice(0, dvsL),
-            remL = rem.length,
-            // quotient
-            q = y,
-            qc = q.c = [],
-            qi = 0,
-            digits = dp + (q.e = x.e - y.e) + 1;
-
-        q.s = s;
-        s = digits < 0 ? 0 : digits;
-
-        // Create version of divisor with leading zero.
-        dvsZ.unshift(0);
-
-        // Add zeros to make remainder as long as divisor.
-        for (; remL++ < dvsL; rem.push(0)) {
-        }
-
-        do {
-
-            // 'next' is how many times the divisor goes into current remainder.
-            for (next = 0; next < 10; next++) {
-
-                // Compare divisor and remainder.
-                if (dvsL != (remL = rem.length)) {
-                    cmp = dvsL > remL ? 1 : -1;
-                } else {
-
-                    for (remI = -1, cmp = 0; ++remI < dvsL;) {
-
-                        if (dvs[remI] != rem[remI]) {
-                            cmp = dvs[remI] > rem[remI] ? 1 : -1;
-                            break;
-                        }
-                    }
-                }
-
-                // If divisor < remainder, subtract divisor from remainder.
-                if (cmp < 0) {
-
-                    // Remainder can't be more than 1 digit longer than divisor.
-                    // Equalise lengths using divisor with extra leading zero?
-                    for (dvsT = remL == dvsL ? dvs : dvsZ; remL;) {
-
-                        if (rem[--remL] < dvsT[remL]) {
-                            remI = remL;
-
-                            for (; remI && !rem[--remI]; rem[remI] = 9) {
-                            }
-                            --rem[remI];
-                            rem[remL] += 10;
-                        }
-                        rem[remL] -= dvsT[remL];
-                    }
-                    for (; !rem[0]; rem.shift()) {
-                    }
-                } else {
-                    break;
-                }
-            }
-
-            // Add the 'next' digit to the result array.
-            qc[qi++] = cmp ? next : ++next;
-
-            // Update the remainder.
-            if (rem[0] && cmp) {
-                rem[remL] = dvd[dvdI] || 0;
-            } else {
-                rem = [ dvd[dvdI] ];
-            }
-
-        } while ((dvdI++ < dvdL || rem[0] !== u) && s--);
-
-        // Leading zero? Do not remove if result is simply zero (qi == 1).
-        if (!qc[0] && qi != 1) {
-
-            // There can't be more than one zero.
-            qc.shift();
-            q.e--;
-        }
-
-        // Round?
-        if (qi > digits) {
-            rnd(q, dp, Big.RM, rem[0] !== u);
-        }
-
-        return q;
-    };
-
-
-    /*
-     * Return true if the value of this Big is equal to the value of Big y,
-     * otherwise returns false.
-     */
-    P.eq = function (y) {
-        return !this.cmp(y);
-    };
-
-
-    /*
-     * Return true if the value of this Big is greater than the value of Big y,
-     * otherwise returns false.
-     */
-    P.gt = function (y) {
-        return this.cmp(y) > 0;
-    };
-
-
-    /*
-     * Return true if the value of this Big is greater than or equal to the
-     * value of Big y, otherwise returns false.
-     */
-    P.gte = function (y) {
-        return this.cmp(y) > -1;
-    };
-
-
-    /*
-     * Return true if the value of this Big is less than the value of Big y,
-     * otherwise returns false.
-     */
-    P.lt = function (y) {
-        return this.cmp(y) < 0;
-    };
-
-
-    /*
-     * Return true if the value of this Big is less than or equal to the value
-     * of Big y, otherwise returns false.
-     */
-    P.lte = function (y) {
-         return this.cmp(y) < 1;
-    };
-
-
-    /*
-     * Return a new Big whose value is the value of this Big minus the value
-     * of Big y.
-     */
-    P.sub = P.minus = function (y) {
-        var i, j, t, xLTy,
-            x = this,
-            Big = x.constructor,
-            a = x.s,
-            b = (y = new Big(y)).s;
-
-        // Signs differ?
-        if (a != b) {
-            y.s = -b;
-            return x.plus(y);
-        }
-
-        var xc = x.c.slice(),
-            xe = x.e,
-            yc = y.c,
-            ye = y.e;
-
-        // Either zero?
-        if (!xc[0] || !yc[0]) {
-
-            // y is non-zero? x is non-zero? Or both are zero.
-            return yc[0] ? (y.s = -b, y) : new Big(xc[0] ? x : 0);
-        }
-
-        // Determine which is the bigger number.
-        // Prepend zeros to equalise exponents.
-        if (a = xe - ye) {
-
-            if (xLTy = a < 0) {
-                a = -a;
-                t = xc;
-            } else {
-                ye = xe;
-                t = yc;
-            }
-
-            t.reverse();
-            for (b = a; b--; t.push(0)) {
-            }
-            t.reverse();
-        } else {
-
-            // Exponents equal. Check digit by digit.
-            j = ((xLTy = xc.length < yc.length) ? xc : yc).length;
-
-            for (a = b = 0; b < j; b++) {
-
-                if (xc[b] != yc[b]) {
-                    xLTy = xc[b] < yc[b];
-                    break;
-                }
-            }
-        }
-
-        // x < y? Point xc to the array of the bigger number.
-        if (xLTy) {
-            t = xc;
-            xc = yc;
-            yc = t;
-            y.s = -y.s;
-        }
-
-        /*
-         * Append zeros to xc if shorter. No need to add zeros to yc if shorter
-         * as subtraction only needs to start at yc.length.
-         */
-        if (( b = (j = yc.length) - (i = xc.length) ) > 0) {
-
-            for (; b--; xc[i++] = 0) {
-            }
-        }
-
-        // Subtract yc from xc.
-        for (b = i; j > a;){
-
-            if (xc[--j] < yc[j]) {
-
-                for (i = j; i && !xc[--i]; xc[i] = 9) {
-                }
-                --xc[i];
-                xc[j] += 10;
-            }
-            xc[j] -= yc[j];
-        }
-
-        // Remove trailing zeros.
-        for (; xc[--b] === 0; xc.pop()) {
-        }
-
-        // Remove leading zeros and adjust exponent accordingly.
-        for (; xc[0] === 0;) {
-            xc.shift();
-            --ye;
-        }
-
-        if (!xc[0]) {
-
-            // n - n = +0
-            y.s = 1;
-
-            // Result must be zero.
-            xc = [ye = 0];
-        }
-
-        y.c = xc;
-        y.e = ye;
-
-        return y;
-    };
-
-
-    /*
-     * Return a new Big whose value is the value of this Big modulo the
-     * value of Big y.
-     */
-    P.mod = function (y) {
-        var yGTx,
-            x = this,
-            Big = x.constructor,
-            a = x.s,
-            b = (y = new Big(y)).s;
-
-        if (!y.c[0]) {
-            throwErr(NaN);
-        }
-
-        x.s = y.s = 1;
-        yGTx = y.cmp(x) == 1;
-        x.s = a;
-        y.s = b;
-
-        if (yGTx) {
-            return new Big(x);
-        }
-
-        a = Big.DP;
-        b = Big.RM;
-        Big.DP = Big.RM = 0;
-        x = x.div(y);
-        Big.DP = a;
-        Big.RM = b;
-
-        return this.minus( x.times(y) );
-    };
-
-
-    /*
-     * Return a new Big whose value is the value of this Big plus the value
-     * of Big y.
-     */
-    P.add = P.plus = function (y) {
-        var t,
-            x = this,
-            Big = x.constructor,
-            a = x.s,
-            b = (y = new Big(y)).s;
-
-        // Signs differ?
-        if (a != b) {
-            y.s = -b;
-            return x.minus(y);
-        }
-
-        var xe = x.e,
-            xc = x.c,
-            ye = y.e,
-            yc = y.c;
-
-        // Either zero?
-        if (!xc[0] || !yc[0]) {
-
-            // y is non-zero? x is non-zero? Or both are zero.
-            return yc[0] ? y : new Big(xc[0] ? x : a * 0);
-        }
-        xc = xc.slice();
-
-        // Prepend zeros to equalise exponents.
-        // Note: Faster to use reverse then do unshifts.
-        if (a = xe - ye) {
-
-            if (a > 0) {
-                ye = xe;
-                t = yc;
-            } else {
-                a = -a;
-                t = xc;
-            }
-
-            t.reverse();
-            for (; a--; t.push(0)) {
-            }
-            t.reverse();
-        }
-
-        // Point xc to the longer array.
-        if (xc.length - yc.length < 0) {
-            t = yc;
-            yc = xc;
-            xc = t;
-        }
-        a = yc.length;
-
-        /*
-         * Only start adding at yc.length - 1 as the further digits of xc can be
-         * left as they are.
-         */
-        for (b = 0; a;) {
-            b = (xc[--a] = xc[a] + yc[a] + b) / 10 | 0;
-            xc[a] %= 10;
-        }
-
-        // No need to check for zero, as +x + +y != 0 && -x + -y != 0
-
-        if (b) {
-            xc.unshift(b);
-            ++ye;
-        }
-
-         // Remove trailing zeros.
-        for (a = xc.length; xc[--a] === 0; xc.pop()) {
-        }
-
-        y.c = xc;
-        y.e = ye;
-
-        return y;
-    };
-
-
-    /*
-     * Return a Big whose value is the value of this Big raised to the power n.
-     * If n is negative, round, if necessary, to a maximum of Big.DP decimal
-     * places using rounding mode Big.RM.
-     *
-     * n {number} Integer, -MAX_POWER to MAX_POWER inclusive.
-     */
-    P.pow = function (n) {
-        var x = this,
-            one = new x.constructor(1),
-            y = one,
-            isNeg = n < 0;
-
-        if (n !== ~~n || n < -MAX_POWER || n > MAX_POWER) {
-            throwErr('!pow!');
-        }
-
-        n = isNeg ? -n : n;
-
-        for (;;) {
-
-            if (n & 1) {
-                y = y.times(x);
-            }
-            n >>= 1;
-
-            if (!n) {
-                break;
-            }
-            x = x.times(x);
-        }
-
-        return isNeg ? one.div(y) : y;
-    };
-
-
-    /*
-     * Return a new Big whose value is the value of this Big rounded to a
-     * maximum of dp decimal places using rounding mode rm.
-     * If dp is not specified, round to 0 decimal places.
-     * If rm is not specified, use Big.RM.
-     *
-     * [dp] {number} Integer, 0 to MAX_DP inclusive.
-     * [rm] 0, 1, 2 or 3 (ROUND_DOWN, ROUND_HALF_UP, ROUND_HALF_EVEN, ROUND_UP)
-     */
-    P.round = function (dp, rm) {
-        var x = this,
-            Big = x.constructor;
-
-        if (dp == null) {
-            dp = 0;
-        } else if (dp !== ~~dp || dp < 0 || dp > MAX_DP) {
-            throwErr('!round!');
-        }
-        rnd(x = new Big(x), dp, rm == null ? Big.RM : rm);
-
-        return x;
-    };
-
-
-    /*
-     * Return a new Big whose value is the square root of the value of this Big,
-     * rounded, if necessary, to a maximum of Big.DP decimal places using
-     * rounding mode Big.RM.
-     */
-    P.sqrt = function () {
-        var estimate, r, approx,
-            x = this,
-            Big = x.constructor,
-            xc = x.c,
-            i = x.s,
-            e = x.e,
-            half = new Big('0.5');
-
-        // Zero?
-        if (!xc[0]) {
-            return new Big(x);
-        }
-
-        // If negative, throw NaN.
-        if (i < 0) {
-            throwErr(NaN);
-        }
-
-        // Estimate.
-        i = Math.sqrt(x.toString());
-
-        // Math.sqrt underflow/overflow?
-        // Pass x to Math.sqrt as integer, then adjust the result exponent.
-        if (i === 0 || i === 1 / 0) {
-            estimate = xc.join('');
-
-            if (!(estimate.length + e & 1)) {
-                estimate += '0';
-            }
-
-            r = new Big( Math.sqrt(estimate).toString() );
-            r.e = ((e + 1) / 2 | 0) - (e < 0 || e & 1);
-        } else {
-            r = new Big(i.toString());
-        }
-
-        i = r.e + (Big.DP += 4);
-
-        // Newton-Raphson iteration.
-        do {
-            approx = r;
-            r = half.times( approx.plus( x.div(approx) ) );
-        } while ( approx.c.slice(0, i).join('') !==
-                       r.c.slice(0, i).join('') );
-
-        rnd(r, Big.DP -= 4, Big.RM);
-
-        return r;
-    };
-
-
-    /*
-     * Return a new Big whose value is the value of this Big times the value of
-     * Big y.
-     */
-    P.mul = P.times = function (y) {
-        var c,
-            x = this,
-            Big = x.constructor,
-            xc = x.c,
-            yc = (y = new Big(y)).c,
-            a = xc.length,
-            b = yc.length,
-            i = x.e,
-            j = y.e;
-
-        // Determine sign of result.
-        y.s = x.s == y.s ? 1 : -1;
-
-        // Return signed 0 if either 0.
-        if (!xc[0] || !yc[0]) {
-            return new Big(y.s * 0);
-        }
-
-        // Initialise exponent of result as x.e + y.e.
-        y.e = i + j;
-
-        // If array xc has fewer digits than yc, swap xc and yc, and lengths.
-        if (a < b) {
-            c = xc;
-            xc = yc;
-            yc = c;
-            j = a;
-            a = b;
-            b = j;
-        }
-
-        // Initialise coefficient array of result with zeros.
-        for (c = new Array(j = a + b); j--; c[j] = 0) {
-        }
-
-        // Multiply.
-
-        // i is initially xc.length.
-        for (i = b; i--;) {
-            b = 0;
-
-            // a is yc.length.
-            for (j = a + i; j > i;) {
-
-                // Current sum of products at this digit position, plus carry.
-                b = c[j] + yc[i] * xc[j - i - 1] + b;
-                c[j--] = b % 10;
-
-                // carry
-                b = b / 10 | 0;
-            }
-            c[j] = (c[j] + b) % 10;
-        }
-
-        // Increment result exponent if there is a final carry.
-        if (b) {
-            ++y.e;
-        }
-
-        // Remove any leading zero.
-        if (!c[0]) {
-            c.shift();
-        }
-
-        // Remove trailing zeros.
-        for (i = c.length; !c[--i]; c.pop()) {
-        }
-        y.c = c;
-
-        return y;
-    };
-
-
-    /*
-     * Return a string representing the value of this Big.
-     * Return exponential notation if this Big has a positive exponent equal to
-     * or greater than Big.E_POS, or a negative exponent equal to or less than
-     * Big.E_NEG.
-     */
-    P.toString = P.valueOf = P.toJSON = function () {
-        var x = this,
-            Big = x.constructor,
-            e = x.e,
-            str = x.c.join(''),
-            strL = str.length;
-
-        // Exponential notation?
-        if (e <= Big.E_NEG || e >= Big.E_POS) {
-            str = str.charAt(0) + (strL > 1 ? '.' + str.slice(1) : '') +
-              (e < 0 ? 'e' : 'e+') + e;
-
-        // Negative exponent?
-        } else if (e < 0) {
-
-            // Prepend zeros.
-            for (; ++e; str = '0' + str) {
-            }
-            str = '0.' + str;
-
-        // Positive exponent?
-        } else if (e > 0) {
-
-            if (++e > strL) {
-
-                // Append zeros.
-                for (e -= strL; e-- ; str += '0') {
-                }
-            } else if (e < strL) {
-                str = str.slice(0, e) + '.' + str.slice(e);
-            }
-
-        // Exponent zero.
-        } else if (strL > 1) {
-            str = str.charAt(0) + '.' + str.slice(1);
-        }
-
-        // Avoid '-0'
-        return x.s < 0 && x.c[0] ? '-' + str : str;
-    };
-
-
-    /*
-     ***************************************************************************
-     * If toExponential, toFixed, toPrecision and format are not required they
-     * can safely be commented-out or deleted. No redundant code will be left.
-     * format is used only by toExponential, toFixed and toPrecision.
-     ***************************************************************************
-     */
-
-
-    /*
-     * Return a string representing the value of this Big in exponential
-     * notation to dp fixed decimal places and rounded, if necessary, using
-     * Big.RM.
-     *
-     * [dp] {number} Integer, 0 to MAX_DP inclusive.
-     */
-    P.toExponential = function (dp) {
-
-        if (dp == null) {
-            dp = this.c.length - 1;
-        } else if (dp !== ~~dp || dp < 0 || dp > MAX_DP) {
-            throwErr('!toExp!');
-        }
-
-        return format(this, dp, 1);
-    };
-
-
-    /*
-     * Return a string representing the value of this Big in normal notation
-     * to dp fixed decimal places and rounded, if necessary, using Big.RM.
-     *
-     * [dp] {number} Integer, 0 to MAX_DP inclusive.
-     */
-    P.toFixed = function (dp) {
-        var str,
-            x = this,
-            Big = x.constructor,
-            neg = Big.E_NEG,
-            pos = Big.E_POS;
-
-        // Prevent the possibility of exponential notation.
-        Big.E_NEG = -(Big.E_POS = 1 / 0);
-
-        if (dp == null) {
-            str = x.toString();
-        } else if (dp === ~~dp && dp >= 0 && dp <= MAX_DP) {
-            str = format(x, x.e + dp);
-
-            // (-0).toFixed() is '0', but (-0.1).toFixed() is '-0'.
-            // (-0).toFixed(1) is '0.0', but (-0.01).toFixed(1) is '-0.0'.
-            if (x.s < 0 && x.c[0] && str.indexOf('-') < 0) {
-        //E.g. -0.5 if rounded to -0 will cause toString to omit the minus sign.
-                str = '-' + str;
-            }
-        }
-        Big.E_NEG = neg;
-        Big.E_POS = pos;
-
-        if (!str) {
-            throwErr('!toFix!');
-        }
-
-        return str;
-    };
-
-
-    /*
-     * Return a string representing the value of this Big rounded to sd
-     * significant digits using Big.RM. Use exponential notation if sd is less
-     * than the number of digits necessary to represent the integer part of the
-     * value in normal notation.
-     *
-     * sd {number} Integer, 1 to MAX_DP inclusive.
-     */
-    P.toPrecision = function (sd) {
-
-        if (sd == null) {
-            return this.toString();
-        } else if (sd !== ~~sd || sd < 1 || sd > MAX_DP) {
-            throwErr('!toPre!');
-        }
-
-        return format(this, sd - 1, 2);
-    };
-
-
-    // Export
-
-
-    Big = bigFactory();
-
-    //AMD.
-    if (typeof define === 'function' && define.amd) {
-        define(function () {
-            return Big;
-        });
-
-    // Node and other CommonJS-like environments that support module.exports.
-    } else if (typeof module !== 'undefined' && module.exports) {
-        module.exports = Big;
-        module.exports.Big = Big;
-
-    //Browser.
-    } else {
-        global.Big = Big;
-    }
-})(this);
-
-},{}],223:[function(require,module,exports){
+},{"serialize-javascript":224}],223:[function(require,module,exports){
 arguments[4][75][0].apply(exports,arguments)
 },{"dup":75}],224:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
