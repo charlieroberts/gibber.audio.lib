@@ -50,10 +50,21 @@ module.exports = function( Audio ) {
       } 
     ]
 
+    if( key === 'note' || key === 'chord' || key === 'trigger' ) {
+      filters.push( ( args,tidal ) => {
+        if( tidal.target.autotrig !== undefined ) {
+          for( let s of tidal.target.autotrig ) {
+            s.fire()
+          }
+        }
+        return args
+      })
+    }
+
     const seq = Gibberish.Tidal({ pattern, target, key, priority, filters, mainthreadonly:props.mainthreadonly })
     seq.clear = clear
     seq.uid = Gibberish.Tidal.getUID()
-
+    
     //Gibberish.proxyEnabled = false
     //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
     //Gibberish.proxyEnabled = true

@@ -9975,10 +9975,36 @@ module.exports = function( Audio ) {
       } 
     ]
 
+    if( key === 'note' || key === 'chord' || key === 'trigger' ) {
+      filters.push( ( args,tidal ) => {
+        if( tidal.target.autotrig !== undefined ) {
+          for( let s of tidal.target.autotrig ) {
+            s.fire()
+          }
+        }
+        return args
+      })
+    }
+
     const seq = Gibberish.Tidal({ pattern, target, key, priority, filters, mainthreadonly:props.mainthreadonly })
     seq.clear = clear
     seq.uid = Gibberish.Tidal.getUID()
-
+    
+    //  if( target.autotrig === undefined ) {
+    //    target.autotrig = []
+    //  }
+    //  // object name key value
+    //  if( Gibberish.mode === 'worklet' ) {
+    //    Gibberish.worklet.port.postMessage({
+    //      address:'addObjectToProperty',
+    //      name:'autotrig',
+    //      object:target.id,
+    //      key:target.autotrig.length,
+    //      value:seq.id
+    //    })
+    //    target.autotrig.push( seq )
+    //  }
+    //}
     //Gibberish.proxyEnabled = false
     //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
     //Gibberish.proxyEnabled = true
@@ -22983,7 +23009,6 @@ module.exports = function( Gibberish ) {
           if( antialias == false ) {
             osc = g.phasor( frequency )
           }else{
-            //osc = feedbackOsc( frequency, 1 )
             osc = polyBlep( frequency, { type })
           }
           break;
@@ -22991,7 +23016,7 @@ module.exports = function( Gibberish ) {
           osc = g.cycle( frequency )
           break;
         case 'square':
-          if( antialias == true ) {
+          if( antialias === true ) {
             //osc = feedbackOsc( frequency, 1, .5, { type:1 })
             osc = polyBlep( frequency, { type })
           }else{
@@ -25660,6 +25685,41 @@ const descriptions = {
       return { out:sdf.out, preface }
     }
   },
+  Mirror: {
+    parameters: [ { name:'distance', type:'vec3', default:Vec3(0) } ],
+    extra:[{ name:'dims', type:'local', default:'xyz' }],
+
+    emit( name='p', transform=null, notused=null, scale=null ) {
+      const pId = VarAlloc.alloc()
+      const pName = 'p' + pId
+
+      if( transform !== null ) {
+        this.transform.apply( transform, false )
+      }
+      this.transform.invert()
+     
+      const pointString =  `( ${name} * ${this.transform.emit()} ).xyz`,
+            s = scale === null ? this.transform.emit_scale() : `${this.transform.emit_scale()} * ${scale}`
+ 
+      let preface =`
+        vec4 ${pName} = vec4( ( ${pointString} ) , 1.);\n
+        ${pName}.${this.dims} = abs( ${pName}.${this.dims} );\n`
+
+      const sdf = this.sdf.emit( pName, null, null, s )
+
+      if( typeof sdf.preface === 'string' ) preface += sdf.preface 
+
+      return { out:sdf.out, preface }
+    }
+  },
+  //let preface = `         vec3 ${pName} = ${name} / ${this.amount.emit()};\n`
+
+  //let sdf = this.sdf.emit( pName )
+  //let out = sdf.out 
+
+  //sdf.preface += `      ${out}.x = ${out}.x * ${this.amount.emit()};\n`
+
+  //if( typeof sdf.preface === 'string' ) preface += sdf.preface
   Repetition: {
     parameters: [ { name:'distance', type:'vec3', default:Vec3(0) } ],
     emit( name='p', transform=null ) {
@@ -25682,129 +25742,8 @@ const descriptions = {
       return { out:sdf.out, preface }
     }
   },
-  RepetitionShrink: {
-    parameters: [ 
-      { name:'distance', type:'vec3', default:Vec3(0) }, 
-      { name:'scale', type:'float', default:.5 } 
-    ],
-    emit( name='p', transform=null ) {
-      const pId = VarAlloc.alloc()
-      const pName = 'p' + pId
-
-      if( transform !== null ) this.transform.apply( transform, false )
-      
-      this.transform.invert()
-
-
-      const pointString =  `( ${name} * ${this.transform.emit()} ).xyz`;
-      const scaleString = `float scalerpt${pId} = 1. - length(${name}.xyz / ${this.distance.emit()}) / ${this.scale.emit()};\n`
-
-      let preface =scaleString + `
-        vec4 ${pName} = vec4( (mod( ${pointString}, ${this.__target.distance.emit()}  ) - .5 * ${this.__target.distance.emit()}) * ${this.transform.emit_scale()} * scalerpt${pId}, 1.);\n`
-
-      const sdf = this.sdf.emit( pName )//, this.transform )//, 1, this.__target.distance )
-
-      if( typeof sdf.preface === 'string' ) preface += sdf.preface 
-
-      return { out:sdf.out, preface }
-    }
-  },
-
-  // DEPRECATED
-  Rotation: {
-    parameters: [
-      { name:'axis', type:'vec3', default:Vec3(1) },
-      { name:'angle', type:'float', default:0 },
-    ],
-    emit( name='p' ) {
-      const pId = MaterialID.alloc()//this.matId
-      const pName = 'q'+pId
-
-      let preface =`        
-        mat4 m${pName} = rotationMatrix(${this.axis.emit()}, -${this.angle.emit()});
-        rotations[ 0 ] = m${pName};
-      `
-      const center = this.getCenter()
-
-      preface += center !== undefined
-        ? `        vec3 ${pName} = ( m${pName} * vec4(${name} - ${center.emit()}, 1.) ).xyz + ${center.emit()};\n`
-        : `        vec3 ${pName} = ( m${pName} * vec4(${name}, 1.) ).xyz;\n`
-
-
-      const sdf = this.sdf.emit( pName )
-      let out = sdf.out
-
-      if( typeof sdf.preface === 'string' )
-        preface += sdf.preface
-
-      return { out, preface }
-    },
-    glsl: `   mat4 rotationMatrix(vec3 axis, float angle) {
-      vec3 a = normalize(axis);
-      float s = sin(angle);
-      float c = cos(angle);
-      float oc = 1.0 - c;
-      float sx = s * a.x;
-      float sy = s * a.y;
-      float sz = s * a.z;
-      float ocx = oc * a.x;
-      float ocy = oc * a.y;
-      float ocz = oc * a.z;
-      float ocxx = ocx * a.x;
-      float ocxy = ocx * a.y;
-      float ocxz = ocx * a.z;
-      float ocyy = ocy * a.y;
-      float ocyz = ocy * a.z;
-      float oczz = ocz * a.z;
-      mat4 m = mat4(
-        vec4(ocxx + c, ocxy - sz, ocxz + sy, 0.0),
-        vec4(ocxy + sz, ocyy + c, ocyz - sx, 0.0),
-        vec4(ocxz - sy, ocyz + sx, oczz + c, 0.0),
-        vec4( 0.0, 0.0, 0.0, 1.0)
-      );
-
-      return m;
-    }
-    `
-  },
-  // DEPRECATED
-  Translate:{
-    parameters: [ { name:'amount', type:'vec3', default:Vec3(0) } ],
-    emit( name='p' ) {
-      const pId = MaterialID.alloc()//this.matId
-      const pName = name+pId
-
-      let preface = `vec3 ${pName} = ${name} - ${this.amount.emit()};\n`
-
-      const sdf = this.sdf.emit( pName )
-      let out = sdf.out
-
-      if( typeof sdf.preface === 'string' ) preface += sdf.preface
-
-      return { out, preface }
-    }
-  },
-  // DEPRECATED
-  Scale:{
-    parameters: [{ name:'amount', type:'float', default:1 } ],
-    emit( name='p' ) {
-      const pId = MaterialID.alloc()//this.matId
-      const pName = name+pId
-
-      let preface = `         vec3 ${pName} = ${name} / ${this.amount.emit()};\n`
-
-      let sdf = this.sdf.emit( pName )
-      let out = sdf.out 
-      
-      sdf.preface += `      ${out}.x = ${out}.x * ${this.amount.emit()};\n`
-
-      if( typeof sdf.preface === 'string' ) preface += sdf.preface
-
-      return { out, preface }
-    }
-  }
 }
-
+  
 const getDomainOps = function( SDF ) {
   const ops = {}
 
@@ -25820,7 +25759,7 @@ const getDomainOps = function( SDF ) {
 
       let count = 0
       for( let prop of opDesc.parameters ) {
-        op.parameters.push({ name:prop.name})
+        op.parameters.push({ name:prop.name })
 
         let arg = args[ count ]
         let __var
@@ -25911,9 +25850,14 @@ const getDomainOps = function( SDF ) {
               }
             })
             break;
-        }
-
+          }
         count++
+      }
+      
+      if( opDesc.extra !== undefined ) {
+        for( let extra of opDesc.extra ) {
+          op[ extra.name ] = args[ count - 1 ] || extra.default
+        }
       }
 
       op.__setTexture = function(tex,props) {
@@ -25932,7 +25876,7 @@ const getDomainOps = function( SDF ) {
       }
       op.__desc = opDesc
 
-      op.sdf.repeat = op
+      if( key !== 'Mirror' ) op.sdf.repeat = op
       return op
     }
 
@@ -27988,7 +27932,7 @@ const createPrimitives = function( SDF ) {
     // create codegen string
 
 
-    Primitives[ name ].prototype.emit = function ( __name, transform = null, bump=null ) {
+    Primitives[ name ].prototype.emit = function ( __name, transform = null, bump=null, scale=null ) {
       if( SDF.memo[ this.id ] !== undefined ) return { preface:'', out:name+this.matId }
       if( this.__bumpObj !== undefined && this.renderingBump === false) {
         this.renderingBump = true
@@ -28009,7 +27953,7 @@ const createPrimitives = function( SDF ) {
 
       const pname = typeof __name !== 'string' ? 'p' : __name,
             id = this.__sdfID,
-            s = this.transform.emit_scale(),
+            s = scale === null ? this.transform.emit_scale() : `${this.transform.emit_scale()} * ${scale}`,
             tstring = `( ${pname} * ${this.transform.emit()} ).xyz`
       
       const primitive = `
@@ -28096,7 +28040,7 @@ module.exports = createPrimitives
 const glsl = require( 'glslify' )
 
 module.exports = function( variables, scene, preface, geometries, lighting, postprocessing, steps=90, minDistance=.001, maxDistance=20, ops ) {
-    const fs_source = glsl(["     #version 300 es\n      precision mediump float;\n#define GLSLIFY 1\n\n\n      float PI = 3.141592653589793;\n\n      in vec2 v_uv;\n\n      struct Light {\n        vec3 position;\n        vec3 color;\n        float attenuation;\n      };\n\n      int rotationCount = 1;\n\n      mat4 rotations[4] = mat4[4](\n        mat4(0.), mat4(0.), mat4(0.), mat4(0.)\n      );\n\n      struct Material {\n        int  mode;\n        vec3 ambient;\n        vec3 diffuse;\n        vec3 specular;\n        float shininess;\n        vec3 fresnel;\n        int textureID;\n      };     \n\n      struct SDF {\n        int materialID;\n        mat4 transform;\n        int textureID;\n        vec3 repeat;\n        mat4 repeatTransform;\n      };\n\n      uniform float time;\n      uniform vec2 resolution;\n      uniform vec3 camera_pos;\n      uniform vec3 camera_normal;\n      uniform float camera_rot;\n\n      ","\n\n      // must be before geometries!\n      float length8( vec2 p ) { \n        return float( pow( pow(p.x,8.)+pow(p.y,8.), 1./8. ) ); \n      }\n\n      ","\n\n      /* GEOMETRIES */\n      ","\n\n      float getMin( vec3 p ) {\n        float o  = 0.;\n\n        if( abs( p.x ) > abs( p.y ) ) {\n          if( abs( p.x ) > abs( p.z ) ) {\n            o = p.x;\n          }else{\n            o = p.z; \n          }\n        }else{ \n          o = abs( p.y ) > abs( p.z ) ? p.y : p.z;\n        }\n\n        return o;\n      }\n\n      vec2 scene(vec3 p);\n\n      // Adapted from from https://www.shadertoy.com/view/ldfSWs\n\n      vec2 calcRayIntersection( vec3 rayOrigin, vec3 rayDir, float maxd, float precis ) {\n        float latest = precis * 2.0;\n        float dist   = +0.0;\n        float type   = -1.0;\n        vec2 result;\n        vec2 res = vec2(-50000., -1.);;\n\n        for (int i = 0; i < "," ; i++) {\n          if (latest < precis || dist > maxd) break;\n\n          result = scene(rayOrigin + rayDir * dist);\n\n          latest = result.x;\n          dist  += latest;\n          //if (dist > maxd ) dist = dist-maxd+.001;\n        }\n\n        if( dist < maxd ) {\n          result.x = dist;\n          res = result;\n        }\n\n        return res;\n      }\n\n      vec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir) {\n        return calcRayIntersection(rayOrigin, rayDir, 20.0, 0.001);\n      }\n\n      // adapted from https://www.shadertoy.com/view/ldfSWs\n      vec3 calcNormal(vec3 pos, float eps) {\n        const vec3 v1 = vec3( 1.0,-1.0,-1.0);\n        const vec3 v2 = vec3(-1.0,-1.0, 1.0);\n        const vec3 v3 = vec3(-1.0, 1.0,-1.0);\n        const vec3 v4 = vec3( 1.0, 1.0, 1.0);\n\n        return normalize( v1 * scene ( pos + v1*eps ).x+\n                          v2 * scene ( pos + v2*eps ).x+\n                          v3 * scene ( pos + v3*eps ).x+\n                          v4 * scene ( pos + v4*eps ).x);\n      }\n\n      vec3 calcNormal(vec3 pos) {\n        return calcNormal(pos, 0.002);\n      }\n\n      mat3 calcLookAtMatrix(vec3 origin, vec3 target, float roll) {\n        vec3 rr = vec3(sin(roll), cos(roll), 0.0);\n        vec3 ww = normalize(target - origin);\n        vec3 uu = normalize(cross(ww, rr));\n        vec3 vv = normalize(cross(uu, ww));\n\n        return mat3(uu, vv, ww);\n      }\n\n      vec3 getRay(mat3 camMat, vec2 screenPos, float lensLength) {\n        return normalize(camMat * vec3(screenPos, lensLength));\n      }\n\n      vec3 getRay(vec3 origin, vec3 target, vec2 screenPos, float lensLength) {\n        mat3 camMat = calcLookAtMatrix(origin, target, 0.0);\n        return getRay(camMat, screenPos, lensLength);\n      }\n\n      vec2 squareFrame(vec2 screenSize) {\n        vec2 position = 2.0 * (gl_FragCoord.xy / screenSize.xy) - 1.0;\n        position.x *= screenSize.x / screenSize.y;\n        return position;\n      }\n\n      vec2 squareFrame(vec2 screenSize, vec2 coord) {\n        vec2 position = 2.0 * (coord.xy / screenSize.xy) - 1.0;\n        position.x *= screenSize.x / screenSize.y;\n        return position;\n      }\n\n      void orbitCamera(\n        in float camAngle,\n        in float camHeight,\n        in float camDistance,\n        in vec2 screenResolution,\n        out vec3 rayOrigin,\n        out vec3 rayDirection\n      ) {\n        vec2 screenPos = squareFrame(screenResolution);\n        vec3 rayTarget = vec3(0.0);\n\n        rayOrigin = vec3(\n          camDistance * sin(camAngle),\n          camHeight,\n          camDistance * cos(camAngle)\n        );\n\n        rayDirection = getRay(rayOrigin, rayTarget, screenPos, 2.0);\n      }\n\n      vec4 opElongate( in vec3 p, in vec3 h ) {\n        //return vec4( p-clamp(p,-h,h), 0.0 ); // faster, but produces zero in the interior elongated box\n        \n        vec3 q = abs(p)-h;\n        return vec4( max(q,0.0), min(max(q.x,max(q.y,q.z)),0.0) );\n      }\n\n      vec3 polarRepeat(vec3 p, float repetitions) {\n        float angle = 2.*PI/repetitions;\n        float a = atan(p.z, p.x) + angle/2.;\n        float r = length(p.xz);\n        float c = floor(a/angle);\n        a = mod(a,angle) - angle/2.;\n        vec3 _p = vec3( cos(a) * r, p.y,  sin(a) * r );\n        // For an odd number of repetitions, fix cell index of the cell in -x direction\n        // (cell index would be e.g. -5 and 5 in the two halves of the cell):\n        if (abs(c) >= (repetitions/2.)) c = abs(c);\n        return _p;\n      }\n\n      /* ******************************************************* */\n\n      // added k value to glsl-sdf-ops/soft-shadow\n      float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax, in float k ){\n        float res = 1.0;\n        float t = mint;\n\n        for( int i = 0; i < 12; i++ ) {\n          float h = scene( ro + rd * t ).x;\n          res = min( res, k * h / t );\n          t += clamp( h, 0.02, 0.10 );\n          if( h<0.001 || t>tmax ) break;\n        }\n\n        return clamp( res, 0.0, 1.0 );\n      }\n\n","\n\n      vec2 scene(vec3 _p ) {\n        vec4 p = vec4( _p, 1. );\n","\n        return ",";\n      }\n \n      out vec4 col;\n\n      void main() {\n        vec2 pos = v_uv * 2.0 - 1.0;\n        pos.x *= ( resolution.x / resolution.y );\n        vec3 color = bg; \n        vec3 ro = camera_pos;\n        vec3 rd = camera_normal;\n\n        orbitCamera( camera_rot, ro.y, ro.z, resolution, ro, rd );\n        \n        vec2 t = calcRayIntersection( ro, rd, ",", "," );\n \n        if( t.x > -0.5 ) {\n          vec3 pos = ro + rd * t.x;\n          vec3 nor = calcNormal( pos );\n\n          color = lighting( pos, nor, ro, rd, t.y ); \n        }\n\n        ","\n        \n        col = clamp( vec4( color, 1.0 ), 0., 1. );\n      }",""],variables,ops,geometries,steps,lighting,preface,scene,maxDistance,minDistance,postprocessing)
+    const fs_source = glsl(["     #version 300 es\n      precision mediump float;\n#define GLSLIFY 1\n\n\n      float PI = 3.141592653589793;\n\n      in vec2 v_uv;\n\n      struct Light {\n        vec3 position;\n        vec3 color;\n        float attenuation;\n      };\n\n      int rotationCount = 1;\n\n      mat4 rotations[4] = mat4[4](\n        mat4(0.), mat4(0.), mat4(0.), mat4(0.)\n      );\n\n      struct Material {\n        int  mode;\n        vec3 ambient;\n        vec3 diffuse;\n        vec3 specular;\n        float shininess;\n        vec3 fresnel;\n        int textureID;\n      };     \n\n      struct SDF {\n        int materialID;\n        mat4 transform;\n        int textureID;\n        vec3 repeat;\n        mat4 repeatTransform;\n      };\n\n      uniform float time;\n      uniform vec2 resolution;\n      uniform vec3 camera_pos;\n      uniform vec3 camera_normal;\n      uniform float camera_rot;\n\n      ","\n\n      // must be before geometries!\n      float length8( vec2 p ) { \n        return float( pow( pow(p.x,8.)+pow(p.y,8.), 1./8. ) ); \n      }\n\n      ","\n\n      /* GEOMETRIES */\n      ","\n\n      vec2 scene(vec3 p);\n\n      // Adapted from from https://www.shadertoy.com/view/ldfSWs\n\n      vec2 calcRayIntersection( vec3 rayOrigin, vec3 rayDir, float maxd, float precis ) {\n        float latest = precis * 2.0;\n        float dist   = +0.0;\n        float type   = -1.0;\n        vec2 result;\n        vec2 res = vec2(-50000., -1.);;\n\n        for (int i = 0; i < "," ; i++) {\n          if (latest < precis || dist > maxd) break;\n\n          result = scene(rayOrigin + rayDir * dist);\n\n          latest = result.x;\n          dist  += latest;\n          //if (dist > maxd ) dist = dist-maxd+.001;\n        }\n\n        if( dist < maxd ) {\n          result.x = dist;\n          res = result;\n        }\n\n        return res;\n      }\n\n      vec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir) {\n        return calcRayIntersection(rayOrigin, rayDir, 20.0, 0.001);\n      }\n\n      // adapted from https://www.shadertoy.com/view/ldfSWs\n      vec3 calcNormal(vec3 pos, float eps) {\n        const vec3 v1 = vec3( 1.0,-1.0,-1.0);\n        const vec3 v2 = vec3(-1.0,-1.0, 1.0);\n        const vec3 v3 = vec3(-1.0, 1.0,-1.0);\n        const vec3 v4 = vec3( 1.0, 1.0, 1.0);\n\n        return normalize( v1 * scene ( pos + v1*eps ).x+\n                          v2 * scene ( pos + v2*eps ).x+\n                          v3 * scene ( pos + v3*eps ).x+\n                          v4 * scene ( pos + v4*eps ).x);\n      }\n\n      vec3 calcNormal(vec3 pos) {\n        return calcNormal(pos, 0.002);\n      }\n\n      mat3 calcLookAtMatrix(vec3 origin, vec3 target, float roll) {\n        vec3 rr = vec3(sin(roll), cos(roll), 0.0);\n        vec3 ww = normalize(target - origin);\n        vec3 uu = normalize(cross(ww, rr));\n        vec3 vv = normalize(cross(uu, ww));\n\n        return mat3(uu, vv, ww);\n      }\n\n      vec3 getRay(mat3 camMat, vec2 screenPos, float lensLength) {\n        return normalize(camMat * vec3(screenPos, lensLength));\n      }\n\n      vec3 getRay(vec3 origin, vec3 target, vec2 screenPos, float lensLength) {\n        mat3 camMat = calcLookAtMatrix(origin, target, 0.0);\n        return getRay(camMat, screenPos, lensLength);\n      }\n\n      vec2 squareFrame(vec2 screenSize) {\n        vec2 position = 2.0 * (gl_FragCoord.xy / screenSize.xy) - 1.0;\n        position.x *= screenSize.x / screenSize.y;\n        return position;\n      }\n\n      vec2 squareFrame(vec2 screenSize, vec2 coord) {\n        vec2 position = 2.0 * (coord.xy / screenSize.xy) - 1.0;\n        position.x *= screenSize.x / screenSize.y;\n        return position;\n      }\n\n      void orbitCamera(\n        in float camAngle,\n        in float camHeight,\n        in float camDistance,\n        in vec2 screenResolution,\n        out vec3 rayOrigin,\n        out vec3 rayDirection\n      ) {\n        vec2 screenPos = squareFrame(screenResolution);\n        vec3 rayTarget = vec3(0.0);\n\n        rayOrigin = vec3(\n          camDistance * sin(camAngle),\n          camHeight,\n          camDistance * cos(camAngle)\n        );\n\n        rayDirection = getRay(rayOrigin, rayTarget, screenPos, 2.0);\n      }\n\n      vec4 opElongate( in vec3 p, in vec3 h ) {\n        //return vec4( p-clamp(p,-h,h), 0.0 ); // faster, but produces zero in the interior elongated box\n        \n        vec3 q = abs(p)-h;\n        return vec4( max(q,0.0), min(max(q.x,max(q.y,q.z)),0.0) );\n      }\n\n      vec3 polarRepeat(vec3 p, float repetitions) {\n        float angle = 2.*PI/repetitions;\n        float a = atan(p.z, p.x) + angle/2.;\n        float r = length(p.xz);\n        float c = floor(a/angle);\n        a = mod(a,angle) - angle/2.;\n        vec3 _p = vec3( cos(a) * r, p.y,  sin(a) * r );\n        // For an odd number of repetitions, fix cell index of the cell in -x direction\n        // (cell index would be e.g. -5 and 5 in the two halves of the cell):\n        if (abs(c) >= (repetitions/2.)) c = abs(c);\n        return _p;\n      }\n\n      /* ******************************************************* */\n\n      // added k value to glsl-sdf-ops/soft-shadow\n      float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax, in float k ){\n        float res = 1.0;\n        float t = mint;\n\n        for( int i = 0; i < 12; i++ ) {\n          float h = scene( ro + rd * t ).x;\n          res = min( res, k * h / t );\n          t += clamp( h, 0.02, 0.10 );\n          if( h<0.001 || t>tmax ) break;\n        }\n\n        return clamp( res, 0.0, 1.0 );\n      }\n\n","\n\n      vec2 scene(vec3 _p ) {\n        vec4 p = vec4( _p, 1. );\n","\n        return ",";\n      }\n \n      out vec4 col;\n\n      void main() {\n        vec2 pos = v_uv * 2.0 - 1.0;\n        pos.x *= ( resolution.x / resolution.y );\n        vec3 color = bg; \n        vec3 ro = camera_pos;\n        vec3 rd = camera_normal;\n\n        orbitCamera( camera_rot, ro.y, ro.z, resolution, ro, rd );\n        \n        vec2 t = calcRayIntersection( ro, rd, ",", "," );\n \n        if( t.x > -0.5 ) {\n          vec3 pos = ro + rd * t.x;\n          vec3 nor = calcNormal( pos );\n\n          color = lighting( pos, nor, ro, rd, t.y ); \n        }\n\n        ","\n        \n        col = clamp( vec4( color, 1.0 ), 0., 1. );\n      }",""],variables,ops,geometries,steps,lighting,preface,scene,maxDistance,minDistance,postprocessing)
 
     return fs_source
   }
