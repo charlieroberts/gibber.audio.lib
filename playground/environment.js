@@ -97,8 +97,6 @@ window.onload = function() {
   cm.getWrapperElement().addEventListener( 'click', e => {
     if( e.altKey === true ) {
 
-      if( e.shiftKey === true ) {
-        const ele = document.createElement('span')
         let node = e.path[0]
         while( node.parentNode.className.indexOf( 'CodeMirror-line' ) === -1 ) {
           node = node.parentNode
@@ -114,11 +112,16 @@ window.onload = function() {
         } catch(e) {
           throw e
         }
-        ele.innerText = txt
-        tempTooltip( cm, ele, server )
-      }else{
+
+        // XXX ideally this would return a promise that we could use to insert the current
+        // value of the property into once the DOM node has been added. 
+        // Instead we have to use a hacky setTimeout... to fix this we need to edit
+        // the ternserver itself.
         server.showDocs( cm ) 
-      }
+
+        setTimeout( ()=>{
+          cm.state.ternTooltip.children[0].innerHTML = `value: ${txt} ${cm.state.ternTooltip.children[0].innerHTML}`
+        }, 50 )
     }
   })
 
@@ -175,11 +178,11 @@ window.onload = function() {
   }
 
   function makeTooltip(x, y, content) {
-    var node = elt("div", cls + "tooltip", content);
-    node.style.left = x + "px";
-    node.style.top = y + "px";
-    document.body.appendChild(node);
-    return node;
+    var node = elt( "div", cls + "tooltip", content )
+    node.style.left = x + "px"
+    node.style.top = y + "px"
+    document.body.appendChild( node )
+    return node
   }
 
   function remove(node) {
