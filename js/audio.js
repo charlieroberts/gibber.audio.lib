@@ -39,6 +39,7 @@ const Audio = {
       Utility.export( obj )
       this.Gen.export( obj )
       this.Graphics.export( obj )
+      this.Pattern.export( obj )
 
       obj.gen = this.Gen.make
       obj.lfo = this.Gen.composites.lfo

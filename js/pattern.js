@@ -75,7 +75,7 @@ const patternWrapper = function( Gibber ) {
     __methodNames:  [
       'rotate','switch','invert','flip',
       'transpose','reverse','shuffle','scale',
-      'store', 'range', 'set'
+      'store', 'range', 'set', 'freeze', 'thaw'
     ]
 
   })
@@ -155,6 +155,7 @@ const patternWrapper = function( Gibber ) {
       phase : 0,
       values : args, 
       isPattern: true,
+      __frozen:false,
       // wrap annotation update in setTimeout( func, 0 )
       __delayAnnotations:false,
       //values : typeof arguments[0] !== 'string' || arguments.length > 1 ? Array.prototype.slice.call( arguments, 0 ) : arguments[0].split(''),    
@@ -168,76 +169,90 @@ const patternWrapper = function( Gibber ) {
       isop:true,
       isGen,
 
+      freeze() {
+        fnc.__frozen = true
+      },
+      thaw() {
+        fnc.__frozen = false
+      },
+
       setSeq( seq ) {
         this.seq = seq
       },
 
       range() {
-        let start, end
-        
-        if( Array.isArray( arguments[0] ) ) {
-          start = arguments[0][0]
-          end   = arguments[0][1]
-        }else{
-          start = arguments[0]
-          end   = arguments[1]
-        }
-        
-        if( start < end ) {
-          fnc.start = start
-          fnc.end = end
-        }else{
-          fnc.start = end
-          fnc.end = start
-        }
+        if( !fnc.__frozen ) {
+          let start, end
+          
+          if( Array.isArray( arguments[0] ) ) {
+            start = arguments[0][0]
+            end   = arguments[0][1]
+          }else{
+            start = arguments[0]
+            end   = arguments[1]
+          }
+          
+          if( start < end ) {
+            fnc.start = start
+            fnc.end = end
+          }else{
+            fnc.start = end
+            fnc.end = start
+          }
 
-        this.checkForUpdateFunction( 'range', fnc )
+          this.checkForUpdateFunction( 'range', fnc )
+        }
 
         return fnc
       },
       
       set() {
-        let args = Array.isArray( arguments[ 0 ] ) ? arguments[ 0 ] : arguments
-        
-        fnc.values.length = 0
-        
-        for( let i = 0; i < args.length; i++ ) {
-          fnc.values.push( args[ i ] )
+        if( !fnc.__frozen ) {
+
+          let args = Array.isArray( arguments[ 0 ] ) ? arguments[ 0 ] : arguments
+          
+          fnc.values.length = 0
+          
+          for( let i = 0; i < args.length; i++ ) {
+            fnc.values.push( args[ i ] )
+          }
+          
+          fnc.end = fnc.values.length - 1
+          
+          // if( fnc.end > fnc.values.length - 1 ) {
+          //   fnc.end = fnc.values.length - 1
+          // }else if( fnc.end < )
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }
+          fnc._onchange()
         }
-        
-        fnc.end = fnc.values.length - 1
-        
-        // if( fnc.end > fnc.values.length - 1 ) {
-        //   fnc.end = fnc.values.length - 1
-        // }else if( fnc.end < )
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }
-        fnc._onchange()
         
         return fnc
       },
        
       reverse() {
-        let array = fnc.values,
-            left = null,
-            right = null,
-            length = array.length,
-            temporary;
-            
-        for ( left = 0, right = length - 1; left < right; left += 1, right -= 1 ) {
-          temporary = array[ left ]
-          array[ left ] = array[ right ]
-          array[ right ] = temporary;
-        }
-        
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', array )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }
+        if( !fnc.__frozen ) {
+          let array = fnc.values,
+              left = null,
+              right = null,
+              length = array.length,
+              temporary;
+              
+          for ( left = 0, right = length - 1; left < right; left += 1, right -= 1 ) {
+            temporary = array[ left ]
+            array[ left ] = array[ right ]
+            array[ right ] = temporary;
+          }
+          
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', array )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }
 
-        fnc._onchange()
+          fnc._onchange()
+        }
         
         return fnc
       },
@@ -317,164 +332,180 @@ const patternWrapper = function( Gibber ) {
       },
     
       reset() { 
-        // XXX replace with some type of standard deep copy
-        if( Array.isArray( fnc.original[0] ) ) {
-          const arr = []
-          for( let i = 0; i < fnc.original.length; i++ ) {
-            const chord = fnc.original[ i ]
-            arr[ i ] = []
-            for( let j = 0; j < chord.length; j++ ) {
-              arr[ i ][ j ] = chord[ j ] 
+        if( !fnc.__frozen ) {
+          // XXX replace with some type of standard deep copy
+          if( Array.isArray( fnc.original[0] ) ) {
+            const arr = []
+            for( let i = 0; i < fnc.original.length; i++ ) {
+              const chord = fnc.original[ i ]
+              arr[ i ] = []
+              for( let j = 0; j < chord.length; j++ ) {
+                arr[ i ][ j ] = chord[ j ] 
+              }
             }
+            fnc.values = arr
+          }else{
+            fnc.values = fnc.original.slice(0)
           }
-          fnc.values = arr
-        }else{
-          fnc.values = fnc.original.slice(0)
+          //fnc.set( fnc.original.slice( 0 ) );
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }  
+          fnc._onchange()
         }
-        //fnc.set( fnc.original.slice( 0 ) );
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }  
-        fnc._onchange()
+
         return fnc 
       },
       store() { fnc.storage[ fnc.storage.length ] = fnc.values.slice( 0 ); return fnc; },
 
       transpose( amt ) { 
-        for( let i = 0; i < fnc.values.length; i++ ) { 
-          let val = fnc.values[ i ]
-          
-          if( Array.isArray( val ) ) {
-            for( let j = 0; j < val.length; j++ ) {
-              if( typeof val[ j ] === 'number' ) {
-                val[ j ] = fnc.integersOnly ? Math.round( val[ j ] + amt ) : val[ j ] + amt
+        if( !fnc.__frozen ) {
+          for( let i = 0; i < fnc.values.length; i++ ) { 
+            let val = fnc.values[ i ]
+            
+            if( Array.isArray( val ) ) {
+              for( let j = 0; j < val.length; j++ ) {
+                if( typeof val[ j ] === 'number' ) {
+                  val[ j ] = fnc.integersOnly ? Math.round( val[ j ] + amt ) : val[ j ] + amt
+                }
+              }
+            }else{
+              if( typeof val === 'number' ) {
+                fnc.values[ i ] = fnc.integersOnly ? Math.round( fnc.values[ i ] + amt ) : fnc.values[ i ] + amt
               }
             }
-          }else{
-            if( typeof val === 'number' ) {
-              fnc.values[ i ] = fnc.integersOnly ? Math.round( fnc.values[ i ] + amt ) : fnc.values[ i ] + amt
-            }
           }
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }      
+          fnc._onchange()
         }
-        if( Gibberish.mode === 'processor' ) {
-          console.log( 'ID:', fnc.id )
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }      
-        fnc._onchange()
         
         return fnc
       },
 
       shuffle() { 
-        Gibber.Utility.shuffle( fnc.values )
-        fnc._onchange()
+        if( !fnc.__frozen ) {
+          Gibber.Utility.shuffle( fnc.values )
+          fnc._onchange()
+        }
         
         return fnc
       },
 
       scale( amt ) { 
-        fnc.values.map( (val, idx, array) => {
-          if( Array.isArray( val ) ) {
-            array[ idx ] = val.map( inside  => {
-              if( typeof inside === 'number' ) {
-                return fnc.integersOnly ? Math.round( inside * amt ) : inside * amt
-              } else {
-                return inside
+        if( !fnc.__frozen ) {
+          fnc.values.map( (val, idx, array) => {
+            if( Array.isArray( val ) ) {
+              array[ idx ] = val.map( inside  => {
+                if( typeof inside === 'number' ) {
+                  return fnc.integersOnly ? Math.round( inside * amt ) : inside * amt
+                } else {
+                  return inside
+                }
+              })
+            }else{
+              if( typeof val === 'number' ) {
+                array[ idx ] = fnc.integersOnly ? Math.round( val * amt ) : val * amt
               }
-            })
-          }else{
-            if( typeof val === 'number' ) {
-              array[ idx ] = fnc.integersOnly ? Math.round( val * amt ) : val * amt
             }
+          })
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
           }
-        })
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          fnc._onchange()
         }
-        fnc._onchange()
         
         return fnc
       },
 
       flip() {
-        let start = [],
-            ordered = null
-      
-        ordered = fnc.values.filter( function(elem) {
-          let shouldPush = start.indexOf( elem ) === -1
-          if( shouldPush ) start.push( elem )
-          return shouldPush
-        })
-      
-        ordered = ordered.sort( function( a,b ){ return a - b } )
-      
-        for( let i = 0; i < fnc.values.length; i++ ) {
-          let pos = ordered.indexOf( fnc.values[ i ] )
-          fnc.values[ i ] = ordered[ ordered.length - pos - 1 ]
+        if( !fnc.__frozen ) {
+          let start = [],
+              ordered = null
+        
+          ordered = fnc.values.filter( function(elem) {
+            let shouldPush = start.indexOf( elem ) === -1
+            if( shouldPush ) start.push( elem )
+            return shouldPush
+          })
+        
+          ordered = ordered.sort( function( a,b ){ return a - b } )
+        
+          for( let i = 0; i < fnc.values.length; i++ ) {
+            let pos = ordered.indexOf( fnc.values[ i ] )
+            fnc.values[ i ] = ordered[ ordered.length - pos - 1 ]
+          }
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }       
+          fnc._onchange()
         }
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }       
-        fnc._onchange()
       
         return fnc
       },
       
       invert() {
-        let prime0 = fnc.values[ 0 ]
-        
-        for( let i = 1; i < fnc.values.length; i++ ) {
-          if( typeof fnc.values[ i ] === 'number' ) {
-            let inverse = prime0 + (prime0 - fnc.values[ i ])
-            fnc.values[ i ] = inverse
+        if( !fnc.__frozen ) {
+          let prime0 = fnc.values[ 0 ]
+          
+          for( let i = 1; i < fnc.values.length; i++ ) {
+            if( typeof fnc.values[ i ] === 'number' ) {
+              let inverse = prime0 + (prime0 - fnc.values[ i ])
+              fnc.values[ i ] = inverse
+            }
           }
-        }
-        
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }
+          
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }
 
-        fnc._onchange()
+          fnc._onchange()
+        }
         
         return fnc
       },
     
       switch( to ) {
-        if( fnc.storage[ to ] ) {
-          fnc.values = fnc.storage[ to ].slice( 0 )
+        if( !fnc.__frozen ) {
+          if( fnc.storage[ to ] ) {
+            fnc.values = fnc.storage[ to ].slice( 0 )
+          }
+          
+          fnc._onchange()
         }
-        
-        fnc._onchange()
         
         return fnc
       },
     
       rotate( amt ) {
-        if( amt > 0 ) {
-          while( amt > 0 ) {
-            let end = fnc.values.pop()
-            fnc.values.unshift( end )
-            amt--
+        if( !fnc.__frozen ) {
+          if( amt > 0 ) {
+            while( amt > 0 ) {
+              let end = fnc.values.pop()
+              fnc.values.unshift( end )
+              amt--
+            }
+          }else if( amt < 0 ) {
+            while( amt < 0 ) {
+              let begin = fnc.values.shift()
+              fnc.values.push( begin )
+              amt++
+            }
           }
-        }else if( amt < 0 ) {
-          while( amt < 0 ) {
-            let begin = fnc.values.shift()
-            fnc.values.push( begin )
-            amt++
+
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
           }
-        }
 
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          fnc._onchange()
         }
-
-        fnc._onchange()
         
         return fnc
       },
@@ -590,10 +621,22 @@ const patternWrapper = function( Gibber ) {
       args[0].filters.forEach( f => out.addFilter( f ) )
     }
 
+    Pattern.children.push( out )
     return out
   }
 
   Pattern.listeners = {}
+  Pattern.children = []
+  Pattern.freeze = ()=> {
+    Pattern.children.forEach( p => p.freeze() ) 
+  }
+  Pattern.thaw = ()=> {
+    Pattern.children.forEach( p => p.thaw() )
+  }
+  Pattern.export = function( obj ) {
+    obj.freeze = Pattern.freeze
+    obj.thaw   = Pattern.thaw
+  }
 
   Pattern.listeners.range = function( fnc ) {
     //if( !Notation.isRunning ) return
