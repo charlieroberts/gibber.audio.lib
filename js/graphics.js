@@ -20,7 +20,8 @@ const Graphics = {
   __onrender:    [],
   __protomethods:['translate','scale','rotate','texture','material', 'bump'],
   __lights:[],
-
+  __storepos:null,
+  __storedir:null,
   camera : {
     pos: { x:0, y:0, z:5 },
     dir: { x:0, y:0, z:1 },
@@ -30,28 +31,26 @@ const Graphics = {
     // XXX we have to run this everytime we render as Marching.js
     // makes a brand new camera
     init() {
-      let storepos, storedir
       if( Graphics.camera.initialized === true ) {
         // store current camera data
-        storepos = { x:Graphics.camera.pos.x, y:Graphics.camera.pos.y, z:Graphics.camera.pos.z }
-        storedir = { x:Graphics.camera.dir.x, y:Graphics.camera.dir.y, z:Graphics.camera.dir.z }
-        storerot = Graphics.camera.rotation.value
+        storepos = Marching.camera.pos
+        storedir = Marching.camera.dir 
+        storerot = Marching.camera.rotation.value
       }
-
       // we must re-execute to use current Marching.js camera
       Graphics.createProperty( Graphics.camera.pos, 'x', 0, Marching.camera.pos ) 
       Graphics.createProperty( Graphics.camera.pos, 'y', 0, Marching.camera.pos ) 
       Graphics.createProperty( Graphics.camera.pos, 'z', 5, Marching.camera.pos ) 
       
       Graphics.createProperty( Graphics.camera, 'rotation', 0, Marching.camera ) 
-      
+    
       if( Graphics.camera.initialized === true ) {
-        camera.pos.z = storepos.z.value
-        camera.pos.x = storepos.x.value
-        camera.pos.y = storepos.y.value
-
-        camera.rotation = storerot
-        // XXX do dir
+        Graphics.camera.pos.z = Graphics.__storepos[2]
+        Graphics.camera.pos.x = Graphics.__storepos[0]
+        Graphics.camera.pos.y = Graphics.__storepos[1]
+        Graphics.camera.dir.z = storedir.z
+        Graphics.camera.dir.x = storedir.x
+        Graphics.camera.dir.y = storedir.y
       }
 
       Graphics.camera.initialized = true
@@ -256,6 +255,8 @@ const Graphics = {
 
           if( Graphics.initialized === false ) {
             Graphics.run()
+          }else{
+            Graphics.__storepos = [ Marching.camera.pos.x, Marching.camera.pos.y, Marching.camera.pos.z ]
           }
 
           let scene = Marching.createScene( wrapped )
@@ -392,6 +393,38 @@ const Graphics = {
           }
         }
       }
+
+      let rx=0,ry=0,rz=0
+
+      instance.rotation = {}
+      instance.__rotation = {
+        get x() { return rx },
+        set x(v) {
+          rx = v
+          wrapped.transform.__rotations[0] = Matrix.rotate( rx, 1,0,0 )
+          wrapped.transform.dirty = true
+        },
+        get y() { return rx },
+        set y(v) {
+          ry = v
+          wrapped.transform.__rotations[1] = Matrix.rotate( ry, 0,1,0 )
+          wrapped.transform.dirty = true
+        },
+        get z() { return rx },
+        set z(v) {
+          rz = v
+          wrapped.transform.__rotations[2] = Matrix.rotate( rz, 0,0,1 )
+          wrapped.transform.dirty = true
+        }
+      }
+      Graphics.createProperty( instance, 'x', 0, wrapped.transform.translation ) 
+      Graphics.createProperty( instance, 'y', 0, wrapped.transform.translation ) 
+      Graphics.createProperty( instance, 'z', 0, wrapped.transform.translation ) 
+      Graphics.createProperty( instance.rotation, 'x', 0, instance.__rotation ) 
+      Graphics.createProperty( instance.rotation, 'y', 0, instance.__rotation ) 
+      Graphics.createProperty( instance.rotation, 'z', 0, instance.__rotation ) 
+      Graphics.createProperty( instance.rotation, 'angle', 0, wrapped.transform.rotation ) 
+      Graphics.createProperty( instance, 'scale', 0, wrapped.transform.scale ) 
 
       // hack to make audio sequencing work with graphical objects
       Gibber.Gibberish.worklet.ugens.set( instance.__id, instance )
