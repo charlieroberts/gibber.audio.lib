@@ -130,6 +130,7 @@ const Utility = {
     return new Function( fncString )
   },
 
+  time( v ) { return Gibber.Clock.time( v ) },
   btof( beats ) { return 1 / (beats * ( 60 / Gibber.Clock.bpm )) },
 
   random() {
@@ -179,7 +180,7 @@ const Utility = {
 
     const fnc = new Function( 'args', fncstr )
 
-    ptrn.filters = [ fnc ]
+    ptrn.addFilter( fnc )
 
     return ptrn
   },
@@ -191,6 +192,7 @@ const Utility = {
     obj.Rndf = this.Rndf
     obj.btof = this.btof
     obj.chord = this.chord
+    obj.time = this.time
 
     Array.prototype.rnd = this.random
   }
