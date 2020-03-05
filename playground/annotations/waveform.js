@@ -59,6 +59,7 @@ const Waveform = {
     widget.storage = []
     widget.min = 10000
     widget.max = -10000
+    widget.windowSize = 240
 
     let isFade = false
 
@@ -154,10 +155,17 @@ const Waveform = {
     }
 
     if( !isFade ) {
-      widget.onclick = ()=> {
-        widget.min = Infinity
-        widget.max = -Infinity
-        widget.storage.length = 0
+      widget.onclick = evt => {
+        if( evt.shiftKey === false ) {
+          widget.min = Infinity
+          widget.max = -Infinity
+          widget.storage.length = 0
+        }else{
+          // increase size of window
+          widget.windowSize *= 2
+          console.log( 'windowsize:', widget.windowSize )
+
+        }
       }
     }
     
@@ -212,7 +220,7 @@ const Waveform = {
     }
 
     if( widget.isFade !== true ) {
-      if( widget.storage.length > 240 ) {
+      if( widget.storage.length > widget.windowSize ) {
         widget.max = Math.max.apply( null, widget.storage )
         widget.min = Math.min.apply( null, widget.storage )
         widget.storage.length = 0
