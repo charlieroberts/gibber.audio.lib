@@ -256,8 +256,24 @@ const Theory = {
       this.initProperties()
     }
     this.__initDegrees()
+  },
 
+  freeze: function() {
+    if( Gibberish.mode === 'worklet' ) {
+      Gibber.Theory.degree.sequencers.forEach( s => s.stop() )  
+      Gibber.Theory.offset.sequencers.forEach( s => s.stop() )  
+      Gibber.Theory.mode.sequencers.forEach( s => s.stop() )  
+      Gibber.Theory.root.sequencers.forEach( s => s.stop() )  
+    }
+  },
 
+  thaw: function() {
+    if( Gibberish.mode === 'worklet' ) {
+      this.degree.sequencers.forEach( s => s.start() )  
+      this.offset.sequencers.forEach( s => s.start() )  
+      this.mode.sequencers.forEach( s => s.start() )  
+      this.root.sequencers.forEach( s => s.start() )  
+    }
   },
 
   loadScale: function( name ) {
