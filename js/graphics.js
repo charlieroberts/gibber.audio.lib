@@ -395,8 +395,11 @@ const Graphics = {
       }
 
       let rx=0,ry=0,rz=0
-
       instance.rotation = {}
+
+      // transforms in marching.js have a __rotations array, that can
+      // be used to apply arbitrary rotations. We'll use that to separate
+      // our x,y, and z rotations so that they can be individually mapped.
       instance.__rotation = {
         get x() { return rx },
         set x(v) {
@@ -417,6 +420,7 @@ const Graphics = {
           wrapped.transform.dirty = true
         }
       }
+
       Graphics.createProperty( instance, 'x', 0, wrapped.transform.translation ) 
       Graphics.createProperty( instance, 'y', 0, wrapped.transform.translation ) 
       Graphics.createProperty( instance, 'z', 0, wrapped.transform.translation ) 
