@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gibber = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gibber = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"/Users/charlie/Documents/code/genish.js/js/abs.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -31,7 +31,7 @@ module.exports = x => {
   return abs
 }
 
-},{"./gen.js":30}],2:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/accum.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -150,7 +150,7 @@ module.exports = ( incr, reset=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],3:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/acos.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -185,7 +185,7 @@ module.exports = x => {
   return acos
 }
 
-},{"./gen.js":30}],4:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ad.js":[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -258,7 +258,7 @@ module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":30,"./gte.js":32,"./ifelseif.js":35,"./lt.js":38,"./memo.js":42,"./mul.js":48,"./neq.js":49,"./peek.js":54,"./poke.js":56,"./sub.js":66}],5:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gte.js":"/Users/charlie/Documents/code/genish.js/js/gte.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/add.js":[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -309,7 +309,7 @@ module.exports = ( ...args ) => {
   return add
 }
 
-},{"./gen.js":30}],6:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/adsr.js":[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -405,7 +405,7 @@ module.exports = ( attackTime=44, decayTime=22050, sustainTime=44100, sustainLev
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":30,"./gtp.js":33,"./ifelseif.js":35,"./lt.js":38,"./mul.js":48,"./neq.js":49,"./not.js":51,"./param.js":53,"./peek.js":54,"./poke.js":56,"./sub.js":66}],7:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gtp.js":"/Users/charlie/Documents/code/genish.js/js/gtp.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./not.js":"/Users/charlie/Documents/code/genish.js/js/not.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/and.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -437,7 +437,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],8:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/asin.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -472,7 +472,7 @@ module.exports = x => {
   return asin
 }
 
-},{"./gen.js":30}],9:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/atan.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -507,7 +507,7 @@ module.exports = x => {
   return atan
 }
 
-},{"./gen.js":30}],10:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/attack.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -528,7 +528,7 @@ module.exports = ( decayTime = 44100 ) => {
   return sub( 1, ssd.out )
 }
 
-},{"./gen.js":30,"./history.js":34,"./mul.js":48,"./sub.js":66}],11:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/bang.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -568,7 +568,7 @@ module.exports = ( _props ) => {
   return ugen
 }
 
-},{"./gen.js":30}],12:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/bool.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -602,7 +602,7 @@ module.exports = ( in1 ) => {
 }
 
 
-},{"./gen.js":30}],13:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ceil.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -635,7 +635,7 @@ module.exports = x => {
   return ceil
 }
 
-},{"./gen.js":30}],14:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/clamp.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -680,7 +680,7 @@ module.exports = ( in1, min=-1, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":27,"./gen.js":30,"./memo.js":42,"./sub.js":66}],15:[function(require,module,exports){
+},{"./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/cos.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -715,7 +715,7 @@ module.exports = x => {
   return cos
 }
 
-},{"./gen.js":30}],16:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/counter.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -830,7 +830,7 @@ module.exports = ( incr=1, min=0, max=Infinity, reset=0, loops=1,  properties ) 
   return ugen
 } 
 
-},{"./gen.js":30}],17:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/cycle.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require( './gen.js' ),
@@ -865,7 +865,7 @@ module.exports = ( frequency=1, reset=0, _props ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./mul.js":48,"./peek.js":54,"./phasor.js":55}],18:[function(require,module,exports){
+},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor.js":"/Users/charlie/Documents/code/genish.js/js/phasor.js"}],"/Users/charlie/Documents/code/genish.js/js/data.js":[function(require,module,exports){
 'use strict'
 
 const gen  = require('./gen.js'),
@@ -1028,7 +1028,7 @@ module.exports = ( x, y=1, properties ) => {
 }
 
 
-},{"./gen.js":30,"./peek.js":54,"./poke.js":56,"./utilities.js":72}],19:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./utilities.js":"/Users/charlie/Documents/code/genish.js/js/utilities.js"}],"/Users/charlie/Documents/code/genish.js/js/dcblock.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1051,7 +1051,7 @@ module.exports = ( in1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./gen.js":30,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66}],20:[function(require,module,exports){
+},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/decay.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1072,7 +1072,7 @@ module.exports = ( decayTime = 44100, props ) => {
   return ssd.out 
 }
 
-},{"./gen.js":30,"./history.js":34,"./mul.js":48,"./t60.js":68}],21:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./t60.js":"/Users/charlie/Documents/code/genish.js/js/t60.js"}],"/Users/charlie/Documents/code/genish.js/js/delay.js":[function(require,module,exports){
 'use strict'
 
 const gen  = require( './gen.js'  ),
@@ -1128,7 +1128,7 @@ module.exports = ( in1, taps, properties ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./data.js":18,"./gen.js":30,"./memo.js":42,"./peek.js":54,"./poke.js":56,"./sub.js":66,"./wrap.js":74}],22:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/delta.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1146,7 +1146,7 @@ module.exports = ( in1 ) => {
   return ugen
 }
 
-},{"./gen.js":30,"./history.js":34,"./sub.js":66}],23:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/div.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1199,7 +1199,7 @@ module.exports = (...args) => {
   return div
 }
 
-},{"./gen.js":30}],24:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/env.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen' ),
@@ -1235,7 +1235,7 @@ module.exports = props => {
   return ugen
 }
 
-},{"./data":18,"./gen":30,"./peek":54,"./phasor":55,"./windows":73}],25:[function(require,module,exports){
+},{"./data":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen":"/Users/charlie/Documents/code/genish.js/js/gen.js","./peek":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor":"/Users/charlie/Documents/code/genish.js/js/phasor.js","./windows":"/Users/charlie/Documents/code/genish.js/js/windows.js"}],"/Users/charlie/Documents/code/genish.js/js/eq.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1267,7 +1267,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],26:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/exp.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1300,7 +1300,7 @@ module.exports = x => {
   return exp
 }
 
-},{"./gen.js":30}],27:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/floor.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1333,7 +1333,7 @@ module.exports = x => {
   return floor
 }
 
-},{"./gen.js":30}],28:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/fold.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1395,7 +1395,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],29:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gate.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1491,7 +1491,7 @@ module.exports = ( control, in1, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],30:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gen.js":[function(require,module,exports){
 'use strict'
 
 /* gen.js
@@ -1779,7 +1779,7 @@ let gen = {
 
 module.exports = gen
 
-},{"memory-helper":75}],31:[function(require,module,exports){
+},{"memory-helper":"/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js"}],"/Users/charlie/Documents/code/genish.js/js/gt.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1815,7 +1815,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":30}],32:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gte.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1851,7 +1851,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":30}],33:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/gtp.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1881,7 +1881,7 @@ module.exports = (x,y) => {
   return gtp
 }
 
-},{"./gen.js":30}],34:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/history.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1971,7 +1971,7 @@ module.exports = ( in1=0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],35:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ifelseif.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2053,7 +2053,7 @@ module.exports = ( ...args  ) => {
   return ugen
 }
 
-},{"./gen.js":30}],36:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/in.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2092,7 +2092,7 @@ module.exports = ( name ) => {
   return input
 }
 
-},{"./gen.js":30}],37:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/index.js":[function(require,module,exports){
 'use strict'
 
 let library = {
@@ -2201,7 +2201,7 @@ library.gen.lib = library
 
 module.exports = library
 
-},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./data.js":18,"./dcblock.js":19,"./decay.js":20,"./delay.js":21,"./delta.js":22,"./div.js":23,"./env.js":24,"./eq.js":25,"./exp.js":26,"./floor.js":27,"./fold.js":28,"./gate.js":29,"./gen.js":30,"./gt.js":31,"./gte.js":32,"./gtp.js":33,"./history.js":34,"./ifelseif.js":35,"./in.js":36,"./lt.js":38,"./lte.js":39,"./ltp.js":40,"./max.js":41,"./memo.js":42,"./min.js":43,"./mix.js":44,"./mod.js":45,"./mstosamps.js":46,"./mtof.js":47,"./mul.js":48,"./neq.js":49,"./noise.js":50,"./not.js":51,"./pan.js":52,"./param.js":53,"./peek.js":54,"./phasor.js":55,"./poke.js":56,"./pow.js":57,"./process.js":58,"./rate.js":59,"./round.js":60,"./sah.js":61,"./selector.js":62,"./sign.js":63,"./sin.js":64,"./slide.js":65,"./sub.js":66,"./switch.js":67,"./t60.js":68,"./tan.js":69,"./tanh.js":70,"./train.js":71,"./utilities.js":72,"./windows.js":73,"./wrap.js":74}],38:[function(require,module,exports){
+},{"./abs.js":"/Users/charlie/Documents/code/genish.js/js/abs.js","./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./acos.js":"/Users/charlie/Documents/code/genish.js/js/acos.js","./ad.js":"/Users/charlie/Documents/code/genish.js/js/ad.js","./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./adsr.js":"/Users/charlie/Documents/code/genish.js/js/adsr.js","./and.js":"/Users/charlie/Documents/code/genish.js/js/and.js","./asin.js":"/Users/charlie/Documents/code/genish.js/js/asin.js","./atan.js":"/Users/charlie/Documents/code/genish.js/js/atan.js","./attack.js":"/Users/charlie/Documents/code/genish.js/js/attack.js","./bang.js":"/Users/charlie/Documents/code/genish.js/js/bang.js","./bool.js":"/Users/charlie/Documents/code/genish.js/js/bool.js","./ceil.js":"/Users/charlie/Documents/code/genish.js/js/ceil.js","./clamp.js":"/Users/charlie/Documents/code/genish.js/js/clamp.js","./cos.js":"/Users/charlie/Documents/code/genish.js/js/cos.js","./counter.js":"/Users/charlie/Documents/code/genish.js/js/counter.js","./cycle.js":"/Users/charlie/Documents/code/genish.js/js/cycle.js","./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./dcblock.js":"/Users/charlie/Documents/code/genish.js/js/dcblock.js","./decay.js":"/Users/charlie/Documents/code/genish.js/js/decay.js","./delay.js":"/Users/charlie/Documents/code/genish.js/js/delay.js","./delta.js":"/Users/charlie/Documents/code/genish.js/js/delta.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/genish.js/js/env.js","./eq.js":"/Users/charlie/Documents/code/genish.js/js/eq.js","./exp.js":"/Users/charlie/Documents/code/genish.js/js/exp.js","./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./fold.js":"/Users/charlie/Documents/code/genish.js/js/fold.js","./gate.js":"/Users/charlie/Documents/code/genish.js/js/gate.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gt.js":"/Users/charlie/Documents/code/genish.js/js/gt.js","./gte.js":"/Users/charlie/Documents/code/genish.js/js/gte.js","./gtp.js":"/Users/charlie/Documents/code/genish.js/js/gtp.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./ifelseif.js":"/Users/charlie/Documents/code/genish.js/js/ifelseif.js","./in.js":"/Users/charlie/Documents/code/genish.js/js/in.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js","./lte.js":"/Users/charlie/Documents/code/genish.js/js/lte.js","./ltp.js":"/Users/charlie/Documents/code/genish.js/js/ltp.js","./max.js":"/Users/charlie/Documents/code/genish.js/js/max.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./min.js":"/Users/charlie/Documents/code/genish.js/js/min.js","./mix.js":"/Users/charlie/Documents/code/genish.js/js/mix.js","./mod.js":"/Users/charlie/Documents/code/genish.js/js/mod.js","./mstosamps.js":"/Users/charlie/Documents/code/genish.js/js/mstosamps.js","./mtof.js":"/Users/charlie/Documents/code/genish.js/js/mtof.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/genish.js/js/neq.js","./noise.js":"/Users/charlie/Documents/code/genish.js/js/noise.js","./not.js":"/Users/charlie/Documents/code/genish.js/js/not.js","./pan.js":"/Users/charlie/Documents/code/genish.js/js/pan.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js","./phasor.js":"/Users/charlie/Documents/code/genish.js/js/phasor.js","./poke.js":"/Users/charlie/Documents/code/genish.js/js/poke.js","./pow.js":"/Users/charlie/Documents/code/genish.js/js/pow.js","./process.js":"/Users/charlie/Documents/code/genish.js/js/process.js","./rate.js":"/Users/charlie/Documents/code/genish.js/js/rate.js","./round.js":"/Users/charlie/Documents/code/genish.js/js/round.js","./sah.js":"/Users/charlie/Documents/code/genish.js/js/sah.js","./selector.js":"/Users/charlie/Documents/code/genish.js/js/selector.js","./sign.js":"/Users/charlie/Documents/code/genish.js/js/sign.js","./sin.js":"/Users/charlie/Documents/code/genish.js/js/sin.js","./slide.js":"/Users/charlie/Documents/code/genish.js/js/slide.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./switch.js":"/Users/charlie/Documents/code/genish.js/js/switch.js","./t60.js":"/Users/charlie/Documents/code/genish.js/js/t60.js","./tan.js":"/Users/charlie/Documents/code/genish.js/js/tan.js","./tanh.js":"/Users/charlie/Documents/code/genish.js/js/tanh.js","./train.js":"/Users/charlie/Documents/code/genish.js/js/train.js","./utilities.js":"/Users/charlie/Documents/code/genish.js/js/utilities.js","./windows.js":"/Users/charlie/Documents/code/genish.js/js/windows.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/lt.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2239,7 +2239,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":30}],39:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/lte.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2277,7 +2277,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":30}],40:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/ltp.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2307,7 +2307,7 @@ module.exports = (x,y) => {
   return ltp
 }
 
-},{"./gen.js":30}],41:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/max.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2340,7 +2340,7 @@ module.exports = (x,y) => {
   return max
 }
 
-},{"./gen.js":30}],42:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/memo.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2370,7 +2370,7 @@ module.exports = (in1,memoName) => {
   return memo
 }
 
-},{"./gen.js":30}],43:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/min.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2403,7 +2403,7 @@ module.exports = (x,y) => {
   return min
 }
 
-},{"./gen.js":30}],44:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mix.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js'),
@@ -2419,7 +2419,7 @@ module.exports = ( in1, in2, t=.5 ) => {
   return ugen
 }
 
-},{"./add.js":5,"./gen.js":30,"./memo.js":42,"./mul.js":48,"./sub.js":66}],45:[function(require,module,exports){
+},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/js/mod.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2463,7 +2463,7 @@ module.exports = (...args) => {
   return mod
 }
 
-},{"./gen.js":30}],46:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mstosamps.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2501,7 +2501,7 @@ module.exports = x => {
   return mstosamps
 }
 
-},{"./gen.js":30}],47:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mtof.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2539,7 +2539,7 @@ module.exports = ( x, props ) => {
   return ugen
 }
 
-},{"./gen.js":30}],48:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/mul.js":[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -2595,7 +2595,7 @@ module.exports = ( ...args ) => {
   return mul
 }
 
-},{"./gen.js":30}],49:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/neq.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2627,7 +2627,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],50:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/noise.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2655,7 +2655,7 @@ module.exports = x => {
   return noise
 }
 
-},{"./gen.js":30}],51:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/not.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2685,7 +2685,7 @@ module.exports = x => {
   return not
 }
 
-},{"./gen.js":30}],52:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/pan.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' ),
@@ -2729,7 +2729,7 @@ module.exports = ( leftInput, rightInput, pan =.5, properties ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./mul.js":48,"./peek.js":54}],53:[function(require,module,exports){
+},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./peek.js":"/Users/charlie/Documents/code/genish.js/js/peek.js"}],"/Users/charlie/Documents/code/genish.js/js/param.js":[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2785,7 +2785,7 @@ module.exports = ( propName=0, value=0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],54:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/peek.js":[function(require,module,exports){
 'use strict'
 
 const gen      = require( './gen.js' ),
@@ -2926,7 +2926,7 @@ module.exports = ( input_data, index=0, properties ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./param.js":53}],55:[function(require,module,exports){
+},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./param.js":"/Users/charlie/Documents/code/genish.js/js/param.js"}],"/Users/charlie/Documents/code/genish.js/js/phasor.js":[function(require,module,exports){
 'use strict'
 
 let gen   = require( './gen.js' ),
@@ -2957,7 +2957,7 @@ module.exports = ( frequency = 1, reset = 0, _props ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./div.js":23,"./gen.js":30,"./mul.js":48}],56:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js"}],"/Users/charlie/Documents/code/genish.js/js/poke.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -3012,7 +3012,7 @@ module.exports = ( data, value, index, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30,"./mul.js":48,"./wrap.js":74}],57:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/pow.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3054,7 +3054,7 @@ module.exports = (x,y) => {
   return pow
 }
 
-},{"./gen.js":30}],58:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/process.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3108,7 +3108,7 @@ module.exports = (...args) => {
   return process 
 }
 
-},{"./gen.js":30}],59:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/rate.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3160,7 +3160,7 @@ module.exports = ( in1, rate ) => {
   return ugen
 }
 
-},{"./add.js":5,"./delta.js":22,"./gen.js":30,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66,"./wrap.js":74}],60:[function(require,module,exports){
+},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./delta.js":"/Users/charlie/Documents/code/genish.js/js/delta.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./wrap.js":"/Users/charlie/Documents/code/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/genish.js/js/round.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3193,7 +3193,7 @@ module.exports = x => {
   return round
 }
 
-},{"./gen.js":30}],61:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sah.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' )
@@ -3250,7 +3250,7 @@ module.exports = ( in1, control, threshold=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],62:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/selector.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3302,7 +3302,7 @@ module.exports = ( ...inputs ) => {
   return ugen
 }
 
-},{"./gen.js":30}],63:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sign.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3335,7 +3335,7 @@ module.exports = x => {
   return sign
 }
 
-},{"./gen.js":30}],64:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/sin.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3370,7 +3370,7 @@ module.exports = x => {
   return sin
 }
 
-},{"./gen.js":30}],65:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/slide.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3397,7 +3397,7 @@ module.exports = ( in1, slideUp = 1, slideDown = 1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./div.js":23,"./gen.js":30,"./gt.js":31,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66,"./switch.js":67}],66:[function(require,module,exports){
+},{"./add.js":"/Users/charlie/Documents/code/genish.js/js/add.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./gt.js":"/Users/charlie/Documents/code/genish.js/js/gt.js","./history.js":"/Users/charlie/Documents/code/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js","./switch.js":"/Users/charlie/Documents/code/genish.js/js/switch.js"}],"/Users/charlie/Documents/code/genish.js/js/sub.js":[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -3462,7 +3462,7 @@ module.exports = ( ...args ) => {
   return sub
 }
 
-},{"./gen.js":30}],67:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/switch.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3496,7 +3496,7 @@ module.exports = ( control, in1 = 1, in2 = 0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],68:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/t60.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3536,7 +3536,7 @@ module.exports = x => {
   return t60
 }
 
-},{"./gen.js":30}],69:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/tan.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3571,7 +3571,7 @@ module.exports = x => {
   return tan
 }
 
-},{"./gen.js":30}],70:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/tanh.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3606,7 +3606,7 @@ module.exports = x => {
   return tanh
 }
 
-},{"./gen.js":30}],71:[function(require,module,exports){
+},{"./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/train.js":[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3623,7 +3623,7 @@ module.exports = ( frequency=440, pulsewidth=.5 ) => {
 }
 
 
-},{"./accum.js":2,"./div.js":23,"./gen.js":30,"./lt.js":38}],72:[function(require,module,exports){
+},{"./accum.js":"/Users/charlie/Documents/code/genish.js/js/accum.js","./div.js":"/Users/charlie/Documents/code/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./lt.js":"/Users/charlie/Documents/code/genish.js/js/lt.js"}],"/Users/charlie/Documents/code/genish.js/js/utilities.js":[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' ),
@@ -4010,7 +4010,7 @@ utilities.clear.callbacks = []
 
 module.exports = utilities
 
-},{"./data.js":18,"./gen.js":30}],73:[function(require,module,exports){
+},{"./data.js":"/Users/charlie/Documents/code/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/genish.js/js/windows.js":[function(require,module,exports){
 'use strict'
 
 /*
@@ -4098,7 +4098,7 @@ const windows = module.exports = {
   }
 }
 
-},{}],74:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/genish.js/js/wrap.js":[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -4153,7 +4153,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":27,"./gen.js":30,"./memo.js":42,"./sub.js":66}],75:[function(require,module,exports){
+},{"./floor.js":"/Users/charlie/Documents/code/genish.js/js/floor.js","./gen.js":"/Users/charlie/Documents/code/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/genish.js/js/memo.js","./sub.js":"/Users/charlie/Documents/code/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js":[function(require,module,exports){
 'use strict';
 
 var MemoryHelper = {
@@ -4246,7 +4246,7 @@ var MemoryHelper = {
 
 module.exports = MemoryHelper;
 
-},{}],76:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4301,7 +4301,7 @@ const Analysis = {
 
 module.exports = Analysis 
 
-},{"./ugen.js":116,"gibberish-dsp":185}],77:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/arp.js":[function(require,module,exports){
 const ArpWrapper = function( Gibber ) {
 
 const Arp = function( __chord = [0,2,4,6], octaves = 1, pattern = 'updown2' ) {
@@ -4436,7 +4436,7 @@ ArpWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = ArpWrapper
 
-},{}],78:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js":[function(require,module,exports){
 const Gibberish   = require( 'gibberish-dsp' )
 const Ugen        = require( './ugen.js' )
 const Instruments = require( './instruments.js' )
@@ -4478,6 +4478,7 @@ const Audio = {
       Utility.export( obj )
       this.Gen.export( obj )
       this.Graphics.export( obj )
+      this.Pattern.export( obj )
 
       obj.gen = this.Gen.make
       obj.lfo = this.Gen.composites.lfo
@@ -4521,7 +4522,7 @@ const Audio = {
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AudioContext({ latencyHint:.065 })
+        ctx = new AudioContext({ latencyHint:.025 })
         //ctx = new AudioContext()
       }
 
@@ -4804,7 +4805,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{"./analysis.js":76,"./arp.js":77,"./automata.js":79,"./binops.js":80,"./busses.js":81,"./clock.js":82,"./drums.js":83,"./effects.js":84,"./ensemble.js":85,"./envelopes.js":86,"./euclid.js":87,"./filters.js":89,"./freesound.js":90,"./gen.js":91,"./graphics.js":92,"./hex.js":93,"./hexSteps.js":94,"./instruments.js":95,"./make.js":96,"./oscillators.js":97,"./pattern.js":98,"./presets.js":99,"./seq.js":111,"./steps.js":112,"./theory.js":113,"./tidal.js":114,"./triggers.js":115,"./ugen.js":116,"./utility.js":117,"./waveObjects.js":118,"./wavePattern.js":119,"gibberish-dsp":185}],79:[function(require,module,exports){
+},{"./analysis.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js","./arp.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/arp.js","./automata.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/automata.js","./binops.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js","./busses.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js","./clock.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js","./drums.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js","./effects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js","./ensemble.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js","./envelopes.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js","./euclid.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/euclid.js","./filters.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js","./freesound.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js","./gen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js","./graphics.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/graphics.js","./hex.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js","./hexSteps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js","./instruments.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js","./make.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/make.js","./oscillators.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js","./pattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/pattern.js","./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./seq.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js","./steps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","./tidal.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/tidal.js","./triggers.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","./utility.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js","./waveObjects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js","./wavePattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/automata.js":[function(require,module,exports){
 // XXX Need to create automata in the AWP thread so that the evolve method can
 // be easily sequenced. Or is there some way to simply add a method to the AWP instance?
 
@@ -4893,7 +4894,7 @@ return Automata
 
 }
 
-},{}],80:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4933,7 +4934,7 @@ const Binops = {
 
 module.exports = Binops
 
-},{"./ugen.js":116,"gibberish-dsp":185}],81:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4985,7 +4986,7 @@ const Busses = {
 
 module.exports = Busses
 
-},{"./ugen.js":116,"gibberish-dsp":185}],82:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 
@@ -5160,7 +5161,7 @@ const Clock = {
 
 module.exports = Clock
 
-},{"gibberish-dsp":185,"serialize-javascript":147}],83:[function(require,module,exports){
+},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js":[function(require,module,exports){
 const Ugen = require( './ugen.js' )
 const Presets = require( './presets.js' )
 
@@ -5239,9 +5240,14 @@ module.exports = function( __Audio ) {
 
     const drums = Audio.Ensemble({
       'kd': { target:k,  method:'trigger', args:[1], name:'kick' },
+      [0]: { target:k,  method:'trigger', args:[1], name:'kick' },
       'sd': { target:s,  method:'trigger', args:[1], name:'snare' },
+      'sn': { target:s,  method:'trigger', args:[1], name:'snare' },
+      [1]: { target:s,  method:'trigger', args:[1], name:'snare' },
       'ch': { target:ch, method:'trigger', args:[1], name:'closedHat' },
+      [2]: { target:ch, method:'trigger', args:[1], name:'closedHat' },
       'oh': { target:oh, method:'trigger', args:[1], name:'openHat' },
+      [3]: { target:oh, method:'trigger', args:[1], name:'openHat' },
     })
 
     if( Audio.autoConnect === true ) drums.connect()
@@ -5294,10 +5300,16 @@ module.exports = function( __Audio ) {
     
     const drums = Audio.Ensemble({
       'kd': { target:kd, method:'trigger', args:[1], name:'kick' },
+      [0]: { target:kd, method:'trigger', args:[1], name:'kick' },
+      [1]: { target:sd, method:'trigger', args:[1], name:'snare' },
       'sd': { target:sd, method:'trigger', args:[1], name:'snare' },
+      [2]: { target:ch, method:'trigger', args:[.2], name:'closedHat' },
       'ch': { target:ch, method:'trigger', args:[.2], name:'closedHat' },
+      [3]: { target:oh, method:'trigger', args:[.2], name:'openHat' },
       'oh': { target:oh, method:'trigger', args:[.2], name:'openHat' },
+      [4]: { target:cp, method:'trigger', args:[.5], name:'clap' },
       'cp': { target:cp, method:'trigger', args:[.5], name:'clap' },
+      [5]: { target:cb, method:'trigger', args:[.5], name:'cowbell' },
       'cb': { target:cb, method:'trigger', args:[.5], name:'cowbell' },
     })
 
@@ -5339,7 +5351,7 @@ module.exports = function( __Audio ) {
   return { Drums, EDrums }
 }
 
-},{"./presets.js":99,"./ugen.js":116}],84:[function(require,module,exports){
+},{"./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5376,7 +5388,7 @@ const Effects = {
 
 module.exports = Effects
 
-},{"./ugen.js":116,"gibberish-dsp":185}],85:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js":[function(require,module,exports){
 module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
   const Ensemble = function( props ) {
@@ -5417,6 +5429,15 @@ module.exports = function( Audio ) {
     
     ens.tidals = []
 
+    ens.stop = function() {
+      ens.tidals.forEach( t => t.stop() )
+      ens.__sequencers.forEach( t => t.stop() )
+    }
+    ens.start = function() {
+      ens.tidals.forEach( t => t.start() )
+      ens.__sequencers.forEach( t => t.start() )
+    }
+
     ens.tidal = (pattern,num=0) => {
       if( ens.tidals[ num ] !== undefined ) ens.tidals[ num ].stop()
 
@@ -5428,6 +5449,19 @@ module.exports = function( Audio ) {
 
       return ens
     }
+    ens.__sequencers = []
+
+    ens.seq = (values,timings,num=0,offset=0) => {
+      if( ens.__sequencers[ num ] !== undefined ) ens.__sequencers[ num ].stop()
+
+      ens.__sequencers[ num ] = Gibber.Seq({
+        target:ens,
+        key:'play',
+        values,timings,offset
+      }).start()
+
+      return ens
+    }
 
     return ens
   }
@@ -5435,7 +5469,7 @@ module.exports = function( Audio ) {
   return Ensemble
 }
 
-},{}],86:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5468,7 +5502,7 @@ const Envelopes = {
 
 module.exports = Envelopes
 
-},{"./ugen.js":116,"gibberish-dsp":185}],87:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/euclid.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -5704,7 +5738,7 @@ Euclid.test = function( testKey ) {
 return Euclid
 }
 
-},{}],88:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js":[function(require,module,exports){
 
 // See all scales at: http://abbernie.github.io/tune/scales.html
 
@@ -5932,7 +5966,7 @@ Tune.prototype.root = function(newmidi, newfreq) {
 
 module.exports = Tune
 
-},{}],89:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5980,7 +6014,7 @@ const Filters = {
 
 module.exports = Filters
 
-},{"./ugen.js":116,"gibberish-dsp":185}],90:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js":[function(require,module,exports){
 module.exports = function( Audio ) {
   const token = '6a00f80ba02b2755a044cc4ef004febfc4ccd476'
 
@@ -6085,7 +6119,7 @@ module.exports = function( Audio ) {
   return Freesound
 }
 
-},{}],91:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
   
 const binops = [ 
@@ -6249,7 +6283,6 @@ const Gen  = {
     sqrt2 :   Math.SQRT2,
     sqrt1_2:  Math.SQRT1_2,
     twopi :   Math.PI * 2,
-    time  :   'time',
     samplerate: 'samplerate'
   },
 
@@ -6671,7 +6704,7 @@ Gen.init()
 return Gen 
 }
 
-},{}],92:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/graphics.js":[function(require,module,exports){
 const Marching = require( 'marching' )
 
 let Gibber = null
@@ -6694,7 +6727,8 @@ const Graphics = {
   __onrender:    [],
   __protomethods:['translate','scale','rotate','texture','material', 'bump'],
   __lights:[],
-
+  __storepos:null,
+  __storedir:null,
   camera : {
     pos: { x:0, y:0, z:5 },
     dir: { x:0, y:0, z:1 },
@@ -6704,28 +6738,26 @@ const Graphics = {
     // XXX we have to run this everytime we render as Marching.js
     // makes a brand new camera
     init() {
-      let storepos, storedir
       if( Graphics.camera.initialized === true ) {
         // store current camera data
-        storepos = { x:Graphics.camera.pos.x, y:Graphics.camera.pos.y, z:Graphics.camera.pos.z }
-        storedir = { x:Graphics.camera.dir.x, y:Graphics.camera.dir.y, z:Graphics.camera.dir.z }
-        storerot = Graphics.camera.rotation.value
+        storepos = Marching.camera.pos
+        storedir = Marching.camera.dir 
+        storerot = Marching.camera.rotation.value
       }
-
       // we must re-execute to use current Marching.js camera
       Graphics.createProperty( Graphics.camera.pos, 'x', 0, Marching.camera.pos ) 
       Graphics.createProperty( Graphics.camera.pos, 'y', 0, Marching.camera.pos ) 
       Graphics.createProperty( Graphics.camera.pos, 'z', 5, Marching.camera.pos ) 
       
       Graphics.createProperty( Graphics.camera, 'rotation', 0, Marching.camera ) 
-      
+    
       if( Graphics.camera.initialized === true ) {
-        camera.pos.z = storepos.z.value
-        camera.pos.x = storepos.x.value
-        camera.pos.y = storepos.y.value
-
-        camera.rotation = storerot
-        // XXX do dir
+        Graphics.camera.pos.z = Graphics.__storepos[2]
+        Graphics.camera.pos.x = Graphics.__storepos[0]
+        Graphics.camera.pos.y = Graphics.__storepos[1]
+        Graphics.camera.dir.z = storedir.z
+        Graphics.camera.dir.x = storedir.x
+        Graphics.camera.dir.y = storedir.y
       }
 
       Graphics.camera.initialized = true
@@ -6930,6 +6962,8 @@ const Graphics = {
 
           if( Graphics.initialized === false ) {
             Graphics.run()
+          }else{
+            Graphics.__storepos = [ Marching.camera.pos.x, Marching.camera.pos.y, Marching.camera.pos.z ]
           }
 
           let scene = Marching.createScene( wrapped )
@@ -7066,6 +7100,42 @@ const Graphics = {
           }
         }
       }
+
+      let rx=0,ry=0,rz=0
+      instance.rotation = {}
+
+      // transforms in marching.js have a __rotations array, that can
+      // be used to apply arbitrary rotations. We'll use that to separate
+      // our x,y, and z rotations so that they can be individually mapped.
+      instance.__rotation = {
+        get x() { return rx },
+        set x(v) {
+          rx = v
+          wrapped.transform.__rotations[0] = Matrix.rotate( rx, 1,0,0 )
+          wrapped.transform.dirty = true
+        },
+        get y() { return rx },
+        set y(v) {
+          ry = v
+          wrapped.transform.__rotations[1] = Matrix.rotate( ry, 0,1,0 )
+          wrapped.transform.dirty = true
+        },
+        get z() { return rx },
+        set z(v) {
+          rz = v
+          wrapped.transform.__rotations[2] = Matrix.rotate( rz, 0,0,1 )
+          wrapped.transform.dirty = true
+        }
+      }
+
+      Graphics.createProperty( instance, 'x', 0, wrapped.transform.translation ) 
+      Graphics.createProperty( instance, 'y', 0, wrapped.transform.translation ) 
+      Graphics.createProperty( instance, 'z', 0, wrapped.transform.translation ) 
+      Graphics.createProperty( instance.rotation, 'x', 0, instance.__rotation ) 
+      Graphics.createProperty( instance.rotation, 'y', 0, instance.__rotation ) 
+      Graphics.createProperty( instance.rotation, 'z', 0, instance.__rotation ) 
+      Graphics.createProperty( instance.rotation, 'angle', 0, wrapped.transform.rotation ) 
+      Graphics.createProperty( instance, 'scale', 0, wrapped.transform.scale ) 
 
       // hack to make audio sequencing work with graphical objects
       Gibber.Gibberish.worklet.ugens.set( instance.__id, instance )
@@ -7305,7 +7375,7 @@ const Graphics = {
 
 module.exports = Graphics
 
-},{"marching":236}],93:[function(require,module,exports){
+},{"marching":"/Users/charlie/Documents/code/marching/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -7386,7 +7456,7 @@ return Hex
 
 }
 
-},{}],94:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
   
 let Steps = {
@@ -7472,7 +7542,7 @@ return Steps.create
 }
 
 
-},{}],95:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7570,7 +7640,7 @@ const Instruments = {
 
 module.exports = Instruments
 
-},{"./ugen.js":116,"gibberish-dsp":185}],96:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/make.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
   const Gibberish = Gibber.Gibberish
 
@@ -7626,7 +7696,7 @@ sine.frequency.seq( [110,220,330], 1/8 )
 sine.connect()
 */
 
-},{}],97:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7659,7 +7729,7 @@ const Oscillators = {
 
 module.exports = Oscillators
 
-},{"./ugen.js":116,"gibberish-dsp":185}],98:[function(require,module,exports){
+},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/pattern.js":[function(require,module,exports){
 const patternWrapper = function( Gibber ) {
   "use strict"
 
@@ -7737,7 +7807,7 @@ const patternWrapper = function( Gibber ) {
     __methodNames:  [
       'rotate','switch','invert','flip',
       'transpose','reverse','shuffle','scale',
-      'store', 'range', 'set'
+      'store', 'range', 'set', 'freeze', 'thaw'
     ]
 
   })
@@ -7817,6 +7887,7 @@ const patternWrapper = function( Gibber ) {
       phase : 0,
       values : args, 
       isPattern: true,
+      __frozen:false,
       // wrap annotation update in setTimeout( func, 0 )
       __delayAnnotations:false,
       //values : typeof arguments[0] !== 'string' || arguments.length > 1 ? Array.prototype.slice.call( arguments, 0 ) : arguments[0].split(''),    
@@ -7830,76 +7901,91 @@ const patternWrapper = function( Gibber ) {
       isop:true,
       isGen,
 
+      freeze( shouldFreezeTheory = true ) {
+        fnc.__frozen = true
+      },
+      thaw() {
+        fnc.__frozen = false
+        Gibber.Theory.thaw()
+      },
+
       setSeq( seq ) {
         this.seq = seq
       },
 
       range() {
-        let start, end
-        
-        if( Array.isArray( arguments[0] ) ) {
-          start = arguments[0][0]
-          end   = arguments[0][1]
-        }else{
-          start = arguments[0]
-          end   = arguments[1]
-        }
-        
-        if( start < end ) {
-          fnc.start = start
-          fnc.end = end
-        }else{
-          fnc.start = end
-          fnc.end = start
-        }
+        if( !fnc.__frozen ) {
+          let start, end
+          
+          if( Array.isArray( arguments[0] ) ) {
+            start = arguments[0][0]
+            end   = arguments[0][1]
+          }else{
+            start = arguments[0]
+            end   = arguments[1]
+          }
+          
+          if( start < end ) {
+            fnc.start = start
+            fnc.end = end
+          }else{
+            fnc.start = end
+            fnc.end = start
+          }
 
-        this.checkForUpdateFunction( 'range', fnc )
+          this.checkForUpdateFunction( 'range', fnc )
+        }
 
         return fnc
       },
       
       set() {
-        let args = Array.isArray( arguments[ 0 ] ) ? arguments[ 0 ] : arguments
-        
-        fnc.values.length = 0
-        
-        for( let i = 0; i < args.length; i++ ) {
-          fnc.values.push( args[ i ] )
+        if( !fnc.__frozen ) {
+
+          let args = Array.isArray( arguments[ 0 ] ) ? arguments[ 0 ] : arguments
+          
+          fnc.values.length = 0
+          
+          for( let i = 0; i < args.length; i++ ) {
+            fnc.values.push( args[ i ] )
+          }
+          
+          fnc.end = fnc.values.length - 1
+          
+          // if( fnc.end > fnc.values.length - 1 ) {
+          //   fnc.end = fnc.values.length - 1
+          // }else if( fnc.end < )
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }
+          fnc._onchange()
         }
-        
-        fnc.end = fnc.values.length - 1
-        
-        // if( fnc.end > fnc.values.length - 1 ) {
-        //   fnc.end = fnc.values.length - 1
-        // }else if( fnc.end < )
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }
-        fnc._onchange()
         
         return fnc
       },
        
       reverse() {
-        let array = fnc.values,
-            left = null,
-            right = null,
-            length = array.length,
-            temporary;
-            
-        for ( left = 0, right = length - 1; left < right; left += 1, right -= 1 ) {
-          temporary = array[ left ]
-          array[ left ] = array[ right ]
-          array[ right ] = temporary;
-        }
-        
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', array )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }
+        if( !fnc.__frozen ) {
+          let array = fnc.values,
+              left = null,
+              right = null,
+              length = array.length,
+              temporary;
+              
+          for ( left = 0, right = length - 1; left < right; left += 1, right -= 1 ) {
+            temporary = array[ left ]
+            array[ left ] = array[ right ]
+            array[ right ] = temporary;
+          }
+          
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', array )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }
 
-        fnc._onchange()
+          fnc._onchange()
+        }
         
         return fnc
       },
@@ -7979,164 +8065,180 @@ const patternWrapper = function( Gibber ) {
       },
     
       reset() { 
-        // XXX replace with some type of standard deep copy
-        if( Array.isArray( fnc.original[0] ) ) {
-          const arr = []
-          for( let i = 0; i < fnc.original.length; i++ ) {
-            const chord = fnc.original[ i ]
-            arr[ i ] = []
-            for( let j = 0; j < chord.length; j++ ) {
-              arr[ i ][ j ] = chord[ j ] 
+        if( !fnc.__frozen ) {
+          // XXX replace with some type of standard deep copy
+          if( Array.isArray( fnc.original[0] ) ) {
+            const arr = []
+            for( let i = 0; i < fnc.original.length; i++ ) {
+              const chord = fnc.original[ i ]
+              arr[ i ] = []
+              for( let j = 0; j < chord.length; j++ ) {
+                arr[ i ][ j ] = chord[ j ] 
+              }
             }
+            fnc.values = arr
+          }else{
+            fnc.values = fnc.original.slice(0)
           }
-          fnc.values = arr
-        }else{
-          fnc.values = fnc.original.slice(0)
+          //fnc.set( fnc.original.slice( 0 ) );
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }  
+          fnc._onchange()
         }
-        //fnc.set( fnc.original.slice( 0 ) );
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }  
-        fnc._onchange()
+
         return fnc 
       },
       store() { fnc.storage[ fnc.storage.length ] = fnc.values.slice( 0 ); return fnc; },
 
       transpose( amt ) { 
-        for( let i = 0; i < fnc.values.length; i++ ) { 
-          let val = fnc.values[ i ]
-          
-          if( Array.isArray( val ) ) {
-            for( let j = 0; j < val.length; j++ ) {
-              if( typeof val[ j ] === 'number' ) {
-                val[ j ] = fnc.integersOnly ? Math.round( val[ j ] + amt ) : val[ j ] + amt
+        if( !fnc.__frozen ) {
+          for( let i = 0; i < fnc.values.length; i++ ) { 
+            let val = fnc.values[ i ]
+            
+            if( Array.isArray( val ) ) {
+              for( let j = 0; j < val.length; j++ ) {
+                if( typeof val[ j ] === 'number' ) {
+                  val[ j ] = fnc.integersOnly ? Math.round( val[ j ] + amt ) : val[ j ] + amt
+                }
+              }
+            }else{
+              if( typeof val === 'number' ) {
+                fnc.values[ i ] = fnc.integersOnly ? Math.round( fnc.values[ i ] + amt ) : fnc.values[ i ] + amt
               }
             }
-          }else{
-            if( typeof val === 'number' ) {
-              fnc.values[ i ] = fnc.integersOnly ? Math.round( fnc.values[ i ] + amt ) : fnc.values[ i ] + amt
-            }
           }
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }      
+          fnc._onchange()
         }
-        if( Gibberish.mode === 'processor' ) {
-          console.log( 'ID:', fnc.id )
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }      
-        fnc._onchange()
         
         return fnc
       },
 
       shuffle() { 
-        Gibber.Utility.shuffle( fnc.values )
-        fnc._onchange()
+        if( !fnc.__frozen ) {
+          Gibber.Utility.shuffle( fnc.values )
+          fnc._onchange()
+        }
         
         return fnc
       },
 
       scale( amt ) { 
-        fnc.values.map( (val, idx, array) => {
-          if( Array.isArray( val ) ) {
-            array[ idx ] = val.map( inside  => {
-              if( typeof inside === 'number' ) {
-                return fnc.integersOnly ? Math.round( inside * amt ) : inside * amt
-              } else {
-                return inside
+        if( !fnc.__frozen ) {
+          fnc.values.map( (val, idx, array) => {
+            if( Array.isArray( val ) ) {
+              array[ idx ] = val.map( inside  => {
+                if( typeof inside === 'number' ) {
+                  return fnc.integersOnly ? Math.round( inside * amt ) : inside * amt
+                } else {
+                  return inside
+                }
+              })
+            }else{
+              if( typeof val === 'number' ) {
+                array[ idx ] = fnc.integersOnly ? Math.round( val * amt ) : val * amt
               }
-            })
-          }else{
-            if( typeof val === 'number' ) {
-              array[ idx ] = fnc.integersOnly ? Math.round( val * amt ) : val * amt
             }
+          })
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
           }
-        })
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          fnc._onchange()
         }
-        fnc._onchange()
         
         return fnc
       },
 
       flip() {
-        let start = [],
-            ordered = null
-      
-        ordered = fnc.values.filter( function(elem) {
-          let shouldPush = start.indexOf( elem ) === -1
-          if( shouldPush ) start.push( elem )
-          return shouldPush
-        })
-      
-        ordered = ordered.sort( function( a,b ){ return a - b } )
-      
-        for( let i = 0; i < fnc.values.length; i++ ) {
-          let pos = ordered.indexOf( fnc.values[ i ] )
-          fnc.values[ i ] = ordered[ ordered.length - pos - 1 ]
+        if( !fnc.__frozen ) {
+          let start = [],
+              ordered = null
+        
+          ordered = fnc.values.filter( function(elem) {
+            let shouldPush = start.indexOf( elem ) === -1
+            if( shouldPush ) start.push( elem )
+            return shouldPush
+          })
+        
+          ordered = ordered.sort( function( a,b ){ return a - b } )
+        
+          for( let i = 0; i < fnc.values.length; i++ ) {
+            let pos = ordered.indexOf( fnc.values[ i ] )
+            fnc.values[ i ] = ordered[ ordered.length - pos - 1 ]
+          }
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }       
+          fnc._onchange()
         }
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }       
-        fnc._onchange()
       
         return fnc
       },
       
       invert() {
-        let prime0 = fnc.values[ 0 ]
-        
-        for( let i = 1; i < fnc.values.length; i++ ) {
-          if( typeof fnc.values[ i ] === 'number' ) {
-            let inverse = prime0 + (prime0 - fnc.values[ i ])
-            fnc.values[ i ] = inverse
+        if( !fnc.__frozen ) {
+          let prime0 = fnc.values[ 0 ]
+          
+          for( let i = 1; i < fnc.values.length; i++ ) {
+            if( typeof fnc.values[ i ] === 'number' ) {
+              let inverse = prime0 + (prime0 - fnc.values[ i ])
+              fnc.values[ i ] = inverse
+            }
           }
-        }
-        
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
-        }
+          
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          }
 
-        fnc._onchange()
+          fnc._onchange()
+        }
         
         return fnc
       },
     
       switch( to ) {
-        if( fnc.storage[ to ] ) {
-          fnc.values = fnc.storage[ to ].slice( 0 )
+        if( !fnc.__frozen ) {
+          if( fnc.storage[ to ] ) {
+            fnc.values = fnc.storage[ to ].slice( 0 )
+          }
+          
+          fnc._onchange()
         }
-        
-        fnc._onchange()
         
         return fnc
       },
     
       rotate( amt ) {
-        if( amt > 0 ) {
-          while( amt > 0 ) {
-            let end = fnc.values.pop()
-            fnc.values.unshift( end )
-            amt--
+        if( !fnc.__frozen ) {
+          if( amt > 0 ) {
+            while( amt > 0 ) {
+              let end = fnc.values.pop()
+              fnc.values.unshift( end )
+              amt--
+            }
+          }else if( amt < 0 ) {
+            while( amt < 0 ) {
+              let begin = fnc.values.shift()
+              fnc.values.push( begin )
+              amt++
+            }
           }
-        }else if( amt < 0 ) {
-          while( amt < 0 ) {
-            let begin = fnc.values.shift()
-            fnc.values.push( begin )
-            amt++
+
+          if( Gibberish.mode === 'processor' ) {
+            Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
+            Gibberish.processor.messages.push( fnc.id, '_onchange', true )
           }
-        }
 
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( fnc.id, 'values', fnc.values )
-          Gibberish.processor.messages.push( fnc.id, '_onchange', true )
+          fnc._onchange()
         }
-
-        fnc._onchange()
         
         return fnc
       },
@@ -8252,10 +8354,32 @@ const patternWrapper = function( Gibber ) {
       args[0].filters.forEach( f => out.addFilter( f ) )
     }
 
+    Pattern.children.push( out )
     return out
   }
 
   Pattern.listeners = {}
+  Pattern.children = []
+  Pattern.__isFrozen = false
+  Pattern.freeze = function( shouldFreezeTheory = true ) {
+    Pattern.children.forEach( p => p.freeze() ) 
+    if( shouldFreezeTheory === true ) {
+      Gibber.Theory.freeze()
+      Pattern.__isFrozen = true
+    }
+  }
+  Pattern.thaw = ()=> {
+    Pattern.children.forEach( p => p.thaw() )
+    if( Pattern.__isFrozen === true ) {
+      Gibber.Theory.thaw()
+      Pattern.__isFrozen = false
+    }
+  }
+
+  Pattern.export = function( obj ) {
+    obj.freeze = Pattern.freeze
+    obj.thaw   = Pattern.thaw
+  }
 
   Pattern.listeners.range = function( fnc ) {
     //if( !Notation.isRunning ) return
@@ -8315,7 +8439,7 @@ patternWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = patternWrapper
 
-},{}],99:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js":[function(require,module,exports){
 const Presets = {
   process( description, args, Audio ) {
     let output
@@ -8390,7 +8514,7 @@ Presets.instruments.PolyMono = Presets.instruments.Monosynth
 
 module.exports = Presets
 
-},{"./presets/bus2_presets.js":100,"./presets/chorus_presets.js":101,"./presets/distortion_presets.js":102,"./presets/drums_presets.js":103,"./presets/edrums_presets.js":104,"./presets/flanger_presets.js":105,"./presets/fm_presets.js":106,"./presets/kick_presets.js":107,"./presets/monosynth_presets.js":108,"./presets/snare_presets.js":109,"./presets/synth_presets.js":110}],100:[function(require,module,exports){
+},{"./presets/bus2_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/bus2_presets.js","./presets/chorus_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/chorus_presets.js","./presets/distortion_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/distortion_presets.js","./presets/drums_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/drums_presets.js","./presets/edrums_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/edrums_presets.js","./presets/flanger_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/flanger_presets.js","./presets/fm_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/fm_presets.js","./presets/kick_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/kick_presets.js","./presets/monosynth_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/monosynth_presets.js","./presets/snare_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/snare_presets.js","./presets/synth_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/synth_presets.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/bus2_presets.js":[function(require,module,exports){
 module.exports = {
 
   'spaceverb': {
@@ -8451,7 +8575,7 @@ module.exports = {
   },
 }
 
-},{}],101:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/chorus_presets.js":[function(require,module,exports){
 module.exports = {
 
   lush: {
@@ -8479,7 +8603,7 @@ module.exports = {
 
 }
 
-},{}],102:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/distortion_presets.js":[function(require,module,exports){
 module.exports = {
 
   crunch: {
@@ -8507,7 +8631,7 @@ module.exports = {
   }
 }
 
-},{}],103:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/drums_presets.js":[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -8543,7 +8667,7 @@ module.exports = {
 
 }
 
-},{}],104:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/edrums_presets.js":[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -8610,7 +8734,7 @@ module.exports = {
 
 }
 
-},{}],105:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/flanger_presets.js":[function(require,module,exports){
 module.exports = {
   moderate: {
     feedback: .25,
@@ -8626,7 +8750,7 @@ module.exports = {
 
 }
 
-},{}],106:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/fm_presets.js":[function(require,module,exports){
 module.exports = {
 
   bass : {
@@ -8719,7 +8843,7 @@ module.exports = {
 	}
 }
 
-},{}],107:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/kick_presets.js":[function(require,module,exports){
 module.exports = {
 
   deep: {
@@ -8747,7 +8871,7 @@ module.exports = {
 
 }
 
-},{}],108:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/monosynth_presets.js":[function(require,module,exports){
 module.exports = {
 
   'short.dry' : { 
@@ -9032,7 +9156,7 @@ module.exports = {
 
 }
 
-},{}],109:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/snare_presets.js":[function(require,module,exports){
 module.exports = {
 
   snappy: {
@@ -9049,7 +9173,7 @@ module.exports = {
 
 }
 
-},{}],110:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/synth_presets.js":[function(require,module,exports){
 module.exports = {
 
   acidBass: {
@@ -9178,12 +9302,23 @@ module.exports = {
   'square.perc': { 
     waveform:'square', 
     shape:'exponential', 
-    //antialias:true, 
+    antialias:true, 
     filterType:2, 
     cutoff:.25, 
     decay:1/8,
     panVoices:true
   },
+
+  'square.perc.long': { 
+    waveform:'square', 
+    shape:'exponential', 
+    antialias:true, 
+    filterType:2, 
+    cutoff:.25, 
+    decay:2,
+    panVoices:true
+  },
+
   rhodes:{
     waveform:'sine',
     presetInit( audio ) {
@@ -9191,11 +9326,12 @@ module.exports = {
       this.fx.add( this.tremolo )
     },
     decay:4,
+    gain:.125,
     shape:'exponential'
   }
 }
 
-},{}],111:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 
 module.exports = function( Audio ) {
@@ -9265,7 +9401,7 @@ module.exports = function( Audio ) {
         //  valuesPattern.repeat( this.values.randomArgs[ i ], this.values.randomArgs[ i + 1 ] )
         //}
       }
-      timings.output = { time, shouldExecute:0 }
+      timings.output = { time:'time', shouldExecute:0 }
       timings.density = 1
 
       timings.addFilter( function( args ) {
@@ -9304,8 +9440,7 @@ module.exports = function( Audio ) {
     }
 
     values.__patternType = 'values'
-    if( timings !== null )
-      timings.__patternType = 'timings'
+    if( timings !== null ) timings.__patternType = 'timings'
 
     //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
 
@@ -9356,7 +9491,7 @@ module.exports = function( Audio ) {
 
 }
 
-},{"gibberish-dsp":185}],112:[function(require,module,exports){
+},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
  
 const Steps = {
@@ -9575,7 +9710,7 @@ return Steps.create
 
 */
 
-},{}],113:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 const Tune      = require( './external/tune-api-only.js' )
@@ -9834,8 +9969,24 @@ const Theory = {
       this.initProperties()
     }
     this.__initDegrees()
+  },
 
+  freeze: function() {
+    if( Gibberish.mode === 'worklet' ) {
+      Gibber.Theory.degree.sequencers.forEach( s => s.stop() )  
+      Gibber.Theory.offset.sequencers.forEach( s => s.stop() )  
+      Gibber.Theory.mode.sequencers.forEach( s => s.stop() )  
+      Gibber.Theory.root.sequencers.forEach( s => s.stop() )  
+    }
+  },
 
+  thaw: function() {
+    if( Gibberish.mode === 'worklet' ) {
+      this.degree.sequencers.forEach( s => s.start() )  
+      this.offset.sequencers.forEach( s => s.start() )  
+      this.mode.sequencers.forEach( s => s.start() )  
+      this.root.sequencers.forEach( s => s.start() )  
+    }
   },
 
   loadScale: function( name ) {
@@ -9922,7 +10073,7 @@ const Theory = {
 
 module.exports = Theory
 
-},{"./external/tune-api-only.js":88,"gibberish-dsp":185,"serialize-javascript":147}],114:[function(require,module,exports){
+},{"./external/tune-api-only.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/tidal.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 
 module.exports = function( Audio ) {
@@ -10026,7 +10177,7 @@ module.exports = function( Audio ) {
 
 }
 
-},{"gibberish-dsp":185}],115:[function(require,module,exports){
+},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -10066,7 +10217,7 @@ return Triggers
 
 }
 
-},{}],116:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js":[function(require,module,exports){
 const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
@@ -10686,7 +10837,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
 module.exports = Ugen
 
-},{"./presets.js":99,"./theory.js":113,"gibberish-dsp":185}],117:[function(require,module,exports){
+},{"./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js":[function(require,module,exports){
 const Utility = {
   rndf( min=0, max=1, number, canRepeat=true ) {
     let out = 0
@@ -10819,6 +10970,7 @@ const Utility = {
     return new Function( fncString )
   },
 
+  time( v ) { return Gibber.Clock.time( v ) },
   btof( beats ) { return 1 / (beats * ( 60 / Gibber.Clock.bpm )) },
 
   random() {
@@ -10868,7 +11020,7 @@ const Utility = {
 
     const fnc = new Function( 'args', fncstr )
 
-    ptrn.filters = [ fnc ]
+    ptrn.addFilter( fnc )
 
     return ptrn
   },
@@ -10880,6 +11032,7 @@ const Utility = {
     obj.Rndf = this.Rndf
     obj.btof = this.btof
     obj.chord = this.chord
+    obj.time = this.time
 
     Array.prototype.rnd = this.random
   }
@@ -10887,7 +11040,7 @@ const Utility = {
 
 module.exports = Utility
 
-},{}],118:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
    const gen = Gibber.Gen.make  
 
@@ -10992,7 +11145,7 @@ module.exports = function( Gibber ) {
   return WavePatterns
 }
 
-},{}],119:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const WavePattern = function( ugen ) {
@@ -11009,7 +11162,7 @@ module.exports = function( Gibber ) {
   return WavePattern
 }
 
-},{}],120:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/base64-js/index.js":[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -11163,9 +11316,9 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],121:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js":[function(require,module,exports){
 
-},{}],122:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -11690,7 +11843,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],123:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js":[function(require,module,exports){
 (function (Buffer){
 /*!
  * The buffer module from node.js, for the browser.
@@ -13493,7 +13646,7 @@ var hexSliceLookupTable = (function () {
 })()
 
 }).call(this,require("buffer").Buffer)
-},{"base64-js":120,"buffer":123,"ieee754":125}],124:[function(require,module,exports){
+},{"base64-js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/base64-js/index.js","buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js","ieee754":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/ieee754/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js":[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -13604,7 +13757,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":127}],125:[function(require,module,exports){
+},{"../../is-buffer/index.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/ieee754/index.js":[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -13690,7 +13843,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],126:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -13719,7 +13872,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],127:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js":[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -13742,7 +13895,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],128:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/path-browserify/index.js":[function(require,module,exports){
 (function (process){
 // .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
 // backported and transplited with Babel, with backwards-compat fixes
@@ -14048,7 +14201,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":130}],129:[function(require,module,exports){
+},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js":[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -14097,7 +14250,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 
 }).call(this,require('_process'))
-},{"_process":130}],130:[function(require,module,exports){
+},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -14283,10 +14436,10 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],131:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/duplex-browser.js":[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":132}],132:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14418,7 +14571,7 @@ Duplex.prototype._destroy = function (err, cb) {
 
   pna.nextTick(cb, err);
 };
-},{"./_stream_readable":134,"./_stream_writable":136,"core-util-is":124,"inherits":126,"process-nextick-args":129}],133:[function(require,module,exports){
+},{"./_stream_readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js","./_stream_writable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_passthrough.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -14466,7 +14619,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":135,"core-util-is":124,"inherits":126}],134:[function(require,module,exports){
+},{"./_stream_transform":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -15488,7 +15641,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":132,"./internal/streams/BufferList":137,"./internal/streams/destroy":138,"./internal/streams/stream":139,"_process":130,"core-util-is":124,"events":122,"inherits":126,"isarray":140,"process-nextick-args":129,"safe-buffer":146,"string_decoder/":141,"util":121}],135:[function(require,module,exports){
+},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./internal/streams/BufferList":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/BufferList.js","./internal/streams/destroy":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","isarray":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/node_modules/isarray/index.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js","safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","string_decoder/":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15703,7 +15856,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":132,"core-util-is":124,"inherits":126}],136:[function(require,module,exports){
+},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js":[function(require,module,exports){
 (function (process,global,setImmediate){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -16393,7 +16546,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
-},{"./_stream_duplex":132,"./internal/streams/destroy":138,"./internal/streams/stream":139,"_process":130,"core-util-is":124,"inherits":126,"process-nextick-args":129,"safe-buffer":146,"timers":149,"util-deprecate":150}],137:[function(require,module,exports){
+},{"./_stream_duplex":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./internal/streams/destroy":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js","./internal/streams/stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","core-util-is":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/core-util-is/lib/util.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js","safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","timers":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/timers-browserify/main.js","util-deprecate":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util-deprecate/browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/BufferList.js":[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -16473,7 +16626,7 @@ if (util && util.inspect && util.inspect.custom) {
     return this.constructor.name + ' ' + obj;
   };
 }
-},{"safe-buffer":146,"util":121}],138:[function(require,module,exports){
+},{"safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/destroy.js":[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -16548,17 +16701,17 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":129}],139:[function(require,module,exports){
+},{"process-nextick-args":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process-nextick-args/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/internal/streams/stream-browser.js":[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":122}],140:[function(require,module,exports){
+},{"events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browserify/node_modules/events/events.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/node_modules/isarray/index.js":[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],141:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/node_modules/string_decoder/lib/string_decoder.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16855,10 +17008,10 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":146}],142:[function(require,module,exports){
+},{"safe-buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/passthrough.js":[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":143}],143:[function(require,module,exports){
+},{"./readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js":[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -16867,13 +17020,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":132,"./lib/_stream_passthrough.js":133,"./lib/_stream_readable.js":134,"./lib/_stream_transform.js":135,"./lib/_stream_writable.js":136}],144:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_duplex.js","./lib/_stream_passthrough.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_passthrough.js","./lib/_stream_readable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_readable.js","./lib/_stream_transform.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_transform.js","./lib/_stream_writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/transform.js":[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":143}],145:[function(require,module,exports){
+},{"./readable":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/writable-browser.js":[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":136}],146:[function(require,module,exports){
+},{"./lib/_stream_writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/lib/_stream_writable.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/safe-buffer/index.js":[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -16937,7 +17090,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":123}],147:[function(require,module,exports){
+},{"buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js":[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -17112,7 +17265,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],148:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-browserify/index.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -17241,7 +17394,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":122,"inherits":126,"readable-stream/duplex.js":131,"readable-stream/passthrough.js":142,"readable-stream/readable.js":143,"readable-stream/transform.js":144,"readable-stream/writable.js":145}],149:[function(require,module,exports){
+},{"events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/inherits/inherits_browser.js","readable-stream/duplex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/duplex-browser.js","readable-stream/passthrough.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/passthrough.js","readable-stream/readable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/readable-browser.js","readable-stream/transform.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/transform.js","readable-stream/writable.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/readable-stream/writable-browser.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/timers-browserify/main.js":[function(require,module,exports){
 (function (setImmediate,clearImmediate){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -17320,7 +17473,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
   delete immediateIds[id];
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":130,"timers":149}],150:[function(require,module,exports){
+},{"process/browser.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","timers":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/timers-browserify/main.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util-deprecate/browser.js":[function(require,module,exports){
 (function (global){
 
 /**
@@ -17391,7 +17544,7 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],151:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -17416,14 +17569,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],152:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],153:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -18013,7 +18166,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":152,"_process":130,"inherits":151}],154:[function(require,module,exports){
+},{"./support/isBuffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/support/isBufferBrowser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js":[function(require,module,exports){
 let ugen = require( '../ugen.js' )
 
 let analyzer = Object.create( ugen )
@@ -18025,7 +18178,7 @@ Object.assign( analyzer, {
 
 module.exports = analyzer
 
-},{"../ugen.js":219}],155:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzers.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
   const { In, Out, SSD } = require( './singlesampledelay.js'  )( Gibberish )
 
@@ -18050,7 +18203,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./follow.js":156,"./singlesampledelay.js":157}],156:[function(require,module,exports){
+},{"./follow.js":"/Users/charlie/Documents/code/gibberish/js/analysis/follow.js","./singlesampledelay.js":"/Users/charlie/Documents/code/gibberish/js/analysis/singlesampledelay.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/follow.js":[function(require,module,exports){
 const g = require('genish.js'),
       analyzer = require('./analyzer.js'),
       ugen = require('../ugen.js');
@@ -18233,7 +18386,7 @@ module.exports = function (Gibberish) {
 
   return Follow;
 };
-},{"../ugen.js":219,"./analyzer.js":154,"genish.js":37}],157:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/singlesampledelay.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       proxy    = require( '../workletProxy.js' ),
@@ -18350,7 +18503,7 @@ return { In, Out, SSD }
 
 }
 
-},{"../ugen.js":219,"../workletProxy.js":222,"./analyzer.js":154,"genish.js":37}],158:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","./analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/ad.js":[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -18378,7 +18531,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":219,"genish.js":37}],159:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/adsr.js":[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -18423,7 +18576,7 @@ module.exports = function( Gibberish ) {
   return ADSR
 }
 
-},{"../ugen.js":219,"genish.js":37}],160:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/envelopes.js":[function(require,module,exports){
 const g = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -18458,7 +18611,7 @@ module.exports = function( Gibberish ) {
   return Envelopes
 }
 
-},{"./ad.js":158,"./adsr.js":159,"./ramp.js":161,"genish.js":37}],161:[function(require,module,exports){
+},{"./ad.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/ad.js","./adsr.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/adsr.js","./ramp.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/ramp.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/ramp.js":[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -18492,7 +18645,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":219,"genish.js":37}],162:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/external/priorityqueue.js":[function(require,module,exports){
 /*
  * https://github.com/antimatter15/heapqueue.js/blob/master/heapqueue.js
  *
@@ -18606,7 +18759,7 @@ HeapQueue.prototype.pop = function(){
 
 module.exports = HeapQueue
 
-},{}],163:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibberish/js/filters/allpass.js":[function(require,module,exports){
 let g = require( 'genish.js' )
  
 // constructor for schroeder allpass filters
@@ -18623,7 +18776,7 @@ let allPass = function( _input, length=500, feedback=.5 ) {
 
 module.exports = allPass
 
-},{"genish.js":37}],164:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/biquad.js":[function(require,module,exports){
 let g = require('genish.js'),
     filter = require('./filter.js');
 
@@ -18779,7 +18932,7 @@ module.exports = function (Gibberish) {
 
   return Biquad;
 };
-},{"./filter.js":167,"genish.js":37}],165:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js":[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 ) {
@@ -18798,7 +18951,7 @@ let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 
 
 module.exports = combFilter
 
-},{"genish.js":37}],166:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/diodeFilterZDF.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -19008,7 +19161,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./filter.js":167,"genish.js":37}],167:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filter.js":[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let filter = Object.create( ugen )
@@ -19019,7 +19172,7 @@ Object.assign( filter, {
 
 module.exports = filter
 
-},{"../ugen.js":219}],168:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filter24.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -19089,7 +19242,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":167,"genish.js":37}],169:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filters.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const g = Gibberish.genish
@@ -19161,7 +19314,7 @@ return filters
 
 }
 
-},{"./allpass.js":163,"./biquad.js":164,"./combfilter.js":165,"./diodeFilterZDF.js":166,"./filter24.js":168,"./ladder.js":170,"./svf.js":171}],170:[function(require,module,exports){
+},{"./allpass.js":"/Users/charlie/Documents/code/gibberish/js/filters/allpass.js","./biquad.js":"/Users/charlie/Documents/code/gibberish/js/filters/biquad.js","./combfilter.js":"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js","./diodeFilterZDF.js":"/Users/charlie/Documents/code/gibberish/js/filters/diodeFilterZDF.js","./filter24.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter24.js","./ladder.js":"/Users/charlie/Documents/code/gibberish/js/filters/ladder.js","./svf.js":"/Users/charlie/Documents/code/gibberish/js/filters/svf.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/ladder.js":[function(require,module,exports){
 const genish = require('genish.js'),
       filterProto = require('./filter.js');
 
@@ -19274,7 +19427,7 @@ module.exports = function (Gibberish) {
 
   return Zd24;
 };
-},{"./filter.js":167,"genish.js":37}],171:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/svf.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -19346,7 +19499,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":167,"genish.js":37}],172:[function(require,module,exports){
+},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/bitCrusher.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -19424,7 +19577,7 @@ return BitCrusher
 
 }
 
-},{"./effect.js":177,"genish.js":37}],173:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/bufferShuffler.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -19549,7 +19702,7 @@ module.exports = function( Gibberish ) {
   return Shuffler 
 }
 
-},{"./effect.js":177,"genish.js":37}],174:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/chorus.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
   
@@ -19646,7 +19799,7 @@ return __Chorus
 
 }
 
-},{"./effect.js":177,"genish.js":37}],175:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/delay.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -19718,7 +19871,7 @@ return Delay
 
 }
 
-},{"./effect.js":177,"genish.js":37}],176:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/distortion.js":[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -19798,7 +19951,7 @@ module.exports = function (Gibberish) {
 
   return Distortion;
 };
-},{"./effect.js":177,"genish.js":37}],177:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/effect.js":[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let effect = Object.create( ugen )
@@ -19810,7 +19963,7 @@ Object.assign( effect, {
 
 module.exports = effect
 
-},{"../ugen.js":219}],178:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/effects.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const effects = {
@@ -19841,7 +19994,7 @@ return effects
 
 }
 
-},{"./bitCrusher.js":172,"./bufferShuffler.js":173,"./chorus.js":174,"./delay.js":175,"./distortion.js":176,"./flanger.js":179,"./freeverb.js":180,"./ringMod.js":181,"./tremolo.js":182,"./vibrato.js":183,"./wavefolder.js":184}],179:[function(require,module,exports){
+},{"./bitCrusher.js":"/Users/charlie/Documents/code/gibberish/js/fx/bitCrusher.js","./bufferShuffler.js":"/Users/charlie/Documents/code/gibberish/js/fx/bufferShuffler.js","./chorus.js":"/Users/charlie/Documents/code/gibberish/js/fx/chorus.js","./delay.js":"/Users/charlie/Documents/code/gibberish/js/fx/delay.js","./distortion.js":"/Users/charlie/Documents/code/gibberish/js/fx/distortion.js","./flanger.js":"/Users/charlie/Documents/code/gibberish/js/fx/flanger.js","./freeverb.js":"/Users/charlie/Documents/code/gibberish/js/fx/freeverb.js","./ringMod.js":"/Users/charlie/Documents/code/gibberish/js/fx/ringMod.js","./tremolo.js":"/Users/charlie/Documents/code/gibberish/js/fx/tremolo.js","./vibrato.js":"/Users/charlie/Documents/code/gibberish/js/fx/vibrato.js","./wavefolder.js":"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/flanger.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     proto = require( './effect.js' )
 
@@ -19932,7 +20085,7 @@ return Flanger
 
 }
 
-},{"./effect.js":177,"genish.js":37}],180:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/freeverb.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -20040,7 +20193,7 @@ return Freeverb
 }
 
 
-},{"./effect.js":177,"genish.js":37}],181:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/ringMod.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -20105,7 +20258,7 @@ return RingMod
 
 }
 
-},{"./effect.js":177,"genish.js":37}],182:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/tremolo.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -20178,7 +20331,7 @@ return Tremolo
 
 }
 
-},{"./effect.js":177,"genish.js":37}],183:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/vibrato.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -20265,7 +20418,7 @@ return Vibrato
 
 }
 
-},{"./effect.js":177,"genish.js":37}],184:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.js":[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -20404,7 +20557,7 @@ module.exports = function (Gibberish) {
 
   return [Wavefolder, wavestage];
 };
-},{"./effect.js":177,"genish.js":37}],185:[function(require,module,exports){
+},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/index.js":[function(require,module,exports){
 let MemoryHelper = require( 'memory-helper' ),
     genish       = require( 'genish.js' )
     
@@ -20901,7 +21054,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzer.js":154,"./analysis/analyzers.js":155,"./envelopes/envelopes.js":160,"./filters/filters.js":169,"./fx/effect.js":177,"./fx/effects.js":178,"./instruments/instrument.js":192,"./instruments/instruments.js":193,"./instruments/polyMixin.js":197,"./instruments/polytemplate.js":198,"./misc/binops.js":203,"./misc/bus.js":204,"./misc/bus2.js":205,"./misc/monops.js":206,"./misc/panner.js":207,"./misc/time.js":208,"./oscillators/oscillators.js":211,"./scheduling/scheduler.js":215,"./scheduling/seq2.js":216,"./scheduling/sequencer.js":217,"./scheduling/tidal.js":218,"./ugen.js":219,"./ugenTemplate.js":220,"./utilities.js":221,"./workletProxy.js":222,"genish.js":37,"memory-helper":223}],186:[function(require,module,exports){
+},{"./analysis/analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","./analysis/analyzers.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzers.js","./envelopes/envelopes.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/envelopes.js","./filters/filters.js":"/Users/charlie/Documents/code/gibberish/js/filters/filters.js","./fx/effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","./fx/effects.js":"/Users/charlie/Documents/code/gibberish/js/fx/effects.js","./instruments/instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","./instruments/instruments.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instruments.js","./instruments/polyMixin.js":"/Users/charlie/Documents/code/gibberish/js/instruments/polyMixin.js","./instruments/polytemplate.js":"/Users/charlie/Documents/code/gibberish/js/instruments/polytemplate.js","./misc/binops.js":"/Users/charlie/Documents/code/gibberish/js/misc/binops.js","./misc/bus.js":"/Users/charlie/Documents/code/gibberish/js/misc/bus.js","./misc/bus2.js":"/Users/charlie/Documents/code/gibberish/js/misc/bus2.js","./misc/monops.js":"/Users/charlie/Documents/code/gibberish/js/misc/monops.js","./misc/panner.js":"/Users/charlie/Documents/code/gibberish/js/misc/panner.js","./misc/time.js":"/Users/charlie/Documents/code/gibberish/js/misc/time.js","./oscillators/oscillators.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/oscillators.js","./scheduling/scheduler.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/scheduler.js","./scheduling/seq2.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/seq2.js","./scheduling/sequencer.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/sequencer.js","./scheduling/tidal.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/tidal.js","./ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./ugenTemplate.js":"/Users/charlie/Documents/code/gibberish/js/ugenTemplate.js","./utilities.js":"/Users/charlie/Documents/code/gibberish/js/utilities.js","./workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js","memory-helper":"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/clap.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -20971,7 +21124,7 @@ module.exports = function (Gibberish) {
 
   return Clap;
 };
-},{"./instrument.js":192,"genish.js":37}],187:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/complex.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js'),
       __wavefold = require('../fx/wavefolder.js');
@@ -21083,7 +21236,7 @@ module.exports = function (Gibberish) {
 
   return [Complex, PolyComplex];
 };
-},{"../fx/wavefolder.js":184,"./instrument.js":192,"genish.js":37}],188:[function(require,module,exports){
+},{"../fx/wavefolder.js":"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.js","./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/conga.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21124,7 +21277,7 @@ module.exports = function( Gibberish ) {
   return [ Conga, PolyConga ]
 }
 
-},{"./instrument.js":192,"genish.js":37}],189:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/cowbell.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21168,7 +21321,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":192,"genish.js":37}],190:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/fm.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -21283,7 +21436,7 @@ module.exports = function (Gibberish) {
 
   return [FM, PolyFM];
 };
-},{"./instrument.js":192,"genish.js":37}],191:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/hat.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21337,7 +21490,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":192,"genish.js":37}],192:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js":[function(require,module,exports){
 const ugen = require( '../ugen.js' )()
 
 const instrument = Object.create( ugen )
@@ -21378,7 +21531,7 @@ Object.assign( instrument, {
 
 module.exports = instrument
 
-},{"../ugen.js":219}],193:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/instruments.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
 const instruments = {
@@ -21414,7 +21567,7 @@ return instruments
 
 }
 
-},{"./clap.js":186,"./complex.js":187,"./conga.js":188,"./cowbell.js":189,"./fm.js":190,"./hat.js":191,"./karplusstrong.js":194,"./kick.js":195,"./monosynth.js":196,"./sampler.js":199,"./snare.js":200,"./synth.js":201,"./tom.js":202}],194:[function(require,module,exports){
+},{"./clap.js":"/Users/charlie/Documents/code/gibberish/js/instruments/clap.js","./complex.js":"/Users/charlie/Documents/code/gibberish/js/instruments/complex.js","./conga.js":"/Users/charlie/Documents/code/gibberish/js/instruments/conga.js","./cowbell.js":"/Users/charlie/Documents/code/gibberish/js/instruments/cowbell.js","./fm.js":"/Users/charlie/Documents/code/gibberish/js/instruments/fm.js","./hat.js":"/Users/charlie/Documents/code/gibberish/js/instruments/hat.js","./karplusstrong.js":"/Users/charlie/Documents/code/gibberish/js/instruments/karplusstrong.js","./kick.js":"/Users/charlie/Documents/code/gibberish/js/instruments/kick.js","./monosynth.js":"/Users/charlie/Documents/code/gibberish/js/instruments/monosynth.js","./sampler.js":"/Users/charlie/Documents/code/gibberish/js/instruments/sampler.js","./snare.js":"/Users/charlie/Documents/code/gibberish/js/instruments/snare.js","./synth.js":"/Users/charlie/Documents/code/gibberish/js/instruments/synth.js","./tom.js":"/Users/charlie/Documents/code/gibberish/js/instruments/tom.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/karplusstrong.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -21506,7 +21659,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":192,"genish.js":37}],195:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/kick.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21557,7 +21710,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":192,"genish.js":37}],196:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/monosynth.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js'),
       feedbackOsc = require('../oscillators/fmfeedbackosc.js');
@@ -21670,7 +21823,7 @@ module.exports = function (Gibberish) {
 
   return [Mono, PolyMono];
 };
-},{"../oscillators/fmfeedbackosc.js":210,"./instrument.js":192,"genish.js":37}],197:[function(require,module,exports){
+},{"../oscillators/fmfeedbackosc.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js","./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/polyMixin.js":[function(require,module,exports){
 // XXX TOO MANY GLOBAL GIBBERISH VALUES
 
 const Gibberish = require( '../index.js' )
@@ -21758,7 +21911,7 @@ module.exports = {
   triggerNote:null
 }
 
-},{"../index.js":185}],198:[function(require,module,exports){
+},{"../index.js":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/polytemplate.js":[function(require,module,exports){
 /*
  * This files creates a factory generating polysynth constructors.
  */
@@ -21879,7 +22032,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../workletProxy.js":222,"genish.js":37}],199:[function(require,module,exports){
+},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/sampler.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -22100,7 +22253,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./instrument.js":192,"genish.js":37}],200:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/snare.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
   
@@ -22151,7 +22304,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":192,"genish.js":37}],201:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/synth.js":[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -22253,7 +22406,7 @@ module.exports = function (Gibberish) {
 
   return [Synth, PolySynth];
 };
-},{"./instrument.js":192,"genish.js":37}],202:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/tom.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -22304,7 +22457,7 @@ module.exports = function( Gibberish ) {
   return Tom
 }
 
-},{"./instrument.js":192,"genish.js":37}],203:[function(require,module,exports){
+},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/binops.js":[function(require,module,exports){
 const ugenproto = require( '../ugen.js' )(),
      __proxy     = require( '../workletProxy.js' ),
      g = require( 'genish.js' )
@@ -22419,7 +22572,7 @@ module.exports = function( Gibberish ) {
   return Binops
 }
 
-},{"../ugen.js":219,"../workletProxy.js":222,"genish.js":37}],204:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/bus.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )(),
     __proxy= require( '../workletProxy.js' )
@@ -22502,7 +22655,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":219,"../workletProxy.js":222,"genish.js":37}],205:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/bus2.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       __proxy = require( '../workletProxy.js' )
@@ -22641,7 +22794,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":219,"../workletProxy.js":222,"genish.js":37}],206:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/monops.js":[function(require,module,exports){
 const  g    = require( 'genish.js'  ),
        ugen = require( '../ugen.js' )()
 
@@ -22703,7 +22856,7 @@ module.exports = function( Gibberish ) {
   return Monops
 }
 
-},{"../ugen.js":219,"genish.js":37}],207:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/panner.js":[function(require,module,exports){
 const g = require( 'genish.js' )
 
 const ugen = require( '../ugen.js' )()
@@ -22740,7 +22893,7 @@ return Panner
 
 }
 
-},{"../ugen.js":219,"genish.js":37}],208:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/time.js":[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const Time = {
@@ -22769,7 +22922,7 @@ module.exports = function( Gibberish ) {
   return Time
 }
 
-},{}],209:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibberish/js/oscillators/brownnoise.js":[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       noise = genish.noise;
@@ -22789,7 +22942,7 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":37}],210:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js":[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
@@ -22865,7 +23018,7 @@ let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
 
 module.exports = feedbackOsc
 
-},{"genish.js":37}],211:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/oscillators.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       feedbackOsc = require( './fmfeedbackosc.js' ),
@@ -23044,7 +23197,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":219,"./brownnoise.js":209,"./fmfeedbackosc.js":210,"./pinknoise.js":212,"./polyblep.js":213,"./wavetable.js":214,"genish.js":37}],212:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./brownnoise.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/brownnoise.js","./fmfeedbackosc.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js","./pinknoise.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/pinknoise.js","./polyblep.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/polyblep.js","./wavetable.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/wavetable.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/pinknoise.js":[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       data = genish.data,
@@ -23069,7 +23222,7 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":37}],213:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/polyblep.js":[function(require,module,exports){
 const genish = require('genish.js');
 const g = genish;
 
@@ -23127,7 +23280,7 @@ const polyBlep = function (__frequency, argumentProps) {
 };
 
 module.exports = polyBlep;
-},{"genish.js":37}],214:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/wavetable.js":[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )()
 
@@ -23161,7 +23314,7 @@ module.exports = function( Gibberish ) {
   return Wavetable
 }
 
-},{"../ugen.js":219,"genish.js":37}],215:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/scheduler.js":[function(require,module,exports){
 const Queue = require( '../external/priorityqueue.js' )
 
 let Gibberish = null
@@ -23237,7 +23390,7 @@ Object.defineProperty( Scheduler, 'shouldSync', {
 
 module.exports = Scheduler
 
-},{"../external/priorityqueue.js":162}],216:[function(require,module,exports){
+},{"../external/priorityqueue.js":"/Users/charlie/Documents/code/gibberish/js/external/priorityqueue.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/seq2.js":[function(require,module,exports){
 const g = require( 'genish.js' ),
       __proxy = require( '../workletProxy.js' ),
       ugen = require( '../ugen.js' )()
@@ -23436,7 +23589,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":219,"../workletProxy.js":222,"genish.js":37}],217:[function(require,module,exports){
+},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/sequencer.js":[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 
 module.exports = function( Gibberish ) {
@@ -23531,7 +23684,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":222}],218:[function(require,module,exports){
+},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/tidal.js":[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 const Pattern = require( 'tidal.pegjs' )
 
@@ -23559,15 +23712,12 @@ const Sequencer = props => {
       if( seq.__events.length <= 0 ) {
         if( Gibberish.mode === 'processor' ) {
           if( seq.__isRunning === true  ) {
-            console.log( 'adding tick' )
             Gibberish.scheduler.add( Gibberish.ctx.sampleRate / Sequencer.clock.cps, seq.tick, seq.priority )
           }
 
         }
 
         return
-      }else{
-        console.log ('tick')
       }
 
       const startTime = seq.__events[ 0 ].arc.start
@@ -23728,7 +23878,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":222,"tidal.pegjs":284}],219:[function(require,module,exports){
+},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","tidal.pegjs":"/Users/charlie/Documents/code/tidal.peg/src/pattern.js"}],"/Users/charlie/Documents/code/gibberish/js/ugen.js":[function(require,module,exports){
 let Gibberish = null
 
 const __ugen = function( __Gibberish ) {
@@ -23875,7 +24025,7 @@ const __ugen = function( __Gibberish ) {
 
 module.exports = __ugen
 
-},{}],220:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibberish/js/ugenTemplate.js":[function(require,module,exports){
 const __proxy = require( './workletProxy.js' )
 const effectProto = require( './fx/effect.js' )
 
@@ -24031,7 +24181,7 @@ module.exports = function( Gibberish ) {
   return factory
 }
 
-},{"./fx/effect.js":177,"./workletProxy.js":222}],221:[function(require,module,exports){
+},{"./fx/effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","./workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js"}],"/Users/charlie/Documents/code/gibberish/js/utilities.js":[function(require,module,exports){
 const genish = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -24247,7 +24397,7 @@ return utilities
 
 }
 
-},{"genish.js":37}],222:[function(require,module,exports){
+},{"genish.js":"/Users/charlie/Documents/code/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/workletProxy.js":[function(require,module,exports){
 const serialize = require('serialize-javascript')
 
 module.exports = function( Gibberish ) {
@@ -24406,11 +24556,11 @@ return __proxy
 
 }
 
-},{"serialize-javascript":224}],223:[function(require,module,exports){
-arguments[4][75][0].apply(exports,arguments)
-},{"dup":75}],224:[function(require,module,exports){
-arguments[4][147][0].apply(exports,arguments)
-},{"dup":147}],225:[function(require,module,exports){
+},{"serialize-javascript":"/Users/charlie/Documents/code/gibberish/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js":[function(require,module,exports){
+arguments[4]["/Users/charlie/Documents/code/genish.js/node_modules/memory-helper/index.transpiled.js"][0].apply(exports,arguments)
+},{}],"/Users/charlie/Documents/code/gibberish/node_modules/serialize-javascript/index.js":[function(require,module,exports){
+arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"][0].apply(exports,arguments)
+},{}],"/Users/charlie/Documents/code/marching/js/alterations.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen } = require( './var.js' )
@@ -24518,7 +24668,7 @@ Alterations.Halve.RIGHT = 2
 
 module.exports = Alterations
 
-},{"./sceneNode.js":246,"./utils.js":251,"./var.js":252}],226:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/audio.js":[function(require,module,exports){
 const Audio = {
   __hasInput: false,
   ctx: null,
@@ -24608,7 +24758,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{}],227:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/background.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' )
@@ -24664,12 +24814,83 @@ const BG = function( Scene, SDF ) {
 
 module.exports = BG 
 
-},{"./sceneNode.js":246,"./utils.js":251,"./var.js":252}],228:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/camera.js":[function(require,module,exports){
+const vec3 = require('gl-vec3')
+const mat4 = require('gl-mat4')
+
+// camera adapted from https://github.com/shama/first-person-camera
+function FirstPersonCamera(opts) {
+  if (!(this instanceof FirstPersonCamera)) return new FirstPersonCamera(opts)
+  opts = opts || {}
+  this.position = opts.position || vec3.create()
+  this.rotation = opts.rotation || vec3.create()
+  this.positionSpeed = opts.positionSpeed || -.5
+  this.rotationSpeed = opts.rotationSpeed || .01
+}
+module.exports = FirstPersonCamera
+
+FirstPersonCamera.prototype.view = function(out) {
+  if (!out) out = mat4.create()
+  // altered x/y ordering from original
+  mat4.rotateY(out, out, this.rotation[1])
+  mat4.rotateX(out, out, this.rotation[0])
+  mat4.rotateZ(out, out, this.rotation[2] - Math.PI)
+  mat4.translate(out, out, [-this.position[0], -this.position[1], -this.position[2]])
+
+  return out
+}
+
+FirstPersonCamera.prototype.control = function(dt, move, mouse, prevMouse) {
+  var speed = (this.positionSpeed / 1000) * dt
+  var dir = [0,0,0]
+  if (move[0]) dir[2] -= speed * (Marching.keys.Alt ? 4 : 1 )
+  else if (move[1]) dir[2] += speed * (Marching.keys.Alt ? 4 : 1 )
+  if (move[2]) dir[0] += speed * (Marching.keys.Alt ? 4 : 1 )
+  else if (move[3]) dir[0] -= speed * (Marching.keys.Alt ? 4 : 1 )
+  if (move[4]) dir[1] -= speed * (Marching.keys.Alt ? 4 : 1 )
+  else if (move[5]) dir[1] += speed * (Marching.keys.Alt ? 4 : 1 )
+  this.move(dir)
+  // just use arrow keys instead of mouse
+  // this.pointer(mouse, prevMouse)
+}
+
+FirstPersonCamera.prototype.move = function(dir) {
+  if (dir[0] !== 0 || dir[1] !== 0 || dir[2] !== 0) {
+    var cam = mat4.create()
+    mat4.rotateY(cam, cam, this.rotation[1])
+    mat4.rotateX(cam, cam, this.rotation[0])
+    vec3.transformMat4(dir, dir, cam)
+    vec3.add(this.position, this.position, dir)
+  }
+}
+
+//FirstPersonCamera.prototype.pointer = function(da, db) {
+//  var dt = [da[0] - db[0], da[1]- db[1]]
+//  var rot = this.rotation
+//  rot[1] -= dt[0] * this.rotationSpeed
+//  if (rot[1] < 0) rot[1] += Math.PI * 2
+//  if (rot[1] >= Math.PI * 2) rot[1] -= Math.PI * 2
+//  rot[0] -= dt[1] * this.rotationSpeed
+//  if (rot[0] < -Math.PI * .5) rot[0] = -Math.PI*0.5
+//  if (rot[0] > Math.PI * .5) rot[0] = Math.PI*0.5
+//}
+
 const Camera = {
   init( gl, program, handler ) {
+    const camera = FirstPersonCamera({
+      fov: 190,
+      near:.01,
+      far:10,
+      direction:[0,0,1],
+      viewport:[1,1,1,-1]
+    })
+    camera.rotation = [0,Math.PI,Math.PI] 
+    Camera.__camera = camera
+
     const camera_pos    = gl.getUniformLocation( program, 'camera_pos' )
-    //const camera_normal = gl.getUniformLocation( program, 'camera_normal' )
+    const camera_normal = gl.getUniformLocation( program, 'camera_normal' )
     const camera_rot    = gl.getUniformLocation( program, 'camera_rot' )
+    const ucamera       = gl.getUniformLocation( program, 'camera' )
 
     this.pos = { dirty:false }
     this.dir = { dirty:true }
@@ -24688,51 +24909,119 @@ const Camera = {
     Object.defineProperties( this.pos, {
       x: {
         get()  { return px },
-        set(v) { px = v; this.dirty = true; }
+        set(v) { px = camera.position[0] = v;this.dirty = true; }
       },
 
       y: {
         get()  { return py },
-        set(v) { py = v; this.dirty = true; }
+        set(v) { py = camera.position[1] = v; this.dirty = true; }
       },
 
       z: {
         get()  { return pz },
-        set(v) { pz = v; this.dirty = true; }
+        set(v) { pz = camera.position[2] = v; this.dirty = true; }
       },
     })
 
     Object.defineProperties( this.dir, {
       x: {
         get()  { return nx },
-        set(v) { nx = v; this.dirty = true; }
+        set(v) { nx = camera.rotation[0] = v; this.dirty = true; }
       },
 
       y: {
         get()  { return ny },
-        set(v) { ny = v; this.dirty = true; }
+        set(v) { ny = camera.rotation[1] = v; this.dirty = true; }
       },
 
       z: {
         get()  { return nz },
-        set(v) { nz = v; this.dirty = true; }
+        set(v) { nz = camera.rotation[2] = v; this.dirty = true; }
       },
     })
 
     let init = false
-    gl.uniform3f( camera_pos,    this.pos.x, this.pos.y, this.pos.z )
-    //gl.uniform3f( camera_normal, this.dir.x, this.dir.y, this.dir.z )
+    gl.uniform3f( camera_normal, this.dir.x, this.dir.y, this.dir.z )
+    camera.position = [this.pos.x, this.pos.y, this.pos.z ] 
+    //camera.update()
+    gl.uniform3f( camera_pos, this.pos.x, this.pos.y, this.pos.z )
+    gl.uniformMatrix4fv( ucamera, false, camera.view() )
     gl.uniform1f( camera_rot, this.rot ) 
+
+    Camera.move = (x,y,z) => {
+      // XXX does this need to update property values?
+      camera.move([x,y,z])
+      Camera.update()
+    }
+    Camera.moveTo = (x,y,z) => {
+      Camera.pos.x = x
+      Camera.pos.y = y
+      Camera.pos.z = z
+    }
+    Camera.update = ()=> {
+      const pos = camera.position
+      gl.uniform3f( camera_pos, pos[0], pos[1], pos[2]  )
+      gl.uniformMatrix4fv( ucamera, false, camera.view() )
+    }
+
+    let prvx = 0, prvy = 0, x = 0, y = 0
+    Camera.__mousemovefnc = e => {
+      prvx = x
+      prvy = y
+      x = e.pageX
+      y = e.pageY
+    }
+
+    let prevTime = 0
+    let k  = Marching.keys
+    Camera.__framefnc = t => {
+      if( k.ArrowLeft ) camera.rotation[1] += camera.rotationSpeed
+      if( k.ArrowRight ) camera.rotation[1] -= camera.rotationSpeed
+      if( k.ArrowUp && !k.Shift ) camera.rotation[0] -= camera.rotationSpeed
+      if( k.ArrowDown && !k.Shift) camera.rotation[0] += camera.rotationSpeed
+      
+      if( Marching.cameraEnabled ) { 
+        camera.control( 
+          t*1000 - prevTime,
+          [k.w,k.s,k.d,k.a,k.ArrowUp && k.Shift, k.ArrowDown && k.Shift], 
+          [x,y], [prvx,prvy] 
+        )
+        Camera.update()
+        prvx = x
+        prvy = y
+        prevTime = t*1000
+      }
+    }
+
+    Camera.__mousemove = null
+    Camera.on = ()=> {
+      if( Camera.__mousemove === null ) {
+        window.addEventListener( 'mousemove', Camera.__mousemovefnc )
+        Camera.__mousemove = true
+      }
+      if( Marching.callbacks.indexOf( Camera.__framefnc ) === -1 ) {
+        Marching.callbacks.push( Camera.__framefnc )
+      }
+    }
 
     handler( ()=> {
       if( this.pos.dirty === true ) {
-        gl.uniform3f( camera_pos, this.pos.x, this.pos.y, this.pos.z )
+        //camera.position = [this.pos.x, this.pos.y, this.pos.z ]
+ 
+        //camera.position = [this.pos.x, this.pos.y, this.pos.z ]
+        //camera.update()
+        const pos = camera.position
+        gl.uniform3f( camera_pos, pos[0], pos[1], pos[2] )
+        gl.uniformMatrix4fv( ucamera, false, camera.view() )
         this.pos.dirty = false
       }
-      //if( this.dir.dirty === true ) {
-      //  gl.uniform3f( camera_normal, this.dir.x, this.dir.y, this.dir.z )
-      //  this.dir.dirty = false
-      //}
+
+      // XXX this is broken and needs to be fixed
+      if( this.dir.dirty === true ) {
+        gl.uniform3f( camera_normal, this.dir.x, this.dir.y, this.dir.z )
+        gl.uniformMatrix4fv( ucamera, false, camera.view() )
+        this.dir.dirty = false
+      }
       if( this.__rot.dirty === true ) {
         gl.uniform1f( camera_rot, this.__rot.value )
         this.__rot.dirty = false
@@ -24744,7 +25033,7 @@ const Camera = {
 
 module.exports = Camera
 
-},{}],229:[function(require,module,exports){
+},{"gl-mat4":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/index.js","gl-vec3":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/index.js"}],"/Users/charlie/Documents/code/marching/js/distanceDeformations.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
@@ -24914,7 +25203,11 @@ for( let name in ops ) {
       op.update_data= function() {}
       op.upload_location = function() {}
     }
-
+    op.__setMaterial = function(mat) {
+      if( typeof mat === 'string' ) mat = Marching.Material[ mat ]
+      this.__material = this.mat = Marching.materials.addMaterial( mat )
+      op.sdf.material( this.__material )
+    }
     if( name === 'Displace' || name === 'Bump' ) {
       let __var2 =  param_wrap( 
         c, 
@@ -24962,7 +25255,7 @@ for( let name in ops ) {
 module.exports = DistanceOps
 
 
-},{"./sceneNode.js":246,"./transform.js":250,"./utils.js":251,"./var.js":252}],230:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./transform.js":"/Users/charlie/Documents/code/marching/js/transform.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/distanceOperations.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
@@ -25281,7 +25574,7 @@ for( let name in ops ) {
 
 module.exports = DistanceOps
 
-},{"./distanceOperationsGLSL.js":231,"./sceneNode.js":246,"./transform.js":250,"./utils.js":251,"./var.js":252}],231:[function(require,module,exports){
+},{"./distanceOperationsGLSL.js":"/Users/charlie/Documents/code/marching/js/distanceOperationsGLSL.js","./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./transform.js":"/Users/charlie/Documents/code/marching/js/transform.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/distanceOperationsGLSL.js":[function(require,module,exports){
 module.exports = {
   Union:{
     float:`
@@ -25622,7 +25915,7 @@ module.exports = {
       `
 }
 
-},{}],232:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/domainOperations.js":[function(require,module,exports){
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
@@ -25632,6 +25925,13 @@ const Transform = require( './transform.js' )
 const descriptions = {
   Elongation: {
     parameters:[ { name:'distance', type:'vec3', default:Vec3(0) } ],
+    func:`
+      vec4 opElongate( in vec3 p, in vec3 h ) {
+        //return vec4( p-clamp(p,-h,h), 0.0 ); // faster, but produces zero in the interior elongated box
+        
+        vec3 q = abs(p)-h;
+        return vec4( max(q,0.0), min(max(q.x,max(q.y,q.z)),0.0) );
+      }`,
     emit( name='p' ) {
       const pId = this.getID()
       const pName = 'p' + pId
@@ -25922,7 +26222,7 @@ const getDomainOps = function( SDF ) {
 
 module.exports = getDomainOps
 
-},{"./sceneNode.js":246,"./transform.js":250,"./utils.js":251,"./var.js":252,"./vec.js":253}],233:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./transform.js":"/Users/charlie/Documents/code/marching/js/transform.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/external/matrix.js":[function(require,module,exports){
 // matrix.js - taken from https://github.com/evanw/lightgl.js/
 
 // Represents a 4x4 matrix stored in row-major order that uses Float32Arrays
@@ -26319,7 +26619,7 @@ Matrix.lookAt = function(ex, ey, ez, cx, cy, cz, ux, uy, uz, result) {
 
 module.exports = Matrix
 
-},{}],234:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/float.js":[function(require,module,exports){
 const emit_float = function( a ) {
 	if (a % 1 === 0)
 		return a.toFixed( 1 )
@@ -26342,7 +26642,7 @@ const Float = function( x=0 ) {
 
 module.exports = Float
 
-},{}],235:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/fog.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc } = require( './var.js' )
@@ -26416,7 +26716,7 @@ const Fogger = function( Scene, SDF ) {
 
 module.exports = Fogger
 
-},{"./sceneNode.js":246,"./utils.js":251,"./var.js":252}],236:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/index.js":[function(require,module,exports){
 'use strict'
 
 const Marching = require( './main.js' )
@@ -26431,7 +26731,7 @@ window.Marching = Marching
 
 module.exports = Marching
 
-},{"./main.js":239}],237:[function(require,module,exports){
+},{"./main.js":"/Users/charlie/Documents/code/marching/js/main.js"}],"/Users/charlie/Documents/code/marching/js/int.js":[function(require,module,exports){
 const emit_int = function( a ) {
 	if( a % 1 !== 0 )
 		return Math.round( a )
@@ -26454,7 +26754,7 @@ const Int = function( x=0 ) {
 
 module.exports = Int
 
-},{}],238:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/lighting.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' ),
@@ -26649,7 +26949,7 @@ const Lights = function( SDF ) {
       let preface = glsl(["#define GLSLIFY 1\n  int MAX_LIGHTS = ",";\n    float ao( in vec3 pos, in vec3 nor ){\n      float occ = 0.0;\n      float sca = 1.0;\n      for( int i=0; i<5; i++ )\n      {\n          float hr = 0.01 + 0.12 * float( i ) / 4.0;\n          vec3 aopos =  nor * hr + pos;\n          float dd = scene ( aopos ).x;\n          occ += -(dd-hr)*sca;\n          sca *= 0.95;\n      }\n      return clamp( 1.0 - 3.0*occ, 0.0, 1.0 );    \n    }\n\n    \n    ","\n    ","\n    ",""],numlights,texturePreface,textureBody)
       let func = `
 
-    vec3 lighting( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, float sdfID ) {
+    vec3 lighting( vec3 surfacePosition, vec3 normal, vec3 rayOrigin, vec3 rayDirection, float sdfID, bool useTextureTransform ) {
       ${sdfs}
       SDF sdf = sdfs[ int( sdfID ) ];
 
@@ -26660,7 +26960,7 @@ const Lights = function( SDF ) {
 
       ${lights}
  
-      vec3 tex = getTexture( int(sdf.textureID), surfacePosition, normal, sdf );
+      vec3 tex = getTexture( int(sdf.textureID), surfacePosition, normal, sdf, useTextureTransform );
 
       vec3 clr;
       switch( mat.mode ) {
@@ -26744,7 +27044,7 @@ module.exports = Lights
 /*
 */
 
-},{"./sceneNode.js":246,"./utils.js":251,"./var.js":252,"./vec.js":253,"glslify":262}],239:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/main.js":[function(require,module,exports){
 const SDF = {
   camera:           require( './camera.js' ),
   __primitives:     require( './primitives.js' ),
@@ -27070,7 +27370,7 @@ const SDF = {
 
 module.exports = SDF
 
-},{"./alterations.js":225,"./audio.js":226,"./camera.js":228,"./distanceDeformations.js":229,"./distanceOperations.js":230,"./domainOperations.js":232,"./lighting.js":238,"./material.js":240,"./noise.js":241,"./primitives.js":243,"./renderFragmentShader.js":244,"./scene.js":245,"./texture.js":247,"./var.js":252,"./vec.js":253}],240:[function(require,module,exports){
+},{"./alterations.js":"/Users/charlie/Documents/code/marching/js/alterations.js","./audio.js":"/Users/charlie/Documents/code/marching/js/audio.js","./camera.js":"/Users/charlie/Documents/code/marching/js/camera.js","./distanceDeformations.js":"/Users/charlie/Documents/code/marching/js/distanceDeformations.js","./distanceOperations.js":"/Users/charlie/Documents/code/marching/js/distanceOperations.js","./domainOperations.js":"/Users/charlie/Documents/code/marching/js/domainOperations.js","./lighting.js":"/Users/charlie/Documents/code/marching/js/lighting.js","./material.js":"/Users/charlie/Documents/code/marching/js/material.js","./noise.js":"/Users/charlie/Documents/code/marching/js/noise.js","./primitives.js":"/Users/charlie/Documents/code/marching/js/primitives.js","./renderFragmentShader.js":"/Users/charlie/Documents/code/marching/js/renderFragmentShader.js","./scene.js":"/Users/charlie/Documents/code/marching/js/scene.js","./texture.js":"/Users/charlie/Documents/code/marching/js/texture.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/material.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       { param_wrap, MaterialID } = require( './utils.js' ),
       { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen } = require( './var.js' ),
@@ -27302,7 +27602,7 @@ const __Materials = function( SDF ) {
 
 module.exports = __Materials
 
-},{"./sceneNode.js":246,"./utils.js":251,"./var.js":252,"./vec.js":253,"glslify":262}],241:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/noise.js":[function(require,module,exports){
 const glsl = require( 'glslify' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
@@ -27349,7 +27649,7 @@ Noise.prototype = SceneNode()
 Noise.prototype.emit = function ( __name ) {
   let name = __name === undefined ? 'p' : __name
 
-  const out = `(${this.bias.emit()} + snoise( vec4( p, time * ${this.timeMod.emit()} )) * ${this.strength.emit()})`  
+  const out = `(${this.bias.emit()} + snoise( vec4( p.xyz, time * ${this.timeMod.emit()} )) * ${this.strength.emit()})`  
 
   const output = {
     out,
@@ -27389,7 +27689,7 @@ return Noise
 
 module.exports = getNoise 
 
-},{"./sceneNode.js":246,"./utils.js":251,"./var.js":252,"glslify":262}],242:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/primitiveDescriptions.js":[function(require,module,exports){
 const glsl = require( 'glslify' )
 
 module.exports = {
@@ -27587,7 +27887,7 @@ module.exports = {
     ],
 
     primitiveString( pName ) { 
-      return `length(${pName}) - ${this.radius.emit()}`
+      return `(length(${pName}) - ${this.radius.emit()})`
     },
     glslify:glsl(["#define GLSLIFY 1\n    float sdSphere( vec3 p, float s )\n{\n  return length( p ) - s;\n}\n\n"])
   },
@@ -27706,7 +28006,7 @@ module.exports = {
 
 }
 
-},{"glslify":262}],243:[function(require,module,exports){
+},{"glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/primitives.js":[function(require,module,exports){
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc }  = require( './var.js' )
 const SceneNode = require( './sceneNode.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
@@ -27899,6 +28199,7 @@ const createPrimitives = function( SDF ) {
           set(v){ b.size = v }
         })
       }
+
       Object.assign( p, {
         renderingBump : false,
         emittingDecl  : false,
@@ -28024,16 +28325,188 @@ const createPrimitives = function( SDF ) {
 
 module.exports = createPrimitives
 
-},{"./primitiveDescriptions.js":242,"./sceneNode.js":246,"./transform.js":250,"./utils.js":251,"./var.js":252,"./vec.js":253}],244:[function(require,module,exports){
+},{"./primitiveDescriptions.js":"/Users/charlie/Documents/code/marching/js/primitiveDescriptions.js","./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./transform.js":"/Users/charlie/Documents/code/marching/js/transform.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/renderFragmentShader.js":[function(require,module,exports){
 const glsl = require( 'glslify' )
 
-module.exports = function( variables, scene, preface, geometries, lighting, postprocessing, steps=90, minDistance=.001, maxDistance=20, ops ) {
-    const fs_source = glsl(["     #version 300 es\n      precision mediump float;\n#define GLSLIFY 1\n\n\n      float PI = 3.141592653589793;\n\n      in vec2 v_uv;\n\n      struct Light {\n        vec3 position;\n        vec3 color;\n        float attenuation;\n      };\n\n      int rotationCount = 1;\n\n      mat4 rotations[4] = mat4[4](\n        mat4(0.), mat4(0.), mat4(0.), mat4(0.)\n      );\n\n      struct Material {\n        int  mode;\n        vec3 ambient;\n        vec3 diffuse;\n        vec3 specular;\n        float shininess;\n        vec3 fresnel;\n        int textureID;\n      };     \n\n      struct SDF {\n        int materialID;\n        mat4 transform;\n        int textureID;\n        vec3 repeat;\n        mat4 repeatTransform;\n      };\n\n      uniform float time;\n      uniform vec2 resolution;\n      uniform vec3 camera_pos;\n      uniform vec3 camera_normal;\n      uniform float camera_rot;\n\n      ","\n\n      // must be before geometries!\n      float length8( vec2 p ) { \n        return float( pow( pow(p.x,8.)+pow(p.y,8.), 1./8. ) ); \n      }\n\n      ","\n\n      /* GEOMETRIES */\n      ","\n\n      vec2 scene(vec3 p);\n\n      // Adapted from from https://www.shadertoy.com/view/ldfSWs\n\n      vec2 calcRayIntersection( vec3 rayOrigin, vec3 rayDir, float maxd, float precis ) {\n        float latest = precis * 2.0;\n        float dist   = +0.0;\n        float type   = -1.0;\n        vec2 result;\n        vec2 res = vec2(-50000., -1.);;\n\n        for (int i = 0; i < "," ; i++) {\n          if (latest < precis || dist > maxd) break;\n\n          result = scene(rayOrigin + rayDir * dist);\n\n          latest = result.x;\n          dist  += latest;\n          //if (dist > maxd ) dist = dist-maxd+.001;\n        }\n\n        if( dist < maxd ) {\n          result.x = dist;\n          res = result;\n        }\n\n        return res;\n      }\n\n      vec2 calcRayIntersection(vec3 rayOrigin, vec3 rayDir) {\n        return calcRayIntersection(rayOrigin, rayDir, 20.0, 0.001);\n      }\n\n      // adapted from https://www.shadertoy.com/view/ldfSWs\n      vec3 calcNormal(vec3 pos, float eps) {\n        const vec3 v1 = vec3( 1.0,-1.0,-1.0);\n        const vec3 v2 = vec3(-1.0,-1.0, 1.0);\n        const vec3 v3 = vec3(-1.0, 1.0,-1.0);\n        const vec3 v4 = vec3( 1.0, 1.0, 1.0);\n\n        return normalize( v1 * scene ( pos + v1*eps ).x+\n                          v2 * scene ( pos + v2*eps ).x+\n                          v3 * scene ( pos + v3*eps ).x+\n                          v4 * scene ( pos + v4*eps ).x);\n      }\n\n      vec3 calcNormal(vec3 pos) {\n        return calcNormal(pos, 0.002);\n      }\n\n      mat3 calcLookAtMatrix(vec3 origin, vec3 target, float roll) {\n        vec3 rr = vec3(sin(roll), cos(roll), 0.0);\n        vec3 ww = normalize(target - origin);\n        vec3 uu = normalize(cross(ww, rr));\n        vec3 vv = normalize(cross(uu, ww));\n\n        return mat3(uu, vv, ww);\n      }\n\n      vec3 getRay(mat3 camMat, vec2 screenPos, float lensLength) {\n        return normalize(camMat * vec3(screenPos, lensLength));\n      }\n\n      vec3 getRay(vec3 origin, vec3 target, vec2 screenPos, float lensLength) {\n        mat3 camMat = calcLookAtMatrix(origin, target, 0.0);\n        return getRay(camMat, screenPos, lensLength);\n      }\n\n      vec2 squareFrame(vec2 screenSize) {\n        vec2 position = 2.0 * (gl_FragCoord.xy / screenSize.xy) - 1.0;\n        position.x *= screenSize.x / screenSize.y;\n        return position;\n      }\n\n      vec2 squareFrame(vec2 screenSize, vec2 coord) {\n        vec2 position = 2.0 * (coord.xy / screenSize.xy) - 1.0;\n        position.x *= screenSize.x / screenSize.y;\n        return position;\n      }\n\n      void orbitCamera(\n        in float camAngle,\n        in float camHeight,\n        in float camDistance,\n        in vec2 screenResolution,\n        out vec3 rayOrigin,\n        out vec3 rayDirection\n      ) {\n        vec2 screenPos = squareFrame(screenResolution);\n        vec3 rayTarget = vec3(0.0);\n\n        rayOrigin = vec3(\n          camDistance * sin(camAngle),\n          camHeight,\n          camDistance * cos(camAngle)\n        );\n\n        rayDirection = getRay(rayOrigin, rayTarget, screenPos, 2.0);\n      }\n\n      vec4 opElongate( in vec3 p, in vec3 h ) {\n        //return vec4( p-clamp(p,-h,h), 0.0 ); // faster, but produces zero in the interior elongated box\n        \n        vec3 q = abs(p)-h;\n        return vec4( max(q,0.0), min(max(q.x,max(q.y,q.z)),0.0) );\n      }\n\n      vec3 polarRepeat(vec3 p, float repetitions) {\n        float angle = 2.*PI/repetitions;\n        float a = atan(p.z, p.x) + angle/2.;\n        float r = length(p.xz);\n        float c = floor(a/angle);\n        a = mod(a,angle) - angle/2.;\n        vec3 _p = vec3( cos(a) * r, p.y,  sin(a) * r );\n        // For an odd number of repetitions, fix cell index of the cell in -x direction\n        // (cell index would be e.g. -5 and 5 in the two halves of the cell):\n        if (abs(c) >= (repetitions/2.)) c = abs(c);\n        return _p;\n      }\n\n      /* ******************************************************* */\n\n      // added k value to glsl-sdf-ops/soft-shadow\n      float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax, in float k ){\n        float res = 1.0;\n        float t = mint;\n\n        for( int i = 0; i < 12; i++ ) {\n          float h = scene( ro + rd * t ).x;\n          res = min( res, k * h / t );\n          t += clamp( h, 0.02, 0.10 );\n          if( h<0.001 || t>tmax ) break;\n        }\n\n        return clamp( res, 0.0, 1.0 );\n      }\n\n","\n\n      vec2 scene(vec3 _p ) {\n        vec4 p = vec4( _p, 1. );\n","\n        return ",";\n      }\n \n      out vec4 col;\n\n      void main() {\n        vec2 pos = v_uv * 2.0 - 1.0;\n        pos.x *= ( resolution.x / resolution.y );\n        vec3 color = bg; \n        vec3 ro = camera_pos;\n        vec3 rd = camera_normal;\n\n        orbitCamera( camera_rot, ro.y, ro.z, resolution, ro, rd );\n        \n        vec2 t = calcRayIntersection( ro, rd, ",", "," );\n \n        if( t.x > -0.5 ) {\n          vec3 pos = ro + rd * t.x;\n          vec3 nor = calcNormal( pos );\n\n          color = lighting( pos, nor, ro, rd, t.y ); \n        }\n\n        ","\n        \n        col = clamp( vec4( color, 1.0 ), 0., 1. );\n      }",""],variables,ops,geometries,steps,lighting,preface,scene,maxDistance,minDistance,postprocessing)
+const getMainContinuous = function( steps, minDistance, maxDistance, postprocessing ) {
+  const out = `
+  // adapted from https://www.shadertoy.com/view/ldfSWs
+  vec3 calcNormal(vec3 pos, float eps) {
+    const vec3 v1 = vec3( 1.0,-1.0,-1.0);
+    const vec3 v2 = vec3(-1.0,-1.0, 1.0);
+    const vec3 v3 = vec3(-1.0, 1.0,-1.0);
+    const vec3 v4 = vec3( 1.0, 1.0, 1.0);
+
+    return normalize( v1 * scene ( pos + v1*eps ).x+
+                      v2 * scene ( pos + v2*eps ).x+
+                      v3 * scene ( pos + v3*eps ).x+
+                      v4 * scene ( pos + v4*eps ).x);
+  }
+
+  vec3 calcNormal(vec3 pos) {
+    return calcNormal(pos, 0.002);
+  }
+
+  // Adapted from from https://www.shadertoy.com/view/ldfSWs
+  vec2 calcRayIntersection( vec3 rayOrigin, vec3 rayDir, float maxd, float precis ) {
+    float latest = precis * 2.0;
+    float dist   = +0.0;
+    float type   = -1.0;
+    vec2 result;
+    vec2 res = vec2(-50000., -1.);;
+
+    for (int i = 0; i < ${steps} ; i++) {
+      if (latest < precis || dist > maxd) break;
+
+      result = scene(rayOrigin + rayDir * dist);
+
+      latest = result.x;
+      dist  += latest;
+    }
+
+    if( dist < maxd ) {
+      result.x = dist;
+      res = result;
+    }
+
+    return res;
+  }
+
+  out vec4 col;
+  void main() {
+    vec2 pos = v_uv * 2.0 - 1.0;
+
+    // not sure why I need the -y axis but without it
+    // everything is flipped using perspective-camera
+    pos.x *= ( resolution.x / -resolution.y );
+
+    vec3 color = bg; 
+    vec3 ro = camera_pos;
+    vec3 rd = normalize( mat3(camera) * vec3( pos, 2. ) ); 
+    
+    vec2 t = calcRayIntersection( ro, rd, ${maxDistance}, ${minDistance} );
+
+    if( t.x > -0.5 ) {
+      vec3 pos = ro + rd * t.x;
+      vec3 nor = calcNormal( pos );
+
+      color = lighting( pos, nor, ro, rd, t.y, true ); 
+    }
+
+    ${postprocessing}
+    
+    col = clamp( vec4( color, 1.0 ), 0., 1. );
+  }`
+
+  return out
+}
+
+const getMainVoxels = function( steps, postprocessing, voxelSize = .1 ) {
+  const out = `
+  struct VoxelDistance {
+    bvec3 mask;
+    vec3  distance;
+    float fogCoeff;
+    int   id;
+  };
+
+  VoxelDistance calcRayIntersection( vec3 rayOrigin, vec3 rayDir ) {
+    vec2 result;
+
+    float m = ${voxelSize};
+    rayOrigin *= 1./m;
+    vec3 mapPos = vec3(floor(rayOrigin));
+    vec3 diff = mapPos - rayOrigin;
+
+    vec3 deltaDist = abs(vec3(length(rayDir)) / rayDir);
+    vec3 rayStep = vec3(sign(rayDir));
+    vec3 sideDist = (sign(rayDir) * diff + (sign(rayDir) * 0.5) + 0.5) * deltaDist; 
+
+    bvec3 mask;
+    vec3 d = vec3(-100000.);
+    float fogCoeff = 0.;
+
+    for (int i = 0; i < ${Math.round(steps*1/voxelSize)} ; i++) {
+      result = scene(mapPos*m);
+      if( result.x <= 0. ) {
+        d = mapPos*m+result.x;
+        break;
+      }
+
+      mask = bvec3( lessThanEqual(sideDist.xyz, min(sideDist.yzx, sideDist.zxy)) );
+      sideDist += vec3( mask ) * deltaDist; 
+      mapPos += vec3(mask) * rayStep;
+      fogCoeff += result.x * m;
+    }
+
+    VoxelDistance vd = VoxelDistance( mask, d, fogCoeff, int(result.y) );
+    return vd;
+  }
+
+  out vec4 col;
+  void main() {
+    vec2 pos = v_uv * 2.0 - 1.0;
+
+    // not sure why I need the -y axis but without it
+    // everything is flipped using perspective-camera
+    pos.x *= ( resolution.x / -resolution.y );
+    
+    vec3 color = bg; 
+    vec3 ro = camera_pos;
+    vec3 rd = normalize( mat3(camera) * vec3( pos, 2. ) ); 
+                 
+    VoxelDistance vd = calcRayIntersection( ro, rd );
+    bvec3 mask = vd.mask;
+    
+    vec3 nor;
+    if (mask.x) {
+      color = vec3(0.5);
+      nor = vec3(1.,0.,0.);
+    }
+    if (mask.y) {
+      color = vec3(1.0);
+      nor = vec3(0.,1.,0.);
+    }
+    if (mask.z) {
+      color = vec3(0.75);
+      nor = vec3(0.,0.,1.);
+    }
+    if( vd.distance.x == -100000. ) {
+      color = bg;
+    }
+    
+    float modAmount = ${(1./voxelSize).toFixed(1)};
+    if( color != bg ) {
+      vec3 pos = vd.distance; 
+      //vec3 pos = ro + rd * vd.fogCoeff;
+
+      color *= lighting( pos * modAmount, nor, ro, rd, float(vd.id), false ); 
+      //color *= lighting( pos, nor, ro, rd, float(vd.id), false ); 
+      //color = min(color,1.);
+      //color = getTexture( 0, pos );
+      
+    }
+    
+    vec2 t = vec2( vd.fogCoeff, vd.id );
+  ${postprocessing}; 
+    col = vec4( color, 1. ); 
+  }`
+
+  return out
+}
+
+module.exports = function( variables, scene, preface, geometries, lighting, postprocessing, steps=90, minDistance=.001, maxDistance=20, ops, voxelSize=0 ) {
+
+  const main = voxelSize === 0
+    ? getMainContinuous( steps, minDistance, maxDistance, postprocessing ) 
+    : getMainVoxels( steps, postprocessing, voxelSize )
+
+    const fs_source = glsl(["     #version 300 es\n      precision mediump float;\n#define GLSLIFY 1\n\n\n      float PI = 3.141592653589793;\n\n      in vec2 v_uv;\n\n      struct Light {\n        vec3 position;\n        vec3 color;\n        float attenuation;\n      };\n\n      int rotationCount = 1;\n\n      mat4 rotations[4] = mat4[4](\n        mat4(0.), mat4(0.), mat4(0.), mat4(0.)\n      );\n\n      struct Material {\n        int  mode;\n        vec3 ambient;\n        vec3 diffuse;\n        vec3 specular;\n        float shininess;\n        vec3 fresnel;\n        int textureID;\n      };     \n\n      struct SDF {\n        int materialID;\n        mat4 transform;\n        int textureID;\n        vec3 repeat;\n        mat4 repeatTransform;\n      };\n\n      uniform float time;\n      uniform vec2 resolution;\n      uniform vec3 camera_pos;\n      uniform vec3 camera_normal;\n      uniform float camera_rot;\n      uniform mat4 camera;\n\n      ","\n\n      // must be before geometries!\n      float length8( vec2 p ) { \n        return float( pow( pow(p.x,8.)+pow(p.y,8.), 1./8. ) ); \n      }\n\n      ","\n\n      /* GEOMETRIES */\n      ","\n\n      vec2 scene(vec3 p);\n\n      // XXX todo put this in domainOperations.js\n      vec3 polarRepeat(vec3 p, float repetitions) {\n        float angle = 2.*PI/repetitions;\n        float a = atan(p.z, p.x) + angle/2.;\n        float r = length(p.xz);\n        float c = floor(a/angle);\n        a = mod(a,angle) - angle/2.;\n        vec3 _p = vec3( cos(a) * r, p.y,  sin(a) * r );\n        // For an odd number of repetitions, fix cell index of the cell in -x direction\n        // (cell index would be e.g. -5 and 5 in the two halves of the cell):\n        if (abs(c) >= (repetitions/2.)) c = abs(c);\n        return _p;\n      }\n\n      // added k value to glsl-sdf-ops/soft-shadow\n      float softshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax, in float k ){\n        float res = 1.0;\n        float t = mint;\n\n        for( int i = 0; i < 12; i++ ) {\n          float h = scene( ro + rd * t ).x;\n          res = min( res, k * h / t );\n          t += clamp( h, 0.02, 0.10 );\n          if( h<0.001 || t>tmax ) break;\n        }\n\n        return clamp( res, 0.0, 1.0 );\n      }\n\n","\n\n    vec2 scene(vec3 _p ) {\n      vec4 p = vec4( _p, 1. );\n","\n      return ",";\n    }\n \n","\n",""],variables,ops,geometries,lighting,preface,scene,main)
 
     return fs_source
   }
 
-},{"glslify":262}],245:[function(require,module,exports){
+},{"glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/scene.js":[function(require,module,exports){
 const getFog = require( './fog.js' )
 const { param_wrap, MaterialID } = require( './utils.js' )
 const __lighting = require( './lighting.js' )
@@ -28068,6 +28541,7 @@ const getScene = function( SDF ) {
       .resolution( 1 )
 
     scene.useQuality = true
+    scene.useVoxels  = false
 
     SDF.__scene = scene
 
@@ -28084,11 +28558,21 @@ const getScene = function( SDF ) {
       this.useQuality = false
       return this 
     },  
+    voxel( v = .1 ) { 
+      this.useVoxels = true
+      this.__voxelSize = v
+      return this
+    },
     threshold( v ) { this.__threshold = v; this.useQuality = false; return this },  
     steps( v ) { this.__steps = v; this.useQuality = false; return this },  
     farPlane( v ) { this.__farPlane = v; this.useQuality = false;  return this },  
-    camera( x=0, y=0, z=5 ) {
-      Object.assign( SDF.camera.pos, { x,y,z })
+    camera( x=0, y=0, z=5, speed=1 ) {
+      SDF.camera.__camera.position[0] = x
+      SDF.camera.__camera.position[1] = y
+      SDF.camera.__camera.position[2] = z
+      SDF.camera.__camera.rotationSpeed = speed * .01
+      SDF.camera.__camera.positionSpeed = speed * -.25
+      SDF.camera.update()
       return this
     },
     shadow( k=0 ) {
@@ -28109,10 +28593,84 @@ const getScene = function( SDF ) {
     },
     fog: getFog( Scene, SDF ),
     background: require( './background.js' )( Scene, SDF ),
+    presets: {
+      'fractal.close': {
+        farPlane:1,
+        resolution:1,
+        steps:150,
+        animated:true,
+        threshold:.000125
+      },
+      'fractal.med': {
+        farPlane:5,
+        resolution:.75,
+        steps:80,
+        animated:true,
+        threshold:.001,
+      },
+      'fractal.low': {
+        farPlane:3.0,
+        resolution:.5,
+        animated:true,
+        steps:50,
+        threshold:.005,
+      },
+      'fractal.high': {
+        farPlane:10,
+        resolution:1,
+        animated:true,
+        steps:100,
+        threshold:.001,
+      },
+      'repeat.low': {
+        farPlane:25,
+        resolution:.5,
+        animated:true,
+        steps:50
+      },
+      'repeat.med': {
+        farPlane:35,
+        resolution:1,
+        animated:true,
+        steps:75
+      },
+      'repeat.high': {
+        farPlane:40,
+        resolution:1,
+        animated:true,
+        steps:100
+      },
+      'voxel.high': {
+        resolution:1,
+        animated:true,
+        steps:30
+      },
+      'voxel.med': {
+        resolution:1,
+        animated:true,
+        steps:20
+      },
+      'voxel.low': {
+        resolution:.5,
+        animated:true,
+        steps:10
+      },
+    },
 
+    applyPreset( presetName ) {
+      const preset = this.presets[ presetName ]
+      if( preset.farPlane !== undefined ) this.farPlane( preset.farPlane )
+      this.steps( preset.steps )
+      this.resolution( preset.resolution )
+      this.threshold( preset.threshold || .001 )
+
+      return preset.animated
+    },
     render( quality=10, animate=false, useQuality=true ) {
       this.background() // adds default if none has been specified
-      if( useQuality === true ) {
+      if( typeof quality === 'string' ) {
+        animate = this.applyPreset( quality )
+      }else if( this.useQuality === true ) {
         this.quality( quality )
       }
       this.animate( animate )
@@ -28136,7 +28694,8 @@ const getScene = function( SDF ) {
         lighting,
         postprocessing, 
         this.__steps, this.__threshold, this.__farPlane.toFixed(1),
-        SDF.distanceOps.__getGLSL()
+        SDF.distanceOps.__getGLSL(),
+        this.useVoxels ? this.__voxelSize : 0
       )
 
       SDF.start( this.fs, this.width, this.height, this.__animate )
@@ -28156,10 +28715,9 @@ const getScene = function( SDF ) {
 
 module.exports = getScene 
 
-},{"./background.js":227,"./fog.js":235,"./lighting.js":238,"./utils.js":251,"./var.js":252}],246:[function(require,module,exports){
-// SceneNode
-
-let SceneNode = ()=> Object.create( SceneNode.prototype )
+},{"./background.js":"/Users/charlie/Documents/code/marching/js/background.js","./fog.js":"/Users/charlie/Documents/code/marching/js/fog.js","./lighting.js":"/Users/charlie/Documents/code/marching/js/lighting.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/sceneNode.js":[function(require,module,exports){
+const SceneNode = ()=> Object.create( SceneNode.prototype )
+const Matrix = require( './external/matrix.js' )
 
 SceneNode.prototype = {
 	emit() { return "#NotImplemented#"; },
@@ -28204,6 +28762,11 @@ SceneNode.prototype = {
     if( y !== undefined ) this.transform.rotation.axis.y = y
     if( z !== undefined ) this.transform.rotation.axis.z = z
   
+    return this
+  },
+
+  rotateBy( angle,x,y,z ) {
+    this.transform.__rotations.push( Matrix.rotate( angle,x,y,z ) )
     return this
   },
 
@@ -28252,7 +28815,7 @@ ops.forEach( op => {
 
 module.exports = SceneNode
 
-},{}],247:[function(require,module,exports){
+},{"./external/matrix.js":"/Users/charlie/Documents/code/marching/js/external/matrix.js"}],"/Users/charlie/Documents/code/marching/js/texture.js":[function(require,module,exports){
 const SceneNode = require( './sceneNode.js' ),
       getPixels = require( 'get-pixels' ),
       createTexture = require( 'gl-texture2d' ),
@@ -28348,15 +28911,17 @@ const __Textures = function( SDF ) {
         return tex;
       }
 
-      vec3 getTexture( int id, vec3 pos, vec3 nor, SDF sdf ) {
+      vec3 getTexture( int id, vec3 pos, vec3 nor, SDF sdf, bool useTransform ) {
         vec3 tex;
         vec2 pos2;
         vec3 tpos = pos;
-        if( length(sdf.repeat) != 0. ) {
-          tpos = mod( (vec4(pos,1.) * sdf.repeatTransform).xyz, sdf.repeat) - .5 * sdf.repeat;
-          tpos = ( vec4(tpos, 1.) * sdf.transform).xyz;
-        }else{
-          tpos = (vec4(tpos,1.) * sdf.transform).xyz;
+        if( useTransform == true ) {
+          if( length(sdf.repeat) != 0. ) {
+            tpos = mod( (vec4(pos,1.) * sdf.repeatTransform).xyz, sdf.repeat) - .5 * sdf.repeat;
+            tpos = ( vec4(tpos, 1.) * sdf.transform).xyz;
+          }else{
+            tpos = (vec4(tpos,1.) * sdf.transform).xyz;
+          }
         }
 
         return getTexture( id, tpos );
@@ -28593,7 +29158,7 @@ const __Textures = function( SDF ) {
 
 module.exports = __Textures
 
-},{"./sceneNode.js":246,"./textureDescriptions.js":248,"./textureWrap.js":249,"./utils.js":251,"./var.js":252,"./vec.js":253,"get-pixels":260,"gl-texture2d":261}],248:[function(require,module,exports){
+},{"./sceneNode.js":"/Users/charlie/Documents/code/marching/js/sceneNode.js","./textureDescriptions.js":"/Users/charlie/Documents/code/marching/js/textureDescriptions.js","./textureWrap.js":"/Users/charlie/Documents/code/marching/js/textureWrap.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js","get-pixels":"/Users/charlie/Documents/code/marching/node_modules/get-pixels/dom-pixels.js","gl-texture2d":"/Users/charlie/Documents/code/marching/node_modules/gl-texture2d/texture.js"}],"/Users/charlie/Documents/code/marching/js/textureDescriptions.js":[function(require,module,exports){
 const glsl = require( 'glslify' )
 
 const textures = {
@@ -28620,6 +29185,20 @@ const textures = {
       { name:'scale', type:'float', default:1 },
       { name:'strength', type:'float', default:1 },   
     ]
+  },
+  rainbow: {
+    name:'rainbow',
+    parameters: [
+      { name:'strength', type:'float', default:1 },
+      { name:'shift', type:'float', default:0 },
+      { name:'scale', type:'float', default:1 },
+    ],
+    glsl:` 
+    vec3 rainbow( vec3 pos, float strength, float shift, float scale ) {
+      pos = pos * scale;
+      vec3 a = vec3(0.5,0.5,0.5), b = vec3(0.5,0.5,0.5), c = vec3(1.0,1.0,1.0),d = vec3(0.0,0.33,0.67);
+      return a + b * cos( 6.283818 * ( c * mod(length(pos) + shift, 1. ) + d ) ) * strength;
+    }` 
   },
   checkers: {
     name:'checkers',
@@ -28852,7 +29431,7 @@ const textures = {
 
 module.exports = textures
 
-},{"glslify":262}],249:[function(require,module,exports){
+},{"glslify":"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js"}],"/Users/charlie/Documents/code/marching/js/textureWrap.js":[function(require,module,exports){
 module.exports = `
     // p = point on surface, p0 = object center
     vec2 getUVCubic(vec3 p ){
@@ -28914,11 +29493,11 @@ module.exports = `vec3 t3(sampler2D tex, vec3 p, vec3 n)
     }`
     */
 
-},{}],250:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/js/transform.js":[function(require,module,exports){
 const { param_wrap, MaterialID } = require( './utils.js' )
 const { Var, float_var_gen, vec2_var_gen, vec3_var_gen, vec4_var_gen, int_var_gen, VarAlloc }  = require( './var.js' )
 const Matrix = require( './external/matrix.js' )
-
+window.Matrix = Matrix
 const MatrixWrap = function ( shouldInvert = false ) {
   const m = Object.create( MatrixWrap.prototype )
   m.dirty = true
@@ -29016,7 +29595,7 @@ const MatrixWrap = function ( shouldInvert = false ) {
     } 
   })
 
-  let rx = 1, ry = 1, rz = 1
+  let rx = 0, ry = 0, rz = 0
   Object.defineProperties( m.rotation.axis, {
     x: {
       get() { return rx },
@@ -29044,9 +29623,11 @@ const MatrixWrap = function ( shouldInvert = false ) {
     },
   })
 
+  m.__rotations = []
   m.__id   = VarAlloc.alloc()  
   m.__dirty = function() {}
   m.__data = Matrix.identity()
+  m.__Matrix = Matrix
   m.varName = 'transform' + m.__id
 
   return m
@@ -29091,14 +29672,20 @@ MatrixWrap.prototype = {
 		this.dirty = false
   },
 
+
   internal() {
     this.__data = Matrix.identity()
-    if( this.parent !== null ) this.__data = this.parent.__data
+    if( this.parent != null ) this.__data = this.parent.__data
 
     this.__data = this.__data.multiply( Matrix.translate( this.translation.x, this.translation.y, this.translation.z ) ) 
-    this.__data = this.__data.multiply( Matrix.rotate( this.rotation.angle, this.rotation.axis.x, this.rotation.axis.y, this.rotation.axis.z ) )
-    this.__data = this.__data.multiply( Matrix.scale( this.scale, this.scale, this.scale ) )
 
+    // handle cumulative rotations via .rotateBy() method
+    this.__rotations.forEach( r => this.__data = this.__data.multiply( r ) )
+
+    // handle absolute rotations via .rotate() method... should this be aliased to rotateTo() ?
+    this.__data = this.__data.multiply( Matrix.rotate( this.rotation.angle, this.rotation.axis.x, this.rotation.axis.y, this.rotation.axis.z ) )
+
+    this.__data = this.__data.multiply( Matrix.scale( this.scale, this.scale, this.scale ) )
   },
 
   invert( shouldInvert = true) {
@@ -29115,7 +29702,7 @@ MatrixWrap.prototype = {
 
 module.exports = MatrixWrap
 
-},{"./external/matrix.js":233,"./utils.js":251,"./var.js":252}],251:[function(require,module,exports){
+},{"./external/matrix.js":"/Users/charlie/Documents/code/marching/js/external/matrix.js","./utils.js":"/Users/charlie/Documents/code/marching/js/utils.js","./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/utils.js":[function(require,module,exports){
 const Var = require('./var.js').Var
 
 // Wrapper
@@ -29138,7 +29725,7 @@ const MaterialID = {
 
 module.exports = { param_wrap, MaterialID }
 
-},{"./var.js":252}],252:[function(require,module,exports){
+},{"./var.js":"/Users/charlie/Documents/code/marching/js/var.js"}],"/Users/charlie/Documents/code/marching/js/var.js":[function(require,module,exports){
 const { Vec2, Vec3, Vec4 } = require( './vec.js' )
 const float = require( './float.js' )
 const int   = require( './int.js' )
@@ -29343,7 +29930,7 @@ function vec4_var_gen( x, y, z, w, name=null ) {
 }
 */
 
-},{"./float.js":234,"./int.js":237,"./vec.js":253}],253:[function(require,module,exports){
+},{"./float.js":"/Users/charlie/Documents/code/marching/js/float.js","./int.js":"/Users/charlie/Documents/code/marching/js/int.js","./vec.js":"/Users/charlie/Documents/code/marching/js/vec.js"}],"/Users/charlie/Documents/code/marching/js/vec.js":[function(require,module,exports){
 const Vec2 = function (x=0, y=0) {
   const v = Object.create( Vec2.prototype )
   v.x = x; v.y = y
@@ -29596,7 +30183,7 @@ Vec4.prototype = {
 
 module.exports = { Vec2, Vec3, Vec4 } 
 
-},{}],254:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/bit-twiddle/twiddle.js":[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -29802,7 +30389,7 @@ exports.nextCombination = function(v) {
 }
 
 
-},{}],255:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js":[function(require,module,exports){
 "use strict"
 
 var createThunk = require("./lib/thunk.js")
@@ -29913,7 +30500,7 @@ function compileCwise(user_args) {
 
 module.exports = compileCwise
 
-},{"./lib/thunk.js":257}],256:[function(require,module,exports){
+},{"./lib/thunk.js":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/thunk.js"}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/compile.js":[function(require,module,exports){
 "use strict"
 
 var uniq = require("uniq")
@@ -30273,7 +30860,7 @@ function generateCWiseOp(proc, typesig) {
 }
 module.exports = generateCWiseOp
 
-},{"uniq":272}],257:[function(require,module,exports){
+},{"uniq":"/Users/charlie/Documents/code/marching/node_modules/uniq/uniq.js"}],"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/thunk.js":[function(require,module,exports){
 "use strict"
 
 // The function below is called when constructing a cwise function object, and does the following:
@@ -30361,7 +30948,7 @@ function createThunk(proc) {
 
 module.exports = createThunk
 
-},{"./compile.js":256}],258:[function(require,module,exports){
+},{"./compile.js":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/lib/compile.js"}],"/Users/charlie/Documents/code/marching/node_modules/data-uri-to-buffer/index.js":[function(require,module,exports){
 (function (Buffer){
 
 /**
@@ -30419,7 +31006,7 @@ function dataUriToBuffer (uri) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":123}],259:[function(require,module,exports){
+},{"buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/dup/dup.js":[function(require,module,exports){
 "use strict"
 
 function dupe_array(count, value, i) {
@@ -30469,7 +31056,7 @@ function dupe(count, value) {
 }
 
 module.exports = dupe
-},{}],260:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/get-pixels/dom-pixels.js":[function(require,module,exports){
 (function (Buffer,process){
 'use strict'
 
@@ -30607,7 +31194,1231 @@ module.exports = function getPixels(url, type, cb) {
   }
 }
 }).call(this,{"isBuffer":require("../../../gibber.audio.lib/node_modules/is-buffer/index.js")},require('_process'))
-},{"../../../gibber.audio.lib/node_modules/is-buffer/index.js":127,"_process":130,"data-uri-to-buffer":258,"ndarray":268,"ndarray-pack":266,"omggif":269,"path":128,"through":270}],261:[function(require,module,exports){
+},{"../../../gibber.audio.lib/node_modules/is-buffer/index.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","data-uri-to-buffer":"/Users/charlie/Documents/code/marching/node_modules/data-uri-to-buffer/index.js","ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js","ndarray-pack":"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/convert.js","omggif":"/Users/charlie/Documents/code/marching/node_modules/omggif/omggif.js","path":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/path-browserify/index.js","through":"/Users/charlie/Documents/code/marching/node_modules/through/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/adjoint.js":[function(require,module,exports){
+module.exports = adjoint;
+
+/**
+ * Calculates the adjugate of a mat4
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the source matrix
+ * @returns {mat4} out
+ */
+function adjoint(out, a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+
+    out[0]  =  (a11 * (a22 * a33 - a23 * a32) - a21 * (a12 * a33 - a13 * a32) + a31 * (a12 * a23 - a13 * a22));
+    out[1]  = -(a01 * (a22 * a33 - a23 * a32) - a21 * (a02 * a33 - a03 * a32) + a31 * (a02 * a23 - a03 * a22));
+    out[2]  =  (a01 * (a12 * a33 - a13 * a32) - a11 * (a02 * a33 - a03 * a32) + a31 * (a02 * a13 - a03 * a12));
+    out[3]  = -(a01 * (a12 * a23 - a13 * a22) - a11 * (a02 * a23 - a03 * a22) + a21 * (a02 * a13 - a03 * a12));
+    out[4]  = -(a10 * (a22 * a33 - a23 * a32) - a20 * (a12 * a33 - a13 * a32) + a30 * (a12 * a23 - a13 * a22));
+    out[5]  =  (a00 * (a22 * a33 - a23 * a32) - a20 * (a02 * a33 - a03 * a32) + a30 * (a02 * a23 - a03 * a22));
+    out[6]  = -(a00 * (a12 * a33 - a13 * a32) - a10 * (a02 * a33 - a03 * a32) + a30 * (a02 * a13 - a03 * a12));
+    out[7]  =  (a00 * (a12 * a23 - a13 * a22) - a10 * (a02 * a23 - a03 * a22) + a20 * (a02 * a13 - a03 * a12));
+    out[8]  =  (a10 * (a21 * a33 - a23 * a31) - a20 * (a11 * a33 - a13 * a31) + a30 * (a11 * a23 - a13 * a21));
+    out[9]  = -(a00 * (a21 * a33 - a23 * a31) - a20 * (a01 * a33 - a03 * a31) + a30 * (a01 * a23 - a03 * a21));
+    out[10] =  (a00 * (a11 * a33 - a13 * a31) - a10 * (a01 * a33 - a03 * a31) + a30 * (a01 * a13 - a03 * a11));
+    out[11] = -(a00 * (a11 * a23 - a13 * a21) - a10 * (a01 * a23 - a03 * a21) + a20 * (a01 * a13 - a03 * a11));
+    out[12] = -(a10 * (a21 * a32 - a22 * a31) - a20 * (a11 * a32 - a12 * a31) + a30 * (a11 * a22 - a12 * a21));
+    out[13] =  (a00 * (a21 * a32 - a22 * a31) - a20 * (a01 * a32 - a02 * a31) + a30 * (a01 * a22 - a02 * a21));
+    out[14] = -(a00 * (a11 * a32 - a12 * a31) - a10 * (a01 * a32 - a02 * a31) + a30 * (a01 * a12 - a02 * a11));
+    out[15] =  (a00 * (a11 * a22 - a12 * a21) - a10 * (a01 * a22 - a02 * a21) + a20 * (a01 * a12 - a02 * a11));
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/clone.js":[function(require,module,exports){
+module.exports = clone;
+
+/**
+ * Creates a new mat4 initialized with values from an existing matrix
+ *
+ * @param {mat4} a matrix to clone
+ * @returns {mat4} a new 4x4 matrix
+ */
+function clone(a) {
+    var out = new Float32Array(16);
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    out[3] = a[3];
+    out[4] = a[4];
+    out[5] = a[5];
+    out[6] = a[6];
+    out[7] = a[7];
+    out[8] = a[8];
+    out[9] = a[9];
+    out[10] = a[10];
+    out[11] = a[11];
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/copy.js":[function(require,module,exports){
+module.exports = copy;
+
+/**
+ * Copy the values from one mat4 to another
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the source matrix
+ * @returns {mat4} out
+ */
+function copy(out, a) {
+    out[0] = a[0];
+    out[1] = a[1];
+    out[2] = a[2];
+    out[3] = a[3];
+    out[4] = a[4];
+    out[5] = a[5];
+    out[6] = a[6];
+    out[7] = a[7];
+    out[8] = a[8];
+    out[9] = a[9];
+    out[10] = a[10];
+    out[11] = a[11];
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/create.js":[function(require,module,exports){
+module.exports = create;
+
+/**
+ * Creates a new identity mat4
+ *
+ * @returns {mat4} a new 4x4 matrix
+ */
+function create() {
+    var out = new Float32Array(16);
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/determinant.js":[function(require,module,exports){
+module.exports = determinant;
+
+/**
+ * Calculates the determinant of a mat4
+ *
+ * @param {mat4} a the source matrix
+ * @returns {Number} determinant of a
+ */
+function determinant(a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32;
+
+    // Calculate the determinant
+    return b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromQuat.js":[function(require,module,exports){
+module.exports = fromQuat;
+
+/**
+ * Creates a matrix from a quaternion rotation.
+ *
+ * @param {mat4} out mat4 receiving operation result
+ * @param {quat4} q Rotation quaternion
+ * @returns {mat4} out
+ */
+function fromQuat(out, q) {
+    var x = q[0], y = q[1], z = q[2], w = q[3],
+        x2 = x + x,
+        y2 = y + y,
+        z2 = z + z,
+
+        xx = x * x2,
+        yx = y * x2,
+        yy = y * y2,
+        zx = z * x2,
+        zy = z * y2,
+        zz = z * z2,
+        wx = w * x2,
+        wy = w * y2,
+        wz = w * z2;
+
+    out[0] = 1 - yy - zz;
+    out[1] = yx + wz;
+    out[2] = zx - wy;
+    out[3] = 0;
+
+    out[4] = yx - wz;
+    out[5] = 1 - xx - zz;
+    out[6] = zy + wx;
+    out[7] = 0;
+
+    out[8] = zx + wy;
+    out[9] = zy - wx;
+    out[10] = 1 - xx - yy;
+    out[11] = 0;
+
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromRotation.js":[function(require,module,exports){
+module.exports = fromRotation
+
+/**
+ * Creates a matrix from a given angle around a given axis
+ * This is equivalent to (but much faster than):
+ *
+ *     mat4.identity(dest)
+ *     mat4.rotate(dest, dest, rad, axis)
+ *
+ * @param {mat4} out mat4 receiving operation result
+ * @param {Number} rad the angle to rotate the matrix by
+ * @param {vec3} axis the axis to rotate around
+ * @returns {mat4} out
+ */
+function fromRotation(out, rad, axis) {
+  var s, c, t
+  var x = axis[0]
+  var y = axis[1]
+  var z = axis[2]
+  var len = Math.sqrt(x * x + y * y + z * z)
+
+  if (Math.abs(len) < 0.000001) {
+    return null
+  }
+
+  len = 1 / len
+  x *= len
+  y *= len
+  z *= len
+
+  s = Math.sin(rad)
+  c = Math.cos(rad)
+  t = 1 - c
+
+  // Perform rotation-specific matrix multiplication
+  out[0] = x * x * t + c
+  out[1] = y * x * t + z * s
+  out[2] = z * x * t - y * s
+  out[3] = 0
+  out[4] = x * y * t - z * s
+  out[5] = y * y * t + c
+  out[6] = z * y * t + x * s
+  out[7] = 0
+  out[8] = x * z * t + y * s
+  out[9] = y * z * t - x * s
+  out[10] = z * z * t + c
+  out[11] = 0
+  out[12] = 0
+  out[13] = 0
+  out[14] = 0
+  out[15] = 1
+  return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromRotationTranslation.js":[function(require,module,exports){
+module.exports = fromRotationTranslation;
+
+/**
+ * Creates a matrix from a quaternion rotation and vector translation
+ * This is equivalent to (but much faster than):
+ *
+ *     mat4.identity(dest);
+ *     mat4.translate(dest, vec);
+ *     var quatMat = mat4.create();
+ *     quat4.toMat4(quat, quatMat);
+ *     mat4.multiply(dest, quatMat);
+ *
+ * @param {mat4} out mat4 receiving operation result
+ * @param {quat4} q Rotation quaternion
+ * @param {vec3} v Translation vector
+ * @returns {mat4} out
+ */
+function fromRotationTranslation(out, q, v) {
+    // Quaternion math
+    var x = q[0], y = q[1], z = q[2], w = q[3],
+        x2 = x + x,
+        y2 = y + y,
+        z2 = z + z,
+
+        xx = x * x2,
+        xy = x * y2,
+        xz = x * z2,
+        yy = y * y2,
+        yz = y * z2,
+        zz = z * z2,
+        wx = w * x2,
+        wy = w * y2,
+        wz = w * z2;
+
+    out[0] = 1 - (yy + zz);
+    out[1] = xy + wz;
+    out[2] = xz - wy;
+    out[3] = 0;
+    out[4] = xy - wz;
+    out[5] = 1 - (xx + zz);
+    out[6] = yz + wx;
+    out[7] = 0;
+    out[8] = xz + wy;
+    out[9] = yz - wx;
+    out[10] = 1 - (xx + yy);
+    out[11] = 0;
+    out[12] = v[0];
+    out[13] = v[1];
+    out[14] = v[2];
+    out[15] = 1;
+    
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromScaling.js":[function(require,module,exports){
+module.exports = fromScaling
+
+/**
+ * Creates a matrix from a vector scaling
+ * This is equivalent to (but much faster than):
+ *
+ *     mat4.identity(dest)
+ *     mat4.scale(dest, dest, vec)
+ *
+ * @param {mat4} out mat4 receiving operation result
+ * @param {vec3} v Scaling vector
+ * @returns {mat4} out
+ */
+function fromScaling(out, v) {
+  out[0] = v[0]
+  out[1] = 0
+  out[2] = 0
+  out[3] = 0
+  out[4] = 0
+  out[5] = v[1]
+  out[6] = 0
+  out[7] = 0
+  out[8] = 0
+  out[9] = 0
+  out[10] = v[2]
+  out[11] = 0
+  out[12] = 0
+  out[13] = 0
+  out[14] = 0
+  out[15] = 1
+  return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromTranslation.js":[function(require,module,exports){
+module.exports = fromTranslation
+
+/**
+ * Creates a matrix from a vector translation
+ * This is equivalent to (but much faster than):
+ *
+ *     mat4.identity(dest)
+ *     mat4.translate(dest, dest, vec)
+ *
+ * @param {mat4} out mat4 receiving operation result
+ * @param {vec3} v Translation vector
+ * @returns {mat4} out
+ */
+function fromTranslation(out, v) {
+  out[0] = 1
+  out[1] = 0
+  out[2] = 0
+  out[3] = 0
+  out[4] = 0
+  out[5] = 1
+  out[6] = 0
+  out[7] = 0
+  out[8] = 0
+  out[9] = 0
+  out[10] = 1
+  out[11] = 0
+  out[12] = v[0]
+  out[13] = v[1]
+  out[14] = v[2]
+  out[15] = 1
+  return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromXRotation.js":[function(require,module,exports){
+module.exports = fromXRotation
+
+/**
+ * Creates a matrix from the given angle around the X axis
+ * This is equivalent to (but much faster than):
+ *
+ *     mat4.identity(dest)
+ *     mat4.rotateX(dest, dest, rad)
+ *
+ * @param {mat4} out mat4 receiving operation result
+ * @param {Number} rad the angle to rotate the matrix by
+ * @returns {mat4} out
+ */
+function fromXRotation(out, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad)
+
+    // Perform axis-specific matrix multiplication
+    out[0] = 1
+    out[1] = 0
+    out[2] = 0
+    out[3] = 0
+    out[4] = 0
+    out[5] = c
+    out[6] = s
+    out[7] = 0
+    out[8] = 0
+    out[9] = -s
+    out[10] = c
+    out[11] = 0
+    out[12] = 0
+    out[13] = 0
+    out[14] = 0
+    out[15] = 1
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromYRotation.js":[function(require,module,exports){
+module.exports = fromYRotation
+
+/**
+ * Creates a matrix from the given angle around the Y axis
+ * This is equivalent to (but much faster than):
+ *
+ *     mat4.identity(dest)
+ *     mat4.rotateY(dest, dest, rad)
+ *
+ * @param {mat4} out mat4 receiving operation result
+ * @param {Number} rad the angle to rotate the matrix by
+ * @returns {mat4} out
+ */
+function fromYRotation(out, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad)
+
+    // Perform axis-specific matrix multiplication
+    out[0] = c
+    out[1] = 0
+    out[2] = -s
+    out[3] = 0
+    out[4] = 0
+    out[5] = 1
+    out[6] = 0
+    out[7] = 0
+    out[8] = s
+    out[9] = 0
+    out[10] = c
+    out[11] = 0
+    out[12] = 0
+    out[13] = 0
+    out[14] = 0
+    out[15] = 1
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromZRotation.js":[function(require,module,exports){
+module.exports = fromZRotation
+
+/**
+ * Creates a matrix from the given angle around the Z axis
+ * This is equivalent to (but much faster than):
+ *
+ *     mat4.identity(dest)
+ *     mat4.rotateZ(dest, dest, rad)
+ *
+ * @param {mat4} out mat4 receiving operation result
+ * @param {Number} rad the angle to rotate the matrix by
+ * @returns {mat4} out
+ */
+function fromZRotation(out, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad)
+
+    // Perform axis-specific matrix multiplication
+    out[0] = c
+    out[1] = s
+    out[2] = 0
+    out[3] = 0
+    out[4] = -s
+    out[5] = c
+    out[6] = 0
+    out[7] = 0
+    out[8] = 0
+    out[9] = 0
+    out[10] = 1
+    out[11] = 0
+    out[12] = 0
+    out[13] = 0
+    out[14] = 0
+    out[15] = 1
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/frustum.js":[function(require,module,exports){
+module.exports = frustum;
+
+/**
+ * Generates a frustum matrix with the given bounds
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {Number} left Left bound of the frustum
+ * @param {Number} right Right bound of the frustum
+ * @param {Number} bottom Bottom bound of the frustum
+ * @param {Number} top Top bound of the frustum
+ * @param {Number} near Near bound of the frustum
+ * @param {Number} far Far bound of the frustum
+ * @returns {mat4} out
+ */
+function frustum(out, left, right, bottom, top, near, far) {
+    var rl = 1 / (right - left),
+        tb = 1 / (top - bottom),
+        nf = 1 / (near - far);
+    out[0] = (near * 2) * rl;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = (near * 2) * tb;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = (right + left) * rl;
+    out[9] = (top + bottom) * tb;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = (far * near * 2) * nf;
+    out[15] = 0;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/identity.js":[function(require,module,exports){
+module.exports = identity;
+
+/**
+ * Set a mat4 to the identity matrix
+ *
+ * @param {mat4} out the receiving matrix
+ * @returns {mat4} out
+ */
+function identity(out) {
+    out[0] = 1;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 1;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/index.js":[function(require,module,exports){
+module.exports = {
+  create: require('./create')
+  , clone: require('./clone')
+  , copy: require('./copy')
+  , identity: require('./identity')
+  , transpose: require('./transpose')
+  , invert: require('./invert')
+  , adjoint: require('./adjoint')
+  , determinant: require('./determinant')
+  , multiply: require('./multiply')
+  , translate: require('./translate')
+  , scale: require('./scale')
+  , rotate: require('./rotate')
+  , rotateX: require('./rotateX')
+  , rotateY: require('./rotateY')
+  , rotateZ: require('./rotateZ')
+  , fromRotation: require('./fromRotation')
+  , fromRotationTranslation: require('./fromRotationTranslation')
+  , fromScaling: require('./fromScaling')
+  , fromTranslation: require('./fromTranslation')
+  , fromXRotation: require('./fromXRotation')
+  , fromYRotation: require('./fromYRotation')
+  , fromZRotation: require('./fromZRotation')
+  , fromQuat: require('./fromQuat')
+  , frustum: require('./frustum')
+  , perspective: require('./perspective')
+  , perspectiveFromFieldOfView: require('./perspectiveFromFieldOfView')
+  , ortho: require('./ortho')
+  , lookAt: require('./lookAt')
+  , str: require('./str')
+}
+
+},{"./adjoint":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/adjoint.js","./clone":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/clone.js","./copy":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/copy.js","./create":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/create.js","./determinant":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/determinant.js","./fromQuat":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromQuat.js","./fromRotation":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromRotation.js","./fromRotationTranslation":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromRotationTranslation.js","./fromScaling":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromScaling.js","./fromTranslation":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromTranslation.js","./fromXRotation":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromXRotation.js","./fromYRotation":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromYRotation.js","./fromZRotation":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/fromZRotation.js","./frustum":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/frustum.js","./identity":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/identity.js","./invert":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/invert.js","./lookAt":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/lookAt.js","./multiply":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/multiply.js","./ortho":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/ortho.js","./perspective":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/perspective.js","./perspectiveFromFieldOfView":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/perspectiveFromFieldOfView.js","./rotate":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/rotate.js","./rotateX":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/rotateX.js","./rotateY":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/rotateY.js","./rotateZ":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/rotateZ.js","./scale":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/scale.js","./str":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/str.js","./translate":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/translate.js","./transpose":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/transpose.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/invert.js":[function(require,module,exports){
+module.exports = invert;
+
+/**
+ * Inverts a mat4
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the source matrix
+ * @returns {mat4} out
+ */
+function invert(out, a) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
+
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32,
+
+        // Calculate the determinant
+        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+    if (!det) { 
+        return null; 
+    }
+    det = 1.0 / det;
+
+    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
+    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
+    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
+    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
+    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
+    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
+    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
+    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
+    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
+    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
+    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
+    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
+    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
+    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
+    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
+    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
+
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/lookAt.js":[function(require,module,exports){
+var identity = require('./identity');
+
+module.exports = lookAt;
+
+/**
+ * Generates a look-at matrix with the given eye position, focal point, and up axis
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {vec3} eye Position of the viewer
+ * @param {vec3} center Point the viewer is looking at
+ * @param {vec3} up vec3 pointing up
+ * @returns {mat4} out
+ */
+function lookAt(out, eye, center, up) {
+    var x0, x1, x2, y0, y1, y2, z0, z1, z2, len,
+        eyex = eye[0],
+        eyey = eye[1],
+        eyez = eye[2],
+        upx = up[0],
+        upy = up[1],
+        upz = up[2],
+        centerx = center[0],
+        centery = center[1],
+        centerz = center[2];
+
+    if (Math.abs(eyex - centerx) < 0.000001 &&
+        Math.abs(eyey - centery) < 0.000001 &&
+        Math.abs(eyez - centerz) < 0.000001) {
+        return identity(out);
+    }
+
+    z0 = eyex - centerx;
+    z1 = eyey - centery;
+    z2 = eyez - centerz;
+
+    len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+    z0 *= len;
+    z1 *= len;
+    z2 *= len;
+
+    x0 = upy * z2 - upz * z1;
+    x1 = upz * z0 - upx * z2;
+    x2 = upx * z1 - upy * z0;
+    len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+    if (!len) {
+        x0 = 0;
+        x1 = 0;
+        x2 = 0;
+    } else {
+        len = 1 / len;
+        x0 *= len;
+        x1 *= len;
+        x2 *= len;
+    }
+
+    y0 = z1 * x2 - z2 * x1;
+    y1 = z2 * x0 - z0 * x2;
+    y2 = z0 * x1 - z1 * x0;
+
+    len = Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
+    if (!len) {
+        y0 = 0;
+        y1 = 0;
+        y2 = 0;
+    } else {
+        len = 1 / len;
+        y0 *= len;
+        y1 *= len;
+        y2 *= len;
+    }
+
+    out[0] = x0;
+    out[1] = y0;
+    out[2] = z0;
+    out[3] = 0;
+    out[4] = x1;
+    out[5] = y1;
+    out[6] = z1;
+    out[7] = 0;
+    out[8] = x2;
+    out[9] = y2;
+    out[10] = z2;
+    out[11] = 0;
+    out[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
+    out[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
+    out[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
+    out[15] = 1;
+
+    return out;
+};
+},{"./identity":"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/identity.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/multiply.js":[function(require,module,exports){
+module.exports = multiply;
+
+/**
+ * Multiplies two mat4's
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the first operand
+ * @param {mat4} b the second operand
+ * @returns {mat4} out
+ */
+function multiply(out, a, b) {
+    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
+        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
+        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
+        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+
+    // Cache only the current line of the second matrix
+    var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];  
+    out[0] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[1] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[2] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[3] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[4]; b1 = b[5]; b2 = b[6]; b3 = b[7];
+    out[4] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[5] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[6] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[7] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[8]; b1 = b[9]; b2 = b[10]; b3 = b[11];
+    out[8] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[9] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[10] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[11] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+
+    b0 = b[12]; b1 = b[13]; b2 = b[14]; b3 = b[15];
+    out[12] = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    out[13] = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    out[14] = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    out[15] = b0*a03 + b1*a13 + b2*a23 + b3*a33;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/ortho.js":[function(require,module,exports){
+module.exports = ortho;
+
+/**
+ * Generates a orthogonal projection matrix with the given bounds
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {number} left Left bound of the frustum
+ * @param {number} right Right bound of the frustum
+ * @param {number} bottom Bottom bound of the frustum
+ * @param {number} top Top bound of the frustum
+ * @param {number} near Near bound of the frustum
+ * @param {number} far Far bound of the frustum
+ * @returns {mat4} out
+ */
+function ortho(out, left, right, bottom, top, near, far) {
+    var lr = 1 / (left - right),
+        bt = 1 / (bottom - top),
+        nf = 1 / (near - far);
+    out[0] = -2 * lr;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = -2 * bt;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 2 * nf;
+    out[11] = 0;
+    out[12] = (left + right) * lr;
+    out[13] = (top + bottom) * bt;
+    out[14] = (far + near) * nf;
+    out[15] = 1;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/perspective.js":[function(require,module,exports){
+module.exports = perspective;
+
+/**
+ * Generates a perspective projection matrix with the given bounds
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {number} fovy Vertical field of view in radians
+ * @param {number} aspect Aspect ratio. typically viewport width/height
+ * @param {number} near Near bound of the frustum
+ * @param {number} far Far bound of the frustum
+ * @returns {mat4} out
+ */
+function perspective(out, fovy, aspect, near, far) {
+    var f = 1.0 / Math.tan(fovy / 2),
+        nf = 1 / (near - far);
+    out[0] = f / aspect;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = f;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = (2 * far * near) * nf;
+    out[15] = 0;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/perspectiveFromFieldOfView.js":[function(require,module,exports){
+module.exports = perspectiveFromFieldOfView;
+
+/**
+ * Generates a perspective projection matrix with the given field of view.
+ * This is primarily useful for generating projection matrices to be used
+ * with the still experiemental WebVR API.
+ *
+ * @param {mat4} out mat4 frustum matrix will be written into
+ * @param {number} fov Object containing the following values: upDegrees, downDegrees, leftDegrees, rightDegrees
+ * @param {number} near Near bound of the frustum
+ * @param {number} far Far bound of the frustum
+ * @returns {mat4} out
+ */
+function perspectiveFromFieldOfView(out, fov, near, far) {
+    var upTan = Math.tan(fov.upDegrees * Math.PI/180.0),
+        downTan = Math.tan(fov.downDegrees * Math.PI/180.0),
+        leftTan = Math.tan(fov.leftDegrees * Math.PI/180.0),
+        rightTan = Math.tan(fov.rightDegrees * Math.PI/180.0),
+        xScale = 2.0 / (leftTan + rightTan),
+        yScale = 2.0 / (upTan + downTan);
+
+    out[0] = xScale;
+    out[1] = 0.0;
+    out[2] = 0.0;
+    out[3] = 0.0;
+    out[4] = 0.0;
+    out[5] = yScale;
+    out[6] = 0.0;
+    out[7] = 0.0;
+    out[8] = -((leftTan - rightTan) * xScale * 0.5);
+    out[9] = ((upTan - downTan) * yScale * 0.5);
+    out[10] = far / (near - far);
+    out[11] = -1.0;
+    out[12] = 0.0;
+    out[13] = 0.0;
+    out[14] = (far * near) / (near - far);
+    out[15] = 0.0;
+    return out;
+}
+
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/rotate.js":[function(require,module,exports){
+module.exports = rotate;
+
+/**
+ * Rotates a mat4 by the given angle
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the matrix to rotate
+ * @param {Number} rad the angle to rotate the matrix by
+ * @param {vec3} axis the axis to rotate around
+ * @returns {mat4} out
+ */
+function rotate(out, a, rad, axis) {
+    var x = axis[0], y = axis[1], z = axis[2],
+        len = Math.sqrt(x * x + y * y + z * z),
+        s, c, t,
+        a00, a01, a02, a03,
+        a10, a11, a12, a13,
+        a20, a21, a22, a23,
+        b00, b01, b02,
+        b10, b11, b12,
+        b20, b21, b22;
+
+    if (Math.abs(len) < 0.000001) { return null; }
+    
+    len = 1 / len;
+    x *= len;
+    y *= len;
+    z *= len;
+
+    s = Math.sin(rad);
+    c = Math.cos(rad);
+    t = 1 - c;
+
+    a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
+    a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
+    a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
+
+    // Construct the elements of the rotation matrix
+    b00 = x * x * t + c; b01 = y * x * t + z * s; b02 = z * x * t - y * s;
+    b10 = x * y * t - z * s; b11 = y * y * t + c; b12 = z * y * t + x * s;
+    b20 = x * z * t + y * s; b21 = y * z * t - x * s; b22 = z * z * t + c;
+
+    // Perform rotation-specific matrix multiplication
+    out[0] = a00 * b00 + a10 * b01 + a20 * b02;
+    out[1] = a01 * b00 + a11 * b01 + a21 * b02;
+    out[2] = a02 * b00 + a12 * b01 + a22 * b02;
+    out[3] = a03 * b00 + a13 * b01 + a23 * b02;
+    out[4] = a00 * b10 + a10 * b11 + a20 * b12;
+    out[5] = a01 * b10 + a11 * b11 + a21 * b12;
+    out[6] = a02 * b10 + a12 * b11 + a22 * b12;
+    out[7] = a03 * b10 + a13 * b11 + a23 * b12;
+    out[8] = a00 * b20 + a10 * b21 + a20 * b22;
+    out[9] = a01 * b20 + a11 * b21 + a21 * b22;
+    out[10] = a02 * b20 + a12 * b21 + a22 * b22;
+    out[11] = a03 * b20 + a13 * b21 + a23 * b22;
+
+    if (a !== out) { // If the source and destination differ, copy the unchanged last row
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/rotateX.js":[function(require,module,exports){
+module.exports = rotateX;
+
+/**
+ * Rotates a matrix by the given angle around the X axis
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the matrix to rotate
+ * @param {Number} rad the angle to rotate the matrix by
+ * @returns {mat4} out
+ */
+function rotateX(out, a, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad),
+        a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7],
+        a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+
+    if (a !== out) { // If the source and destination differ, copy the unchanged rows
+        out[0]  = a[0];
+        out[1]  = a[1];
+        out[2]  = a[2];
+        out[3]  = a[3];
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+
+    // Perform axis-specific matrix multiplication
+    out[4] = a10 * c + a20 * s;
+    out[5] = a11 * c + a21 * s;
+    out[6] = a12 * c + a22 * s;
+    out[7] = a13 * c + a23 * s;
+    out[8] = a20 * c - a10 * s;
+    out[9] = a21 * c - a11 * s;
+    out[10] = a22 * c - a12 * s;
+    out[11] = a23 * c - a13 * s;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/rotateY.js":[function(require,module,exports){
+module.exports = rotateY;
+
+/**
+ * Rotates a matrix by the given angle around the Y axis
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the matrix to rotate
+ * @param {Number} rad the angle to rotate the matrix by
+ * @returns {mat4} out
+ */
+function rotateY(out, a, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad),
+        a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3],
+        a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+
+    if (a !== out) { // If the source and destination differ, copy the unchanged rows
+        out[4]  = a[4];
+        out[5]  = a[5];
+        out[6]  = a[6];
+        out[7]  = a[7];
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+
+    // Perform axis-specific matrix multiplication
+    out[0] = a00 * c - a20 * s;
+    out[1] = a01 * c - a21 * s;
+    out[2] = a02 * c - a22 * s;
+    out[3] = a03 * c - a23 * s;
+    out[8] = a00 * s + a20 * c;
+    out[9] = a01 * s + a21 * c;
+    out[10] = a02 * s + a22 * c;
+    out[11] = a03 * s + a23 * c;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/rotateZ.js":[function(require,module,exports){
+module.exports = rotateZ;
+
+/**
+ * Rotates a matrix by the given angle around the Z axis
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the matrix to rotate
+ * @param {Number} rad the angle to rotate the matrix by
+ * @returns {mat4} out
+ */
+function rotateZ(out, a, rad) {
+    var s = Math.sin(rad),
+        c = Math.cos(rad),
+        a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3],
+        a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7];
+
+    if (a !== out) { // If the source and destination differ, copy the unchanged last row
+        out[8]  = a[8];
+        out[9]  = a[9];
+        out[10] = a[10];
+        out[11] = a[11];
+        out[12] = a[12];
+        out[13] = a[13];
+        out[14] = a[14];
+        out[15] = a[15];
+    }
+
+    // Perform axis-specific matrix multiplication
+    out[0] = a00 * c + a10 * s;
+    out[1] = a01 * c + a11 * s;
+    out[2] = a02 * c + a12 * s;
+    out[3] = a03 * c + a13 * s;
+    out[4] = a10 * c - a00 * s;
+    out[5] = a11 * c - a01 * s;
+    out[6] = a12 * c - a02 * s;
+    out[7] = a13 * c - a03 * s;
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/scale.js":[function(require,module,exports){
+module.exports = scale;
+
+/**
+ * Scales the mat4 by the dimensions in the given vec3
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the matrix to scale
+ * @param {vec3} v the vec3 to scale the matrix by
+ * @returns {mat4} out
+ **/
+function scale(out, a, v) {
+    var x = v[0], y = v[1], z = v[2];
+
+    out[0] = a[0] * x;
+    out[1] = a[1] * x;
+    out[2] = a[2] * x;
+    out[3] = a[3] * x;
+    out[4] = a[4] * y;
+    out[5] = a[5] * y;
+    out[6] = a[6] * y;
+    out[7] = a[7] * y;
+    out[8] = a[8] * z;
+    out[9] = a[9] * z;
+    out[10] = a[10] * z;
+    out[11] = a[11] * z;
+    out[12] = a[12];
+    out[13] = a[13];
+    out[14] = a[14];
+    out[15] = a[15];
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/str.js":[function(require,module,exports){
+module.exports = str;
+
+/**
+ * Returns a string representation of a mat4
+ *
+ * @param {mat4} mat matrix to represent as a string
+ * @returns {String} string representation of the matrix
+ */
+function str(a) {
+    return 'mat4(' + a[0] + ', ' + a[1] + ', ' + a[2] + ', ' + a[3] + ', ' +
+                    a[4] + ', ' + a[5] + ', ' + a[6] + ', ' + a[7] + ', ' +
+                    a[8] + ', ' + a[9] + ', ' + a[10] + ', ' + a[11] + ', ' + 
+                    a[12] + ', ' + a[13] + ', ' + a[14] + ', ' + a[15] + ')';
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/translate.js":[function(require,module,exports){
+module.exports = translate;
+
+/**
+ * Translate a mat4 by the given vector
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the matrix to translate
+ * @param {vec3} v vector to translate by
+ * @returns {mat4} out
+ */
+function translate(out, a, v) {
+    var x = v[0], y = v[1], z = v[2],
+        a00, a01, a02, a03,
+        a10, a11, a12, a13,
+        a20, a21, a22, a23;
+
+    if (a === out) {
+        out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
+        out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
+        out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
+        out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
+    } else {
+        a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
+        a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
+        a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
+
+        out[0] = a00; out[1] = a01; out[2] = a02; out[3] = a03;
+        out[4] = a10; out[5] = a11; out[6] = a12; out[7] = a13;
+        out[8] = a20; out[9] = a21; out[10] = a22; out[11] = a23;
+
+        out[12] = a00 * x + a10 * y + a20 * z + a[12];
+        out[13] = a01 * x + a11 * y + a21 * z + a[13];
+        out[14] = a02 * x + a12 * y + a22 * z + a[14];
+        out[15] = a03 * x + a13 * y + a23 * z + a[15];
+    }
+
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-mat4/transpose.js":[function(require,module,exports){
+module.exports = transpose;
+
+/**
+ * Transpose the values of a mat4
+ *
+ * @param {mat4} out the receiving matrix
+ * @param {mat4} a the source matrix
+ * @returns {mat4} out
+ */
+function transpose(out, a) {
+    // If we are transposing ourselves we can skip a few steps but have to cache some values
+    if (out === a) {
+        var a01 = a[1], a02 = a[2], a03 = a[3],
+            a12 = a[6], a13 = a[7],
+            a23 = a[11];
+
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a01;
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a02;
+        out[9] = a12;
+        out[11] = a[14];
+        out[12] = a03;
+        out[13] = a13;
+        out[14] = a23;
+    } else {
+        out[0] = a[0];
+        out[1] = a[4];
+        out[2] = a[8];
+        out[3] = a[12];
+        out[4] = a[1];
+        out[5] = a[5];
+        out[6] = a[9];
+        out[7] = a[13];
+        out[8] = a[2];
+        out[9] = a[6];
+        out[10] = a[10];
+        out[11] = a[14];
+        out[12] = a[3];
+        out[13] = a[7];
+        out[14] = a[11];
+        out[15] = a[15];
+    }
+    
+    return out;
+};
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-texture2d/texture.js":[function(require,module,exports){
 'use strict'
 
 var ndarray = require('ndarray')
@@ -31170,7 +32981,815 @@ function createTexture2D(gl) {
   throw new Error('gl-texture2d: Invalid arguments for texture2d constructor')
 }
 
-},{"ndarray":268,"ndarray-ops":265,"typedarray-pool":271}],262:[function(require,module,exports){
+},{"ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js","ndarray-ops":"/Users/charlie/Documents/code/marching/node_modules/ndarray-ops/ndarray-ops.js","typedarray-pool":"/Users/charlie/Documents/code/marching/node_modules/typedarray-pool/pool.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/add.js":[function(require,module,exports){
+module.exports = add;
+
+/**
+ * Adds two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {vec3} out
+ */
+function add(out, a, b) {
+    out[0] = a[0] + b[0]
+    out[1] = a[1] + b[1]
+    out[2] = a[2] + b[2]
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/angle.js":[function(require,module,exports){
+module.exports = angle
+
+var fromValues = require('./fromValues')
+var normalize = require('./normalize')
+var dot = require('./dot')
+
+/**
+ * Get the angle between two 3D vectors
+ * @param {vec3} a The first operand
+ * @param {vec3} b The second operand
+ * @returns {Number} The angle in radians
+ */
+function angle(a, b) {
+    var tempA = fromValues(a[0], a[1], a[2])
+    var tempB = fromValues(b[0], b[1], b[2])
+ 
+    normalize(tempA, tempA)
+    normalize(tempB, tempB)
+ 
+    var cosine = dot(tempA, tempB)
+
+    if(cosine > 1.0){
+        return 0
+    } else {
+        return Math.acos(cosine)
+    }     
+}
+
+},{"./dot":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/dot.js","./fromValues":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/fromValues.js","./normalize":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/normalize.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/ceil.js":[function(require,module,exports){
+module.exports = ceil
+
+/**
+ * Math.ceil the components of a vec3
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a vector to ceil
+ * @returns {vec3} out
+ */
+function ceil(out, a) {
+  out[0] = Math.ceil(a[0])
+  out[1] = Math.ceil(a[1])
+  out[2] = Math.ceil(a[2])
+  return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/clone.js":[function(require,module,exports){
+module.exports = clone;
+
+/**
+ * Creates a new vec3 initialized with values from an existing vector
+ *
+ * @param {vec3} a vector to clone
+ * @returns {vec3} a new 3D vector
+ */
+function clone(a) {
+    var out = new Float32Array(3)
+    out[0] = a[0]
+    out[1] = a[1]
+    out[2] = a[2]
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/copy.js":[function(require,module,exports){
+module.exports = copy;
+
+/**
+ * Copy the values from one vec3 to another
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the source vector
+ * @returns {vec3} out
+ */
+function copy(out, a) {
+    out[0] = a[0]
+    out[1] = a[1]
+    out[2] = a[2]
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/create.js":[function(require,module,exports){
+module.exports = create;
+
+/**
+ * Creates a new, empty vec3
+ *
+ * @returns {vec3} a new 3D vector
+ */
+function create() {
+    var out = new Float32Array(3)
+    out[0] = 0
+    out[1] = 0
+    out[2] = 0
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/cross.js":[function(require,module,exports){
+module.exports = cross;
+
+/**
+ * Computes the cross product of two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {vec3} out
+ */
+function cross(out, a, b) {
+    var ax = a[0], ay = a[1], az = a[2],
+        bx = b[0], by = b[1], bz = b[2]
+
+    out[0] = ay * bz - az * by
+    out[1] = az * bx - ax * bz
+    out[2] = ax * by - ay * bx
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/dist.js":[function(require,module,exports){
+module.exports = require('./distance')
+
+},{"./distance":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/distance.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/distance.js":[function(require,module,exports){
+module.exports = distance;
+
+/**
+ * Calculates the euclidian distance between two vec3's
+ *
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {Number} distance between a and b
+ */
+function distance(a, b) {
+    var x = b[0] - a[0],
+        y = b[1] - a[1],
+        z = b[2] - a[2]
+    return Math.sqrt(x*x + y*y + z*z)
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/div.js":[function(require,module,exports){
+module.exports = require('./divide')
+
+},{"./divide":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/divide.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/divide.js":[function(require,module,exports){
+module.exports = divide;
+
+/**
+ * Divides two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {vec3} out
+ */
+function divide(out, a, b) {
+    out[0] = a[0] / b[0]
+    out[1] = a[1] / b[1]
+    out[2] = a[2] / b[2]
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/dot.js":[function(require,module,exports){
+module.exports = dot;
+
+/**
+ * Calculates the dot product of two vec3's
+ *
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {Number} dot product of a and b
+ */
+function dot(a, b) {
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/epsilon.js":[function(require,module,exports){
+module.exports = 0.000001
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/equals.js":[function(require,module,exports){
+module.exports = equals
+
+var EPSILON = require('./epsilon')
+
+/**
+ * Returns whether or not the vectors have approximately the same elements in the same position.
+ *
+ * @param {vec3} a The first vector.
+ * @param {vec3} b The second vector.
+ * @returns {Boolean} True if the vectors are equal, false otherwise.
+ */
+function equals(a, b) {
+  var a0 = a[0]
+  var a1 = a[1]
+  var a2 = a[2]
+  var b0 = b[0]
+  var b1 = b[1]
+  var b2 = b[2]
+  return (Math.abs(a0 - b0) <= EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+          Math.abs(a1 - b1) <= EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
+          Math.abs(a2 - b2) <= EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)))
+}
+
+},{"./epsilon":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/epsilon.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/exactEquals.js":[function(require,module,exports){
+module.exports = exactEquals
+
+/**
+ * Returns whether or not the vectors exactly have the same elements in the same position (when compared with ===)
+ *
+ * @param {vec3} a The first vector.
+ * @param {vec3} b The second vector.
+ * @returns {Boolean} True if the vectors are equal, false otherwise.
+ */
+function exactEquals(a, b) {
+  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/floor.js":[function(require,module,exports){
+module.exports = floor
+
+/**
+ * Math.floor the components of a vec3
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a vector to floor
+ * @returns {vec3} out
+ */
+function floor(out, a) {
+  out[0] = Math.floor(a[0])
+  out[1] = Math.floor(a[1])
+  out[2] = Math.floor(a[2])
+  return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/forEach.js":[function(require,module,exports){
+module.exports = forEach;
+
+var vec = require('./create')()
+
+/**
+ * Perform some operation over an array of vec3s.
+ *
+ * @param {Array} a the array of vectors to iterate over
+ * @param {Number} stride Number of elements between the start of each vec3. If 0 assumes tightly packed
+ * @param {Number} offset Number of elements to skip at the beginning of the array
+ * @param {Number} count Number of vec3s to iterate over. If 0 iterates over entire array
+ * @param {Function} fn Function to call for each vector in the array
+ * @param {Object} [arg] additional argument to pass to fn
+ * @returns {Array} a
+ * @function
+ */
+function forEach(a, stride, offset, count, fn, arg) {
+        var i, l
+        if(!stride) {
+            stride = 3
+        }
+
+        if(!offset) {
+            offset = 0
+        }
+        
+        if(count) {
+            l = Math.min((count * stride) + offset, a.length)
+        } else {
+            l = a.length
+        }
+
+        for(i = offset; i < l; i += stride) {
+            vec[0] = a[i] 
+            vec[1] = a[i+1] 
+            vec[2] = a[i+2]
+            fn(vec, vec, arg)
+            a[i] = vec[0] 
+            a[i+1] = vec[1] 
+            a[i+2] = vec[2]
+        }
+        
+        return a
+}
+},{"./create":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/create.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/fromValues.js":[function(require,module,exports){
+module.exports = fromValues;
+
+/**
+ * Creates a new vec3 initialized with the given values
+ *
+ * @param {Number} x X component
+ * @param {Number} y Y component
+ * @param {Number} z Z component
+ * @returns {vec3} a new 3D vector
+ */
+function fromValues(x, y, z) {
+    var out = new Float32Array(3)
+    out[0] = x
+    out[1] = y
+    out[2] = z
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/index.js":[function(require,module,exports){
+module.exports = {
+  EPSILON: require('./epsilon')
+  , create: require('./create')
+  , clone: require('./clone')
+  , angle: require('./angle')
+  , fromValues: require('./fromValues')
+  , copy: require('./copy')
+  , set: require('./set')
+  , equals: require('./equals')
+  , exactEquals: require('./exactEquals')
+  , add: require('./add')
+  , subtract: require('./subtract')
+  , sub: require('./sub')
+  , multiply: require('./multiply')
+  , mul: require('./mul')
+  , divide: require('./divide')
+  , div: require('./div')
+  , min: require('./min')
+  , max: require('./max')
+  , floor: require('./floor')
+  , ceil: require('./ceil')
+  , round: require('./round')
+  , scale: require('./scale')
+  , scaleAndAdd: require('./scaleAndAdd')
+  , distance: require('./distance')
+  , dist: require('./dist')
+  , squaredDistance: require('./squaredDistance')
+  , sqrDist: require('./sqrDist')
+  , length: require('./length')
+  , len: require('./len')
+  , squaredLength: require('./squaredLength')
+  , sqrLen: require('./sqrLen')
+  , negate: require('./negate')
+  , inverse: require('./inverse')
+  , normalize: require('./normalize')
+  , dot: require('./dot')
+  , cross: require('./cross')
+  , lerp: require('./lerp')
+  , random: require('./random')
+  , transformMat4: require('./transformMat4')
+  , transformMat3: require('./transformMat3')
+  , transformQuat: require('./transformQuat')
+  , rotateX: require('./rotateX')
+  , rotateY: require('./rotateY')
+  , rotateZ: require('./rotateZ')
+  , forEach: require('./forEach')
+}
+
+},{"./add":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/add.js","./angle":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/angle.js","./ceil":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/ceil.js","./clone":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/clone.js","./copy":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/copy.js","./create":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/create.js","./cross":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/cross.js","./dist":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/dist.js","./distance":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/distance.js","./div":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/div.js","./divide":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/divide.js","./dot":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/dot.js","./epsilon":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/epsilon.js","./equals":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/equals.js","./exactEquals":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/exactEquals.js","./floor":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/floor.js","./forEach":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/forEach.js","./fromValues":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/fromValues.js","./inverse":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/inverse.js","./len":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/len.js","./length":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/length.js","./lerp":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/lerp.js","./max":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/max.js","./min":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/min.js","./mul":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/mul.js","./multiply":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/multiply.js","./negate":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/negate.js","./normalize":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/normalize.js","./random":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/random.js","./rotateX":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/rotateX.js","./rotateY":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/rotateY.js","./rotateZ":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/rotateZ.js","./round":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/round.js","./scale":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/scale.js","./scaleAndAdd":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/scaleAndAdd.js","./set":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/set.js","./sqrDist":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/sqrDist.js","./sqrLen":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/sqrLen.js","./squaredDistance":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/squaredDistance.js","./squaredLength":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/squaredLength.js","./sub":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/sub.js","./subtract":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/subtract.js","./transformMat3":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/transformMat3.js","./transformMat4":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/transformMat4.js","./transformQuat":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/transformQuat.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/inverse.js":[function(require,module,exports){
+module.exports = inverse;
+
+/**
+ * Returns the inverse of the components of a vec3
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a vector to invert
+ * @returns {vec3} out
+ */
+function inverse(out, a) {
+  out[0] = 1.0 / a[0]
+  out[1] = 1.0 / a[1]
+  out[2] = 1.0 / a[2]
+  return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/len.js":[function(require,module,exports){
+module.exports = require('./length')
+
+},{"./length":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/length.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/length.js":[function(require,module,exports){
+module.exports = length;
+
+/**
+ * Calculates the length of a vec3
+ *
+ * @param {vec3} a vector to calculate length of
+ * @returns {Number} length of a
+ */
+function length(a) {
+    var x = a[0],
+        y = a[1],
+        z = a[2]
+    return Math.sqrt(x*x + y*y + z*z)
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/lerp.js":[function(require,module,exports){
+module.exports = lerp;
+
+/**
+ * Performs a linear interpolation between two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @param {Number} t interpolation amount between the two inputs
+ * @returns {vec3} out
+ */
+function lerp(out, a, b, t) {
+    var ax = a[0],
+        ay = a[1],
+        az = a[2]
+    out[0] = ax + t * (b[0] - ax)
+    out[1] = ay + t * (b[1] - ay)
+    out[2] = az + t * (b[2] - az)
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/max.js":[function(require,module,exports){
+module.exports = max;
+
+/**
+ * Returns the maximum of two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {vec3} out
+ */
+function max(out, a, b) {
+    out[0] = Math.max(a[0], b[0])
+    out[1] = Math.max(a[1], b[1])
+    out[2] = Math.max(a[2], b[2])
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/min.js":[function(require,module,exports){
+module.exports = min;
+
+/**
+ * Returns the minimum of two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {vec3} out
+ */
+function min(out, a, b) {
+    out[0] = Math.min(a[0], b[0])
+    out[1] = Math.min(a[1], b[1])
+    out[2] = Math.min(a[2], b[2])
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/mul.js":[function(require,module,exports){
+module.exports = require('./multiply')
+
+},{"./multiply":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/multiply.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/multiply.js":[function(require,module,exports){
+module.exports = multiply;
+
+/**
+ * Multiplies two vec3's
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {vec3} out
+ */
+function multiply(out, a, b) {
+    out[0] = a[0] * b[0]
+    out[1] = a[1] * b[1]
+    out[2] = a[2] * b[2]
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/negate.js":[function(require,module,exports){
+module.exports = negate;
+
+/**
+ * Negates the components of a vec3
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a vector to negate
+ * @returns {vec3} out
+ */
+function negate(out, a) {
+    out[0] = -a[0]
+    out[1] = -a[1]
+    out[2] = -a[2]
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/normalize.js":[function(require,module,exports){
+module.exports = normalize;
+
+/**
+ * Normalize a vec3
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a vector to normalize
+ * @returns {vec3} out
+ */
+function normalize(out, a) {
+    var x = a[0],
+        y = a[1],
+        z = a[2]
+    var len = x*x + y*y + z*z
+    if (len > 0) {
+        //TODO: evaluate use of glm_invsqrt here?
+        len = 1 / Math.sqrt(len)
+        out[0] = a[0] * len
+        out[1] = a[1] * len
+        out[2] = a[2] * len
+    }
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/random.js":[function(require,module,exports){
+module.exports = random;
+
+/**
+ * Generates a random vector with the given scale
+ *
+ * @param {vec3} out the receiving vector
+ * @param {Number} [scale] Length of the resulting vector. If ommitted, a unit vector will be returned
+ * @returns {vec3} out
+ */
+function random(out, scale) {
+    scale = scale || 1.0
+
+    var r = Math.random() * 2.0 * Math.PI
+    var z = (Math.random() * 2.0) - 1.0
+    var zScale = Math.sqrt(1.0-z*z) * scale
+
+    out[0] = Math.cos(r) * zScale
+    out[1] = Math.sin(r) * zScale
+    out[2] = z * scale
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/rotateX.js":[function(require,module,exports){
+module.exports = rotateX;
+
+/**
+ * Rotate a 3D vector around the x-axis
+ * @param {vec3} out The receiving vec3
+ * @param {vec3} a The vec3 point to rotate
+ * @param {vec3} b The origin of the rotation
+ * @param {Number} c The angle of rotation
+ * @returns {vec3} out
+ */
+function rotateX(out, a, b, c){
+    var by = b[1]
+    var bz = b[2]
+
+    // Translate point to the origin
+    var py = a[1] - by
+    var pz = a[2] - bz
+
+    var sc = Math.sin(c)
+    var cc = Math.cos(c)
+
+    // perform rotation and translate to correct position
+    out[0] = a[0]
+    out[1] = by + py * cc - pz * sc
+    out[2] = bz + py * sc + pz * cc
+
+    return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/rotateY.js":[function(require,module,exports){
+module.exports = rotateY;
+
+/**
+ * Rotate a 3D vector around the y-axis
+ * @param {vec3} out The receiving vec3
+ * @param {vec3} a The vec3 point to rotate
+ * @param {vec3} b The origin of the rotation
+ * @param {Number} c The angle of rotation
+ * @returns {vec3} out
+ */
+function rotateY(out, a, b, c){
+    var bx = b[0]
+    var bz = b[2]
+
+    // translate point to the origin
+    var px = a[0] - bx
+    var pz = a[2] - bz
+    
+    var sc = Math.sin(c)
+    var cc = Math.cos(c)
+  
+    // perform rotation and translate to correct position
+    out[0] = bx + pz * sc + px * cc
+    out[1] = a[1]
+    out[2] = bz + pz * cc - px * sc
+  
+    return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/rotateZ.js":[function(require,module,exports){
+module.exports = rotateZ;
+
+/**
+ * Rotate a 3D vector around the z-axis
+ * @param {vec3} out The receiving vec3
+ * @param {vec3} a The vec3 point to rotate
+ * @param {vec3} b The origin of the rotation
+ * @param {Number} c The angle of rotation
+ * @returns {vec3} out
+ */
+function rotateZ(out, a, b, c){
+    var bx = b[0]
+    var by = b[1]
+
+    //Translate point to the origin
+    var px = a[0] - bx
+    var py = a[1] - by
+  
+    var sc = Math.sin(c)
+    var cc = Math.cos(c)
+
+    // perform rotation and translate to correct position
+    out[0] = bx + px * cc - py * sc
+    out[1] = by + px * sc + py * cc
+    out[2] = a[2]
+  
+    return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/round.js":[function(require,module,exports){
+module.exports = round
+
+/**
+ * Math.round the components of a vec3
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a vector to round
+ * @returns {vec3} out
+ */
+function round(out, a) {
+  out[0] = Math.round(a[0])
+  out[1] = Math.round(a[1])
+  out[2] = Math.round(a[2])
+  return out
+}
+
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/scale.js":[function(require,module,exports){
+module.exports = scale;
+
+/**
+ * Scales a vec3 by a scalar number
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the vector to scale
+ * @param {Number} b amount to scale the vector by
+ * @returns {vec3} out
+ */
+function scale(out, a, b) {
+    out[0] = a[0] * b
+    out[1] = a[1] * b
+    out[2] = a[2] * b
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/scaleAndAdd.js":[function(require,module,exports){
+module.exports = scaleAndAdd;
+
+/**
+ * Adds two vec3's after scaling the second operand by a scalar value
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @param {Number} scale the amount to scale b by before adding
+ * @returns {vec3} out
+ */
+function scaleAndAdd(out, a, b, scale) {
+    out[0] = a[0] + (b[0] * scale)
+    out[1] = a[1] + (b[1] * scale)
+    out[2] = a[2] + (b[2] * scale)
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/set.js":[function(require,module,exports){
+module.exports = set;
+
+/**
+ * Set the components of a vec3 to the given values
+ *
+ * @param {vec3} out the receiving vector
+ * @param {Number} x X component
+ * @param {Number} y Y component
+ * @param {Number} z Z component
+ * @returns {vec3} out
+ */
+function set(out, x, y, z) {
+    out[0] = x
+    out[1] = y
+    out[2] = z
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/sqrDist.js":[function(require,module,exports){
+module.exports = require('./squaredDistance')
+
+},{"./squaredDistance":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/squaredDistance.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/sqrLen.js":[function(require,module,exports){
+module.exports = require('./squaredLength')
+
+},{"./squaredLength":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/squaredLength.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/squaredDistance.js":[function(require,module,exports){
+module.exports = squaredDistance;
+
+/**
+ * Calculates the squared euclidian distance between two vec3's
+ *
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {Number} squared distance between a and b
+ */
+function squaredDistance(a, b) {
+    var x = b[0] - a[0],
+        y = b[1] - a[1],
+        z = b[2] - a[2]
+    return x*x + y*y + z*z
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/squaredLength.js":[function(require,module,exports){
+module.exports = squaredLength;
+
+/**
+ * Calculates the squared length of a vec3
+ *
+ * @param {vec3} a vector to calculate squared length of
+ * @returns {Number} squared length of a
+ */
+function squaredLength(a) {
+    var x = a[0],
+        y = a[1],
+        z = a[2]
+    return x*x + y*y + z*z
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/sub.js":[function(require,module,exports){
+module.exports = require('./subtract')
+
+},{"./subtract":"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/subtract.js"}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/subtract.js":[function(require,module,exports){
+module.exports = subtract;
+
+/**
+ * Subtracts vector b from vector a
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the first operand
+ * @param {vec3} b the second operand
+ * @returns {vec3} out
+ */
+function subtract(out, a, b) {
+    out[0] = a[0] - b[0]
+    out[1] = a[1] - b[1]
+    out[2] = a[2] - b[2]
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/transformMat3.js":[function(require,module,exports){
+module.exports = transformMat3;
+
+/**
+ * Transforms the vec3 with a mat3.
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the vector to transform
+ * @param {mat4} m the 3x3 matrix to transform with
+ * @returns {vec3} out
+ */
+function transformMat3(out, a, m) {
+    var x = a[0], y = a[1], z = a[2]
+    out[0] = x * m[0] + y * m[3] + z * m[6]
+    out[1] = x * m[1] + y * m[4] + z * m[7]
+    out[2] = x * m[2] + y * m[5] + z * m[8]
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/transformMat4.js":[function(require,module,exports){
+module.exports = transformMat4;
+
+/**
+ * Transforms the vec3 with a mat4.
+ * 4th vector component is implicitly '1'
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the vector to transform
+ * @param {mat4} m matrix to transform with
+ * @returns {vec3} out
+ */
+function transformMat4(out, a, m) {
+    var x = a[0], y = a[1], z = a[2],
+        w = m[3] * x + m[7] * y + m[11] * z + m[15]
+    w = w || 1.0
+    out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w
+    out[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w
+    out[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/gl-vec3/transformQuat.js":[function(require,module,exports){
+module.exports = transformQuat;
+
+/**
+ * Transforms the vec3 with a quat
+ *
+ * @param {vec3} out the receiving vector
+ * @param {vec3} a the vector to transform
+ * @param {quat} q quaternion to transform with
+ * @returns {vec3} out
+ */
+function transformQuat(out, a, q) {
+    // benchmarks: http://jsperf.com/quaternion-transform-vec3-implementations
+
+    var x = a[0], y = a[1], z = a[2],
+        qx = q[0], qy = q[1], qz = q[2], qw = q[3],
+
+        // calculate quat * vec
+        ix = qw * x + qy * z - qz * y,
+        iy = qw * y + qz * x - qx * z,
+        iz = qw * z + qx * y - qy * x,
+        iw = -qx * x - qy * y - qz * z
+
+    // calculate result * inverse quat
+    out[0] = ix * qw + iw * -qx + iy * -qz - iz * -qy
+    out[1] = iy * qw + iw * -qy + iz * -qx - ix * -qz
+    out[2] = iz * qw + iw * -qz + ix * -qy - iy * -qx
+    return out
+}
+},{}],"/Users/charlie/Documents/code/marching/node_modules/glslify/browser.js":[function(require,module,exports){
 module.exports = function(strings) {
   if (typeof strings === 'string') strings = [strings]
   var exprs = [].slice.call(arguments,1)
@@ -31182,7 +33801,7 @@ module.exports = function(strings) {
   return parts.join('')
 }
 
-},{}],263:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/iota-array/iota.js":[function(require,module,exports){
 "use strict"
 
 function iota(n) {
@@ -31194,9 +33813,9 @@ function iota(n) {
 }
 
 module.exports = iota
-},{}],264:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],265:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/is-buffer/index.js":[function(require,module,exports){
+arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/node_modules/is-buffer/index.js"][0].apply(exports,arguments)
+},{}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-ops/ndarray-ops.js":[function(require,module,exports){
 "use strict"
 
 var compile = require("cwise-compiler")
@@ -31659,7 +34278,7 @@ exports.equals = compile({
 
 
 
-},{"cwise-compiler":255}],266:[function(require,module,exports){
+},{"cwise-compiler":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/convert.js":[function(require,module,exports){
 "use strict"
 
 var ndarray = require("ndarray")
@@ -31682,10 +34301,10 @@ module.exports = function convert(arr, result) {
   return result
 }
 
-},{"./doConvert.js":267,"ndarray":268}],267:[function(require,module,exports){
+},{"./doConvert.js":"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/doConvert.js","ndarray":"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray-pack/doConvert.js":[function(require,module,exports){
 module.exports=require('cwise-compiler')({"args":["array","scalar","index"],"pre":{"body":"{}","args":[],"thisVars":[],"localVars":[]},"body":{"body":"{\nvar _inline_1_v=_inline_1_arg1_,_inline_1_i\nfor(_inline_1_i=0;_inline_1_i<_inline_1_arg2_.length-1;++_inline_1_i) {\n_inline_1_v=_inline_1_v[_inline_1_arg2_[_inline_1_i]]\n}\n_inline_1_arg0_=_inline_1_v[_inline_1_arg2_[_inline_1_arg2_.length-1]]\n}","args":[{"name":"_inline_1_arg0_","lvalue":true,"rvalue":false,"count":1},{"name":"_inline_1_arg1_","lvalue":false,"rvalue":true,"count":1},{"name":"_inline_1_arg2_","lvalue":false,"rvalue":true,"count":4}],"thisVars":[],"localVars":["_inline_1_i","_inline_1_v"]},"post":{"body":"{}","args":[],"thisVars":[],"localVars":[]},"funcName":"convert","blockSize":64})
 
-},{"cwise-compiler":255}],268:[function(require,module,exports){
+},{"cwise-compiler":"/Users/charlie/Documents/code/marching/node_modules/cwise-compiler/compiler.js"}],"/Users/charlie/Documents/code/marching/node_modules/ndarray/ndarray.js":[function(require,module,exports){
 var iota = require("iota-array")
 var isBuffer = require("is-buffer")
 
@@ -32030,7 +34649,7 @@ function wrappedNDArrayCtor(data, shape, stride, offset) {
 
 module.exports = wrappedNDArrayCtor
 
-},{"iota-array":263,"is-buffer":264}],269:[function(require,module,exports){
+},{"iota-array":"/Users/charlie/Documents/code/marching/node_modules/iota-array/iota.js","is-buffer":"/Users/charlie/Documents/code/marching/node_modules/is-buffer/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/omggif/omggif.js":[function(require,module,exports){
 // (c) Dean McNamee <dean@gmail.com>, 2013.
 //
 // https://github.com/deanm/omggif
@@ -32839,7 +35458,7 @@ function GifReaderLZWOutputIndexStream(code_stream, p, output, output_length) {
 // CommonJS.
 try { exports.GifWriter = GifWriter; exports.GifReader = GifReader } catch(e) {}
 
-},{}],270:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/marching/node_modules/through/index.js":[function(require,module,exports){
 (function (process){
 var Stream = require('stream')
 
@@ -32951,7 +35570,7 @@ function through (write, end, opts) {
 
 
 }).call(this,require('_process'))
-},{"_process":130,"stream":148}],271:[function(require,module,exports){
+},{"_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","stream":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/stream-browserify/index.js"}],"/Users/charlie/Documents/code/marching/node_modules/typedarray-pool/pool.js":[function(require,module,exports){
 (function (global,Buffer){
 'use strict'
 
@@ -33168,7 +35787,7 @@ exports.clearCache = function clearCache() {
   }
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"bit-twiddle":254,"buffer":123,"dup":259}],272:[function(require,module,exports){
+},{"bit-twiddle":"/Users/charlie/Documents/code/marching/node_modules/bit-twiddle/twiddle.js","buffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/buffer/index.js","dup":"/Users/charlie/Documents/code/marching/node_modules/dup/dup.js"}],"/Users/charlie/Documents/code/marching/node_modules/uniq/uniq.js":[function(require,module,exports){
 "use strict"
 
 function unique_pred(list, compare) {
@@ -33227,7 +35846,7 @@ function unique(list, compare, sorted) {
 
 module.exports = unique
 
-},{}],273:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/dist/tidal.js":[function(require,module,exports){
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -35606,7 +38225,7 @@ module.exports = {
   parse:       peg$parse
 };
 
-},{}],274:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/bjork/index.js":[function(require,module,exports){
 function bjorklund(slots, pulses){
   var pattern = [],
       count = [],
@@ -35647,7 +38266,7 @@ module.exports = function(m, k){
   else return bjorklund(k, m);
 };
 
-},{}],275:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js":[function(require,module,exports){
 /**
  * @license Fraction.js v4.0.12 09/09/2015
  * http://www.xarg.org/2014/03/rational-numbers-in-javascript/
@@ -36483,7 +39102,7 @@ module.exports = function(m, k){
 
 })(this);
 
-},{}],276:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/index.js":[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -36545,7 +39164,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":277,"./lib/tychei":278,"./lib/xor128":279,"./lib/xor4096":280,"./lib/xorshift7":281,"./lib/xorwow":282,"./seedrandom":283}],277:[function(require,module,exports){
+},{"./lib/alea":"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/alea.js","./lib/tychei":"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/tychei.js","./lib/xor128":"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/xor128.js","./lib/xor4096":"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/xor4096.js","./lib/xorshift7":"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/xorshift7.js","./lib/xorwow":"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/xorwow.js","./seedrandom":"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/seedrandom.js"}],"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/alea.js":[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -36661,7 +39280,7 @@ if (module && module.exports) {
 
 
 
-},{}],278:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/tychei.js":[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -36766,7 +39385,7 @@ if (module && module.exports) {
 
 
 
-},{}],279:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/xor128.js":[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -36849,7 +39468,7 @@ if (module && module.exports) {
 
 
 
-},{}],280:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/xor4096.js":[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -36997,7 +39616,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],281:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/xorshift7.js":[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -37096,7 +39715,7 @@ if (module && module.exports) {
 );
 
 
-},{}],282:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/lib/xorwow.js":[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -37184,7 +39803,7 @@ if (module && module.exports) {
 
 
 
-},{}],283:[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/seedrandom.js":[function(require,module,exports){
 /*
 Copyright 2019 David Bau.
 
@@ -37439,7 +40058,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":121}],284:[function(require,module,exports){
+},{"crypto":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js"}],"/Users/charlie/Documents/code/tidal.peg/src/pattern.js":[function(require,module,exports){
 const parse = require('../dist/tidal.js').parse
 const query = require('./queryArc.js' ).queryArc
 const Fraction = require( 'fraction.js' )
@@ -37499,7 +40118,7 @@ const Pattern = ( patternString, opts ) => {
 
 module.exports = Pattern
 
-},{"../dist/tidal.js":273,"./queryArc.js":285,"fraction.js":275}],285:[function(require,module,exports){
+},{"../dist/tidal.js":"/Users/charlie/Documents/code/tidal.peg/dist/tidal.js","./queryArc.js":"/Users/charlie/Documents/code/tidal.peg/src/queryArc.js","fraction.js":"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js"}],"/Users/charlie/Documents/code/tidal.peg/src/queryArc.js":[function(require,module,exports){
 const Fraction = require( 'fraction.js' )
 const util     = require( 'util' )
 const bjork    = require( 'bjork' ) 
@@ -38087,5 +40706,5 @@ const handlers = {
 
 module.exports.queryArc = queryArc
 
-},{"bjork":274,"fraction.js":275,"seedrandom":276,"util":153}]},{},[78])(78)
+},{"bjork":"/Users/charlie/Documents/code/tidal.peg/node_modules/bjork/index.js","fraction.js":"/Users/charlie/Documents/code/tidal.peg/node_modules/fraction.js/fraction.js","seedrandom":"/Users/charlie/Documents/code/tidal.peg/node_modules/seedrandom/index.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/util.js"}]},{},["/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js"])("/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js")
 });

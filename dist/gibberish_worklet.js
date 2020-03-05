@@ -9795,15 +9795,12 @@ const Sequencer = props => {
       if( seq.__events.length <= 0 ) {
         if( Gibberish.mode === 'processor' ) {
           if( seq.__isRunning === true  ) {
-            console.log( 'adding tick' )
             Gibberish.scheduler.add( Gibberish.ctx.sampleRate / Sequencer.clock.cps, seq.tick, seq.priority )
           }
 
         }
 
         return
-      }else{
-        console.log ('tick')
       }
 
       const startTime = seq.__events[ 0 ].arc.start
