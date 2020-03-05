@@ -169,11 +169,12 @@ const patternWrapper = function( Gibber ) {
       isop:true,
       isGen,
 
-      freeze() {
+      freeze( shouldFreezeTheory = true ) {
         fnc.__frozen = true
       },
       thaw() {
         fnc.__frozen = false
+        Gibber.Theory.thaw()
       },
 
       setSeq( seq ) {
@@ -627,12 +628,22 @@ const patternWrapper = function( Gibber ) {
 
   Pattern.listeners = {}
   Pattern.children = []
-  Pattern.freeze = ()=> {
+  Pattern.__isFrozen = false
+  Pattern.freeze = function( shouldFreezeTheory = true ) {
     Pattern.children.forEach( p => p.freeze() ) 
+    if( shouldFreezeTheory === true ) {
+      Gibber.Theory.freeze()
+      Pattern.__isFrozen = true
+    }
   }
   Pattern.thaw = ()=> {
     Pattern.children.forEach( p => p.thaw() )
+    if( Pattern.__isFrozen === true ) {
+      Gibber.Theory.thaw()
+      Pattern.__isFrozen = false
+    }
   }
+
   Pattern.export = function( obj ) {
     obj.freeze = Pattern.freeze
     obj.thaw   = Pattern.thaw
