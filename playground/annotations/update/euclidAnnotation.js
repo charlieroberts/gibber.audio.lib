@@ -21,6 +21,20 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
   cm.replaceRange( val, pos.from, pos.to )
 
   patternObject.commentMarker = cm.markText( pos.from, end, { className, atomic:false })
+  patternObject.__onclick = e => {
+    if( e.altKey == true ) {
+      console.log( 'click', e.shiftKey )
+      if( e.shiftKey === true ) {
+        patternObject.reset()
+      }else{
+        patternObject.__frozen = !patternObject.__frozen
+      }
+    }
+  }
+
+  setTimeout( ()=> {
+    document.querySelector( '.' + className ).onclick = patternObject.__onclick
+  }, 500 )
 
   if( track.markup === undefined ) Marker.prepareObject( track )
   track.markup.textMarkers[ className ] = {}
@@ -33,7 +47,7 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     const pos = patternObject.commentMarker.find()
     if( pos === undefined ) return
     let memberAnnotationStart   = Object.assign( {}, pos.from ),
-          memberAnnotationEnd     = Object.assign( {}, pos.to )
+        memberAnnotationEnd     = Object.assign( {}, pos.to )
 
     if( initialized === false ) {
       memberAnnotationStart.ch = annotationStartCh
@@ -50,13 +64,20 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     }
 
     for( let i = 0; i < patternObject.values.length; i++ ) {
+      window.__ignore = patternObject
       track.markup.textMarkers[ className ][ i ] = cm.markText(
         memberAnnotationStart,  memberAnnotationEnd,
-        { 'className': `${className}_${i} euclid` }
+        { 
+          'className': `${className}_${i} euclid`
+        }
       )
 
       memberAnnotationStart.ch += 1
       memberAnnotationEnd.ch   += 1
+
+      setTimeout( ()=> {
+        document.querySelector( `.${className}_${i}` ).onclick = patternObject.__onclick
+      }, 50 )
     }
 
     if( start !== undefined ) {
