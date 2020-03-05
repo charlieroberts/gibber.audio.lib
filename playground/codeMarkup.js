@@ -41,6 +41,9 @@ const Marker = {
 
   getObj( path, findSeq = false, seqNumber = 0 ) {
     let obj = window[ path[0] ]
+    if( path[1] === 'seq' ) {
+      return obj.__sequencers[ seqNumber ]
+    } 
 
     for( let i = 1; i < path.length; i++ ) {
       let key = path[ i ]
@@ -409,30 +412,18 @@ const Marker = {
       // We also need the seq the pattern is assigned to, so we can get at the target object. Actually, the target object is 'track'
       // here, so we can probably just use that.
 
-
-
-
       if( pattern.values.length > 1 ) {
-        /*const cm = track.markup.textMarkers[ patternClassName ].doc
-        const node = pattern.node
-        const start = node.loc.start
-        const end   = node.loc.end
-        const target = track
-
-        const arrayExpressionMarkupArgs = {
-          cm,node,start,end,target,
-          useFakeArgs:true
-        }
-
-        cm.replaceText
-        */
         // array of values
         for( let i = 0; i < pattern.values.length; i++) {
           marker = track.markup.textMarkers[ patternClassName ][ i ]
 
           const itemClass = document.querySelector('.' + marker.className.split(' ')[0] )
-          if( itemClass !== null )
-            itemClass.innerText = pattern.values[ i ]
+          if( itemClass !== null ) {
+            itemClass.textContent = pattern.values[ i ]
+            // check to see if a pattern has an onclick event, if so, assign it to value marker
+            // since replacing .textContent seems to remove it (XXX I don't think this removal should occur?)
+            if( pattern.__onclick !== null && pattern.__onclick !== undefined ) itemClass.onclick = pattern.__onclick
+          }
         }
       }else{
         if( Array.isArray( pattern.values[0] ) ) {
@@ -446,20 +437,19 @@ const Marker = {
             pos.from.ch += 1
             pos.to.ch -=1
             marker.doc.replaceRange( pattern.values[0].toString(), pos.from, pos.to )//, { className:marker.className.replace(' ', '.') })
+
+            const itemClass = document.querySelector('.' + marker.className.split(' ')[0] )
+            if( pattern.__onclick !== null && pattern.__onclick !== undefined ) itemClass.onclick = pattern.__onclick
           }
-          //const arrayElement = document.querySelector( '.' + patternClassName )
-          //arrayElement.innerText = pattern.values[0]
         }else{
           // single literal
           marker = track.markup.textMarkers[ patternClassName ]
 
           const itemClass = document.querySelector('.' + marker.className.split(' ')[0] )
-          if( itemClass !== null )
-            itemClass.innerText = pattern.values[ 0 ]
-
-          //marker.doc.replaceRange( '' + pattern.values[ 0 ], pos.from, pos.to )
-          // newMarker = marker.doc.markText( pos.from, pos.to, { className: patternClassName + ' annotation-border' } )
-          // track.markup.textMarkers[ patternClassName ] = newMarker
+          if( itemClass !== null ) {
+            if( pattern.__onclick !== null && pattern.__onclick !== undefined ) itemClass.onclick = pattern.__onclick
+            itemClass.textContent = pattern.values[ 0 ]
+          }
         }
       }
     }
