@@ -97,6 +97,7 @@ window.onload = function() {
   cm.getWrapperElement().addEventListener( 'click', e => {
     if( e.altKey === true ) {
 
+        let obj
         let node = e.path[0]
         while( node.parentNode.className.indexOf( 'CodeMirror-line' ) === -1 ) {
           node = node.parentNode
@@ -104,24 +105,27 @@ window.onload = function() {
         const split = node.innerText.split( '=' )[0].split('.')
         let txt = null
         try {
-          let obj = window[  split[0].trim() ]
+          obj = window[  split[0].trim() ]
           for( let i = 1; i < split.length; i++ ) {
             obj = obj[ split[ i ].trim() ]
           }
-          txt = obj.value !== undefined ? obj.value : obj
+          if( obj !== undefined )
+            txt = obj.value !== undefined ? obj.value : obj
         } catch(e) {
           throw e
         }
 
-        // XXX ideally this would return a promise that we could use to insert the current
-        // value of the property into once the DOM node has been added. 
-        // Instead we have to use a hacky setTimeout... to fix this we need to edit
-        // the ternserver itself.
-        server.showDocs( cm ) 
+        if( obj !== undefined ) {
+          // XXX ideally this would return a promise that we could use to insert the current
+          // value of the property into once the DOM node has been added. 
+          // Instead we have to use a hacky setTimeout... to fix this we need to edit
+          // the ternserver itself.
+          server.showDocs( cm ) 
 
-        setTimeout( ()=>{
-          cm.state.ternTooltip.children[0].innerHTML = `value: ${txt} ${cm.state.ternTooltip.children[0].innerHTML}`
-        }, 50 )
+          setTimeout( ()=>{
+            cm.state.ternTooltip.children[0].innerHTML = `value: ${txt} ${cm.state.ternTooltip.children[0].innerHTML}`
+          }, 50 )
+        }
     }
   })
 
