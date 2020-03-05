@@ -20,6 +20,19 @@ module.exports = function( Marker ) {
 
     // create marker for entire array...
     const arrayMarker = cm.markText( start, end, { className:cssName })
+
+    patternObject.__onclick = e => {
+      if( e.altKey == true ) {
+        if( e.shiftKey === true ) {
+          patternObject.reset()
+        }else{
+          patternObject.__frozen = !patternObject.__frozen
+        }
+      }
+    }
+    setTimeout( ()=> {
+      document.querySelector( '.' + cssName ).onclick = patternObject.__onclick
+    }, 500 )
     target.markup.textMarkers[ cssName ] = arrayMarker
 
     // then create markers for individual elements
