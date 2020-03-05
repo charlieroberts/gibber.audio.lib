@@ -126,12 +126,23 @@ module.exports = {
   'square.perc': { 
     waveform:'square', 
     shape:'exponential', 
-    //antialias:true, 
+    antialias:true, 
     filterType:2, 
     cutoff:.25, 
     decay:1/8,
     panVoices:true
   },
+
+  'square.perc.long': { 
+    waveform:'square', 
+    shape:'exponential', 
+    antialias:true, 
+    filterType:2, 
+    cutoff:.25, 
+    decay:2,
+    panVoices:true
+  },
+
   rhodes:{
     waveform:'sine',
     presetInit( audio ) {
@@ -139,6 +150,7 @@ module.exports = {
       this.fx.add( this.tremolo )
     },
     decay:4,
+    gain:.125,
     shape:'exponential'
   }
 }
