@@ -131,6 +131,7 @@ const Utility = {
     return new Function( fncString )
   },
 
+  time( v ) { return Gibber.Clock.time( v ) },
   btof( beats ) { return 1 / (beats * ( 60 / Gibber.Clock.bpm )) },
 
   random() {
@@ -180,7 +181,7 @@ const Utility = {
 
     const fnc = new Function( 'args', fncstr )
 
-    ptrn.filters = [ fnc ]
+    ptrn.addFilter( fnc )
 
     return ptrn
   },
@@ -192,6 +193,7 @@ const Utility = {
     obj.Rndf = this.Rndf
     obj.btof = this.btof
     obj.chord = this.chord
+    obj.time = this.time
 
     Array.prototype.rnd = this.random
   }
@@ -24502,6 +24504,19 @@ module.exports = function( Marker ) {
 
     // create marker for entire array...
     const arrayMarker = cm.markText( start, end, { className:cssName })
+
+    patternObject.__onclick = e => {
+      if( e.altKey == true ) {
+        if( e.shiftKey === true ) {
+          patternObject.reset()
+        }else{
+          patternObject.__frozen = !patternObject.__frozen
+        }
+      }
+    }
+    setTimeout( ()=> {
+      document.querySelector( '.' + cssName ).onclick = patternObject.__onclick
+    }, 500 )
     target.markup.textMarkers[ cssName ] = arrayMarker
 
     // then create markers for individual elements
@@ -25713,6 +25728,20 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
   cm.replaceRange( val, pos.from, pos.to )
 
   patternObject.commentMarker = cm.markText( pos.from, end, { className, atomic:false })
+  patternObject.__onclick = e => {
+    if( e.altKey == true ) {
+      console.log( 'click', e.shiftKey )
+      if( e.shiftKey === true ) {
+        patternObject.reset()
+      }else{
+        patternObject.__frozen = !patternObject.__frozen
+      }
+    }
+  }
+
+  setTimeout( ()=> {
+    document.querySelector( '.' + className ).onclick = patternObject.__onclick
+  }, 500 )
 
   if( track.markup === undefined ) Marker.prepareObject( track )
   track.markup.textMarkers[ className ] = {}
@@ -25725,7 +25754,7 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     const pos = patternObject.commentMarker.find()
     if( pos === undefined ) return
     let memberAnnotationStart   = Object.assign( {}, pos.from ),
-          memberAnnotationEnd     = Object.assign( {}, pos.to )
+        memberAnnotationEnd     = Object.assign( {}, pos.to )
 
     if( initialized === false ) {
       memberAnnotationStart.ch = annotationStartCh
@@ -25742,13 +25771,20 @@ module.exports = ( patternObject, marker, className, cm, track, patternNode, Mar
     }
 
     for( let i = 0; i < patternObject.values.length; i++ ) {
+      window.__ignore = patternObject
       track.markup.textMarkers[ className ][ i ] = cm.markText(
         memberAnnotationStart,  memberAnnotationEnd,
-        { 'className': `${className}_${i} euclid` }
+        { 
+          'className': `${className}_${i} euclid`
+        }
       )
 
       memberAnnotationStart.ch += 1
       memberAnnotationEnd.ch   += 1
+
+      setTimeout( ()=> {
+        document.querySelector( `.${className}_${i}` ).onclick = patternObject.__onclick
+      }, 50 )
     }
 
     if( start !== undefined ) {
@@ -26214,6 +26250,7 @@ const Waveform = {
     widget.storage = []
     widget.min = 10000
     widget.max = -10000
+    widget.windowSize = 240
 
     let isFade = false
 
@@ -26309,10 +26346,17 @@ const Waveform = {
     }
 
     if( !isFade ) {
-      widget.onclick = ()=> {
-        widget.min = Infinity
-        widget.max = -Infinity
-        widget.storage.length = 0
+      widget.onclick = evt => {
+        if( evt.shiftKey === false ) {
+          widget.min = Infinity
+          widget.max = -Infinity
+          widget.storage.length = 0
+        }else{
+          // increase size of window
+          widget.windowSize *= 2
+          console.log( 'windowsize:', widget.windowSize )
+
+        }
       }
     }
     
@@ -26367,7 +26411,7 @@ const Waveform = {
     }
 
     if( widget.isFade !== true ) {
-      if( widget.storage.length > 240 ) {
+      if( widget.storage.length > widget.windowSize ) {
         widget.max = Math.max.apply( null, widget.storage )
         widget.min = Math.min.apply( null, widget.storage )
         widget.storage.length = 0
@@ -26584,6 +26628,9 @@ const Marker = {
 
   getObj( path, findSeq = false, seqNumber = 0 ) {
     let obj = window[ path[0] ]
+    if( path[1] === 'seq' ) {
+      return obj.__sequencers[ seqNumber ]
+    } 
 
     for( let i = 1; i < path.length; i++ ) {
       let key = path[ i ]
@@ -26952,30 +26999,18 @@ const Marker = {
       // We also need the seq the pattern is assigned to, so we can get at the target object. Actually, the target object is 'track'
       // here, so we can probably just use that.
 
-
-
-
       if( pattern.values.length > 1 ) {
-        /*const cm = track.markup.textMarkers[ patternClassName ].doc
-        const node = pattern.node
-        const start = node.loc.start
-        const end   = node.loc.end
-        const target = track
-
-        const arrayExpressionMarkupArgs = {
-          cm,node,start,end,target,
-          useFakeArgs:true
-        }
-
-        cm.replaceText
-        */
         // array of values
         for( let i = 0; i < pattern.values.length; i++) {
           marker = track.markup.textMarkers[ patternClassName ][ i ]
 
           const itemClass = document.querySelector('.' + marker.className.split(' ')[0] )
-          if( itemClass !== null )
-            itemClass.innerText = pattern.values[ i ]
+          if( itemClass !== null ) {
+            itemClass.textContent = pattern.values[ i ]
+            // check to see if a pattern has an onclick event, if so, assign it to value marker
+            // since replacing .textContent seems to remove it (XXX I don't think this removal should occur?)
+            if( pattern.__onclick !== null && pattern.__onclick !== undefined ) itemClass.onclick = pattern.__onclick
+          }
         }
       }else{
         if( Array.isArray( pattern.values[0] ) ) {
@@ -26989,20 +27024,19 @@ const Marker = {
             pos.from.ch += 1
             pos.to.ch -=1
             marker.doc.replaceRange( pattern.values[0].toString(), pos.from, pos.to )//, { className:marker.className.replace(' ', '.') })
+
+            const itemClass = document.querySelector('.' + marker.className.split(' ')[0] )
+            if( pattern.__onclick !== null && pattern.__onclick !== undefined ) itemClass.onclick = pattern.__onclick
           }
-          //const arrayElement = document.querySelector( '.' + patternClassName )
-          //arrayElement.innerText = pattern.values[0]
         }else{
           // single literal
           marker = track.markup.textMarkers[ patternClassName ]
 
           const itemClass = document.querySelector('.' + marker.className.split(' ')[0] )
-          if( itemClass !== null )
-            itemClass.innerText = pattern.values[ 0 ]
-
-          //marker.doc.replaceRange( '' + pattern.values[ 0 ], pos.from, pos.to )
-          // newMarker = marker.doc.markText( pos.from, pos.to, { className: patternClassName + ' annotation-border' } )
-          // track.markup.textMarkers[ patternClassName ] = newMarker
+          if( itemClass !== null ) {
+            if( pattern.__onclick !== null && pattern.__onclick !== undefined ) itemClass.onclick = pattern.__onclick
+            itemClass.textContent = pattern.values[ 0 ]
+          }
         }
       }
     }
@@ -27183,8 +27217,7 @@ window.onload = function() {
   cm.getWrapperElement().addEventListener( 'click', e => {
     if( e.altKey === true ) {
 
-      if( e.shiftKey === true ) {
-        const ele = document.createElement('span')
+        let obj
         let node = e.path[0]
         while( node.parentNode.className.indexOf( 'CodeMirror-line' ) === -1 ) {
           node = node.parentNode
@@ -27192,19 +27225,27 @@ window.onload = function() {
         const split = node.innerText.split( '=' )[0].split('.')
         let txt = null
         try {
-          let obj = window[  split[0].trim() ]
+          obj = window[  split[0].trim() ]
           for( let i = 1; i < split.length; i++ ) {
             obj = obj[ split[ i ].trim() ]
           }
-          txt = obj.value !== undefined ? obj.value : obj
+          if( obj !== undefined )
+            txt = obj.value !== undefined ? obj.value : obj
         } catch(e) {
           throw e
         }
-        ele.innerText = txt
-        tempTooltip( cm, ele, server )
-      }else{
-        server.showDocs( cm ) 
-      }
+
+        if( obj !== undefined ) {
+          // XXX ideally this would return a promise that we could use to insert the current
+          // value of the property into once the DOM node has been added. 
+          // Instead we have to use a hacky setTimeout... to fix this we need to edit
+          // the ternserver itself.
+          server.showDocs( cm ) 
+
+          setTimeout( ()=>{
+            cm.state.ternTooltip.children[0].innerHTML = `value: ${txt} ${cm.state.ternTooltip.children[0].innerHTML}`
+          }, 50 )
+        }
     }
   })
 
@@ -27261,11 +27302,11 @@ window.onload = function() {
   }
 
   function makeTooltip(x, y, content) {
-    var node = elt("div", cls + "tooltip", content);
-    node.style.left = x + "px";
-    node.style.top = y + "px";
-    document.body.appendChild(node);
-    return node;
+    var node = elt( "div", cls + "tooltip", content )
+    node.style.left = x + "px"
+    node.style.top = y + "px"
+    document.body.appendChild( node )
+    return node
   }
 
   function remove(node) {
