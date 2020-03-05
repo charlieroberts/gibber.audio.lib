@@ -76,9 +76,14 @@ module.exports = function( __Audio ) {
 
     const drums = Audio.Ensemble({
       'kd': { target:k,  method:'trigger', args:[1], name:'kick' },
+      [0]: { target:k,  method:'trigger', args:[1], name:'kick' },
       'sd': { target:s,  method:'trigger', args:[1], name:'snare' },
+      'sn': { target:s,  method:'trigger', args:[1], name:'snare' },
+      [1]: { target:s,  method:'trigger', args:[1], name:'snare' },
       'ch': { target:ch, method:'trigger', args:[1], name:'closedHat' },
+      [2]: { target:ch, method:'trigger', args:[1], name:'closedHat' },
       'oh': { target:oh, method:'trigger', args:[1], name:'openHat' },
+      [3]: { target:oh, method:'trigger', args:[1], name:'openHat' },
     })
 
     if( Audio.autoConnect === true ) drums.connect()
@@ -131,10 +136,16 @@ module.exports = function( __Audio ) {
     
     const drums = Audio.Ensemble({
       'kd': { target:kd, method:'trigger', args:[1], name:'kick' },
+      [0]: { target:kd, method:'trigger', args:[1], name:'kick' },
+      [1]: { target:sd, method:'trigger', args:[1], name:'snare' },
       'sd': { target:sd, method:'trigger', args:[1], name:'snare' },
+      [2]: { target:ch, method:'trigger', args:[.2], name:'closedHat' },
       'ch': { target:ch, method:'trigger', args:[.2], name:'closedHat' },
+      [3]: { target:oh, method:'trigger', args:[.2], name:'openHat' },
       'oh': { target:oh, method:'trigger', args:[.2], name:'openHat' },
+      [4]: { target:cp, method:'trigger', args:[.5], name:'clap' },
       'cp': { target:cp, method:'trigger', args:[.5], name:'clap' },
+      [5]: { target:cb, method:'trigger', args:[.5], name:'cowbell' },
       'cb': { target:cb, method:'trigger', args:[.5], name:'cowbell' },
     })
 
