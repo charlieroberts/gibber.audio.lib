@@ -18,22 +18,25 @@ The library can be used with plain script tags, or CommonJS-/ AMD- style include
 
 `Gibber.init()` returns a promise; all code should be placed in a function that will execute when the promise resolves (shown below).
 ```html
-<html>
+<html lang='en'>
 
 <head>
-  <script src='./build/gibber.audio.js'></script>
+  <script src='./dist/gibber.audio.js'></script>
 </head>
 
 <body></body>
 
 <script>
 
-  Gibber.init().then( () => {
+  window.onclick = function() {
+    Gibber.init().then( () => {
 
-    const syn = Synth().connect()
-    syn.note.seq( [55,110], [11025] )
+      const syn = Synth().connect()
+      syn.note.seq( [0,1], 1/4 )
 
-  })
+      window.onclick = null
+    })
+  }
 
 </script>
 
