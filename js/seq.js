@@ -67,7 +67,7 @@ module.exports = function( Audio ) {
         //  valuesPattern.repeat( this.values.randomArgs[ i ], this.values.randomArgs[ i + 1 ] )
         //}
       }
-      timings.output = { time, shouldExecute:0 }
+      timings.output = { time:'time', shouldExecute:0 }
       timings.density = 1
 
       timings.addFilter( function( args ) {
@@ -106,8 +106,7 @@ module.exports = function( Audio ) {
     }
 
     values.__patternType = 'values'
-    if( timings !== null )
-      timings.__patternType = 'timings'
+    if( timings !== null ) timings.__patternType = 'timings'
 
     //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
 
