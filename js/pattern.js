@@ -654,7 +654,6 @@ const patternWrapper = function( Gibber ) {
     
     if( Gibberish.mode === 'processor' ) return
 
-    console.log( 'called range listener' )
     // TODO: don't use Gibber.currentTrack, store the object in the pattern
     let rangeStart = fnc.markers[ fnc.start ].find(),
         rangeEnd   = fnc.markers[ fnc.end ].find()

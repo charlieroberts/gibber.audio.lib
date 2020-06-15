@@ -86,9 +86,11 @@ mod.frequency.seq( [2,4,8,16], 1 )
 // where its frequency increases over 8  beats:
 
 Gibber.clear()
-s2 = Sine({ gain:.1, frequency:220 }).connect()
+s2 = Synth({ gain:.1 }).connect()
 mod2 = gen( cycle( beats(8)*20 )* 20 )
 mod2.connect( s2.frequency )
+ 
+s2.note.seq( [0,2,4,5], 1/4 )
 
 // learning more about genish will be helpful if
 // you want to create these types of custom modulations.

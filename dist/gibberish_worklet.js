@@ -13,10 +13,13 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
 
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: Math.abs })
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
 
-      out = `gen.abs( ${inputs[0]} )`
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.abs' : Math.abs })
+
+      out = `${ref}abs( ${inputs[0]} )`
 
     } else {
       out = Math.abs( parseFloat( inputs[0] ) )
@@ -34,7 +37,7 @@ module.exports = x => {
   return abs
 }
 
-},{"./gen.js":30}],2:[function(require,module,exports){
+},{"./gen.js":32}],2:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -54,7 +57,7 @@ let proto = {
 
     functionBody = this.callback( genName, inputs[0], inputs[1], `memory[${this.memory.value.idx}]` )
 
-    gen.closures.add({ [ this.name ]: this }) 
+    //gen.closures.add({ [ this.name ]: this }) 
 
     gen.memo[ this.name ] = this.name + '_value'
     
@@ -153,7 +156,7 @@ module.exports = ( incr, reset=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],3:[function(require,module,exports){
+},{"./gen.js":32}],3:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -165,10 +168,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
     
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'acos': Math.acos })
 
-      out = `gen.acos( ${inputs[0]} )` 
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'acos': isWorklet ? 'Math.acos' :Math.acos })
+
+      out = `${ref}acos( ${inputs[0]} )` 
 
     } else {
       out = Math.acos( parseFloat( inputs[0] ) )
@@ -188,7 +195,7 @@ module.exports = x => {
   return acos
 }
 
-},{"./gen.js":30}],4:[function(require,module,exports){
+},{"./gen.js":32}],4:[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -207,7 +214,8 @@ let gen      = require( './gen.js' ),
     neq      = require( './neq.js' ),
     and      = require( './and.js' ),
     gte      = require( './gte.js' ),
-    memo     = require( './memo.js' )
+    memo     = require( './memo.js' ),
+    utilities= require( './utilities.js' )
 
 module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
   const props = Object.assign({}, { shape:'exponential', alpha:5, trigger:null }, _props )
@@ -251,17 +259,39 @@ module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
     )
   }
 
-  out.isComplete = ()=> gen.memory.heap[ completeFlag.memory.values.idx ]
+  const usingWorklet = gen.mode === 'worklet'
+  if( usingWorklet === true ) {
+    out.node = null
+    utilities.register( out )
+  }
+
+  // needed for gibberish... getting this to work right with worklets
+  // via promises will probably be tricky
+  out.isComplete = ()=> {
+    if( usingWorklet === true && out.node !== null ) {
+      const p = new Promise( resolve => {
+        out.node.getMemoryValue( completeFlag.memory.values.idx, resolve )
+      })
+
+      return p
+    }else{
+      return gen.memory.heap[ completeFlag.memory.values.idx ]
+    }
+  }
 
   out.trigger = ()=> {
-    gen.memory.heap[ completeFlag.memory.values.idx ] = 0
+    if( usingWorklet === true && out.node !== null ) {
+      out.node.port.postMessage({ key:'set', idx:completeFlag.memory.values.idx, value:0 })
+    }else{
+      gen.memory.heap[ completeFlag.memory.values.idx ] = 0
+    }
     _bang.trigger()
   }
 
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":30,"./gte.js":32,"./ifelseif.js":35,"./lt.js":38,"./memo.js":42,"./mul.js":48,"./neq.js":49,"./peek.js":54,"./poke.js":56,"./sub.js":66}],5:[function(require,module,exports){
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":32,"./gte.js":34,"./ifelseif.js":37,"./lt.js":40,"./memo.js":44,"./mul.js":50,"./neq.js":51,"./peek.js":56,"./poke.js":58,"./sub.js":69,"./utilities.js":75}],5:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -312,7 +342,7 @@ module.exports = ( ...args ) => {
   return add
 }
 
-},{"./gen.js":30}],6:[function(require,module,exports){
+},{"./gen.js":32}],6:[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -391,24 +421,47 @@ module.exports = ( attackTime=44, decayTime=22050, sustainTime=44100, sustainLev
     0
   )
    
+  const usingWorklet = gen.mode === 'worklet'
+  if( usingWorklet === true ) {
+    out.node = null
+    utilities.register( out )
+  }
+
   out.trigger = ()=> {
     shouldSustain.value = 1
     envTrigger.trigger()
   }
+ 
+  // needed for gibberish... getting this to work right with worklets
+  // via promises will probably be tricky
+  out.isComplete = ()=> {
+    if( usingWorklet === true && out.node !== null ) {
+      const p = new Promise( resolve => {
+        out.node.getMemoryValue( completeFlag.memory.values.idx, resolve )
+      })
 
-  out.isComplete = ()=> gen.memory.heap[ completeFlag.memory.values.idx ]
+      return p
+    }else{
+      return gen.memory.heap[ completeFlag.memory.values.idx ]
+    }
+  }
+
 
   out.release = ()=> {
     shouldSustain.value = 0
     // XXX pretty nasty... grabs accum inside of gtp and resets value manually
     // unfortunately envTrigger won't work as it's back to 0 by the time the release block is triggered...
-    gen.memory.heap[ releaseAccum.inputs[0].inputs[1].memory.value.idx ] = 0
+    if( usingWorklet && out.node !== null ) {
+      out.node.port.postMessage({ key:'set', idx:releaseAccum.inputs[0].inputs[1].memory.value.idx, value:0 })
+    }else{
+      gen.memory.heap[ releaseAccum.inputs[0].inputs[1].memory.value.idx ] = 0
+    }
   }
 
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":30,"./gtp.js":33,"./ifelseif.js":35,"./lt.js":38,"./mul.js":48,"./neq.js":49,"./not.js":51,"./param.js":53,"./peek.js":54,"./poke.js":56,"./sub.js":66}],7:[function(require,module,exports){
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":32,"./gtp.js":35,"./ifelseif.js":37,"./lt.js":40,"./mul.js":50,"./neq.js":51,"./not.js":53,"./param.js":55,"./peek.js":56,"./poke.js":58,"./sub.js":69}],7:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -440,7 +493,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],8:[function(require,module,exports){
+},{"./gen.js":32}],8:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -452,10 +505,13 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
     
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'asin': Math.asin })
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
 
-      out = `gen.asin( ${inputs[0]} )` 
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'asin': isWorklet ? 'Math.sin' : Math.asin })
+
+      out = `${ref}asin( ${inputs[0]} )` 
 
     } else {
       out = Math.asin( parseFloat( inputs[0] ) )
@@ -475,7 +531,7 @@ module.exports = x => {
   return asin
 }
 
-},{"./gen.js":30}],9:[function(require,module,exports){
+},{"./gen.js":32}],9:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -487,10 +543,13 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
     
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'atan': Math.atan })
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
 
-      out = `gen.atan( ${inputs[0]} )` 
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'atan': isWorklet ? 'Math.atan' : Math.atan })
+
+      out = `${ref}atan( ${inputs[0]} )` 
 
     } else {
       out = Math.atan( parseFloat( inputs[0] ) )
@@ -510,7 +569,7 @@ module.exports = x => {
   return atan
 }
 
-},{"./gen.js":30}],10:[function(require,module,exports){
+},{"./gen.js":32}],10:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -531,7 +590,7 @@ module.exports = ( decayTime = 44100 ) => {
   return sub( 1, ssd.out )
 }
 
-},{"./gen.js":30,"./history.js":34,"./mul.js":48,"./sub.js":66}],11:[function(require,module,exports){
+},{"./gen.js":32,"./history.js":36,"./mul.js":50,"./sub.js":69}],11:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -560,8 +619,18 @@ module.exports = ( _props ) => {
   ugen.min = props.min
   ugen.max = props.max
 
+  const usingWorklet = gen.mode === 'worklet'
+  if( usingWorklet === true ) {
+    ugen.node = null
+    utilities.register( ugen )
+  }
+
   ugen.trigger = () => {
-    gen.memory.heap[ ugen.memory.value.idx ] = ugen.max 
+    if( usingWorklet === true && ugen.node !== null ) {
+      ugen.node.port.postMessage({ key:'set', idx:ugen.memory.value.idx, value:ugen.max })
+    }else{
+      gen.memory.heap[ ugen.memory.value.idx ] = ugen.max 
+    }
   }
 
   ugen.memory = {
@@ -571,7 +640,7 @@ module.exports = ( _props ) => {
   return ugen
 }
 
-},{"./gen.js":30}],12:[function(require,module,exports){
+},{"./gen.js":32}],12:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -605,7 +674,7 @@ module.exports = ( in1 ) => {
 }
 
 
-},{"./gen.js":30}],13:[function(require,module,exports){
+},{"./gen.js":32}],13:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -617,10 +686,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
 
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: Math.ceil })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
 
-      out = `gen.ceil( ${inputs[0]} )`
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.ceil' : Math.ceil })
+
+      out = `${ref}ceil( ${inputs[0]} )`
 
     } else {
       out = Math.ceil( parseFloat( inputs[0] ) )
@@ -638,7 +711,7 @@ module.exports = x => {
   return ceil
 }
 
-},{"./gen.js":30}],14:[function(require,module,exports){
+},{"./gen.js":32}],14:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -683,7 +756,7 @@ module.exports = ( in1, min=-1, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":27,"./gen.js":30,"./memo.js":42,"./sub.js":66}],15:[function(require,module,exports){
+},{"./floor.js":29,"./gen.js":32,"./memo.js":44,"./sub.js":69}],15:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -695,10 +768,15 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
     
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'cos': Math.cos })
+    
+    const isWorklet = gen.mode === 'worklet'
 
-      out = `gen.cos( ${inputs[0]} )` 
+    const ref = isWorklet ? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'cos': isWorklet ? 'Math.cos' : Math.cos })
+
+      out = `${ref}cos( ${inputs[0]} )` 
 
     } else {
       out = Math.cos( parseFloat( inputs[0] ) )
@@ -718,7 +796,7 @@ module.exports = x => {
   return cos
 }
 
-},{"./gen.js":30}],16:[function(require,module,exports){
+},{"./gen.js":32}],16:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -736,8 +814,6 @@ let proto = {
     gen.memory.heap[ this.memory.value.idx ] = this.initialValue
     
     functionBody  = this.callback( genName, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4],  `memory[${this.memory.value.idx}]`, `memory[${this.memory.wrap.idx}]`  )
-
-    gen.closures.add({ [ this.name ]: this }) 
 
     gen.memo[ this.name ] = this.name + '_value'
    
@@ -833,7 +909,7 @@ module.exports = ( incr=1, min=0, max=Infinity, reset=0, loops=1,  properties ) 
   return ugen
 } 
 
-},{"./gen.js":30}],17:[function(require,module,exports){
+},{"./gen.js":32}],17:[function(require,module,exports){
 'use strict'
 
 let gen  = require( './gen.js' ),
@@ -868,7 +944,7 @@ module.exports = ( frequency=1, reset=0, _props ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./mul.js":48,"./peek.js":54,"./phasor.js":55}],18:[function(require,module,exports){
+},{"./data.js":18,"./gen.js":32,"./mul.js":50,"./peek.js":56,"./phasor.js":57}],18:[function(require,module,exports){
 'use strict'
 
 const gen  = require('./gen.js'),
@@ -1011,16 +1087,23 @@ module.exports = ( x, y=1, properties ) => {
         ugen.memory.values.length = ugen.dim = _buffer.length
 
         ugen.buffer = _buffer
-        gen.requestMemory( ugen.memory, ugen.immutable ) 
-        gen.memory.heap.set( _buffer, ugen.memory.values.idx )
-        if( typeof ugen.onload === 'function' ) ugen.onload( _buffer ) 
+        //gen.once( 'memory init', ()=> {
+        //  console.log( "CALLED", ugen.memory )
+        //  gen.requestMemory( ugen.memory, ugen.immutable ) 
+        //  gen.memory.heap.set( _buffer, ugen.memory.values.idx )
+        //  if( typeof ugen.onload === 'function' ) ugen.onload( _buffer ) 
+        //})
+        
         resolve( ugen )
       })     
     })
   }else if( proto.memo[ x ] !== undefined ) {
-    gen.requestMemory( ugen.memory, ugen.immutable ) 
-    gen.memory.heap.set( ugen.buffer, ugen.memory.values.idx )
-    if( typeof ugen.onload === 'function' ) ugen.onload( ugen.buffer ) 
+
+    gen.once( 'memory init', ()=> {
+      gen.requestMemory( ugen.memory, ugen.immutable ) 
+      gen.memory.heap.set( ugen.buffer, ugen.memory.values.idx )
+      if( typeof ugen.onload === 'function' ) ugen.onload( ugen.buffer ) 
+    })
 
     returnValue = ugen
   }else{
@@ -1031,7 +1114,7 @@ module.exports = ( x, y=1, properties ) => {
 }
 
 
-},{"./gen.js":30,"./peek.js":54,"./poke.js":56,"./utilities.js":72}],19:[function(require,module,exports){
+},{"./gen.js":32,"./peek.js":56,"./poke.js":58,"./utilities.js":75}],19:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1054,7 +1137,7 @@ module.exports = ( in1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./gen.js":30,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66}],20:[function(require,module,exports){
+},{"./add.js":5,"./gen.js":32,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":69}],20:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1075,7 +1158,7 @@ module.exports = ( decayTime = 44100, props ) => {
   return ssd.out 
 }
 
-},{"./gen.js":30,"./history.js":34,"./mul.js":48,"./t60.js":68}],21:[function(require,module,exports){
+},{"./gen.js":32,"./history.js":36,"./mul.js":50,"./t60.js":71}],21:[function(require,module,exports){
 'use strict'
 
 const gen  = require( './gen.js'  ),
@@ -1131,7 +1214,7 @@ module.exports = ( in1, taps, properties ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./data.js":18,"./gen.js":30,"./memo.js":42,"./peek.js":54,"./poke.js":56,"./sub.js":66,"./wrap.js":74}],22:[function(require,module,exports){
+},{"./accum.js":2,"./data.js":18,"./gen.js":32,"./memo.js":44,"./peek.js":56,"./poke.js":58,"./sub.js":69,"./wrap.js":77}],22:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1149,7 +1232,7 @@ module.exports = ( in1 ) => {
   return ugen
 }
 
-},{"./gen.js":30,"./history.js":34,"./sub.js":66}],23:[function(require,module,exports){
+},{"./gen.js":32,"./history.js":36,"./sub.js":69}],23:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1202,7 +1285,7 @@ module.exports = (...args) => {
   return div
 }
 
-},{"./gen.js":30}],24:[function(require,module,exports){
+},{"./gen.js":32}],24:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen' ),
@@ -1238,7 +1321,7 @@ module.exports = props => {
   return ugen
 }
 
-},{"./data":18,"./gen":30,"./peek":54,"./phasor":55,"./windows":73}],25:[function(require,module,exports){
+},{"./data":18,"./gen":32,"./peek":56,"./phasor":57,"./windows":76}],25:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1270,7 +1353,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],26:[function(require,module,exports){
+},{"./gen.js":32}],26:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1282,10 +1365,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
 
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: Math.exp })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.exp( ${inputs[0]} )`
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.exp' : Math.exp })
+
+      out = `${ref}exp( ${inputs[0]} )`
 
     } else {
       out = Math.exp( parseFloat( inputs[0] ) )
@@ -1303,7 +1390,191 @@ module.exports = x => {
   return exp
 }
 
-},{"./gen.js":30}],27:[function(require,module,exports){
+},{"./gen.js":32}],27:[function(require,module,exports){
+/**
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+// originally from:
+// https://github.com/GoogleChromeLabs/audioworklet-polyfill
+// I am modifying it to accept variable buffer sizes
+// and to get rid of some strange global initialization that seems required to use it
+// with browserify. Also, I added changes to fix a bug in Safari for the AudioWorkletProcessor
+// property not having a prototype (see:https://github.com/GoogleChromeLabs/audioworklet-polyfill/pull/25)
+// TODO: Why is there an iframe involved? (realm.js)
+
+const Realm = require( './realm.js' )
+
+const AWPF = function( self = window, bufferSize = 4096 ) {
+  const PARAMS = []
+  let nextPort
+
+  if (typeof AudioWorkletNode !== 'function' || !("audioWorklet" in AudioContext.prototype)) {
+    self.AudioWorkletNode = function AudioWorkletNode (context, name, options) {
+      const processor = getProcessorsForContext(context)[name];
+      const outputChannels = options && options.outputChannelCount ? options.outputChannelCount[0] : 2;
+      const scriptProcessor = context.createScriptProcessor( bufferSize, 2, outputChannels);
+
+      scriptProcessor.parameters = new Map();
+      if (processor.properties) {
+        for (let i = 0; i < processor.properties.length; i++) {
+          const prop = processor.properties[i];
+          const node = context.createGain().gain;
+          node.value = prop.defaultValue;
+          // @TODO there's no good way to construct the proxy AudioParam here
+          scriptProcessor.parameters.set(prop.name, node);
+        }
+      }
+
+      const mc = new MessageChannel();
+      nextPort = mc.port2;
+      const inst = new processor.Processor(options || {});
+      nextPort = null;
+
+      scriptProcessor.port = mc.port1;
+      scriptProcessor.processor = processor;
+      scriptProcessor.instance = inst;
+      scriptProcessor.onaudioprocess = onAudioProcess;
+      return scriptProcessor;
+    };
+
+    Object.defineProperty((self.AudioContext || self.webkitAudioContext).prototype, 'audioWorklet', {
+      get () {
+        return this.$$audioWorklet || (this.$$audioWorklet = new self.AudioWorklet(this));
+      }
+    });
+
+    /* XXX - ADDED TO OVERCOME PROBLEM IN SAFARI WHERE AUDIOWORKLETPROCESSOR PROTOTYPE IS NOT AN OBJECT */
+    const AudioWorkletProcessor = function() {
+      this.port = nextPort
+    }
+    AudioWorkletProcessor.prototype = {}
+
+    self.AudioWorklet = class AudioWorklet {
+      constructor (audioContext) {
+        this.$$context = audioContext;
+      }
+
+      addModule (url, options) {
+        return fetch(url).then(r => {
+          if (!r.ok) throw Error(r.status);
+          return r.text();
+        }).then( code => {
+          const context = {
+            sampleRate: this.$$context.sampleRate,
+            currentTime: this.$$context.currentTime,
+            AudioWorkletProcessor,
+            registerProcessor: (name, Processor) => {
+              const processors = getProcessorsForContext(this.$$context);
+              processors[name] = {
+                realm,
+                context,
+                Processor,
+                properties: Processor.parameterDescriptors || []
+              };
+            }
+          };
+
+          context.self = context;
+          const realm = new Realm(context, document.documentElement);
+          realm.exec(((options && options.transpile) || String)(code));
+          return null;
+        });
+      }
+    };
+  }
+
+  function onAudioProcess (e) {
+    const parameters = {};
+    let index = -1;
+    this.parameters.forEach((value, key) => {
+      const arr = PARAMS[++index] || (PARAMS[index] = new Float32Array(this.bufferSize));
+      // @TODO proper values here if possible
+      arr.fill(value.value);
+      parameters[key] = arr;
+    });
+    this.processor.realm.exec(
+      'self.sampleRate=sampleRate=' + this.context.sampleRate + ';' +
+      'self.currentTime=currentTime=' + this.context.currentTime
+    );
+    const inputs = channelToArray(e.inputBuffer);
+    const outputs = channelToArray(e.outputBuffer);
+    this.instance.process([inputs], [outputs], parameters);
+  }
+
+  function channelToArray (ch) {
+    const out = [];
+    for (let i = 0; i < ch.numberOfChannels; i++) {
+      out[i] = ch.getChannelData(i);
+    }
+    return out;
+  }
+
+  function getProcessorsForContext (audioContext) {
+    return audioContext.$$processors || (audioContext.$$processors = {});
+  }
+}
+
+module.exports = AWPF
+
+},{"./realm.js":28}],28:[function(require,module,exports){
+/**
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+module.exports = function Realm (scope, parentElement) {
+  const frame = document.createElement('iframe');
+  frame.style.cssText = 'position:absolute;left:0;top:-999px;width:1px;height:1px;';
+  parentElement.appendChild(frame);
+  const win = frame.contentWindow;
+  const doc = win.document;
+  let vars = 'var window,$hook';
+  for (const i in win) {
+    if (!(i in scope) && i !== 'eval') {
+      vars += ',';
+      vars += i;
+    }
+  }
+  for (const i in scope) {
+    vars += ',';
+    vars += i;
+    vars += '=self.';
+    vars += i;
+  }
+  const script = doc.createElement('script');
+  script.appendChild(doc.createTextNode(
+    `function $hook(self,console) {"use strict";
+        ${vars};return function() {return eval(arguments[0])}}`
+  ));
+  doc.body.appendChild(script);
+  this.exec = win.$hook.call(scope, scope, console);
+}
+
+},{}],29:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1336,7 +1607,7 @@ module.exports = x => {
   return floor
 }
 
-},{"./gen.js":30}],28:[function(require,module,exports){
+},{"./gen.js":32}],30:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1398,7 +1669,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],29:[function(require,module,exports){
+},{"./gen.js":32}],31:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1494,7 +1765,7 @@ module.exports = ( control, in1, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],30:[function(require,module,exports){
+},{"./gen.js":32}],32:[function(require,module,exports){
 'use strict'
 
 /* gen.js
@@ -1502,10 +1773,10 @@ module.exports = ( control, in1, properties ) => {
  * low-level code generation for unit generators
  *
  */
+const MemoryHelper = require( 'memory-helper' )
+const EE = require( 'events' ).EventEmitter
 
-let MemoryHelper = require( 'memory-helper' )
-
-let gen = {
+const gen = {
 
   accum:0,
   getUID() { return this.accum++ },
@@ -1516,6 +1787,7 @@ let gen = {
   globals:{
     windows: {},
   },
+  mode:'worklet',
   
   /* closures
    *
@@ -1525,8 +1797,9 @@ let gen = {
 
   closures: new Set(),
   params:   new Set(),
+  inputs:   new Set(),
 
-  parameters:[],
+  parameters: new Set(),
   endBlock: new Set(),
   histories: new Map(),
 
@@ -1561,47 +1834,42 @@ let gen = {
     }
   },
 
-  createMemory( amount, type ) {
+  createMemory( amount=4096, type ) {
     const mem = MemoryHelper.create( amount, type )
     return mem
   },
 
-  /* createCallback
-   *
-   * param ugen - Head of graph to be codegen'd
-   *
-   * Generate callback function for a particular ugen graph.
-   * The gen.closures property stores functions that need to be
-   * passed as arguments to the final function; these are prefixed
-   * before any defined params the graph exposes. For example, given:
-   *
-   * gen.createCallback( abs( param() ) )
-   *
-   * ... the generated function will have a signature of ( abs, p0 ).
-   */
-  
   createCallback( ugen, mem, debug = false, shouldInlineMemory=false, memType = Float64Array ) {
     let isStereo = Array.isArray( ugen ) && ugen.length > 1,
         callback, 
         channel1, channel2
 
     if( typeof mem === 'number' || mem === undefined ) {
-      mem = MemoryHelper.create( mem, memType )
+      this.memory = this.createMemory( mem, memType )
+    }else{
+      this.memory = mem
     }
     
+    this.outputIdx = this.memory.alloc( 2, true )
+    this.emit( 'memory init' )
+
     //console.log( 'cb memory:', mem )
     this.graph = ugen
-    this.memory = mem
     this.memo = {} 
     this.endBlock.clear()
     this.closures.clear()
+    this.inputs.clear()
     this.params.clear()
     this.globals = { windows:{} }
     
-    this.parameters.length = 0
+    this.parameters.clear()
     
     this.functionBody = "  'use strict'\n"
-    if( shouldInlineMemory===false ) this.functionBody += "  var memory = gen.memory\n\n" 
+    if( shouldInlineMemory===false ) {
+      this.functionBody += this.mode === 'worklet' ? 
+        "  var memory = this.memory\n\n" :
+        "  var memory = gen.memory\n\n"
+    }
 
     // call .gen() on the head of the graph we are generating the callback for
     //console.log( 'HEAD', ugen )
@@ -1629,7 +1897,7 @@ let gen = {
       let lastidx = body.length - 1
 
       // insert return keyword
-      body[ lastidx ] = '  gen.out[' + i + ']  = ' + body[ lastidx ] + '\n'
+      body[ lastidx ] = '  memory[' + (this.outputIdx + i) + ']  = ' + body[ lastidx ] + '\n'
 
       this.functionBody += body.join('\n')
     }
@@ -1639,7 +1907,7 @@ let gen = {
         value.gen()      
     })
 
-    let returnStatement = isStereo ? '  return gen.out' : '  return gen.out[0]'
+    const returnStatement = isStereo ? `  return [ memory[${this.outputIdx}], memory[${this.outputIdx + 1}] ]` : `  return memory[${this.outputIdx}]`
     
     this.functionBody = this.functionBody.split('\n')
 
@@ -1656,15 +1924,35 @@ let gen = {
     // to construct the named function! sheesh...
     //
     if( shouldInlineMemory === true ) {
-      this.parameters.push( 'memory' )
+      this.parameters.add( 'memory' )
     }
-    let buildString = `return function gen( ${ this.parameters.join(',') } ){ \n${ this.functionBody }\n}`
+
+    let paramString = ''
+    if( this.mode === 'worklet' ) {
+      for( let name of this.parameters.values() ) {
+        paramString += name + ','
+      }
+      paramString = paramString.slice(0,-1)
+    }
+
+    const separator = this.parameters.size !== 0 && this.inputs.size > 0 ? ', ' : ''
+
+    let inputString = ''
+    if( this.mode === 'worklet' ) {
+      for( let ugen of this.inputs.values() ) {
+        inputString += ugen.name + ','
+      }
+      inputString = inputString.slice(0,-1)
+    }
+
+    let buildString = this.mode === 'worklet'
+      ? `return function( ${inputString} ${separator} ${paramString} ){ \n${ this.functionBody }\n}`
+      : `return function gen( ${ [...this.parameters].join(',') } ){ \n${ this.functionBody }\n}`
     
     if( this.debug || debug ) console.log( buildString ) 
 
     callback = new Function( buildString )()
 
-    
     // assign properties to named function
     for( let dict of this.closures.values() ) {
       let name = Object.keys( dict )[0],
@@ -1685,9 +1973,13 @@ let gen = {
       //callback[ name ] = value
     }
 
+    callback.members = this.closures
     callback.data = this.data
-    callback.out  = new Float64Array( 2 )
-    callback.parameters = this.parameters.slice( 0 )
+    callback.params = this.params
+    callback.inputs = this.inputs
+    callback.parameters = this.parameters//.slice( 0 )
+    callback.out = this.memory.heap.subarray( this.outputIdx, this.outputIdx + 2 )
+    callback.isStereo = isStereo
 
     //if( MemoryHelper.isPrototypeOf( this.memory ) ) 
     callback.memory = this.memory.heap
@@ -1780,9 +2072,11 @@ let gen = {
   }
 }
 
+gen.__proto__ = new EE()
+
 module.exports = gen
 
-},{"memory-helper":75}],31:[function(require,module,exports){
+},{"events":152,"memory-helper":78}],33:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1818,7 +2112,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":30}],32:[function(require,module,exports){
+},{"./gen.js":32}],34:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1854,7 +2148,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":30}],33:[function(require,module,exports){
+},{"./gen.js":32}],35:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1884,7 +2178,7 @@ module.exports = (x,y) => {
   return gtp
 }
 
-},{"./gen.js":30}],34:[function(require,module,exports){
+},{"./gen.js":32}],36:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1974,7 +2268,7 @@ module.exports = ( in1=0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],35:[function(require,module,exports){
+},{"./gen.js":32}],37:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2056,7 +2350,7 @@ module.exports = ( ...args  ) => {
   return ugen
 }
 
-},{"./gen.js":30}],36:[function(require,module,exports){
+},{"./gen.js":32}],38:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2065,28 +2359,36 @@ let proto = {
   basename:'in',
 
   gen() {
-    gen.parameters.push( this.name )
-    
-    gen.memo[ this.name ] = this.name
+    const isWorklet = gen.mode === 'worklet'
 
-    return this.name
+    if( isWorklet ) {
+      gen.inputs.add( this )
+    }else{
+      gen.parameters.add( this.name )
+    }
+
+    gen.memo[ this.name ] = isWorklet === true ? this.name + '[i]' : this.name
+
+    return gen.memo[ this.name ]
   } 
 }
 
-module.exports = ( name ) => {
+module.exports = ( name, inputNumber=0, channelNumber=0, defaultValue=0, min=0, max=1 ) => {
   let input = Object.create( proto )
 
   input.id   = gen.getUID()
   input.name = name !== undefined ? name : `${input.basename}${input.id}`
+  Object.assign( input, { defaultValue, min, max, inputNumber, channelNumber })
+
   input[0] = {
     gen() {
-      if( ! gen.parameters.includes( input.name ) ) gen.parameters.push( input.name )
+      if( ! gen.parameters.has( input.name ) ) gen.parameters.add( input.name )
       return input.name + '[0]'
     }
   }
   input[1] = {
     gen() {
-      if( ! gen.parameters.includes( input.name ) ) gen.parameters.push( input.name )
+      if( ! gen.parameters.has( input.name ) ) gen.parameters.add( input.name )
       return input.name + '[1]'
     }
   }
@@ -2095,10 +2397,10 @@ module.exports = ( name ) => {
   return input
 }
 
-},{"./gen.js":30}],37:[function(require,module,exports){
+},{"./gen.js":32}],39:[function(require,module,exports){
 'use strict'
 
-let library = {
+const library = {
   export( destination ) {
     if( destination === window ) {
       destination.ssd = library.history    // history is window object property, so use ssd as alias
@@ -2197,14 +2499,15 @@ let library = {
   eq:       require( './eq.js' ),
   neq:      require( './neq.js' ),
   exp:      require( './exp.js' ),
-  process:  require( './process.js' )
+  process:  require( './process.js' ),
+  seq:      require( './seq.js' )
 }
 
 library.gen.lib = library
 
 module.exports = library
 
-},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./data.js":18,"./dcblock.js":19,"./decay.js":20,"./delay.js":21,"./delta.js":22,"./div.js":23,"./env.js":24,"./eq.js":25,"./exp.js":26,"./floor.js":27,"./fold.js":28,"./gate.js":29,"./gen.js":30,"./gt.js":31,"./gte.js":32,"./gtp.js":33,"./history.js":34,"./ifelseif.js":35,"./in.js":36,"./lt.js":38,"./lte.js":39,"./ltp.js":40,"./max.js":41,"./memo.js":42,"./min.js":43,"./mix.js":44,"./mod.js":45,"./mstosamps.js":46,"./mtof.js":47,"./mul.js":48,"./neq.js":49,"./noise.js":50,"./not.js":51,"./pan.js":52,"./param.js":53,"./peek.js":54,"./phasor.js":55,"./poke.js":56,"./pow.js":57,"./process.js":58,"./rate.js":59,"./round.js":60,"./sah.js":61,"./selector.js":62,"./sign.js":63,"./sin.js":64,"./slide.js":65,"./sub.js":66,"./switch.js":67,"./t60.js":68,"./tan.js":69,"./tanh.js":70,"./train.js":71,"./utilities.js":72,"./windows.js":73,"./wrap.js":74}],38:[function(require,module,exports){
+},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./data.js":18,"./dcblock.js":19,"./decay.js":20,"./delay.js":21,"./delta.js":22,"./div.js":23,"./env.js":24,"./eq.js":25,"./exp.js":26,"./floor.js":29,"./fold.js":30,"./gate.js":31,"./gen.js":32,"./gt.js":33,"./gte.js":34,"./gtp.js":35,"./history.js":36,"./ifelseif.js":37,"./in.js":38,"./lt.js":40,"./lte.js":41,"./ltp.js":42,"./max.js":43,"./memo.js":44,"./min.js":45,"./mix.js":46,"./mod.js":47,"./mstosamps.js":48,"./mtof.js":49,"./mul.js":50,"./neq.js":51,"./noise.js":52,"./not.js":53,"./pan.js":54,"./param.js":55,"./peek.js":56,"./phasor.js":57,"./poke.js":58,"./pow.js":59,"./process.js":60,"./rate.js":61,"./round.js":62,"./sah.js":63,"./selector.js":64,"./seq.js":65,"./sign.js":66,"./sin.js":67,"./slide.js":68,"./sub.js":69,"./switch.js":70,"./t60.js":71,"./tan.js":72,"./tanh.js":73,"./train.js":74,"./utilities.js":75,"./windows.js":76,"./wrap.js":77}],40:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2242,7 +2545,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":30}],39:[function(require,module,exports){
+},{"./gen.js":32}],41:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2280,7 +2583,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":30}],40:[function(require,module,exports){
+},{"./gen.js":32}],42:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2310,7 +2613,7 @@ module.exports = (x,y) => {
   return ltp
 }
 
-},{"./gen.js":30}],41:[function(require,module,exports){
+},{"./gen.js":32}],43:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2322,10 +2625,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
 
-    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
-      gen.closures.add({ [ this.name ]: Math.max })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.max( ${inputs[0]}, ${inputs[1]} )`
+    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.max' : Math.max })
+
+      out = `${ref}max( ${inputs[0]}, ${inputs[1]} )`
 
     } else {
       out = Math.max( parseFloat( inputs[0] ), parseFloat( inputs[1] ) )
@@ -2343,7 +2650,7 @@ module.exports = (x,y) => {
   return max
 }
 
-},{"./gen.js":30}],42:[function(require,module,exports){
+},{"./gen.js":32}],44:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2373,7 +2680,7 @@ module.exports = (in1,memoName) => {
   return memo
 }
 
-},{"./gen.js":30}],43:[function(require,module,exports){
+},{"./gen.js":32}],45:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2385,10 +2692,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
 
-    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
-      gen.closures.add({ [ this.name ]: Math.min })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.min( ${inputs[0]}, ${inputs[1]} )`
+    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.min' : Math.min })
+
+      out = `${ref}min( ${inputs[0]}, ${inputs[1]} )`
 
     } else {
       out = Math.min( parseFloat( inputs[0] ), parseFloat( inputs[1] ) )
@@ -2406,7 +2717,7 @@ module.exports = (x,y) => {
   return min
 }
 
-},{"./gen.js":30}],44:[function(require,module,exports){
+},{"./gen.js":32}],46:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js'),
@@ -2422,7 +2733,7 @@ module.exports = ( in1, in2, t=.5 ) => {
   return ugen
 }
 
-},{"./add.js":5,"./gen.js":30,"./memo.js":42,"./mul.js":48,"./sub.js":66}],45:[function(require,module,exports){
+},{"./add.js":5,"./gen.js":32,"./memo.js":44,"./mul.js":50,"./sub.js":69}],47:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2466,7 +2777,7 @@ module.exports = (...args) => {
   return mod
 }
 
-},{"./gen.js":30}],46:[function(require,module,exports){
+},{"./gen.js":32}],48:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2504,7 +2815,7 @@ module.exports = x => {
   return mstosamps
 }
 
-},{"./gen.js":30}],47:[function(require,module,exports){
+},{"./gen.js":32}],49:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2542,7 +2853,7 @@ module.exports = ( x, props ) => {
   return ugen
 }
 
-},{"./gen.js":30}],48:[function(require,module,exports){
+},{"./gen.js":32}],50:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -2598,7 +2909,7 @@ module.exports = ( ...args ) => {
   return mul
 }
 
-},{"./gen.js":30}],49:[function(require,module,exports){
+},{"./gen.js":32}],51:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2630,7 +2941,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],50:[function(require,module,exports){
+},{"./gen.js":32}],52:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2641,9 +2952,12 @@ let proto = {
   gen() {
     let out
 
-    gen.closures.add({ 'noise' : Math.random })
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-    out = `  var ${this.name} = gen.noise()\n`
+    gen.closures.add({ 'noise' : isWorklet ? 'Math.random' : Math.random })
+
+    out = `  var ${this.name} = ${ref}noise()\n`
     
     gen.memo[ this.name ] = this.name
 
@@ -2658,7 +2972,7 @@ module.exports = x => {
   return noise
 }
 
-},{"./gen.js":30}],51:[function(require,module,exports){
+},{"./gen.js":32}],53:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2688,7 +3002,7 @@ module.exports = x => {
   return not
 }
 
-},{"./gen.js":30}],52:[function(require,module,exports){
+},{"./gen.js":32}],54:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' ),
@@ -2732,7 +3046,7 @@ module.exports = ( leftInput, rightInput, pan =.5, properties ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./mul.js":48,"./peek.js":54}],53:[function(require,module,exports){
+},{"./data.js":18,"./gen.js":32,"./mul.js":50,"./peek.js":56}],55:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2743,17 +3057,21 @@ let proto = {
   gen() {
     gen.requestMemory( this.memory )
     
-    gen.params.add({ [this.name]: this })
+    gen.params.add( this )
+
+    const isWorklet = gen.mode === 'worklet'
+
+    if( isWorklet ) gen.parameters.add( this.name )
 
     this.value = this.initialValue
 
-    gen.memo[ this.name ] = `memory[${this.memory.value.idx}]`
+    gen.memo[ this.name ] = isWorklet ? this.name : `memory[${this.memory.value.idx}]`
 
     return gen.memo[ this.name ]
   } 
 }
 
-module.exports = ( propName=0, value=0 ) => {
+module.exports = ( propName=0, value=0, min=0, max=1 ) => {
   let ugen = Object.create( proto )
   
   if( typeof propName !== 'string' ) {
@@ -2763,6 +3081,15 @@ module.exports = ( propName=0, value=0 ) => {
     ugen.name = propName
     ugen.initialValue = value
   }
+
+  ugen.min = min
+  ugen.max = max
+  ugen.defaultValue = ugen.initialValue
+
+  // for storing worklet nodes once they're instantiated
+  ugen.waapi = null
+
+  ugen.isWorklet = gen.mode === 'worklet'
 
   Object.defineProperty( ugen, 'value', {
     get() {
@@ -2774,9 +3101,11 @@ module.exports = ( propName=0, value=0 ) => {
     },
     set( v ) {
       if( this.memory.value.idx !== null ) {
-        gen.memory.heap[ this.memory.value.idx ] = v 
-      }else{
-        this.initialValue = v
+        if( this.isWorklet && this.waapi !== null ) {
+          this.waapi.value = v
+        }else{
+          gen.memory.heap[ this.memory.value.idx ] = v
+        } 
       }
     }
   })
@@ -2788,57 +3117,38 @@ module.exports = ( propName=0, value=0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],54:[function(require,module,exports){
-'use strict'
+},{"./gen.js":32}],56:[function(require,module,exports){
 
-const gen      = require( './gen.js' ),
-      dataUgen = require( './data.js' ),
-      param    = require( './param.js' )
+const gen  = require('./gen.js'),
+      dataUgen = require('./data.js')
 
 let proto = {
   basename:'peek',
 
   gen() {
     let genName = 'gen.' + this.name,
-        inputs = [],
+        inputs = gen.getInputs( this ),
         out, functionBody, next, lengthIsLog2, idx
-
-    // we must manually get each input so that we
-    // can assign correct memory location value
-    // after the data input has requested memory.
-    inputs[ 0 ] = gen.getInput( this.inputs[ 0 ] )
-    inputs[ 1 ] = gen.getInput( this.inputs[ 1 ] )
-
-    this.memLocation.value = this.data.memory.values.idx
-    this.memLength.value = this.data.memory.values.length
-
-    inputs[ 2 ] = gen.getInput( this.inputs[ 2 ] )
-    inputs[ 3 ] = gen.getInput( this.inputs[ 3 ] )
-
-
-    idx = inputs[2]
-
-    // this no longer works with dynamic memory locations / buffer lengths. We would have
-    // to rerun codegen upon learning the length of the underlying data buffer in order for
-    // this optimization to function again... 
-    lengthIsLog2 = false //(Math.log2( inputs[3] ) | 0)  === Math.log2( inputs[3] )
+    
+    idx = inputs[1]
+    lengthIsLog2 = (Math.log2( this.data.buffer.length ) | 0)  === Math.log2( this.data.buffer.length )
 
     if( this.mode !== 'simple' ) {
 
     functionBody = `  var ${this.name}_dataIdx  = ${idx}, 
-      ${this.name}_phase = ${this.mode === 'samples' ? inputs[0] : inputs[0] + ' * ' + `(${inputs[3]} - 1)` }, 
+      ${this.name}_phase = ${this.mode === 'samples' ? inputs[0] : inputs[0] + ' * ' + (this.data.buffer.length) }, 
       ${this.name}_index = ${this.name}_phase | 0,\n`
 
     if( this.boundmode === 'wrap' ) {
       next = lengthIsLog2 ?
-      `( ${this.name}_index + 1 ) & (${inputs[3]} - 1)` :
-      `${this.name}_index + 1 >= ${inputs[3]} ? ${this.name}_index + 1 - ${inputs[3]} : ${this.name}_index + 1`
+      `( ${this.name}_index + 1 ) & (${this.data.buffer.length} - 1)` :
+      `${this.name}_index + 1 >= ${this.data.buffer.length} ? ${this.name}_index + 1 - ${this.data.buffer.length} : ${this.name}_index + 1`
     }else if( this.boundmode === 'clamp' ) {
       next = 
-        `${this.name}_index + 1 >= ${inputs[3] - 1} ? ${inputs[3] - 1} : ${this.name}_index + 1`
+        `${this.name}_index + 1 >= ${this.data.buffer.length - 1} ? ${this.data.buffer.length - 1} : ${this.name}_index + 1`
     } else if( this.boundmode === 'fold' || this.boundmode === 'mirror' ) {
       next = 
-        `${this.name}_index + 1 >= ${inputs[3] - 1} ? ${this.name}_index - ${inputs[3] - 1} : ${this.name}_index + 1`
+        `${this.name}_index + 1 >= ${this.data.buffer.length - 1} ? ${this.name}_index - ${this.data.buffer.length - 1} : ${this.name}_index + 1`
     }else{
        next = 
       `${this.name}_index + 1`     
@@ -2851,7 +3161,7 @@ let proto = {
       
       if( this.boundmode === 'ignore' ) {
         functionBody += `
-      ${this.name}_out   = ${this.name}_index >= ${inputs[3] - 1} || ${this.name}_index < 0 ? 0 : ${this.name}_base + ${this.name}_frac * ( memory[ ${this.name}_dataIdx + ${this.name}_next ] - ${this.name}_base )\n\n`
+      ${this.name}_out   = ${this.name}_index >= ${this.data.buffer.length - 1} || ${this.name}_index < 0 ? 0 : ${this.name}_base + ${this.name}_frac * ( memory[ ${this.name}_dataIdx + ${this.name}_next ] - ${this.name}_base )\n\n`
       }else{
         functionBody += `
       ${this.name}_out   = ${this.name}_base + ${this.name}_frac * ( memory[ ${this.name}_dataIdx + ${this.name}_next ] - ${this.name}_base )\n\n`
@@ -2882,43 +3192,12 @@ module.exports = ( input_data, index=0, properties ) => {
   // XXX why is dataUgen not the actual function? some type of browserify nonsense...
   const finalData = typeof input_data.basename === 'undefined' ? gen.lib.data( input_data ) : input_data
 
-  const uid = gen.getUID()
-
-  // we need to make these dynamic so that they can be changed
-  // when a data object has finished loading, at which point
-  // we'll need to allocate a new memory block and update the
-  // memory block's length in the generated code.
-  const memLocation = param( 'dataLocation'+uid )
-  const memLength   = param( 'dataLength'+uid )
-
-  
-  // for data that is loading when this peek object is created, a promise
-  // will be returned by the call to data.
-  if( input_data instanceof Promise ) {
-    //memLocation.value = 0 
-    memLength.value = 1
-
-    input_data.then( d => {
-      memLocation.value = gen.memory.heap[ memLocation.memory.value.idx ] = d.memory.values.idx
-      memLength.value = gen.memory.heap[ memLength.memory.value.idx ] = d.memory.values.length
-
-      //memLocation.value = d.memory.values.idx
-      //memLength.value = d.buffer.length
-    })
-  }else{
-    //console.log( 'memory:', input_data.memory.values.idx )
-    //memLocation.value = input_data.memory.values.idx
-    //memLength.value   = input_data.memory.values.length
-  }
-
   Object.assign( ugen, 
     { 
       'data':     finalData,
       dataName:   finalData.name,
-      inputs:     [ index, finalData, memLocation, memLength ],
-      uid,
-      memLocation,
-      memLength
+      uid:        gen.getUID(),
+      inputs:     [ index, finalData ],
     },
     proto.defaults,
     properties 
@@ -2929,7 +3208,8 @@ module.exports = ( input_data, index=0, properties ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":30,"./param.js":53}],55:[function(require,module,exports){
+
+},{"./data.js":18,"./gen.js":32}],57:[function(require,module,exports){
 'use strict'
 
 let gen   = require( './gen.js' ),
@@ -2960,7 +3240,7 @@ module.exports = ( frequency = 1, reset = 0, _props ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./div.js":23,"./gen.js":30,"./mul.js":48}],56:[function(require,module,exports){
+},{"./accum.js":2,"./div.js":23,"./gen.js":32,"./mul.js":50}],58:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -3015,7 +3295,7 @@ module.exports = ( data, value, index, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30,"./mul.js":48,"./wrap.js":74}],57:[function(require,module,exports){
+},{"./gen.js":32,"./mul.js":50,"./wrap.js":77}],59:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3027,10 +3307,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
     
-    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
-      gen.closures.add({ 'pow': Math.pow })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.pow( ${inputs[0]}, ${inputs[1]} )` 
+    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
+      gen.closures.add({ 'pow': isWorklet ? 'Math.pow' : Math.pow })
+
+      out = `${ref}pow( ${inputs[0]}, ${inputs[1]} )` 
 
     } else {
       if( typeof inputs[0] === 'string' && inputs[0][0] === '(' ) {
@@ -3057,7 +3341,7 @@ module.exports = (x,y) => {
   return pow
 }
 
-},{"./gen.js":30}],58:[function(require,module,exports){
+},{"./gen.js":32}],60:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3111,7 +3395,7 @@ module.exports = (...args) => {
   return process 
 }
 
-},{"./gen.js":30}],59:[function(require,module,exports){
+},{"./gen.js":32}],61:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3163,7 +3447,7 @@ module.exports = ( in1, rate ) => {
   return ugen
 }
 
-},{"./add.js":5,"./delta.js":22,"./gen.js":30,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66,"./wrap.js":74}],60:[function(require,module,exports){
+},{"./add.js":5,"./delta.js":22,"./gen.js":32,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":69,"./wrap.js":77}],62:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3175,10 +3459,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
 
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: Math.round })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.round( ${inputs[0]} )`
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.round' : Math.round })
+
+      out = `${ref}round( ${inputs[0]} )`
 
     } else {
       out = Math.round( parseFloat( inputs[0] ) )
@@ -3196,7 +3484,7 @@ module.exports = x => {
   return round
 }
 
-},{"./gen.js":30}],61:[function(require,module,exports){
+},{"./gen.js":32}],63:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' )
@@ -3225,7 +3513,7 @@ let proto = {
   }
 `
     
-    gen.memo[ this.name ] = `gen.data.${this.name}`
+    gen.memo[ this.name ] = `memory[${this.memory.value.idx}]`//`gen.data.${this.name}`
 
     return [ `memory[${this.memory.value.idx}]`, ' ' +out ]
   }
@@ -3253,7 +3541,7 @@ module.exports = ( in1, control, threshold=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":30}],62:[function(require,module,exports){
+},{"./gen.js":32}],64:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3305,7 +3593,50 @@ module.exports = ( ...inputs ) => {
   return ugen
 }
 
-},{"./gen.js":30}],63:[function(require,module,exports){
+},{"./gen.js":32}],65:[function(require,module,exports){
+'use strict'
+
+let gen   = require( './gen.js' ),
+    accum = require( './accum.js' ),
+    counter= require( './counter.js' ),
+    peek  = require( './peek.js' ),
+    ssd   = require( './history.js' ),
+    data  = require( './data.js' ),
+    proto = { basename:'seq' }
+
+module.exports = ( durations = 11025, values = [0,1], phaseIncrement = 1) => {
+  let clock
+  
+  if( Array.isArray( durations ) ) {
+    // we want a counter that is using our current
+    // rate value, but we want the rate value to be derived from
+    // the counter. must insert a single-sample dealy to avoid
+    // infinite loop.
+    const clock2 = counter( 0, 0, durations.length )
+    const __durations = peek( data( durations ), clock2, { mode:'simple' }) 
+    clock = counter( phaseIncrement, 0, __durations )
+    
+    // add one sample delay to avoid codegen loop
+    const s = ssd()
+    s.in( clock.wrap )
+    clock2.inputs[0] = s.out
+  }else{
+    // if the rate argument is a single value we don't need to
+    // do anything tricky.
+    clock = counter( phaseIncrement, 0, durations )
+  }
+  
+  const stepper = accum( clock.wrap, 0, { min:0, max:values.length })
+   
+  const ugen = peek( data( values ), stepper, { mode:'simple' })
+
+  ugen.name = proto.basename + gen.getUID()
+  ugen.trigger = clock.wrap
+
+  return ugen
+}
+
+},{"./accum.js":2,"./counter.js":16,"./data.js":18,"./gen.js":32,"./history.js":36,"./peek.js":56}],66:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3317,10 +3648,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
 
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: Math.sign })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.sign( ${inputs[0]} )`
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.sign' : Math.sign })
+
+      out = `${ref}sign( ${inputs[0]} )`
 
     } else {
       out = Math.sign( parseFloat( inputs[0] ) )
@@ -3338,7 +3673,7 @@ module.exports = x => {
   return sign
 }
 
-},{"./gen.js":30}],64:[function(require,module,exports){
+},{"./gen.js":32}],67:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3350,10 +3685,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
     
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'sin': Math.sin })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.sin( ${inputs[0]} )` 
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'sin': isWorklet ? 'Math.sin' : Math.sin })
+
+      out = `${ref}sin( ${inputs[0]} )` 
 
     } else {
       out = Math.sin( parseFloat( inputs[0] ) )
@@ -3373,7 +3712,7 @@ module.exports = x => {
   return sin
 }
 
-},{"./gen.js":30}],65:[function(require,module,exports){
+},{"./gen.js":32}],68:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3400,7 +3739,7 @@ module.exports = ( in1, slideUp = 1, slideDown = 1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./div.js":23,"./gen.js":30,"./gt.js":31,"./history.js":34,"./memo.js":42,"./mul.js":48,"./sub.js":66,"./switch.js":67}],66:[function(require,module,exports){
+},{"./add.js":5,"./div.js":23,"./gen.js":32,"./gt.js":33,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":69,"./switch.js":70}],69:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -3465,7 +3804,7 @@ module.exports = ( ...args ) => {
   return sub
 }
 
-},{"./gen.js":30}],67:[function(require,module,exports){
+},{"./gen.js":32}],70:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3499,7 +3838,7 @@ module.exports = ( control, in1 = 1, in2 = 0 ) => {
   return ugen
 }
 
-},{"./gen.js":30}],68:[function(require,module,exports){
+},{"./gen.js":32}],71:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3512,10 +3851,13 @@ let proto = {
         inputs = gen.getInputs( this ),
         returnValue
 
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ 'exp' ]: Math.exp })
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `  var ${this.name} = gen.exp( -6.907755278921 / ${inputs[0]} )\n\n`
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ 'exp' ]: isWorklet ? 'Math.exp' : Math.exp })
+
+      out = `  var ${this.name} = ${ref}exp( -6.907755278921 / ${inputs[0]} )\n\n`
      
       gen.memo[ this.name ] = out
       
@@ -3539,7 +3881,7 @@ module.exports = x => {
   return t60
 }
 
-},{"./gen.js":30}],69:[function(require,module,exports){
+},{"./gen.js":32}],72:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3551,10 +3893,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
     
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'tan': Math.tan })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.tan( ${inputs[0]} )` 
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'tan': isWorklet ? 'Math.tan' : Math.tan })
+
+      out = `${ref}tan( ${inputs[0]} )` 
 
     } else {
       out = Math.tan( parseFloat( inputs[0] ) )
@@ -3574,7 +3920,7 @@ module.exports = x => {
   return tan
 }
 
-},{"./gen.js":30}],70:[function(require,module,exports){
+},{"./gen.js":32}],73:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3586,10 +3932,14 @@ let proto = {
     let out,
         inputs = gen.getInputs( this )
     
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'tanh': Math.tanh })
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
 
-      out = `gen.tanh( ${inputs[0]} )` 
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'tanh': isWorklet ? 'Math.tan' : Math.tanh })
+
+      out = `${ref}tanh( ${inputs[0]} )` 
 
     } else {
       out = Math.tanh( parseFloat( inputs[0] ) )
@@ -3609,7 +3959,7 @@ module.exports = x => {
   return tanh
 }
 
-},{"./gen.js":30}],71:[function(require,module,exports){
+},{"./gen.js":32}],74:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3626,15 +3976,16 @@ module.exports = ( frequency=440, pulsewidth=.5 ) => {
 }
 
 
-},{"./accum.js":2,"./div.js":23,"./gen.js":30,"./lt.js":38}],72:[function(require,module,exports){
+},{"./accum.js":2,"./div.js":23,"./gen.js":32,"./lt.js":40}],75:[function(require,module,exports){
 'use strict'
 
-let gen = require( './gen.js' ),
-    data = require( './data.js' )
+const AWPF = require( './external/audioworklet-polyfill.js' ),
+      gen  = require( './gen.js' ),
+      data = require( './data.js' )
 
 let isStereo = false
 
-let utilities = {
+const utilities = {
   ctx: null,
   buffers: {},
   isStereo:false,
@@ -3653,31 +4004,29 @@ let utilities = {
     if( gen.graph !== null ) gen.free( gen.graph )
   },
 
-  createContext() {
-    let AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
+  createContext( bufferSize = 2048 ) {
+    const AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
     
-    let start = () => {
+    // tell polyfill global object and buffersize
+    AWPF( window, bufferSize )
+
+    const start = () => {
       if( typeof AC !== 'undefined' ) {
-        console.log( 'creating context' )
-        utilities.ctx = new AC()
+        this.ctx = new AC({ latencyHint:.0125 })
 
         gen.samplerate = this.ctx.sampleRate
 
         if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
           window.removeEventListener( 'touchstart', start )
-
-          if( 'ontouchstart' in document.documentElement ) { // required to start audio under iOS 6
-             let mySource = utilities.ctx.createBufferSource()
-             mySource.connect( utilities.ctx.destination )
-             mySource.noteOn( 0 )
-           }
         }else{
           window.removeEventListener( 'mousedown', start )
           window.removeEventListener( 'keydown', start )
         }
-      }
 
-      utilities.createScriptProcessor()
+        const mySource = utilities.ctx.createBufferSource()
+        mySource.connect( utilities.ctx.destination )
+        mySource.start()
+      }
     }
 
     if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
@@ -3874,7 +4223,6 @@ registerProcessor( '${name}', ${name}Processor)`
 
 
     if( debug === true ) console.log( workletCode )
-          console.log( ugen )
 
     const url = window.URL.createObjectURL(
       new Blob(
@@ -3893,7 +4241,7 @@ registerProcessor( '${name}', ${name}Processor)`
     }
   },
 
-  playWorklet( graph, name, debug=false, mem=44100 * 10 ) {
+  playWorklet( graph, name, debug=false, mem=44100 * 60 ) {
     utilities.clear()
 
     const [ url, codeString, inputs, params, isStereo ] = utilities.createWorkletProcessor( graph, name, debug, mem )
@@ -4013,7 +4361,7 @@ utilities.clear.callbacks = []
 
 module.exports = utilities
 
-},{"./data.js":18,"./gen.js":30}],73:[function(require,module,exports){
+},{"./data.js":18,"./external/audioworklet-polyfill.js":27,"./gen.js":32}],76:[function(require,module,exports){
 'use strict'
 
 /*
@@ -4101,7 +4449,7 @@ const windows = module.exports = {
   }
 }
 
-},{}],74:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -4156,7 +4504,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":27,"./gen.js":30,"./memo.js":42,"./sub.js":66}],75:[function(require,module,exports){
+},{"./floor.js":29,"./gen.js":32,"./memo.js":44,"./sub.js":69}],78:[function(require,module,exports){
 'use strict';
 
 var MemoryHelper = {
@@ -4249,44 +4597,43 @@ var MemoryHelper = {
 
 module.exports = MemoryHelper;
 
-},{}],76:[function(require,module,exports){
-let ugen = require( '../ugen.js' )
+},{}],79:[function(require,module,exports){
+let ugen = require('../ugen.js');
 
-let analyzer = Object.create( ugen )
+let analyzer = Object.create(ugen);
 
-Object.assign( analyzer, {
+Object.assign(analyzer, {
   __type__: 'analyzer',
-  priority:0
-})
+  priority: 0
+});
 
-module.exports = analyzer
+module.exports = analyzer;
 
-},{"../ugen.js":141}],77:[function(require,module,exports){
-module.exports = function( Gibberish ) {
-  const { In, Out, SSD } = require( './singlesampledelay.js'  )( Gibberish )
+},{"../ugen.js":148}],80:[function(require,module,exports){
+module.exports = function (Gibberish) {
+  const { In, Out, SSD } = require('./singlesampledelay.js')(Gibberish);
 
   const analyzers = {
     SSD,
     SSD_In: In,
-    SSD_Out: Out, 
-    Follow: require( './follow.js'  )( Gibberish )
-  }
-  analyzers.Follow_out = analyzers.Follow.out
-  analyzers.Follow_in  = analyzers.Follow.in
-  
+    SSD_Out: Out,
+    Follow: require('./follow.dsp.js')(Gibberish)
+  };
+  analyzers.Follow_out = analyzers.Follow.out;
+  analyzers.Follow_in = analyzers.Follow.in;
+
   analyzers.export = target => {
-    for( let key in analyzers ) {
-      if( key !== 'export' ) {
-        target[ key ] = analyzers[ key ]
+    for (let key in analyzers) {
+      if (key !== 'export') {
+        target[key] = analyzers[key];
       }
     }
-  }
+  };
 
-  return analyzers
+  return analyzers;
+};
 
-}
-
-},{"./follow.js":78,"./singlesampledelay.js":79}],78:[function(require,module,exports){
+},{"./follow.dsp.js":81,"./singlesampledelay.js":82}],81:[function(require,module,exports){
 const g = require('genish.js'),
       analyzer = require('./analyzer.js'),
       ugen = require('../ugen.js');
@@ -4469,266 +4816,397 @@ module.exports = function (Gibberish) {
 
   return Follow;
 };
-},{"../ugen.js":141,"./analyzer.js":76,"genish.js":37}],79:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      analyzer = require( './analyzer.js' ),
-      proxy    = require( '../workletProxy.js' ),
-      ugen     = require( '../ugen.js' )
 
-module.exports = function( Gibberish ) {
- 
-// an SSD ugen is in effect two-in-one,
-// one for input and one for output.  
-  
-const SSD = inputProps => {
-  const ssd = Object.create( analyzer )
+},{"../ugen.js":148,"./analyzer.js":79,"genish.js":39}],82:[function(require,module,exports){
+const g = require('genish.js'),
+      analyzer = require('./analyzer.js'),
+      proxy = require('../workletProxy.js'),
+      ugen = require('../ugen.js');
 
-  const props = Object.assign({}, SSD.defaults, inputProps )
-  const isStereo = props.isStereo 
-  const input    = g.in( 'input' )
-  const historyL = g.history(0)
-  const historyR = g.history(0)
+module.exports = function (Gibberish) {
 
-  ssd.out = Out( [historyL,historyR], props )
-  ssd.in  =  In( [historyL,historyR], props )
+  // an SSD ugen is in effect two-in-one,
+  // one for input and one for output.  
 
-  ssd.listen = ssd.in.listen
+  const SSD = inputProps => {
+    const ssd = Object.create(analyzer);
 
-  return ssd 
-}
+    const props = Object.assign({}, SSD.defaults, inputProps);
+    const isStereo = props.isStereo;
+    const input = g.in('input');
+    const historyL = g.history(0);
+    const historyR = g.history(0);
 
-const Out = ( histories,props ) => {
-  let history
-  // if we don't find our history ugen in the processor thread,
-  // just go ahead and make a new one, they're cheap...
-  if( Gibberish.mode === 'processor' ) {
-    const id = Array.isArray( histories ) ? histories[0].id : histories.id
-    history = Gibberish.ugens.get( id )
-    if( history === undefined ) {
-      history = g.history( 0 )
-      Gibberish.ugens.set( id, history )
-    }
-    if( props === undefined ) props = { id }
-  }else{
-    history = histories[0]
-  }
+    ssd.out = Out([historyL, historyR], props);
+    ssd.in = In([historyL, historyR], props);
 
-  return Gibberish.factory( Object.create( ugen ), history.out, ['analysis','SSD_Out'], props, null )
-}
+    ssd.listen = ssd.in.listen;
 
-const In = histories => {
-  const input = g.in( 'input' )
-  let historyL, historyR
-  
-  if( Gibberish.mode === 'processor' ) {
-    // for some reason the proessor id is always one off from the main thread id
-    historyL = Gibberish.ugens.get( histories.id - 1 )
-    historyR = Gibberish.ugens.get( histories.id )
-  }else{
-    historyL = histories[0]
-    historyR = histories[1]
-  }
+    return ssd;
+  };
 
-  // deliberate let
-  let ssdin = Object.create( ugen )
-  
-  ssdin.listen = function( input ) {
-    ssdin.input = input
-    // changing the input must trigger codegen
-    Gibberish.dirty( Gibberish.analyzers ) 
-
-    let isStereo = input.isStereo
-    if( input.isStereo === undefined && input.isop === true ) {
-      isStereo = input.inputs[0].isStereo === true || input.inputs[1].isStereo === true 
-    }
-    if( isStereo === true && Gibberish.mode === 'processor' ) {
-      const idx = historyL.graph.memory.value.idx     
-      ssdin.callback = function( input, memory ) {
-        memory[ idx ] = input[ 0 ]
-        memory[ idx + 1 ] = input[ 1 ]
-        return 0     
+  const Out = (histories, props) => {
+    let history;
+    // if we don't find our history ugen in the processor thread,
+    // just go ahead and make a new one, they're cheap...
+    if (Gibberish.mode === 'processor') {
+      const id = Array.isArray(histories) ? histories[0].id : histories.id;
+      history = Gibberish.ugens.get(id);
+      if (history === undefined) {
+        history = g.history(0);
+        Gibberish.ugens.set(id, history);
       }
+      if (props === undefined) props = { id };
+    } else {
+      history = histories[0];
+    }
+
+    return Gibberish.factory(Object.create(ugen), history.out, ['analysis', 'SSD_Out'], props, null);
+  };
+
+  const In = histories => {
+    const input = g.in('input');
+    let historyL, historyR;
+
+    if (Gibberish.mode === 'processor') {
+      // for some reason the proessor id is always one off from the main thread id
+      historyL = Gibberish.ugens.get(histories.id - 1);
+      historyR = Gibberish.ugens.get(histories.id);
+    } else {
+      historyL = histories[0];
+      historyR = histories[1];
+    }
+
+    // deliberate let
+    let ssdin = Object.create(ugen);
+
+    ssdin.listen = function (input) {
+      ssdin.input = input;
+      // changing the input must trigger codegen
+      Gibberish.dirty(Gibberish.analyzers);
+
+      let isStereo = input.isStereo;
+      if (input.isStereo === undefined && input.isop === true) {
+        isStereo = input.inputs[0].isStereo === true || input.inputs[1].isStereo === true;
+      }
+      if (isStereo === true && Gibberish.mode === 'processor') {
+        const idx = historyL.graph.memory.value.idx;
+        ssdin.callback = function (input, memory) {
+          memory[idx] = input[0];
+          memory[idx + 1] = input[1];
+          return 0;
+        };
+
+        // when each ugen callback is passed to the master callback function
+        // it needs to have a ugenName property; we'll just copy this over
+        ssdin.callback.ugenName = ssdin.ugenName;
+      }
+    };
+
+    ssdin = Gibberish.factory(ssdin, input, ['analysis', 'SSD_In'], { 'input': 0 });
+
+    // overwrite the callback function in the processor thread...
+    if (Gibberish.mode === 'processor') {
+      const idx = historyL.graph.memory.value.idx;
+
+      ssdin.callback = function (input, memory) {
+        memory[idx] = input;
+        return 0;
+      };
 
       // when each ugen callback is passed to the master callback function
       // it needs to have a ugenName property; we'll just copy this over
-      ssdin.callback.ugenName = ssdin.ugenName
-    }
-  }
-
-  ssdin = Gibberish.factory( ssdin, input, ['analysis','SSD_In'], { 'input':0 } )
-
-  // overwrite the callback function in the processor thread...
-  if( Gibberish.mode === 'processor' ) {
-    const idx = historyL.graph.memory.value.idx
-    
-    ssdin.callback = function( input, memory ) {
-      memory[ idx ] = input
-      return 0     
+      ssdin.callback.ugenName = ssdin.ugenName;
     }
 
-    // when each ugen callback is passed to the master callback function
-    // it needs to have a ugenName property; we'll just copy this over
-    ssdin.callback.ugenName = ssdin.ugenName
-  }
+    ssdin.type = 'analysis';
+    Gibberish.analyzers.push(ssdin);
 
-  ssdin.type = 'analysis'
-  Gibberish.analyzers.push( ssdin )
+    return ssdin;
+  };
 
-  return ssdin
-}
+  SSD.defaults = {
+    input: 0,
+    isStereo: false
+  };
 
-SSD.defaults = {
-  input:0,
-  isStereo:false
-}
+  return { In, Out, SSD };
+};
 
-return { In, Out, SSD }
+},{"../ugen.js":148,"../workletProxy.js":150,"./analyzer.js":79,"genish.js":39}],83:[function(require,module,exports){
+const ugen = require('../ugen.js'),
+      g = require('genish.js');
 
-}
+module.exports = function (Gibberish) {
 
-},{"../ugen.js":141,"../workletProxy.js":144,"./analyzer.js":76,"genish.js":37}],80:[function(require,module,exports){
-const ugen = require( '../ugen.js' ),
-      g = require( 'genish.js' )
+      const AD = function (argumentProps) {
+            const ad = Object.create(ugen),
+                  attack = g.in('attack'),
+                  decay = g.in('decay');
 
-module.exports = function( Gibberish ) {
+            const props = Object.assign({}, AD.defaults, argumentProps);
 
-  const AD = function( argumentProps ) {
-    const ad = Object.create( ugen ),
-          attack  = g.in( 'attack' ),
-          decay   = g.in( 'decay' )
+            const graph = g.ad(attack, decay, { shape: props.shape, alpha: props.alpha });
 
-    const props = Object.assign( {}, AD.defaults, argumentProps )
+            ad.trigger = graph.trigger;
 
-    const graph = g.ad( attack, decay, { shape:props.shape, alpha:props.alpha })
+            const __out = Gibberish.factory(ad, graph, ['envelopes', 'AD'], props);
 
-    ad.trigger = graph.trigger
-    
-    const __out = Gibberish.factory( ad, graph, ['envelopes','AD'], props )
+            return __out;
+      };
 
-    return __out
-  }
+      AD.defaults = { attack: 44100, decay: 44100, shape: 'exponential', alpha: 5 };
 
-  AD.defaults = { attack:44100, decay:44100, shape:'exponential', alpha:5 } 
+      return AD;
+};
 
-  return AD
+},{"../ugen.js":148,"genish.js":39}],84:[function(require,module,exports){
+const ugen = require('../ugen.js'),
+      g = require('genish.js');
 
-}
+module.exports = function (Gibberish) {
 
-},{"../ugen.js":141,"genish.js":37}],81:[function(require,module,exports){
-const ugen = require( '../ugen.js' ),
-      g = require( 'genish.js' )
+  const ADSR = function (argumentProps) {
+    const adsr = Object.create(ugen),
+          attack = g.in('attack'),
+          decay = g.in('decay'),
+          sustain = g.in('sustain'),
+          release = g.in('release'),
+          sustainLevel = g.in('sustainLevel');
 
-module.exports = function( Gibberish ) {
+    const props = Object.assign({}, ADSR.defaults, argumentProps);
 
-  const ADSR = function( argumentProps ) {
-    const adsr  = Object.create( ugen ),
-          attack  = g.in( 'attack' ),
-          decay   = g.in( 'decay' ),
-          sustain = g.in( 'sustain' ),
-          release = g.in( 'release' ),
-          sustainLevel = g.in( 'sustainLevel' )
+    Object.assign(adsr, props);
 
-    const props = Object.assign( {}, ADSR.defaults, argumentProps )
+    const graph = g.adsr(attack, decay, sustain, sustainLevel, release, { triggerRelease: props.triggerRelease, shape: props.shape, alpha: props.alpha });
 
-    Object.assign( adsr, props )
+    adsr.trigger = graph.trigger;
+    adsr.advance = graph.release;
 
-    const graph = g.adsr( 
-      attack, decay, sustain, sustainLevel, release, 
-      { triggerRelease: props.triggerRelease, shape:props.shape, alpha:props.alpha } 
-    )
+    const __out = Gibberish.factory(adsr, graph, ['envelopes', 'ADSR'], props);
 
-    adsr.trigger = graph.trigger
-    adsr.advance = graph.release
+    return __out;
+  };
 
-    const __out = Gibberish.factory( adsr, graph, ['envelopes','ADSR'], props )
+  ADSR.defaults = {
+    attack: 22050,
+    decay: 22050,
+    sustain: 44100,
+    sustainLevel: .6,
+    release: 44100,
+    triggerRelease: false,
+    shape: 'exponential',
+    alpha: 5
+  };
 
-    return __out 
-  }
+  return ADSR;
+};
 
-  ADSR.defaults = { 
-    attack:22050, 
-    decay:22050, 
-    sustain:44100, 
-    sustainLevel:.6, 
-    release: 44100, 
-    triggerRelease:false,
-    shape:'exponential',
-    alpha:5 
-  } 
+},{"../ugen.js":148,"genish.js":39}],85:[function(require,module,exports){
+const g = require('genish.js');
 
-  return ADSR
-}
-
-},{"../ugen.js":141,"genish.js":37}],82:[function(require,module,exports){
-const g = require( 'genish.js' )
-
-module.exports = function( Gibberish ) {
+module.exports = function (Gibberish) {
 
   const Envelopes = {
-    AD     : require( './ad.js' )( Gibberish ),
-    ADSR   : require( './adsr.js' )( Gibberish ),
-    Ramp   : require( './ramp.js' )( Gibberish ),
+    AD: require('./ad.js')(Gibberish),
+    ADSR: require('./adsr.js')(Gibberish),
+    Ramp: require('./ramp.js')(Gibberish),
 
-    export : target => {
-      for( let key in Envelopes ) {
-        if( key !== 'export' && key !== 'factory' ) {
-          target[ key ] = Envelopes[ key ]
+    export: target => {
+      for (let key in Envelopes) {
+        if (key !== 'export' && key !== 'factory') {
+          target[key] = Envelopes[key];
         }
       }
     },
 
-    factory( useADSR, shape, attack, decay, sustain, sustainLevel, release, triggerRelease=false ) {
-      let env
+    factory(useADSR, shape, attack, decay, sustain, sustainLevel, release, triggerRelease = false) {
+      let env;
 
       // deliberate use of single = to accomodate both 1 and true
-      if( useADSR != true ) {
-        env = g.ad( attack, decay, { shape }) 
-      }else {
-        env = g.adsr( attack, decay, sustain, sustainLevel, release, { shape, triggerRelease })
+      if (useADSR != true) {
+        env = g.ad(attack, decay, { shape });
+      } else {
+        env = g.adsr(attack, decay, sustain, sustainLevel, release, { shape, triggerRelease });
+        env.advance = env.release;
       }
 
-      return env
+      return env;
     }
-  } 
+  };
 
-  return Envelopes
-}
+  return Envelopes;
+};
 
-},{"./ad.js":80,"./adsr.js":81,"./ramp.js":83,"genish.js":37}],83:[function(require,module,exports){
-const ugen = require( '../ugen.js' ),
-      g = require( 'genish.js' )
+},{"./ad.js":83,"./adsr.js":84,"./ramp.js":86,"genish.js":39}],86:[function(require,module,exports){
+const ugen = require('../ugen.js'),
+      g = require('genish.js');
 
-module.exports = function( Gibberish ) {
+module.exports = function (Gibberish) {
 
-  const Ramp = function( argumentProps ) {
-    const ramp   = Object.create( ugen ),
-          length = g.in( 'length' ),
-          from   = g.in( 'from' ),
-          to     = g.in( 'to' )
+      const Ramp = function (argumentProps) {
+            const ramp = Object.create(ugen),
+                  length = g.in('length'),
+                  from = g.in('from'),
+                  to = g.in('to');
 
-    const props = Object.assign({}, Ramp.defaults, argumentProps )
+            const props = Object.assign({}, Ramp.defaults, argumentProps);
 
-    const reset = g.bang()
+            const reset = g.bang();
 
-    const phase = g.accum( g.div( 1, length ), reset, { shouldWrap:props.shouldLoop, shouldClamp:true }),
-          diff = g.sub( to, from ),
-          graph = g.add( from, g.mul( phase, diff ) )
-        
-    ramp.trigger = reset.trigger
+            const phase = g.accum(g.div(1, length), reset, { shouldWrap: props.shouldLoop, shouldClamp: true }),
+                  diff = g.sub(to, from),
+                  graph = g.add(from, g.mul(phase, diff));
 
-    const out = Gibberish.factory( ramp, graph, ['envelopes','ramp'], props )
+            ramp.trigger = reset.trigger;
 
+            const out = Gibberish.factory(ramp, graph, ['envelopes', 'ramp'], props);
 
-    return out
+            return out;
+      };
+
+      Ramp.defaults = { from: 0, to: 1, length: g.gen.samplerate, shouldLoop: false };
+
+      return Ramp;
+};
+
+},{"../ugen.js":148,"genish.js":39}],87:[function(require,module,exports){
+/**
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+// originally from:
+// https://github.com/GoogleChromeLabs/audioworklet-polyfill
+// I am modifying it to accept variable buffer sizes
+// and to get rid of some strange global initialization that seems required to use it
+// with browserify. Also, I added changes to fix a bug in Safari for the AudioWorkletProcessor
+// property not having a prototype (see:https://github.com/GoogleChromeLabs/audioworklet-polyfill/pull/25)
+// TODO: Why is there an iframe involved? (realm.js)
+
+const Realm = require('./realm.js');
+
+const AWPF = function (self = window, bufferSize = 4096) {
+  const PARAMS = [];
+  let nextPort;
+
+  if (typeof AudioWorkletNode !== 'function' || !("audioWorklet" in AudioContext.prototype)) {
+    self.AudioWorkletNode = function AudioWorkletNode(context, name, options) {
+      const processor = getProcessorsForContext(context)[name];
+      const outputChannels = options && options.outputChannelCount ? options.outputChannelCount[0] : 2;
+      const scriptProcessor = context.createScriptProcessor(bufferSize, 2, outputChannels);
+
+      scriptProcessor.parameters = new Map();
+      if (processor.properties) {
+        for (let i = 0; i < processor.properties.length; i++) {
+          const prop = processor.properties[i];
+          const node = context.createGain().gain;
+          node.value = prop.defaultValue;
+          // @TODO there's no good way to construct the proxy AudioParam here
+          scriptProcessor.parameters.set(prop.name, node);
+        }
+      }
+
+      const mc = new MessageChannel();
+      nextPort = mc.port2;
+      const inst = new processor.Processor(options || {});
+      nextPort = null;
+
+      scriptProcessor.port = mc.port1;
+      scriptProcessor.processor = processor;
+      scriptProcessor.instance = inst;
+      scriptProcessor.onaudioprocess = onAudioProcess;
+      return scriptProcessor;
+    };
+
+    Object.defineProperty((self.AudioContext || self.webkitAudioContext).prototype, 'audioWorklet', {
+      get() {
+        return this.$$audioWorklet || (this.$$audioWorklet = new self.AudioWorklet(this));
+      }
+    });
+
+    /* XXX - ADDED TO OVERCOME PROBLEM IN SAFARI WHERE AUDIOWORKLETPROCESSOR PROTOTYPE IS NOT AN OBJECT */
+    const AudioWorkletProcessor = function () {
+      this.port = nextPort;
+    };
+    AudioWorkletProcessor.prototype = {};
+
+    self.AudioWorklet = class AudioWorklet {
+      constructor(audioContext) {
+        this.$$context = audioContext;
+      }
+
+      addModule(url, options) {
+        return fetch(url).then(r => {
+          if (!r.ok) throw Error(r.status);
+          return r.text();
+        }).then(code => {
+          const context = {
+            sampleRate: this.$$context.sampleRate,
+            currentTime: this.$$context.currentTime,
+            AudioWorkletProcessor,
+            registerProcessor: (name, Processor) => {
+              const processors = getProcessorsForContext(this.$$context);
+              processors[name] = {
+                realm,
+                context,
+                Processor,
+                properties: Processor.parameterDescriptors || []
+              };
+            }
+          };
+
+          context.self = context;
+          const realm = new Realm(context, document.documentElement);
+          realm.exec((options && options.transpile || String)(code));
+          return null;
+        });
+      }
+    };
   }
 
-  Ramp.defaults = { from:0, to:1, length:g.gen.samplerate, shouldLoop:false }
+  function onAudioProcess(e) {
+    const parameters = {};
+    let index = -1;
+    this.parameters.forEach((value, key) => {
+      const arr = PARAMS[++index] || (PARAMS[index] = new Float32Array(this.bufferSize));
+      // @TODO proper values here if possible
+      arr.fill(value.value);
+      parameters[key] = arr;
+    });
+    this.processor.realm.exec('self.sampleRate=sampleRate=' + this.context.sampleRate + ';' + 'self.currentTime=currentTime=' + this.context.currentTime);
+    const inputs = channelToArray(e.inputBuffer);
+    const outputs = channelToArray(e.outputBuffer);
+    this.instance.process([inputs], [outputs], parameters);
+  }
 
-  return Ramp
+  function channelToArray(ch) {
+    const out = [];
+    for (let i = 0; i < ch.numberOfChannels; i++) {
+      out[i] = ch.getChannelData(i);
+    }
+    return out;
+  }
 
-}
+  function getProcessorsForContext(audioContext) {
+    return audioContext.$$processors || (audioContext.$$processors = {});
+  }
+};
 
-},{"../ugen.js":141,"genish.js":37}],84:[function(require,module,exports){
+module.exports = AWPF;
+
+},{"./realm.js":89}],88:[function(require,module,exports){
 /*
  * https://github.com/antimatter15/heapqueue.js/blob/master/heapqueue.js
  *
@@ -4787,51 +5265,57 @@ module.exports = function( Gibberish ) {
  * heapq.pop(); // ==> 2
  * heapq.pop(); // ==> 3
  */
-const HeapQueue = function(cmp){
-  this.cmp = (cmp || function(a, b){ return a - b; });
+const HeapQueue = function (cmp) {
+  this.cmp = cmp || function (a, b) {
+    return a - b;
+  };
   this.length = 0;
   this.data = [];
-}
-HeapQueue.prototype.peek = function(){
+};
+HeapQueue.prototype.peek = function () {
   return this.data[0];
 };
-HeapQueue.prototype.push = function(value){
+HeapQueue.prototype.push = function (value) {
   this.data.push(value);
 
   var pos = this.data.length - 1,
-  parent, x;
+      parent,
+      x;
 
-  while(pos > 0){
-    parent = (pos - 1) >>> 1;
-    if(this.cmp(this.data[pos], this.data[parent]) < 0){
+  while (pos > 0) {
+    parent = pos - 1 >>> 1;
+    if (this.cmp(this.data[pos], this.data[parent]) < 0) {
       x = this.data[parent];
       this.data[parent] = this.data[pos];
       this.data[pos] = x;
       pos = parent;
-    }else break;
+    } else break;
   }
   return this.length++;
 };
-HeapQueue.prototype.pop = function(){
+HeapQueue.prototype.pop = function () {
   var last_val = this.data.pop(),
-  ret = this.data[0];
-  if(this.data.length > 0){
+      ret = this.data[0];
+  if (this.data.length > 0) {
     this.data[0] = last_val;
     var pos = 0,
-    last = this.data.length - 1,
-    left, right, minIndex, x;
-    while(1){
+        last = this.data.length - 1,
+        left,
+        right,
+        minIndex,
+        x;
+    while (1) {
       left = (pos << 1) + 1;
       right = left + 1;
       minIndex = pos;
-      if(left <= last && this.cmp(this.data[left], this.data[minIndex]) < 0) minIndex = left;
-      if(right <= last && this.cmp(this.data[right], this.data[minIndex]) < 0) minIndex = right;
-      if(minIndex !== pos){
+      if (left <= last && this.cmp(this.data[left], this.data[minIndex]) < 0) minIndex = left;
+      if (right <= last && this.cmp(this.data[right], this.data[minIndex]) < 0) minIndex = right;
+      if (minIndex !== pos) {
         x = this.data[minIndex];
         this.data[minIndex] = this.data[pos];
         this.data[pos] = x;
         pos = minIndex;
-      }else break;
+      } else break;
     }
   } else {
     ret = last_val;
@@ -4840,26 +5324,231 @@ HeapQueue.prototype.pop = function(){
   return ret;
 };
 
-module.exports = HeapQueue
+module.exports = HeapQueue;
 
-},{}],85:[function(require,module,exports){
-let g = require( 'genish.js' )
- 
+},{}],89:[function(require,module,exports){
+
+/**
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+module.exports = function Realm(scope, parentElement) {
+  const frame = document.createElement('iframe');
+  frame.style.cssText = 'position:absolute;left:0;top:-999px;width:1px;height:1px;';
+  parentElement.appendChild(frame);
+  const win = frame.contentWindow;
+  const doc = win.document;
+  let vars = 'var window,$hook';
+  for (const i in win) {
+    if (!(i in scope) && i !== 'eval') {
+      vars += ',';
+      vars += i;
+    }
+  }
+  for (const i in scope) {
+    vars += ',';
+    vars += i;
+    vars += '=self.';
+    vars += i;
+  }
+  const script = doc.createElement('script');
+  script.appendChild(doc.createTextNode(`function $hook(self,console) {"use strict";
+        ${vars};return function() {return eval(arguments[0])}}`));
+  doc.body.appendChild(script);
+  this.exec = win.$hook.call(scope, scope, console);
+};
+
+},{}],90:[function(require,module,exports){
+const __proxy = require('./workletProxy.js');
+const effectProto = require('./fx/effect.js');
+
+module.exports = function (Gibberish) {
+  const proxy = __proxy(Gibberish);
+
+  const factory = function (ugen, graph, __name, values, cb = null, shouldProxy = true) {
+    if (Gibberish.mode === 'processor') ugen.callback = cb === null ? Gibberish.genish.gen.createCallback(graph, Gibberish.memory, false, true) : cb;else ugen.callback = { out: [] };
+
+    let name = Array.isArray(__name) ? __name[__name.length - 1] : __name;
+
+    Object.assign(ugen, {
+      //type: 'ugen',
+      id: values.id || Gibberish.utilities.getUID(),
+      ugenName: name + '_',
+      graph: graph,
+      inputNames: ugen.inputNames || new Set(Gibberish.genish.gen.parameters),
+      isStereo: Array.isArray(graph),
+      dirty: true,
+      __properties__: values,
+      __addresses__: {}
+    });
+
+    ugen.ugenName += ugen.id;
+    if (Gibberish.mode === 'processor') {
+      ugen.callback.ugenName = ugen.ugenName; // XXX hacky
+      ugen.callback.id = ugen.id;
+    }
+
+    //console.log( 'ugen name/id:', ugen.ugenName, ugen.id )
+    //console.log( 'callback name/id:', ugen.callback.ugenName, ugen.callback.id )
+
+    for (let param of ugen.inputNames) {
+      if (param === 'memory') continue;
+
+      let value = values[param],
+          isNumber = typeof value === 'object' || isNaN(value) ? false : true,
+          idx;
+
+      if (isNumber) {
+        idx = Gibberish.memory.alloc(1);
+        Gibberish.memory.heap[idx] = value;
+        ugen.__addresses__[param] = idx;
+      }
+
+      // TODO: do we need to check for a setter?
+      let desc = Object.getOwnPropertyDescriptor(ugen, param),
+          setter;
+
+      if (desc !== undefined) {
+        setter = desc.set;
+      }
+
+      Object.defineProperty(ugen, param, {
+        configurable: true,
+        get() {
+          if (isNumber) {
+            return Gibberish.memory.heap[idx];
+          } else {
+            return value;
+          }
+        },
+        set(v) {
+          //if( param === 'input' ) console.log( 'INPUT:', v, isNumber )
+          if (value !== v) {
+            if (setter !== undefined) setter(v);
+            if (typeof v === 'number') {
+              Gibberish.memory.heap[idx] = value = v;
+              if (isNumber === false) Gibberish.dirty(ugen);
+              isNumber = true;
+            } else {
+              value = v;
+              /*if( isNumber === true )*/Gibberish.dirty(ugen);
+              //console.log( 'switching from number:', param, value )
+              isNumber = false;
+            }
+          }
+        }
+      });
+    }
+
+    // add bypass 
+    if (effectProto.isPrototypeOf(ugen)) {
+      let value = ugen.bypass;
+      Object.defineProperty(ugen, 'bypass', {
+        configurable: true,
+        get() {
+          return value;
+        },
+        set(v) {
+          if (value !== v) {
+            Gibberish.dirty(ugen);
+            value = v;
+          }
+        }
+      });
+    }
+
+    if (ugen.__requiresRecompilation !== undefined) {
+      ugen.__requiresRecompilation.forEach(prop => {
+        let value = values[prop];
+        let isNumber = !isNaN(value);
+
+        Object.defineProperty(ugen, prop, {
+          configurable: true,
+          get() {
+            if (isNumber) {
+              let idx = ugen.__addresses__[prop];
+              return Gibberish.memory.heap[idx];
+            } else {
+              //console.log( 'returning:', prop, value, Gibberish.mode )
+              return value;
+            }
+          },
+          set(v) {
+            if (value !== v) {
+              if (typeof v === 'number') {
+                let idx = ugen.__addresses__[prop];
+                if (idx === undefined) {
+                  idx = Gibberish.memory.alloc(1);
+                  ugen.__addresses__[prop] = idx;
+                }
+                value = values[prop] = Gibberish.memory.heap[idx] = v;
+                isNumber = true;
+              } else {
+                value = values[prop] = v;
+                isNumber = false;
+                //console.log( 'setting ugen', value, Gibberish.mode )
+                Gibberish.dirty(ugen);
+              }
+
+              //console.log( 'SETTING REDO GRAPH', prop, Gibberish.mode )
+
+              // needed for filterType at the very least, becauae the props
+              // are reused when re-creating the graph. This seems like a cheaper
+              // way to solve this problem.
+              //values[ prop ] = v
+
+              this.__redoGraph();
+            }
+          }
+        });
+      });
+    }
+
+    // will only create proxy if worklets are being used
+    // otherwise will return unaltered ugen
+
+    if (values.shouldAddToUgen === true) Object.assign(ugen, values);
+
+    return shouldProxy ? proxy(__name, values, ugen) : ugen;
+  };
+
+  factory.getUID = () => {
+    return Gibberish.utilities.getUID();
+  };
+
+  return factory;
+};
+
+},{"./fx/effect.js":106,"./workletProxy.js":150}],91:[function(require,module,exports){
+let g = require('genish.js');
+
 // constructor for schroeder allpass filters
-let allPass = function( _input, length=500, feedback=.5 ) {
-  let index  = g.counter( 1,0,length ),
-      buffer = g.data( length ),
-      bufferSample = g.peek( buffer, index, { interp:'none', mode:'samples' }),
-      out = g.memo( g.add( g.mul( -1, _input), bufferSample ) )
-                
-  g.poke( buffer, g.add( _input, g.mul( bufferSample, feedback ) ), index )
- 
-  return out
-}
+let allPass = function (_input, length = 500, feedback = .5) {
+  let index = g.counter(1, 0, length),
+      buffer = g.data(length),
+      bufferSample = g.peek(buffer, index, { interp: 'none', mode: 'samples' }),
+      out = g.memo(g.add(g.mul(-1, _input), bufferSample));
 
-module.exports = allPass
+  g.poke(buffer, g.add(_input, g.mul(bufferSample, feedback)), index);
 
-},{"genish.js":37}],86:[function(require,module,exports){
+  return out;
+};
+
+module.exports = allPass;
+
+},{"genish.js":39}],92:[function(require,module,exports){
 let g = require('genish.js'),
     filter = require('./filter.js');
 
@@ -5015,116 +5704,106 @@ module.exports = function (Gibberish) {
 
   return Biquad;
 };
-},{"./filter.js":89,"genish.js":37}],87:[function(require,module,exports){
-let g = require( 'genish.js' )
 
-let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 ) {
-  let lastSample   = g.history(),
-  	  readWriteIdx = g.counter( 1,0,combLength ),
-      combBuffer   = g.data( combLength ),
-	    out          = g.peek( combBuffer, readWriteIdx, { interp:'none', mode:'samples' }),
-      storeInput   = g.memo( g.add( g.mul( out, g.sub( 1, damping)), g.mul( lastSample.out, damping ) ) )
-      
-  lastSample.in( storeInput )
- 
-  g.poke( combBuffer, g.add( _input, g.mul( storeInput, feedbackCoeff ) ), readWriteIdx )
- 
-  return out
-}
+},{"./filter.js":95,"genish.js":39}],93:[function(require,module,exports){
+let g = require('genish.js');
 
-module.exports = combFilter
+let combFilter = function (_input, combLength, damping = .5 * .4, feedbackCoeff = .84) {
+  let lastSample = g.history(),
+      readWriteIdx = g.counter(1, 0, combLength),
+      combBuffer = g.data(combLength),
+      out = g.peek(combBuffer, readWriteIdx, { interp: 'none', mode: 'samples' }),
+      storeInput = g.memo(g.add(g.mul(out, g.sub(1, damping)), g.mul(lastSample.out, damping)));
 
-},{"genish.js":37}],88:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      filter = require( './filter.js' )
+  lastSample.in(storeInput);
 
-const genish = g
-module.exports = function( Gibberish ) {
-  Gibberish.genish.diodeZDF = ( input, __Q, __freq, saturation, isStereo=false ) => {
+  g.poke(combBuffer, g.add(_input, g.mul(storeInput, feedbackCoeff)), readWriteIdx);
+
+  return out;
+};
+
+module.exports = combFilter;
+
+},{"genish.js":39}],94:[function(require,module,exports){
+const g = require('genish.js'),
+      filter = require('./filter.js');
+
+const genish = g;
+module.exports = function (Gibberish) {
+  Gibberish.genish.diodeZDF = (input, __Q, __freq, saturation, isStereo = false) => {
     const iT = 1 / g.gen.samplerate,
           kz1 = g.history(0),
           kz2 = g.history(0),
           kz3 = g.history(0),
-          kz4 = g.history(0)
+          kz4 = g.history(0);
 
-    let   ka1 = 1.0,
-          ka2 = 0.5,
-          ka3 = 0.5,
-          ka4 = 0.5,
-          kindx = 0   
+    let ka1 = 1.0,
+        ka2 = 0.5,
+        ka3 = 0.5,
+        ka4 = 0.5,
+        kindx = 0;
 
-    const freq = g.mul( g.max(.005, g.min( __freq, .995)),  genish.gen.samplerate / 2 )
+    const freq = g.mul(g.max(.005, g.min(__freq, .995)), genish.gen.samplerate / 2);
     //const freq = g.max(.005, g.min( __freq, .995))
 
     // XXX this is where the magic number hapens for Q...
-    const Q = g.memo( g.add( .5, g.mul( __Q, g.add( 5, g.sub( 5, g.mul( g.div( freq, 20000  ), 5 ) ) ) ) ) )
+    const Q = g.memo(g.add(.5, g.mul(__Q, g.add(5, g.sub(5, g.mul(g.div(freq, 20000), 5))))));
     // kwd = 2 * $M_PI * acf[kindx]
-    const kwd = g.memo( g.mul( Math.PI * 2, freq ) )
+    const kwd = g.memo(g.mul(Math.PI * 2, freq));
 
     // kwa = (2/iT) * tan(kwd * iT/2) 
-    const kwa =g.memo( g.mul( 2/iT, g.tan( g.mul( kwd, iT/2 ) ) ) )
+    const kwa = g.memo(g.mul(2 / iT, g.tan(g.mul(kwd, iT / 2))));
 
     // kG  = kwa * iT/2 
-    const kg = g.memo( g.mul( kwa, iT/2 ) )
-    
-    const kG4 = g.memo( g.mul( .5, g.div( kg, g.add( 1, kg ) ) ) )
-    const kG3 = g.memo( g.mul( .5, g.div( kg, g.sub( g.add( 1, kg ), g.mul( g.mul( .5, kg ), kG4 ) ) ) ) )
-    const kG2 = g.memo( g.mul( .5, g.div( kg, g.sub( g.add( 1, kg ), g.mul( g.mul( .5, kg ), kG3 ) ) ) ) )
-    const kG1 = g.memo( g.div( kg, g.sub( g.add( 1, kg ), g.mul( kg, kG2 ) ) ) )
+    const kg = g.memo(g.mul(kwa, iT / 2));
 
-    const kGAMMA = g.memo( g.mul( g.mul( kG4, kG3 ) , g.mul( kG2, kG1 ) ) )
+    const kG4 = g.memo(g.mul(.5, g.div(kg, g.add(1, kg))));
+    const kG3 = g.memo(g.mul(.5, g.div(kg, g.sub(g.add(1, kg), g.mul(g.mul(.5, kg), kG4)))));
+    const kG2 = g.memo(g.mul(.5, g.div(kg, g.sub(g.add(1, kg), g.mul(g.mul(.5, kg), kG3)))));
+    const kG1 = g.memo(g.div(kg, g.sub(g.add(1, kg), g.mul(kg, kG2))));
 
-    const kSG1 = g.memo( g.mul( g.mul( kG4, kG3 ), kG2 ) ) 
+    const kGAMMA = g.memo(g.mul(g.mul(kG4, kG3), g.mul(kG2, kG1)));
 
-    const kSG2 = g.memo( g.mul( kG4, kG3) )  
-    const kSG3 = kG4 
-    let kSG4 = 1.0 
+    const kSG1 = g.memo(g.mul(g.mul(kG4, kG3), kG2));
+
+    const kSG2 = g.memo(g.mul(kG4, kG3));
+    const kSG3 = kG4;
+    let kSG4 = 1.0;
     // kk = 4.0*(kQ - 0.5)/(25.0 - 0.5)
-    const kalpha = g.memo( g.div( kg, g.add(1.0, kg) ) )
+    const kalpha = g.memo(g.div(kg, g.add(1.0, kg)));
 
-    const kbeta1 = g.memo( g.div( 1.0, g.sub( g.add( 1, kg ), g.mul( kg, kG2 ) ) ) )
-    const kbeta2 = g.memo( g.div( 1.0, g.sub( g.add( 1, kg ), g.mul( g.mul( .5, kg ), kG3 ) ) ) )
-    const kbeta3 = g.memo( g.div( 1.0, g.sub( g.add( 1, kg ), g.mul( g.mul( .5, kg ), kG4 ) ) ) )
-    const kbeta4 = g.memo( g.div( 1.0, g.add( 1, kg ) ) ) 
+    const kbeta1 = g.memo(g.div(1.0, g.sub(g.add(1, kg), g.mul(kg, kG2))));
+    const kbeta2 = g.memo(g.div(1.0, g.sub(g.add(1, kg), g.mul(g.mul(.5, kg), kG3))));
+    const kbeta3 = g.memo(g.div(1.0, g.sub(g.add(1, kg), g.mul(g.mul(.5, kg), kG4))));
+    const kbeta4 = g.memo(g.div(1.0, g.add(1, kg)));
 
-    const kgamma1 = g.memo( g.add( 1, g.mul( kG1, kG2 ) ) )
-    const kgamma2 = g.memo( g.add( 1, g.mul( kG2, kG3 ) ) )
-    const kgamma3 = g.memo( g.add( 1, g.mul( kG3, kG4 ) ) )
+    const kgamma1 = g.memo(g.add(1, g.mul(kG1, kG2)));
+    const kgamma2 = g.memo(g.add(1, g.mul(kG2, kG3)));
+    const kgamma3 = g.memo(g.add(1, g.mul(kG3, kG4)));
 
-    const kdelta1 = kg
-    const kdelta2 = g.memo( g.mul( 0.5, kg ) )
-    const kdelta3 = g.memo( g.mul( 0.5, kg ) )
+    const kdelta1 = kg;
+    const kdelta2 = g.memo(g.mul(0.5, kg));
+    const kdelta3 = g.memo(g.mul(0.5, kg));
 
-    const kepsilon1 = kG2
-    const kepsilon2 = kG3
-    const kepsilon3 = kG4
+    const kepsilon1 = kG2;
+    const kepsilon2 = kG3;
+    const kepsilon3 = kG4;
 
-    const klastcut = freq
+    const klastcut = freq;
 
     //;; feedback inputs 
-    const kfb4 = g.memo( g.mul( kbeta4 , kz4.out ) ) 
-    const kfb3 = g.memo( g.mul( kbeta3, g.add( kz3.out, g.mul( kfb4, kdelta3 ) ) ) )
-    const kfb2 = g.memo( g.mul( kbeta2, g.add( kz2.out, g.mul( kfb3, kdelta2 ) ) ) )
+    const kfb4 = g.memo(g.mul(kbeta4, kz4.out));
+    const kfb3 = g.memo(g.mul(kbeta3, g.add(kz3.out, g.mul(kfb4, kdelta3))));
+    const kfb2 = g.memo(g.mul(kbeta2, g.add(kz2.out, g.mul(kfb3, kdelta2))));
 
     //;; feedback process
 
-    const kfbo1 = g.memo( g.mul( kbeta1, g.add( kz1.out, g.mul( kfb2, kdelta1 ) ) ) ) 
-    const kfbo2 = g.memo( g.mul( kbeta2, g.add( kz2.out, g.mul( kfb3, kdelta2 ) ) ) ) 
-    const kfbo3 = g.memo( g.mul( kbeta3, g.add( kz3.out, g.mul( kfb4, kdelta3 ) ) ) ) 
-    const kfbo4 = kfb4
+    const kfbo1 = g.memo(g.mul(kbeta1, g.add(kz1.out, g.mul(kfb2, kdelta1))));
+    const kfbo2 = g.memo(g.mul(kbeta2, g.add(kz2.out, g.mul(kfb3, kdelta2))));
+    const kfbo3 = g.memo(g.mul(kbeta3, g.add(kz3.out, g.mul(kfb4, kdelta3))));
+    const kfbo4 = kfb4;
 
-    const kSIGMA = g.memo( 
-      g.add( 
-        g.add( 
-          g.mul( kSG1, kfbo1 ), 
-          g.mul( kSG2, kfbo2 )
-        ), 
-        g.add(
-          g.mul( kSG3, kfbo3 ), 
-          g.mul( kSG4, kfbo4 )
-        ) 
-      ) 
-    )
+    const kSIGMA = g.memo(g.add(g.add(g.mul(kSG1, kfbo1), g.mul(kSG2, kfbo2)), g.add(g.mul(kSG3, kfbo3), g.mul(kSG4, kfbo4))));
 
     //const kSIGMA = 1
     //;; non-linear processing
@@ -5135,36 +5814,36 @@ module.exports = function( Gibberish ) {
     //endif
     //
     //const kin = input 
-    let kin = isStereo === true ? g.add( input[0], input[1] ) : input//g.memo( g.mul( g.div( 1, g.tanh( saturation ) ), g.tanh( g.mul( saturation, input ) ) ) )
-    kin = g.tanh( g.mul( saturation, kin ) )
+    let kin = isStereo === true ? g.add(input[0], input[1]) : input; //g.memo( g.mul( g.div( 1, g.tanh( saturation ) ), g.tanh( g.mul( saturation, input ) ) ) )
+    kin = g.tanh(g.mul(saturation, kin));
 
-    const kun = g.div( g.sub( kin, g.mul( Q, kSIGMA ) ), g.add( 1, g.mul( Q, kGAMMA ) ) )
+    const kun = g.div(g.sub(kin, g.mul(Q, kSIGMA)), g.add(1, g.mul(Q, kGAMMA)));
     //const kun = g.div( 1, g.add( 1, g.mul( Q, kGAMMA ) ) )
-        //(kin - kk * kSIGMA) / (1.0 + kk * kGAMMA)
+    //(kin - kk * kSIGMA) / (1.0 + kk * kGAMMA)
 
     //;; 1st stage
-    let kxin = g.memo( g.add( g.add( g.mul( kun, kgamma1 ), kfb2), g.mul( kepsilon1, kfbo1 ) ) )
+    let kxin = g.memo(g.add(g.add(g.mul(kun, kgamma1), kfb2), g.mul(kepsilon1, kfbo1)));
     // (kun * kgamma1 + kfb2 + kepsilon1 * kfbo1)
-    let kv = g.memo( g.mul( g.sub( g.mul( ka1, kxin ), kz1.out ), kalpha ) )
+    let kv = g.memo(g.mul(g.sub(g.mul(ka1, kxin), kz1.out), kalpha));
     //kv = (ka1 * kxin - kz1) * kalpha 
-    let klp = g.add( kv, kz1.out )
+    let klp = g.add(kv, kz1.out);
     //klp = kv + kz1
-    kz1.in( g.add( klp, kv ) ) 
+    kz1.in(g.add(klp, kv));
     //kz1 = klp + kv
 
-        //;; 2nd stage
+    //;; 2nd stage
     //kxin = (klp * kgamma2 + kfb3 + kepsilon2 * kfbo2)
     //kv = (ka2 * kxin - kz2) * kalpha 
     //klp = kv + kz2
     //kz2 = klp + kv
 
-    kxin = g.memo( g.add( g.add( g.mul( klp, kgamma2 ), kfb3), g.mul( kepsilon2, kfbo2 ) ) )
+    kxin = g.memo(g.add(g.add(g.mul(klp, kgamma2), kfb3), g.mul(kepsilon2, kfbo2)));
     // (kun * kgamma1 + kfb2 + kepsilon1 * kfbo1)
-    kv = g.memo( g.mul( g.sub( g.mul( ka2, kxin ), kz2.out ), kalpha ) )
+    kv = g.memo(g.mul(g.sub(g.mul(ka2, kxin), kz2.out), kalpha));
     //kv = (ka1 * kxin - kz1) * kalpha 
-    klp = g.add( kv, kz2.out ) 
+    klp = g.add(kv, kz2.out);
     //klp = kv + kz1
-    kz2.in( g.add( klp, kv ) ) 
+    kz2.in(g.add(klp, kv));
     //kz1 = klp + kv
 
     //;; 3rd stage
@@ -5173,13 +5852,13 @@ module.exports = function( Gibberish ) {
     //klp = kv + kz3
     //kz3 = klp + kv
 
-    kxin = g.memo( g.add( g.add( g.mul( klp, kgamma3 ), kfb4), g.mul( kepsilon3, kfbo3 ) ) )
+    kxin = g.memo(g.add(g.add(g.mul(klp, kgamma3), kfb4), g.mul(kepsilon3, kfbo3)));
     // (kun * kgamma1 + kfb2 + kepsilon1 * kfbo1)
-    kv = g.memo( g.mul( g.sub( g.mul( ka3, kxin ), kz3.out ), kalpha ) )
+    kv = g.memo(g.mul(g.sub(g.mul(ka3, kxin), kz3.out), kalpha));
     //kv = (ka1 * kxin - kz1) * kalpha 
-    klp = g.add( kv, kz3.out )
+    klp = g.add(kv, kz3.out);
     //klp = kv + kz1
-    kz3.in( g.add( klp, kv ) )
+    kz3.in(g.add(klp, kv));
     //kz1 = klp + kv
 
     //;; 4th stage
@@ -5188,14 +5867,14 @@ module.exports = function( Gibberish ) {
     //kz4 = klp + kv
 
     // (kun * kgamma1 + kfb2 + kepsilon1 * kfbo1)
-    kv = g.memo( g.mul( g.sub( g.mul( ka4, kxin ), kz4.out ), kalpha ) )
+    kv = g.memo(g.mul(g.sub(g.mul(ka4, kxin), kz4.out), kalpha));
     //kv = (ka1 * kxin - kz1) * kalpha 
-    klp = g.add( kv, kz4.out )
+    klp = g.add(kv, kz4.out);
     //klp = kv + kz1
-    kz4.in( g.add( klp, kv ) )
+    kz4.in(g.add(klp, kv));
 
     //kz1 = klp + kv
-    if( isStereo ) {
+    if (isStereo) {
       //let polesR = g.data([ 0,0,0,0 ], 1, { meta:true }),
       //    rezzR = g.clamp( g.mul( polesR[3], rez ) ),
       //    outputR = g.sub( input[1], rezzR )         
@@ -5208,196 +5887,173 @@ module.exports = function( Gibberish ) {
       //let right = g.switch( isLowPass, polesR[3], g.sub( outputR, polesR[3] ) )
 
       //returnValue = [left, right]
-    }else{
-     // returnValue = klp
-    }
-    //returnValue = klp
-    
-    return klp
- }
+    } else {}
+      // returnValue = klp
+
+      //returnValue = klp
+
+    return klp;
+  };
 
   const DiodeZDF = inputProps => {
-    const zdf      = Object.create( filter )
-    const props    = Object.assign( {}, DiodeZDF.defaults, filter.defaults, inputProps )
-    const isStereo = props.input.isStereo 
+    const zdf = Object.create(filter);
+    const props = Object.assign({}, DiodeZDF.defaults, filter.defaults, inputProps);
+    const isStereo = props.input.isStereo;
 
-    Object.assign( zdf, props )
+    Object.assign(zdf, props);
 
-    const __out = Gibberish.factory(
-      zdf, 
-      Gibberish.genish.diodeZDF( g.in('input'), g.in('Q'), g.in('cutoff'), g.in('saturation'), isStereo ), 
-      ['filters','Filter24TB303'],
-      props
-    )
+    const __out = Gibberish.factory(zdf, Gibberish.genish.diodeZDF(g.in('input'), g.in('Q'), g.in('cutoff'), g.in('saturation'), isStereo), ['filters', 'Filter24TB303'], props);
 
-    return __out 
-  }
+    return __out;
+  };
 
   DiodeZDF.defaults = {
-    input:0,
+    input: 0,
     Q: .65,
     saturation: 1,
-    cutoff:.5 
-  }
+    cutoff: .5
+  };
 
-  return DiodeZDF
+  return DiodeZDF;
+};
 
-}
+},{"./filter.js":95,"genish.js":39}],95:[function(require,module,exports){
+let ugen = require('../ugen.js')();
 
-},{"./filter.js":89,"genish.js":37}],89:[function(require,module,exports){
-let ugen = require( '../ugen.js' )()
+let filter = Object.create(ugen);
 
-let filter = Object.create( ugen )
+Object.assign(filter, {
+  defaults: { bypass: false }
+});
 
-Object.assign( filter, {
-  defaults: { bypass:false } 
-})
+module.exports = filter;
 
-module.exports = filter
+},{"../ugen.js":148}],96:[function(require,module,exports){
+let g = require('genish.js'),
+    filter = require('./filter.js');
 
-},{"../ugen.js":141}],90:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    filter = require( './filter.js' )
+module.exports = function (Gibberish) {
 
-module.exports = function( Gibberish ) {
-
-  Gibberish.genish.filter24 = ( input, _rez, _cutoff, isLowPass, isStereo=false ) => {
+  Gibberish.genish.filter24 = (input, _rez, _cutoff, isLowPass, isStereo = false) => {
     let returnValue,
-        polesL = g.data([ 0,0,0,0 ], 1, { meta:true }),
-        peekProps = { interp:'none', mode:'simple' },
-        rez = g.memo( g.mul( _rez, 5 ) ),
-        cutoff = g.memo( g.div( _cutoff, 11025 ) ),
-        rezzL = g.clamp( g.mul( polesL[3], rez ) ),
-        outputL = g.sub( isStereo ? input[0] : input, rezzL ) 
+        polesL = g.data([0, 0, 0, 0], 1, { meta: true }),
+        peekProps = { interp: 'none', mode: 'simple' },
+        rez = g.memo(g.mul(_rez, 5)),
+        cutoff = g.memo(g.div(_cutoff, 11025)),
+        rezzL = g.clamp(g.mul(polesL[3], rez)),
+        outputL = g.sub(isStereo ? input[0] : input, rezzL);
 
-    polesL[0] = g.add( polesL[0], g.mul( g.add( g.mul(-1, polesL[0] ), outputL   ), cutoff ))
-    polesL[1] = g.add( polesL[1], g.mul( g.add( g.mul(-1, polesL[1] ), polesL[0] ), cutoff ))
-    polesL[2] = g.add( polesL[2], g.mul( g.add( g.mul(-1, polesL[2] ), polesL[1] ), cutoff ))
-    polesL[3] = g.add( polesL[3], g.mul( g.add( g.mul(-1, polesL[3] ), polesL[2] ), cutoff ))
-    
-    let left = g.switch( isLowPass, polesL[3], g.sub( outputL, polesL[3] ) )
+    polesL[0] = g.add(polesL[0], g.mul(g.add(g.mul(-1, polesL[0]), outputL), cutoff));
+    polesL[1] = g.add(polesL[1], g.mul(g.add(g.mul(-1, polesL[1]), polesL[0]), cutoff));
+    polesL[2] = g.add(polesL[2], g.mul(g.add(g.mul(-1, polesL[2]), polesL[1]), cutoff));
+    polesL[3] = g.add(polesL[3], g.mul(g.add(g.mul(-1, polesL[3]), polesL[2]), cutoff));
 
-    if( isStereo ) {
-      let polesR = g.data([ 0,0,0,0 ], 1, { meta:true }),
-          rezzR = g.clamp( g.mul( polesR[3], rez ) ),
-          outputR = g.sub( input[1], rezzR )         
+    let left = g.switch(isLowPass, polesL[3], g.sub(outputL, polesL[3]));
 
-      polesR[0] = g.add( polesR[0], g.mul( g.add( g.mul(-1, polesR[0] ), outputR   ), cutoff ))
-      polesR[1] = g.add( polesR[1], g.mul( g.add( g.mul(-1, polesR[1] ), polesR[0] ), cutoff ))
-      polesR[2] = g.add( polesR[2], g.mul( g.add( g.mul(-1, polesR[2] ), polesR[1] ), cutoff ))
-      polesR[3] = g.add( polesR[3], g.mul( g.add( g.mul(-1, polesR[3] ), polesR[2] ), cutoff ))
+    if (isStereo) {
+      let polesR = g.data([0, 0, 0, 0], 1, { meta: true }),
+          rezzR = g.clamp(g.mul(polesR[3], rez)),
+          outputR = g.sub(input[1], rezzR);
 
-      let right = g.switch( isLowPass, polesR[3], g.sub( outputR, polesR[3] ) )
+      polesR[0] = g.add(polesR[0], g.mul(g.add(g.mul(-1, polesR[0]), outputR), cutoff));
+      polesR[1] = g.add(polesR[1], g.mul(g.add(g.mul(-1, polesR[1]), polesR[0]), cutoff));
+      polesR[2] = g.add(polesR[2], g.mul(g.add(g.mul(-1, polesR[2]), polesR[1]), cutoff));
+      polesR[3] = g.add(polesR[3], g.mul(g.add(g.mul(-1, polesR[3]), polesR[2]), cutoff));
 
-      returnValue = [left, right]
-    }else{
-      returnValue = left
+      let right = g.switch(isLowPass, polesR[3], g.sub(outputR, polesR[3]));
+
+      returnValue = [left, right];
+    } else {
+      returnValue = left;
     }
 
-    return returnValue
-  }
+    return returnValue;
+  };
 
   let Filter24 = inputProps => {
-    let filter24   = Object.create( filter )
-    let props    = Object.assign( {}, Filter24.defaults, filter.defaults, inputProps )
-    let isStereo = props.input.isStereo 
+    let filter24 = Object.create(filter);
+    let props = Object.assign({}, Filter24.defaults, filter.defaults, inputProps);
+    let isStereo = props.input.isStereo;
 
-    const __out = Gibberish.factory(
-      filter24, 
-      Gibberish.genish.filter24( g.in('input'), g.in('Q'), g.in('cutoff'), g.in('isLowPass'), isStereo ), 
-      ['filters','Filter24Classic'],
-      props
-    )
+    const __out = Gibberish.factory(filter24, Gibberish.genish.filter24(g.in('input'), g.in('Q'), g.in('cutoff'), g.in('isLowPass'), isStereo), ['filters', 'Filter24Classic'], props);
 
-    return __out
-  }
-
+    return __out;
+  };
 
   Filter24.defaults = {
-    input:0,
+    input: 0,
     Q: .25,
     cutoff: 880,
-    isLowPass:1
-  }
+    isLowPass: 1
+  };
 
-  return Filter24
+  return Filter24;
+};
 
-}
+},{"./filter.js":95,"genish.js":39}],97:[function(require,module,exports){
+module.exports = function (Gibberish) {
 
-
-},{"./filter.js":89,"genish.js":37}],91:[function(require,module,exports){
-module.exports = function( Gibberish ) {
-
-  const g = Gibberish.genish
+  const g = Gibberish.genish;
 
   const filters = {
-    Filter24Classic : require( './filter24.js'  )( Gibberish ),
-    Filter24Moog    : require( './ladder.js' )( Gibberish ),
-    Filter24TB303   : require( './diodeFilterZDF.js' )( Gibberish ),
-    Filter12Biquad  : require( './biquad.js'    )( Gibberish ),
-    Filter12SVF     : require( './svf.js'       )( Gibberish ),
-    
+    Filter24Classic: require('./filter24.js')(Gibberish),
+    Filter24Moog: require('./ladder.dsp.js')(Gibberish),
+    Filter24TB303: require('./diodeFilterZDF.js')(Gibberish),
+    Filter12Biquad: require('./biquad.dsp.js')(Gibberish),
+    Filter12SVF: require('./svf.js')(Gibberish),
+
     // not for use by end-users
     genish: {
-      Comb        : require( './combfilter.js' ),
-      AllPass     : require( './allpass.js' )
+      Comb: require('./combfilter.js'),
+      AllPass: require('./allpass.js')
     },
 
-    factory( input, cutoff, saturation, _props, isStereo = false ) {
-      let filteredOsc 
+    factory(input, cutoff, saturation, _props, isStereo = false) {
+      let filteredOsc;
 
-      //if( props.filterType === 1 ) {
-      //  if( typeof props.cutoff !== 'object' && props.cutoff > 1 ) {
-      //    props.cutoff = .25
-      //  }
-      //  if( typeof props.cutoff !== 'object' && props.filterMult > .5 ) {
-      //    props.filterMult = .1
-      //  }
-      //}
-      let props = Object.assign({}, filters.defaults, _props )
+      let props = Object.assign({}, filters.defaults, _props);
 
-      switch( props.filterType ) {
+      switch (props.filterType) {
         case 1:
-          filteredOsc = g.zd24( input, g.min( g.in('Q'), .9999 ), cutoff, 0 ) // g.max(.005, g.min( cutoff, 1 ) ) )
+          filteredOsc = g.zd24(input, g.min(g.in('Q'), .9999), cutoff, 0); // g.max(.005, g.min( cutoff, 1 ) ) )
           break;
         case 2:
-          filteredOsc = g.diodeZDF( input, g.min( g.in('Q'), .9999 ), cutoff, saturation, isStereo ) 
+          filteredOsc = g.diodeZDF(input, g.min(g.in('Q'), .9999), cutoff, saturation, isStereo);
           break;
         case 3:
-          filteredOsc = g.svf( input, cutoff, g.sub( 1, g.in('Q')), props.filterMode, isStereo ) 
-          break; 
+          filteredOsc = g.svf(input, cutoff, g.sub(1, g.in('Q')), props.filterMode, isStereo, true);
+          break;
         case 4:
-          filteredOsc = g.biquad( input, cutoff,  g.in('Q'), props.filterMode, isStereo ) 
-          break; 
+          filteredOsc = g.biquad(input, cutoff, g.in('Q'), props.filterMode, isStereo);
+          break;
         case 5:
           //isLowPass = g.param( 'lowPass', 1 ),
-          filteredOsc = g.filter24( input, g.in('Q'), cutoff, props.filterMode, isStereo )
+          filteredOsc = g.filter24(input, g.in('Q'), cutoff, props.filterMode, isStereo);
           break;
         default:
           // return unfiltered signal
-          filteredOsc = input //g.filter24( oscWithGain, g.in('resonance'), cutoff, isLowPass )
+          filteredOsc = input; //g.filter24( oscWithGain, g.in('resonance'), cutoff, isLowPass )
           break;
       }
 
-      return filteredOsc
+      return filteredOsc;
     },
 
-    defaults: { filterMode: 0, filterType:0 }
-  }
+    defaults: { filterMode: 0, filterType: 0 }
+  };
 
   filters.export = target => {
-    for( let key in filters ) {
-      if( key !== 'export' && key !== 'genish' ) {
-        target[ key ] = filters[ key ]
+    for (let key in filters) {
+      if (key !== 'export' && key !== 'genish') {
+        target[key] = filters[key];
       }
     }
-  }
+  };
 
-return filters
+  return filters;
+};
 
-}
-
-},{"./allpass.js":85,"./biquad.js":86,"./combfilter.js":87,"./diodeFilterZDF.js":88,"./filter24.js":90,"./ladder.js":92,"./svf.js":93}],92:[function(require,module,exports){
+},{"./allpass.js":91,"./biquad.dsp.js":92,"./combfilter.js":93,"./diodeFilterZDF.js":94,"./filter24.js":96,"./ladder.dsp.js":98,"./svf.js":99}],98:[function(require,module,exports){
 const genish = require('genish.js'),
       filterProto = require('./filter.js');
 
@@ -5510,451 +6166,617 @@ module.exports = function (Gibberish) {
 
   return Zd24;
 };
-},{"./filter.js":89,"genish.js":37}],93:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      filter = require( './filter.js' )
 
-module.exports = function( Gibberish ) {
-  Gibberish.genish.svf = ( input, cutoff, Q, mode, isStereo ) => {
-    let d1 = g.data([0,0], 1, { meta:true }), d2 = g.data([0,0], 1, { meta:true }),
-        peekProps = { mode:'simple', interp:'none' }
+},{"./filter.js":95,"genish.js":39}],99:[function(require,module,exports){
+const g = require('genish.js'),
+      filter = require('./filter.js');
 
-    let f1 = g.memo( g.mul( 2 * Math.PI, g.div( cutoff, g.gen.samplerate ) ) )
-    let oneOverQ = g.memo( g.div( 1, Q ) )
-    let l = g.memo( g.add( d2[0], g.mul( f1, d1[0] ) ) ),
-        h = g.memo( g.sub( g.sub( isStereo ? input[0] : input, l ), g.mul( Q, d1[0] ) ) ),
-        b = g.memo( g.add( g.mul( f1, h ), d1[0] ) ),
-        n = g.memo( g.add( h, l ) )
+module.exports = function (Gibberish) {
+  Gibberish.genish.svf = (input, cutoff, Q, mode, isStereo = false, shouldConvertFreqQ = false) => {
+    let d1 = g.data([0, 0], 1, { meta: true }),
+        d2 = g.data([0, 0], 1, { meta: true }),
+        peekProps = { mode: 'simple', interp: 'none' };
 
-    d1[0] = b
-    d2[0] = l
-
-    let out = g.selector( mode, l, h, b, n )
-
-    let returnValue
-    if( isStereo ) {
-      let d12 = g.data([0,0], 1, { meta:true }), d22 = g.data([0,0], 1, { meta:true })
-      let l2 = g.memo( g.add( d22[0], g.mul( f1, d12[0] ) ) ),
-          h2 = g.memo( g.sub( g.sub( input[1], l2 ), g.mul( Q, d12[0] ) ) ),
-          b2 = g.memo( g.add( g.mul( f1, h2 ), d12[0] ) ),
-          n2 = g.memo( g.add( h2, l2 ) )
-
-      d12[0] = b2
-      d22[0] = l2
-
-      let out2 = g.selector( mode, l2, h2, b2, n2 )
-
-      returnValue = [ out, out2 ]
-    }else{
-      returnValue = out
+    if (shouldConvertFreqQ === true) {
+      //Q = g.min( g.add(.01 , __Q), 1 ) 
+      cutoff = g.mul(g.max(.005, g.min(cutoff, .995)), g.div(g.gen.samplerate, 4));
     }
 
-    return returnValue
-  }
+    let f1 = g.memo(g.mul(2 * Math.PI, g.div(cutoff, g.gen.samplerate)));
+    let oneOverQ = g.memo(g.div(1, Q));
+    let l = g.memo(g.add(d2[0], g.mul(f1, d1[0]))),
+        h = g.memo(g.sub(g.sub(isStereo ? input[0] : input, l), g.mul(Q, d1[0]))),
+        b = g.memo(g.add(g.mul(f1, h), d1[0])),
+        n = g.memo(g.add(h, l));
+
+    d1[0] = b;
+    d2[0] = l;
+
+    let out = g.selector(mode, l, h, b, n);
+
+    let returnValue;
+    if (isStereo) {
+      let d12 = g.data([0, 0], 1, { meta: true }),
+          d22 = g.data([0, 0], 1, { meta: true });
+      let l2 = g.memo(g.add(d22[0], g.mul(f1, d12[0]))),
+          h2 = g.memo(g.sub(g.sub(input[1], l2), g.mul(Q, d12[0]))),
+          b2 = g.memo(g.add(g.mul(f1, h2), d12[0])),
+          n2 = g.memo(g.add(h2, l2));
+
+      d12[0] = b2;
+      d22[0] = l2;
+
+      let out2 = g.selector(mode, l2, h2, b2, n2);
+
+      returnValue = [out, out2];
+    } else {
+      returnValue = out;
+    }
+
+    return returnValue;
+  };
 
   let SVF = inputProps => {
-    const svf = Object.create( filter )
-    const props = Object.assign( {}, SVF.defaults, filter.defaults, inputProps ) 
+    const svf = Object.create(filter);
+    const props = Object.assign({}, SVF.defaults, filter.defaults, inputProps);
 
-    const isStereo = props.input.isStereo
-    
+    const isStereo = props.input.isStereo;
+
     // XXX NEEDS REFACTORING
-    const __out = Gibberish.factory( 
-      svf,
-      Gibberish.genish.svf( g.in('input'), g.mul( g.in('cutoff'), g.gen.samplerate / 5 ), g.sub( 1, g.in('Q') ), g.in('mode'), isStereo ), 
-      ['filters','Filter12SVF'], 
-      props
-    )
+    const __out = Gibberish.factory(svf,
+    //Gibberish.genish.svf( g.in('input'), g.mul( g.in('cutoff'), g.gen.samplerate / 5 ), g.sub( 1, g.in('Q') ), g.in('mode'), isStereo ), 
+    Gibberish.genish.svf(g.in('input'), g.mul(g.in('cutoff'), g.gen.samplerate / 5), g.sub(1, g.in('Q')), g.in('mode'), isStereo, true), ['filters', 'Filter12SVF'], props);
 
-    return __out
-  }
-
+    return __out;
+  };
 
   SVF.defaults = {
-    input:0,
+    input: 0,
     Q: .65,
-    cutoff:440,
-    mode:0
-  }
+    cutoff: .25,
+    mode: 0
+  };
 
-  return SVF
+  return SVF;
+};
 
-}
+},{"./filter.js":95,"genish.js":39}],100:[function(require,module,exports){
+let g = require('genish.js'),
+    effect = require('./effect.js');
 
+module.exports = function (Gibberish) {
 
-},{"./filter.js":89,"genish.js":37}],94:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    effect = require( './effect.js' )
+  let BitCrusher = inputProps => {
+    const props = Object.assign({ bitCrusherLength: 44100 }, BitCrusher.defaults, effect.defaults, inputProps),
+          bitCrusher = Object.create(effect);
 
-module.exports = function( Gibberish ) {
- 
-let BitCrusher = inputProps => {
-  const  props = Object.assign( { bitCrusherLength: 44100 }, BitCrusher.defaults, effect.defaults, inputProps ),
-         bitCrusher = Object.create( effect )
+    let out;
 
-  let out
+    bitCrusher.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+      } else {
+        isStereo = out.input.isStereo;
+        out.isStereo = isStereo;
+      }
 
-  bitCrusher.__createGraph = function() {
-    let isStereo = false
-    if( out === undefined ) {
-      isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false 
-    }else{
-      isStereo = out.input.isStereo
-      out.isStereo = isStereo
-    }
+      let input = g.in('input'),
+          inputGain = g.in('inputGain'),
+          bitDepth = g.in('bitDepth'),
+          sampleRate = g.in('sampleRate'),
+          leftInput = isStereo ? input[0] : input,
+          rightInput = isStereo ? input[1] : null;
 
-    let input = g.in( 'input' ),
-        inputGain = g.in( 'inputGain' ),
-        bitDepth = g.in( 'bitDepth' ),
-        sampleRate = g.in( 'sampleRate' ),
-        leftInput = isStereo ? input[ 0 ] : input,
-        rightInput = isStereo ? input[ 1 ] : null
-    
-    let storeL = g.history(0)
-    let sampleReduxCounter = g.counter( sampleRate, 0, 1 )
+      let storeL = g.history(0);
+      let sampleReduxCounter = g.counter(sampleRate, 0, 1);
 
-    let bitMult = g.pow( g.mul( bitDepth, 16 ), 2 )
-    let crushedL = g.div( g.floor( g.mul( g.mul( leftInput, inputGain ), bitMult ) ), bitMult )
+      let bitMult = g.pow(g.mul(bitDepth, 16), 2);
+      let crushedL = g.div(g.floor(g.mul(g.mul(leftInput, inputGain), bitMult)), bitMult);
 
-    let outL = g.switch(
-      sampleReduxCounter.wrap,
-      crushedL,
-      storeL.out
-    )
+      let outL = g.switch(sampleReduxCounter.wrap, crushedL, storeL.out);
 
-    if( isStereo ) {
-      let storeR = g.history(0)
-      let crushedR = g.div( g.floor( g.mul( g.mul( rightInput, inputGain ), bitMult ) ), bitMult )
+      if (isStereo) {
+        let storeR = g.history(0);
+        let crushedR = g.div(g.floor(g.mul(g.mul(rightInput, inputGain), bitMult)), bitMult);
 
-      let outR = g.switch( 
-        sampleReduxCounter.wrap,
-        crushedR,
-        storeL.out
-      )
+        let outR = g.switch(sampleReduxCounter.wrap, crushedR, storeL.out);
 
-      bitCrusher.graph = [ outL, outR ]
-    }else{
-      bitCrusher.graph = outL
-    }
-  }
+        bitCrusher.graph = [outL, outR];
+      } else {
+        bitCrusher.graph = outL;
+      }
+    };
 
-  bitCrusher.__createGraph()
-  bitCrusher.__requiresRecompilation = [ 'input' ]
+    bitCrusher.__createGraph();
+    bitCrusher.__requiresRecompilation = ['input'];
 
-  out = Gibberish.factory( 
-    bitCrusher,
-    bitCrusher.graph,
-    ['fx','bitCrusher'], 
-    props 
-  )
-  return out 
-}
+    out = Gibberish.factory(bitCrusher, bitCrusher.graph, ['fx', 'bitCrusher'], props);
+    return out;
+  };
 
-BitCrusher.defaults = {
-  input:0,
-  bitDepth:.5,
-  sampleRate: .5
-}
+  BitCrusher.defaults = {
+    input: 0,
+    bitDepth: .5,
+    sampleRate: .5
+  };
 
-return BitCrusher
+  return BitCrusher;
+};
 
-}
+},{"./effect.js":106,"genish.js":39}],101:[function(require,module,exports){
+let g = require('genish.js'),
+    effect = require('./effect.js');
 
-},{"./effect.js":99,"genish.js":37}],95:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    effect = require( './effect.js' )
-
-module.exports = function( Gibberish ) {
-  let proto = Object.create( effect )
+module.exports = function (Gibberish) {
+  let proto = Object.create(effect);
 
   let Shuffler = inputProps => {
-    let bufferShuffler = Object.create( proto ),
-        bufferSize = 88200
+    let bufferShuffler = Object.create(proto),
+        bufferSize = 88200;
 
-    const props = Object.assign( {}, Shuffler.defaults, effect.defaults, inputProps )
-    
-    let out
-    bufferShuffler.__createGraph = function() {
-      let isStereo = false
-      if( out === undefined ) {
-        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : true 
-      }else{
-        isStereo = out.input.isStereo
+    const props = Object.assign({}, Shuffler.defaults, effect.defaults, inputProps);
+
+    let out;
+    bufferShuffler.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : true;
+      } else {
+        isStereo = out.input.isStereo;
         //out.isStereo = isStereo
-      }      
-      
-      const phase = g.accum( 1,0,{ shouldWrap: false })
+      }
 
-      const input = g.in( 'input' ),
-            inputGain = g.in( 'inputGain' ),
-            __leftInput = isStereo ? input[ 0 ] : input,
-            __rightInput = isStereo ? input[ 1 ] : null,
-            leftInput = g.mul( __leftInput, inputGain ),
-            rightInput = g.mul( __rightInput, inputGain ),
-            rateOfShuffling = g.in( 'rate' ),
-            chanceOfShuffling = g.in( 'chance' ),
-            reverseChance = g.in( 'reverseChance' ),
-            repitchChance = g.in( 'repitchChance' ),
-            repitchMin = g.in( 'repitchMin' ),
-            repitchMax = g.in( 'repitchMax' )
+      const phase = g.accum(1, 0, { shouldWrap: false });
 
-      let pitchMemory = g.history(1)
+      const input = g.in('input'),
+            inputGain = g.in('inputGain'),
+            __leftInput = isStereo ? input[0] : input,
+            __rightInput = isStereo ? input[1] : null,
+            leftInput = g.mul(__leftInput, inputGain),
+            rightInput = g.mul(__rightInput, inputGain),
+            rateOfShuffling = g.in('rate'),
+            chanceOfShuffling = g.in('chance'),
+            reverseChance = g.in('reverseChance'),
+            repitchChance = g.in('repitchChance'),
+            repitchMin = g.in('repitchMin'),
+            repitchMax = g.in('repitchMax');
 
-      let shouldShuffleCheck = g.eq( g.mod( phase, rateOfShuffling ), 0 )
-      let isShuffling = g.memo( g.sah( g.lt( g.noise(), chanceOfShuffling ), shouldShuffleCheck, 0 ) ) 
+      let pitchMemory = g.history(1);
+
+      let shouldShuffleCheck = g.eq(g.mod(phase, rateOfShuffling), 0);
+      let isShuffling = g.memo(g.sah(g.lt(g.noise(), chanceOfShuffling), shouldShuffleCheck, 0));
 
       // if we are shuffling and on a repeat boundary...
-      let shuffleChanged = g.memo( g.and( shouldShuffleCheck, isShuffling ) )
-      let shouldReverse = g.lt( g.noise(), reverseChance ),
-          reverseMod = g.switch( shouldReverse, -1, 1 )
+      let shuffleChanged = g.memo(g.and(shouldShuffleCheck, isShuffling));
+      let shouldReverse = g.lt(g.noise(), reverseChance),
+          reverseMod = g.switch(shouldReverse, -1, 1);
 
-      let pitch = g.ifelse( 
-        g.and( shuffleChanged, g.lt( g.noise(), repitchChance ) ),
-        g.memo( g.mul( g.add( repitchMin, g.mul( g.sub( repitchMax, repitchMin ), g.noise() ) ), reverseMod ) ),
-        reverseMod
-      )
-      
+      let pitch = g.ifelse(g.and(shuffleChanged, g.lt(g.noise(), repitchChance)), g.memo(g.mul(g.add(repitchMin, g.mul(g.sub(repitchMax, repitchMin), g.noise())), reverseMod)), reverseMod);
+
       // only switch pitches on repeat boundaries
-      pitchMemory.in( g.switch( shuffleChanged, pitch, pitchMemory.out ) )
+      pitchMemory.in(g.switch(shuffleChanged, pitch, pitchMemory.out));
 
-      let fadeLength = g.memo( g.div( rateOfShuffling, 100 ) ),
-          fadeIncr = g.memo( g.div( 1, fadeLength ) )
+      let fadeLength = g.memo(g.div(rateOfShuffling, 100)),
+          fadeIncr = g.memo(g.div(1, fadeLength));
 
-      const bufferL = g.data( bufferSize )
-      const bufferR = isStereo ? g.data( bufferSize ) : null
-      let readPhase = g.accum( pitchMemory.out, 0, { shouldWrap:false }) 
-      let stutter = g.wrap( g.sub( g.mod( readPhase, bufferSize ), 22050 ), 0, bufferSize )
+      const bufferL = g.data(bufferSize);
+      const bufferR = isStereo ? g.data(bufferSize) : null;
+      let readPhase = g.accum(pitchMemory.out, 0, { shouldWrap: false });
+      let stutter = g.wrap(g.sub(g.mod(readPhase, bufferSize), 22050), 0, bufferSize);
 
-      let normalSample = g.peek( bufferL, g.accum( 1, 0, { max:88200 }), { mode:'simple' })
+      let normalSample = g.peek(bufferL, g.accum(1, 0, { max: 88200 }), { mode: 'simple' });
 
-      let stutterSamplePhase = g.switch( isShuffling, stutter, g.mod( readPhase, bufferSize ) )
-      let stutterSample = g.memo( g.peek( 
-        bufferL, 
-        stutterSamplePhase,
-        { mode:'samples' }
-      ) )
-      
-      let stutterShouldFadeIn = g.and( shuffleChanged, isShuffling )
-      let stutterPhase = g.accum( 1, shuffleChanged, { shouldWrap: false })
+      let stutterSamplePhase = g.switch(isShuffling, stutter, g.mod(readPhase, bufferSize));
+      let stutterSample = g.memo(g.peek(bufferL, stutterSamplePhase, { mode: 'samples' }));
 
-      let fadeInAmount = g.memo( g.div( stutterPhase, fadeLength ) )
-      let fadeOutAmount = g.div( g.sub( rateOfShuffling, stutterPhase ), g.sub( rateOfShuffling, fadeLength ) )
-      
-      let fadedStutter = g.ifelse(
-        g.lt( stutterPhase, fadeLength ),
-        g.memo( g.mul( g.switch( g.lt( fadeInAmount, 1 ), fadeInAmount, 1 ), stutterSample ) ),
-        g.gt( stutterPhase, g.sub( rateOfShuffling, fadeLength ) ),
-        g.memo( g.mul( g.gtp( fadeOutAmount, 0 ), stutterSample ) ),
-        stutterSample
-      )
-      
-      let outputL = g.mix( normalSample, fadedStutter, isShuffling ) 
+      let stutterShouldFadeIn = g.and(shuffleChanged, isShuffling);
+      let stutterPhase = g.accum(1, shuffleChanged, { shouldWrap: false });
 
-      let pokeL = g.poke( bufferL, leftInput, g.mod( g.add( phase, 44100 ), 88200 ) )
+      let fadeInAmount = g.memo(g.div(stutterPhase, fadeLength));
+      let fadeOutAmount = g.div(g.sub(rateOfShuffling, stutterPhase), g.sub(rateOfShuffling, fadeLength));
 
-      let panner = g.pan( outputL, outputL, g.in( 'pan' ) )
-      
-      bufferShuffler.graph = [ panner.left, panner.right ]
-    }
+      let fadedStutter = g.ifelse(g.lt(stutterPhase, fadeLength), g.memo(g.mul(g.switch(g.lt(fadeInAmount, 1), fadeInAmount, 1), stutterSample)), g.gt(stutterPhase, g.sub(rateOfShuffling, fadeLength)), g.memo(g.mul(g.gtp(fadeOutAmount, 0), stutterSample)), stutterSample);
 
-    bufferShuffler.__createGraph()
-    bufferShuffler.__requiresRecompilation = [ 'input' ]
-    
-    out = Gibberish.factory( 
-      bufferShuffler,
-      bufferShuffler.graph,
-      ['fx','shuffler'], 
-      props 
-    )
+      let outputL = g.mix(normalSample, fadedStutter, isShuffling);
 
-    return out 
-  }
-  
+      let pokeL = g.poke(bufferL, leftInput, g.mod(g.add(phase, 44100), 88200));
+
+      let panner = g.pan(outputL, outputL, g.in('pan'));
+
+      bufferShuffler.graph = [panner.left, panner.right];
+    };
+
+    bufferShuffler.__createGraph();
+    bufferShuffler.__requiresRecompilation = ['input'];
+
+    out = Gibberish.factory(bufferShuffler, bufferShuffler.graph, ['fx', 'shuffler'], props);
+
+    return out;
+  };
+
   Shuffler.defaults = {
-    input:0,
-    rate:22050,
-    chance:.25,
-    reverseChance:.5,
-    repitchChance:.5,
-    repitchMin:.5,
-    repitchMax:2,
-    pan:.5,
-    mix:.5
+    input: 0,
+    rate: 22050,
+    chance: .25,
+    reverseChance: .5,
+    repitchChance: .5,
+    repitchMin: .5,
+    repitchMax: 2,
+    pan: .5,
+    mix: .5
+  };
+
+  return Shuffler;
+};
+
+},{"./effect.js":106,"genish.js":39}],102:[function(require,module,exports){
+const g = require('genish.js'),
+      effect = require('./effect.js');
+
+module.exports = function (Gibberish) {
+
+      let __Chorus = inputProps => {
+            const props = Object.assign({}, __Chorus.defaults, effect.defaults, inputProps);
+            let out;
+
+            const chorus = Object.create(effect);
+
+            chorus.__createGraph = function () {
+                  const input = g.in('input'),
+                        inputGain = g.in('inputGain'),
+                        freq1 = g.in('slowFrequency'),
+                        freq2 = g.in('fastFrequency'),
+                        amp1 = g.in('slowGain'),
+                        amp2 = g.in('fastGain');
+
+                  let isStereo = false;
+                  if (out === undefined) {
+                        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+                  } else {
+                        isStereo = out.input.isStereo;
+                        out.isStereo = isStereo;
+                  }
+
+                  const leftInput = isStereo ? g.mul(input[0], inputGain) : g.mul(input, inputGain);
+
+                  const win0 = g.env('inversewelch', 1024),
+                        win120 = g.env('inversewelch', 1024, 0, .333),
+                        win240 = g.env('inversewelch', 1024, 0, .666);
+
+                  const slowPhasor = g.phasor(freq1, 0, { min: 0 }),
+                        slowPeek1 = g.mul(g.peek(win0, slowPhasor), amp1),
+                        slowPeek2 = g.mul(g.peek(win120, slowPhasor), amp1),
+                        slowPeek3 = g.mul(g.peek(win240, slowPhasor), amp1);
+
+                  const fastPhasor = g.phasor(freq2, 0, { min: 0 }),
+                        fastPeek1 = g.mul(g.peek(win0, fastPhasor), amp2),
+                        fastPeek2 = g.mul(g.peek(win120, fastPhasor), amp2),
+                        fastPeek3 = g.mul(g.peek(win240, fastPhasor), amp2);
+
+                  let sampleRate = Gibberish.ctx.sampleRate;
+
+                  const ms = sampleRate / 1000;
+                  const maxDelayTime = 1000 * ms;
+
+                  //console.log( 'sr:', sampleRate, 'ms:', ms, 'maxDelayTime:', maxDelayTime )
+
+                  const time1 = g.mul(g.add(slowPeek1, fastPeek1, 5), ms),
+                        time2 = g.mul(g.add(slowPeek2, fastPeek2, 5), ms),
+                        time3 = g.mul(g.add(slowPeek3, fastPeek3, 5), ms);
+
+                  const delay1L = g.delay(leftInput, time1, { size: maxDelayTime }),
+                        delay2L = g.delay(leftInput, time2, { size: maxDelayTime }),
+                        delay3L = g.delay(leftInput, time3, { size: maxDelayTime });
+
+                  const leftOutput = g.add(delay1L, delay2L, delay3L);
+                  if (isStereo) {
+                        const rightInput = g.mul(input[1], inputGain);
+                        const delay1R = g.delay(rightInput, time1, { size: maxDelayTime }),
+                              delay2R = g.delay(rightInput, time2, { size: maxDelayTime }),
+                              delay3R = g.delay(rightInput, time3, { size: maxDelayTime });
+
+                        // flip a couple delay lines for stereo effect?
+                        const rightOutput = g.add(delay1R, delay2L, delay3R);
+                        chorus.graph = [g.add(delay1L, delay2R, delay3L), rightOutput];
+                  } else {
+                        chorus.graph = leftOutput;
+                  }
+            };
+
+            chorus.__createGraph();
+            chorus.__requiresRecompilation = ['input'];
+
+            out = Gibberish.factory(chorus, chorus.graph, ['fx', 'chorus'], props);
+
+            return out;
+      };
+
+      __Chorus.defaults = {
+            input: 0,
+            slowFrequency: .18,
+            slowGain: 3,
+            fastFrequency: 6,
+            fastGain: 1,
+            inputGain: 1
+      };
+
+      return __Chorus;
+};
+
+},{"./effect.js":106,"genish.js":39}],103:[function(require,module,exports){
+const g = require('genish.js'),
+      effect = require('./effect.js');
+
+const genish = g;
+
+const AllPassChain = (in1, in2, in3, magic_coeff) => {
+  "use jsdsp";
+
+  /* in1 = predelay_out */
+  /* in2 = indiffusion1 */
+  /* in3 = indiffusion2 */
+
+  const sub1 = g.history(0); //in1 - 0
+  const d1 = g.delay(sub1.out, 142 * 1.481805046873425);
+  //sub1.inputs[1] = d1 * in2
+  sub1.in(genish.sub(in1, genish.mul(d1, in2)));
+  const ap1_out = genish.add(genish.mul(sub1.out, in2), d1);
+
+  const sub2 = g.history(0); //ap1_out - 0
+  const d2 = g.delay(sub2.out, 107 * 1.481805046873425);
+  //sub2.inputs[1] = d2 * in2
+  sub2.in(genish.sub(ap1_out, genish.mul(d2, in2)));
+  const ap2_out = genish.add(genish.mul(sub2.out, in2), d2);
+
+  const sub3 = g.history(0); //ap2_out - 0
+  const d3 = g.delay(sub3.out, 379 * 1.481805046873425);
+  //sub3.inputs[1] = d3 * in3
+  sub3.in(genish.sub(ap2_out, genish.mul(d3, in3)));
+  const ap3_out = genish.add(genish.mul(sub3.out, in3), d3);
+
+  const sub4 = g.history(0); //ap3_out - 0
+  const d4 = g.delay(sub4.out, 277 * 1.481805046873425);
+  //sub4.inputs[1] = d4 * in3
+  sub4.in(genish.sub(ap3_out, genish.mul(d4, in3)));
+  const ap4_out = genish.add(genish.mul(sub4.out, in3), d4);
+
+  return ap4_out;
+};
+
+/*const tank_outs = Tank( ap_out, decaydiffusion1, decaydiffusion2, damping, decay )*/
+const Tank = function (in1, in2, in3, in4, in5, magic_coeff) {
+
+  // 1012, 1361
+  const leftDelaySize = genish.add(16, Math.round(672 * 1.481805046873425));
+  const rightDelaySize = genish.add(16, Math.round(908 * 1.481805046873425));
+  const outs = [[], [], [], [], []];
+  {
+    "use jsdsp";
+    console.log(leftDelaySize, rightDelaySize);
+
+    /* LEFT CHANNEL */
+    const leftStart = genish.add(in1, 0);
+    const delayInput = g.history(0); //leftStart + 0
+    const delay1 = g.delay(delayInput.out, [genish.add(genish.mul(g.cycle(.1), 16), 672 * 1.481805046873425)], { size: leftDelaySize });
+    //delayInput.inputs[1] = delay1 * in2
+    delayInput.in(genish.add(leftStart, genish.mul(delay1, in2)));
+    const delayOut = genish.sub(delay1, genish.mul(delayInput, in2));
+
+    const delay2 = g.delay(delayOut, [4453 * 1.481805046873425, 353 * 1.481805046873425, 3627 * 1.481805046873425, 1190 * 1.481805046873425]);
+    outs[3].push(genish.add(delay2.outputs[1], delay2.outputs[2]));
+    outs[2].push(delay2.outputs[3]);
+
+    const mz = g.history(0);
+    const ml = g.mix(delay2, mz.out, in4);
+    mz.in(ml);
+
+    const mout = genish.mul(ml, in5);
+
+    const s1 = genish.sub(mout, 0);
+    const delay3 = g.delay(s1, [1800 * 1.481805046873425, 187 * 1.481805046873425, 1228 * 1.481805046873425]);
+    outs[2].push(delay3.outputs[1]);
+    outs[4].push(delay3.outputs[2]);
+    s1.inputs[1] = genish.mul(delay3, in3);
+    const m2 = genish.mul(s1, in3);
+    const dl2_out = genish.add(delay3, m2);
+
+    const delay4 = g.delay(dl2_out, [3720 * 1.481805046873425, 1066 * 1.481805046873425, 2673 * 1.481805046873425]);
+    outs[2].push(delay4.outputs[1]);
+    outs[3].push(delay4.outputs[2]);
+
+    /* RIGHT CHANNEL */
+    const rightStart = genish.add(genish.mul(delay4, in5), in1);
+    const delayInputR = genish.add(rightStart, 0);
+    const delay1R = g.delay(delayInputR, genish.add(genish.mul(g.cycle(.07), 16), 908 * 1.481805046873425), { size: rightDelaySize });
+    delayInputR.inputs[1] = genish.mul(delay1R, in2);
+    const delayOutR = genish.sub(delay1R, genish.mul(delayInputR, in2));
+
+    const delay2R = g.delay(delayOutR, [4217 * 1.481805046873425, 266 * 1.481805046873425, 2974 * 1.481805046873425, 2111 * 1.481805046873425]);
+    outs[1].push(genish.add(delay2R.outputs[1], delay2R.outputs[2]));
+    outs[4].push(delay2R.outputs[3]);
+
+    const mzR = g.history(0);
+    const mlR = g.mix(delay2R, mzR.out, in4);
+    mzR.in(mlR);
+
+    const moutR = genish.mul(mlR, in5);
+
+    const s1R = genish.sub(moutR, 0);
+    const delay3R = g.delay(s1R, [2656 * 1.481805046873425, 335 * 1.481805046873425, 1913 * 1.481805046873425]);
+    outs[4].push(delay3R.outputs[1]);
+    outs[2].push(delay3R.outputs[2]);
+    s1R.inputs[1] = genish.mul(delay3R, in3);
+    const m2R = genish.mul(s1R, in3);
+    const dl2_outR = genish.add(delay3R, m2R);
+
+    const delay4R = g.delay(dl2_outR, [3163 * 1.481805046873425, 121 * 1.481805046873425, 1996 * 1.481805046873425]);
+    outs[4].push(delay4.outputs[1]);
+    outs[1].push(delay4.outputs[2]);
+
+    leftStart.inputs[1] = genish.mul(delay4R, in5);
+
+    outs[1] = g.add(...outs[1]);
+    outs[2] = g.add(...outs[2]);
+    outs[3] = g.add(...outs[3]);
+    outs[4] = g.add(...outs[4]);
   }
+  return outs;
+};
 
-  return Shuffler 
-}
+module.exports = function (Gibberish) {
 
-},{"./effect.js":99,"genish.js":37}],96:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      effect = require( './effect.js' )
-  
-module.exports = function( Gibberish ) {
- 
-let __Chorus = inputProps => {
-  const props = Object.assign({}, __Chorus.defaults, effect.defaults, inputProps )
-  let out
-  
-  const chorus = Object.create( effect )
+  const Reverb = inputProps => {
+    const props = Object.assign({}, Reverb.defaults, effect.defaults, inputProps),
+          reverb = Object.create(effect);
 
-  chorus.__createGraph = function() {
-    const input = g.in('input'),
-          inputGain = g.in( 'inputGain' ),
-          freq1 = g.in('slowFrequency'),
-          freq2 = g.in('fastFrequency'),
-          amp1  = g.in('slowGain'),
-          amp2  = g.in('fastGain')
+    let out;
 
-    let isStereo = false
-    if( out === undefined ) {
-      isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false 
-    }else{
-      isStereo = out.input.isStereo
-      out.isStereo = isStereo
-    }
+    reverb.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+      } else {
+        isStereo = out.input.isStereo;
+        out.isStereo = isStereo;
+      }
 
-    const leftInput = isStereo ? g.mul( input[0], inputGain ) : g.mul( input, inputGain )
+      const input = g.in('input'),
+            inputGain = g.in('inputGain'),
+            damping = g.in('damping'),
+            drywet = g.in('drywet'),
+            decay = g.in('decay'),
+            predelay = g.in('predelay'),
+            inbandwidth = g.in('inbandwidth'),
+            decaydiffusion1 = g.in('decaydiffusion1'),
+            decaydiffusion2 = g.in('decaydiffusion2'),
+            indiffusion1 = g.in('indiffusion1'),
+            indiffusion2 = g.in('indiffusion2');
 
-    const win0   = g.env( 'inversewelch', 1024 ),
-          win120 = g.env( 'inversewelch', 1024, 0, .333 ),
-          win240 = g.env( 'inversewelch', 1024, 0, .666 )
-    
-    const slowPhasor = g.phasor( freq1, 0, { min:0 }),
-          slowPeek1  = g.mul( g.peek( win0,   slowPhasor ), amp1 ),
-          slowPeek2  = g.mul( g.peek( win120, slowPhasor ), amp1 ),
-          slowPeek3  = g.mul( g.peek( win240, slowPhasor ), amp1 )
-    
-    const fastPhasor = g.phasor( freq2, 0, { min:0 }),
-          fastPeek1  = g.mul( g.peek( win0,   fastPhasor ), amp2 ),
-          fastPeek2  = g.mul( g.peek( win120, fastPhasor ), amp2 ),
-          fastPeek3  = g.mul( g.peek( win240, fastPhasor ), amp2 )
+      // adjust from original equation coefficients at 29761 hz
+      const coeff = genish.div(g.gen.samplerate, 29761);
 
+      const summedInput = isStereo === true ? g.mul(g.add(input[0], input[1]), inputGain) : g.mul(input, inputGain);
+      {
+        'use jsdsp';
 
-    let sampleRate = Gibberish.ctx.sampleRate
-     
-    const ms = sampleRate / 1000 
-    const maxDelayTime = 1000 * ms
+        // calculcate predelay
+        const predelay_samps = g.mstosamps(predelay);
+        const predelay_delay = g.delay(summedInput, predelay_samps, { size: 4410 });
+        const z_pd = g.history(0);
+        const mix1 = g.mix(z_pd.out, predelay_delay, inbandwidth);
+        z_pd.in(mix1);
 
-    //console.log( 'sr:', sampleRate, 'ms:', ms, 'maxDelayTime:', maxDelayTime )
+        const predelay_out = mix1;
 
-    const time1 =  g.mul( g.add( slowPeek1, fastPeek1, 5 ), ms ),
-          time2 =  g.mul( g.add( slowPeek2, fastPeek2, 5 ), ms ),
-          time3 =  g.mul( g.add( slowPeek3, fastPeek3, 5 ), ms )
+        // run input + predelay through all-pass chain
+        const ap_out = AllPassChain(predelay_out, indiffusion1, indiffusion2, coeff);
 
-    const delay1L = g.delay( leftInput, time1, { size:maxDelayTime }),
-          delay2L = g.delay( leftInput, time2, { size:maxDelayTime }),
-          delay3L = g.delay( leftInput, time3, { size:maxDelayTime })
+        // run filtered signal into "tank" model
+        const tank_outs = Tank(ap_out, decaydiffusion1, decaydiffusion2, damping, decay, coeff);
 
-    
-    const leftOutput = g.add( delay1L, delay2L, delay3L )
-    if( isStereo ) {
-      const rightInput = g.mul( input[1], inputGain )
-      const delay1R = g.delay(rightInput, time1, { size:maxDelayTime }),
-            delay2R = g.delay(rightInput, time2, { size:maxDelayTime }),
-            delay3R = g.delay(rightInput, time3, { size:maxDelayTime })
+        const leftWet = genish.mul(genish.sub(tank_outs[1], tank_outs[2]), .6);
+        const rightWet = genish.mul(genish.sub(tank_outs[3], tank_outs[4]), .6);
 
-      // flip a couple delay lines for stereo effect?
-      const rightOutput = g.add( delay1R, delay2L, delay3R )
-      chorus.graph = [ g.add( delay1L, delay2R, delay3L), rightOutput ]
-    }else{
-      chorus.graph = leftOutput
-    }
-  }
+        // mix wet and dry signal for final output
+        const left = g.mix(isStereo ? g.mul(input[0], inputGain) : g.mul(input, inputGain), leftWet, drywet);
+        const right = g.mix(isStereo ? g.mul(input[1], inputGain) : g.mul(input, inputGain), rightWet, drywet);
 
-  chorus.__createGraph()
-  chorus.__requiresRecompilation = [ 'input' ]
+        reverb.graph = [left, right];
+      }
+    };
 
-  out = Gibberish.factory( chorus, chorus.graph, ['fx','chorus'], props )
+    reverb.__createGraph();
+    reverb.__requiresRecompilation = ['input'];
 
-  return out 
-}
+    out = Gibberish.factory(reverb, reverb.graph, ['fx', 'plate'], props);
 
-__Chorus.defaults = {
-  input:0,
-  slowFrequency: .18,
-  slowGain:3,
-  fastFrequency:6,
-  fastGain:1,
-  inputGain:1
-}
+    return out;
+  };
 
-return __Chorus
+  Reverb.defaults = {
+    input: 0,
+    damping: .5,
+    drywet: .5,
+    decay: .5,
+    predelay: 10,
+    inbandwidth: .5,
+    indiffusion1: .75,
+    indiffusion2: .625,
+    decaydiffusion1: .7,
+    decaydiffusion2: .5
+  };
 
-}
+  return Reverb;
+};
 
-},{"./effect.js":99,"genish.js":37}],97:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    effect = require( './effect.js' )
+},{"./effect.js":106,"genish.js":39}],104:[function(require,module,exports){
+let g = require('genish.js'),
+    effect = require('./effect.js');
 
-module.exports = function( Gibberish ) {
- 
-let Delay = inputProps => {
-  let props = Object.assign( { delayLength: 88200 }, effect.defaults, Delay.defaults, inputProps ),
-      delay = Object.create( effect )
+module.exports = function (Gibberish) {
 
-  let out
-  delay.__createGraph = function() {
-    let isStereo = false
-    if( out === undefined ) {
-      isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false 
-    }else{
-      isStereo = out.input.isStereo
-      out.isStereo = isStereo
-    }    
+  let Delay = inputProps => {
+    let props = Object.assign({ delayLength: 88200 }, effect.defaults, Delay.defaults, inputProps),
+        delay = Object.create(effect);
 
-    const input      = g.in( 'input' ),
-          inputGain  = g.in( 'inputGain' ),
-          delayTime  = g.in( 'time' ),
-          wetdry     = g.in( 'wetdry' ),
-          leftInput  = isStereo ? g.mul( input[ 0 ], inputGain ) : g.mul( input, inputGain ),
-          rightInput = isStereo ? g.mul( input[ 1 ], inputGain ) : null
-      
-    const feedback = g.in( 'feedback' )
+    let out;
+    delay.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+      } else {
+        isStereo = out.input.isStereo;
+        out.isStereo = isStereo;
+      }
 
-    // left channel
-    const feedbackHistoryL = g.history()
-    const echoL = g.delay( g.add( leftInput, g.mul( feedbackHistoryL.out, feedback ) ), delayTime, { size:props.delayLength })
-    feedbackHistoryL.in( echoL )
-    const left = g.mix( leftInput, echoL, wetdry )
+      const input = g.in('input'),
+            inputGain = g.in('inputGain'),
+            delayTime = g.in('time'),
+            wetdry = g.in('wetdry'),
+            leftInput = isStereo ? g.mul(input[0], inputGain) : g.mul(input, inputGain),
+            rightInput = isStereo ? g.mul(input[1], inputGain) : null;
 
-    if( isStereo ) {
-      // right channel
-      const feedbackHistoryR = g.history()
-      const echoR = g.delay( g.add( rightInput, g.mul( feedbackHistoryR.out, feedback ) ), delayTime, { size:props.delayLength })
-      feedbackHistoryR.in( echoR )
-      const right = g.mix( rightInput, echoR, wetdry )
+      const feedback = g.in('feedback');
 
-      delay.graph = [ left, right ]
-    }else{
-      delay.graph = left 
-    }
-  }
+      // left channel
+      const feedbackHistoryL = g.history();
+      const echoL = g.delay(g.add(leftInput, g.mul(feedbackHistoryL.out, feedback)), delayTime, { size: props.delayLength });
+      feedbackHistoryL.in(echoL);
+      const left = g.mix(leftInput, echoL, wetdry);
 
-  delay.__createGraph()
-  delay.__requiresRecompilation = [ 'input' ]
-  
-  out = Gibberish.factory( 
-    delay,
-    delay.graph, 
-    ['fx','delay'], 
-    props 
-  )
+      if (isStereo) {
+        // right channel
+        const feedbackHistoryR = g.history();
+        const echoR = g.delay(g.add(rightInput, g.mul(feedbackHistoryR.out, feedback)), delayTime, { size: props.delayLength });
+        feedbackHistoryR.in(echoR);
+        const right = g.mix(rightInput, echoR, wetdry);
 
-  return out
-}
+        delay.graph = [left, right];
+      } else {
+        delay.graph = left;
+      }
+    };
 
-Delay.defaults = {
-  input:0,
-  feedback:.5,
-  time: 11025,
-  wetdry: .5
-}
+    delay.__createGraph();
+    delay.__requiresRecompilation = ['input'];
 
-return Delay
+    out = Gibberish.factory(delay, delay.graph, ['fx', 'delay'], props);
 
-}
+    return out;
+  };
 
-},{"./effect.js":99,"genish.js":37}],98:[function(require,module,exports){
+  Delay.defaults = {
+    input: 0,
+    feedback: .5,
+    time: 11025,
+    wetdry: .5
+  };
+
+  return Delay;
+};
+
+},{"./effect.js":106,"genish.js":39}],105:[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -6034,474 +6856,420 @@ module.exports = function (Gibberish) {
 
   return Distortion;
 };
-},{"./effect.js":99,"genish.js":37}],99:[function(require,module,exports){
-let ugen = require( '../ugen.js' )()
 
-let effect = Object.create( ugen )
+},{"./effect.js":106,"genish.js":39}],106:[function(require,module,exports){
+let ugen = require('../ugen.js')();
 
-Object.assign( effect, {
-  defaults: { bypass:false, inputGain:1 },
-  type:'effect'
-})
+let effect = Object.create(ugen);
 
-module.exports = effect
+Object.assign(effect, {
+  defaults: { bypass: false, inputGain: 1 },
+  type: 'effect'
+});
 
-},{"../ugen.js":141}],100:[function(require,module,exports){
-module.exports = function( Gibberish ) {
+module.exports = effect;
+
+},{"../ugen.js":148}],107:[function(require,module,exports){
+module.exports = function (Gibberish) {
 
   const effects = {
-    Freeverb    : require( './freeverb.js'  )( Gibberish ),
-    //Plate       : require( './dattorro.js'  )( Gibberish ),
-    Flanger     : require( './flanger.js'   )( Gibberish ),
-    Vibrato     : require( './vibrato.js'   )( Gibberish ),
-    Delay       : require( './delay.js'     )( Gibberish ),
-    BitCrusher  : require( './bitCrusher.js')( Gibberish ),
-    Distortion  : require( './distortion.js')( Gibberish ),
-    RingMod     : require( './ringMod.js'   )( Gibberish ),
-    Tremolo     : require( './tremolo.js'   )( Gibberish ),
-    Chorus      : require( './chorus.js'    )( Gibberish ),
-    Wavefolder  : require( './wavefolder.js')( Gibberish )[0],
-    Shuffler    : require( './bufferShuffler.js'  )( Gibberish ),
+    Freeverb: require('./freeverb.js')(Gibberish),
+    Plate: require('./dattorro.dsp.js')(Gibberish),
+    Flanger: require('./flanger.js')(Gibberish),
+    Vibrato: require('./vibrato.js')(Gibberish),
+    Delay: require('./delay.js')(Gibberish),
+    BitCrusher: require('./bitCrusher.js')(Gibberish),
+    Distortion: require('./distortion.dsp.js')(Gibberish),
+    RingMod: require('./ringMod.js')(Gibberish),
+    Tremolo: require('./tremolo.js')(Gibberish),
+    Chorus: require('./chorus.js')(Gibberish),
+    Wavefolder: require('./wavefolder.dsp.js')(Gibberish)[0],
+    Shuffler: require('./bufferShuffler.js')(Gibberish)
     //Gate        : require( './gate.js'      )( Gibberish ),
-  }
+  };
 
   effects.export = target => {
-    for( let key in effects ) {
-      if( key !== 'export' ) {
-        target[ key ] = effects[ key ]
+    for (let key in effects) {
+      if (key !== 'export') {
+        target[key] = effects[key];
       }
     }
-  }
-
-return effects
-
-}
-
-},{"./bitCrusher.js":94,"./bufferShuffler.js":95,"./chorus.js":96,"./delay.js":97,"./distortion.js":98,"./flanger.js":101,"./freeverb.js":102,"./ringMod.js":103,"./tremolo.js":104,"./vibrato.js":105,"./wavefolder.js":106}],101:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    proto = require( './effect.js' )
-
-module.exports = function( Gibberish ) {
- 
-let Flanger = inputProps => {
-  let props   = Object.assign( { delayLength:44100 }, Flanger.defaults, proto.defaults, inputProps ),
-      flanger = Object.create( proto ),
-      out
-
-  flanger.__createGraph = function() {
-    let isStereo = false
-    if( out === undefined ) {
-      isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false 
-    }else{
-      isStereo = out.input.isStereo
-      out.isStereo = isStereo
-    }
-
-    const input = g.in( 'input' ),
-          inputGain = g.in( 'inputGain' ),
-          delayLength = props.delayLength,
-          feedbackCoeff = g.in( 'feedback' ),
-          modAmount = g.in( 'offset' ),
-          frequency = g.in( 'frequency' ),
-          delayBufferL = g.data( delayLength )
-
-    const writeIdx = g.accum( 1,0, { min:0, max:delayLength, interp:'none', mode:'samples' })
-    
-    const offset = g.mul( modAmount, 500 )
-
-    const mod = props.mod === undefined ? g.cycle( frequency ) : props.mod
-    
-    const readIdx = g.wrap( 
-      g.add( 
-        g.sub( writeIdx, offset ), 
-        mod//g.mul( mod, g.sub( offset, 1 ) ) 
-      ), 
-      0, 
-      delayLength
-    )
-
-    const leftInput = isStereo ? input[0] : input
-
-    const delayedOutL = g.peek( delayBufferL, readIdx, { interp:'linear', mode:'samples' })
-    
-    g.poke( delayBufferL, g.add( leftInput, g.mul( delayedOutL, feedbackCoeff ) ), writeIdx )
-
-    const left = g.add( leftInput, delayedOutL )
-
-    if( isStereo === true ) {
-      const rightInput = input[1]
-      const delayBufferR = g.data( delayLength )
-      
-      let delayedOutR = g.peek( delayBufferR, readIdx, { interp:'linear', mode:'samples' })
-
-      g.poke( delayBufferR, g.add( rightInput, g.mul( delayedOutR, feedbackCoeff ) ), writeIdx )
-      const right = g.add( rightInput, delayedOutR )
-
-      flanger.graph = [ left, right ]
-
-    }else{
-      flanger.graph = left
-    }
-  }
-
-  flanger.__createGraph()
-  flanger.__requiresRecompilation = [ 'input' ]
-
-  out = Gibberish.factory( 
-    flanger,
-    flanger.graph, 
-    ['fx','flanger'], 
-    props 
-  ) 
-
-  return out 
-}
-
-Flanger.defaults = {
-  input:0,
-  feedback:.81,
-  offset:.125,
-  frequency:1
-}
-
-return Flanger
-
-}
-
-},{"./effect.js":99,"genish.js":37}],102:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      effect = require( './effect.js' )
-
-module.exports = function( Gibberish ) {
-  
-const allPass = Gibberish.filters.genish.AllPass
-const combFilter = Gibberish.filters.genish.Comb
-
-const tuning = {
-  combCount:	  	8,
-  combTuning: 		[ 1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617 ],                    
-  allPassCount: 	4,
-  allPassTuning:	[ 225, 556, 441, 341 ],
-  allPassFeedback:0.5,
-  fixedGain: 		  0.015,
-  scaleDamping: 	0.4,
-  scaleRoom: 		  0.28,
-  offsetRoom: 	  0.7,
-  stereoSpread:   23
-}
-
-const Freeverb = inputProps => {
-  const props = Object.assign( {}, effect.defaults, Freeverb.defaults, inputProps ),
-        reverb = Object.create( effect ) 
-
-  let out 
-  reverb.__createGraph = function() {
-    let isStereo = false
-    if( out === undefined ) {
-      isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false 
-    }else{
-      isStereo = out.input.isStereo
-    }    
-
-    const combsL = [], combsR = []
-
-    const input = g.in( 'input' ),
-          inputGain = g.in( 'inputGain' ),
-          wet1 = g.in( 'wet1'),
-          wet2 = g.in( 'wet2' ),  
-          dry = g.in( 'dry' ), 
-          roomSize = g.in( 'roomSize' ), 
-          damping = g.in( 'damping' )
-    
-    const __summedInput = isStereo === true ? g.add( input[0], input[1] ) : input,
-          summedInput = g.mul( __summedInput, inputGain ),
-          attenuatedInput = g.memo( g.mul( summedInput, tuning.fixedGain ) )
-    
-    // create comb filters in parallel...
-    for( let i = 0; i < 8; i++ ) { 
-      combsL.push( 
-        combFilter( 
-          attenuatedInput, 
-          tuning.combTuning[i], 
-          g.mul(damping,.4),
-          g.mul( tuning.scaleRoom + tuning.offsetRoom, roomSize ) 
-        ) 
-      )
-      combsR.push( 
-        combFilter( 
-          attenuatedInput, 
-          tuning.combTuning[i] + tuning.stereoSpread, 
-          g.mul(damping,.4), 
-          g.mul( tuning.scaleRoom + tuning.offsetRoom, roomSize ) 
-        ) 
-      )
-    }
-    
-    // ... and sum them with attenuated input, use of let is deliberate here
-    let outL = g.add( attenuatedInput, ...combsL )
-    let outR = g.add( attenuatedInput, ...combsR )
-    
-    // run through allpass filters in series
-    for( let i = 0; i < 4; i++ ) { 
-      outL = allPass( outL, tuning.allPassTuning[ i ] + tuning.stereoSpread )
-      outR = allPass( outR, tuning.allPassTuning[ i ] + tuning.stereoSpread )
-    }
-    
-    const outputL = g.add( g.mul( outL, wet1 ), g.mul( outR, wet2 ), g.mul( isStereo === true ? input[0] : input, dry ) ),
-          outputR = g.add( g.mul( outR, wet1 ), g.mul( outL, wet2 ), g.mul( isStereo === true ? input[1] : input, dry ) )
-
-    reverb.graph = [ outputL, outputR ]
-  }
-
-  reverb.__createGraph()
-  reverb.__requiresRecompilation = [ 'input' ]
-
-  out = Gibberish.factory( reverb, reverb.graph, ['fx','freeverb'], props )
-
-  return out
-}
-
-
-Freeverb.defaults = {
-  input: 0,
-  wet1: 1,
-  wet2: 0,
-  dry: .5,
-  roomSize: .925,
-  damping:  .5,
-}
-
-return Freeverb 
-
-}
-
-
-},{"./effect.js":99,"genish.js":37}],103:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    effect = require( './effect.js' )
-
-module.exports = function( Gibberish ) {
- 
-let RingMod = inputProps => {
-  let props   = Object.assign( {}, RingMod.defaults, effect.defaults, inputProps ),
-      ringMod = Object.create( effect ),
-      out
-
-  ringMod.__createGraph = function() {
-    let isStereo = false
-    if( out === undefined ) {
-      isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false 
-    }else{
-      isStereo = out.input.isStereo
-      out.isStereo = isStereo
-    }    
-
-    const input = g.in( 'input' ),
-          inputGain = g.in( 'inputGain' ),
-          frequency = g.in( 'frequency' ),
-          gain = g.in( 'gain' ),
-          mix = g.in( 'mix' )
-    
-    const leftInput = isStereo ? g.mul( input[0], inputGain ) : g.mul( input, inputGain ),
-          sine = g.mul( g.cycle( frequency ), gain )
-   
-    const left = g.add( g.mul( leftInput, g.sub( 1, mix )), g.mul( g.mul( leftInput, sine ), mix ) ) 
-        
-    if( isStereo === true ) {
-      const rightInput = g.mul( input[1], inputGain ),
-            right = g.add( g.mul( rightInput, g.sub( 1, mix )), g.mul( g.mul( rightInput, sine ), mix ) ) 
-      
-      ringMod.graph = [ left, right ]
-    }else{
-      ringMod.graph = left
-    }
-  }
-
-  ringMod.__createGraph() 
-  ringMod.__requiresRecompilation = [ 'input' ]
-
-  out = Gibberish.factory( 
-    ringMod,
-    ringMod.graph, 
-    [ 'fx','ringMod'], 
-    props 
-  )
-  
-  return out 
-}
-
-RingMod.defaults = {
-  input:0,
-  frequency:220,
-  gain: 1, 
-  mix:1
-}
-
-return RingMod
-
-}
-
-},{"./effect.js":99,"genish.js":37}],104:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      effect = require( './effect.js' )
-
-module.exports = function( Gibberish ) {
- 
-const Tremolo = inputProps => {
-  const props   = Object.assign( {}, Tremolo.defaults, effect.defaults, inputProps ),
-        tremolo = Object.create( effect )
-  
-  let out
-  tremolo.__createGraph = function() {
-    let isStereo = false
-    if( out === undefined ) {
-      isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false 
-    }else{
-      isStereo = out.input.isStereo
-      out.isStereo = isStereo
-    }    
-
-    const input = g.in( 'input' ),
-          inputGain = g.in( 'inputGain' ),
-          frequency = g.in( 'frequency' ),
-          amount = g.in( 'amount' )
-    
-    const leftInput = isStereo ? g.mul( input[0], inputGain ) : g.mul( input, inputGain )
-
-    let osc
-    if( props.shape === 'square' ) {
-      osc = g.gt( g.phasor( frequency ), 0 )
-    }else if( props.shape === 'saw' ) {
-      osc = g.gtp( g.phasor( frequency ), 0 )
-    }else{
-      osc = g.cycle( frequency )
-    }
-
-    const mod = g.mul( osc, amount )
-   
-    const left = g.sub( leftInput, g.mul( leftInput, mod ) )
-
-    if( isStereo === true ) {
-      const rightInput = g.mul( input[1], inputGain ),
-            right = g.mul( rightInput, mod )
-
-      tremolo.graph = [ left, right ]
-    }else{
-      tremolo.graph = left
-    }
-  }
-  
-  tremolo.__createGraph()
-  tremolo.__requiresRecompilation = [ 'input' ]
-
-  out = Gibberish.factory( 
-    tremolo,
-    tremolo.graph,
-    ['fx','tremolo'], 
-    props 
-  ) 
-  return out 
-}
-
-Tremolo.defaults = {
-  input:0,
-  frequency:2,
-  amount: 1, 
-  shape:'sine'
-}
-
-return Tremolo
-
-}
-
-},{"./effect.js":99,"genish.js":37}],105:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      effect = require( './effect.js' )
-
-module.exports = function( Gibberish ) {
- 
-const Vibrato = inputProps => {
-  const props   = Object.assign( {}, Vibrato.defaults, effect.defaults, inputProps ),
-        vibrato = Object.create( effect )
-
-  let out
-  vibrato.__createGraph = function() {
-    let isStereo = false
-    if( out === undefined ) {
-      isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false 
-    }else{
-      isStereo = out.input.isStereo
-      out.isStereo = isStereo
-    }    
-
-    const input = g.in( 'input' ),
-          inputGain = g.in( 'inputGain' ),
-          delayLength = 44100,
-          feedbackCoeff = g.in( 'feedback' ),
-          modAmount = g.in( 'amount' ),
-          frequency = g.in( 'frequency' ),
-          delayBufferL = g.data( delayLength )
-
-    const writeIdx = g.accum( 1,0, { min:0, max:delayLength, interp:'none', mode:'samples' })
-    
-    const offset = g.mul( modAmount, 500 )
-    
-    const readIdx = g.wrap( 
-      g.add( 
-        g.sub( writeIdx, offset ), 
-        g.mul( g.cycle( frequency ), g.sub( offset, 1 ) ) 
-      ), 
-      0, 
-      delayLength
-    )
-
-    const leftInput = isStereo ? g.mul( input[0], inputGain ) : g.mul( input, inputGain )
-
-    const delayedOutL = g.peek( delayBufferL, readIdx, { interp:'linear', mode:'samples' })
-    
-    g.poke( delayBufferL, g.add( leftInput, g.mul( delayedOutL, feedbackCoeff ) ), writeIdx )
-
-    const left = delayedOutL
-
-    if( isStereo === true ) {
-      const rightInput = g.mul( input[1], inputGain )
-      const delayBufferR = g.data( delayLength )
-      
-      const delayedOutR = g.peek( delayBufferR, readIdx, { interp:'linear', mode:'samples' })
-
-      g.poke( delayBufferR, g.add( rightInput, mul( delayedOutR, feedbackCoeff ) ), writeIdx )
-      const right = delayedOutR
-
-      vibrato.graph = [ left, right ]
-    }else{
-      vibrato.graph = left 
-    }
-  }
-
-  vibrato.__createGraph()
-  vibrato.__requiresRecompilation = [ 'input' ]
-
-  out = Gibberish.factory( 
-    vibrato,
-    vibrato.graph,    
-    [ 'fx', 'vibrato' ], 
-    props 
-  ) 
-  return out 
-}
-
-Vibrato.defaults = {
-  input:0,
-  feedback:.01,
-  amount:.5,
-  frequency:4
-}
-
-return Vibrato
-
-}
-
-},{"./effect.js":99,"genish.js":37}],106:[function(require,module,exports){
+  };
+
+  return effects;
+};
+
+},{"./bitCrusher.js":100,"./bufferShuffler.js":101,"./chorus.js":102,"./dattorro.dsp.js":103,"./delay.js":104,"./distortion.dsp.js":105,"./flanger.js":108,"./freeverb.js":109,"./ringMod.js":110,"./tremolo.js":111,"./vibrato.js":112,"./wavefolder.dsp.js":113}],108:[function(require,module,exports){
+let g = require('genish.js'),
+    proto = require('./effect.js');
+
+module.exports = function (Gibberish) {
+
+  let Flanger = inputProps => {
+    let props = Object.assign({ delayLength: 44100 }, Flanger.defaults, proto.defaults, inputProps),
+        flanger = Object.create(proto),
+        out;
+
+    flanger.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+      } else {
+        isStereo = out.input.isStereo;
+        out.isStereo = isStereo;
+      }
+
+      const input = g.in('input'),
+            inputGain = g.in('inputGain'),
+            delayLength = props.delayLength,
+            feedbackCoeff = g.in('feedback'),
+            modAmount = g.in('offset'),
+            frequency = g.in('frequency'),
+            delayBufferL = g.data(delayLength);
+
+      const writeIdx = g.accum(1, 0, { min: 0, max: delayLength, interp: 'none', mode: 'samples' });
+
+      const offset = g.mul(modAmount, 500);
+
+      const mod = props.mod === undefined ? g.cycle(frequency) : props.mod;
+
+      const readIdx = g.wrap(g.add(g.sub(writeIdx, offset), mod //g.mul( mod, g.sub( offset, 1 ) ) 
+      ), 0, delayLength);
+
+      const leftInput = isStereo ? input[0] : input;
+
+      const delayedOutL = g.peek(delayBufferL, readIdx, { interp: 'linear', mode: 'samples' });
+
+      g.poke(delayBufferL, g.add(leftInput, g.mul(delayedOutL, feedbackCoeff)), writeIdx);
+
+      const left = g.add(leftInput, delayedOutL);
+
+      if (isStereo === true) {
+        const rightInput = input[1];
+        const delayBufferR = g.data(delayLength);
+
+        let delayedOutR = g.peek(delayBufferR, readIdx, { interp: 'linear', mode: 'samples' });
+
+        g.poke(delayBufferR, g.add(rightInput, g.mul(delayedOutR, feedbackCoeff)), writeIdx);
+        const right = g.add(rightInput, delayedOutR);
+
+        flanger.graph = [left, right];
+      } else {
+        flanger.graph = left;
+      }
+    };
+
+    flanger.__createGraph();
+    flanger.__requiresRecompilation = ['input'];
+
+    out = Gibberish.factory(flanger, flanger.graph, ['fx', 'flanger'], props);
+
+    return out;
+  };
+
+  Flanger.defaults = {
+    input: 0,
+    feedback: .81,
+    offset: .125,
+    frequency: 1
+  };
+
+  return Flanger;
+};
+
+},{"./effect.js":106,"genish.js":39}],109:[function(require,module,exports){
+const g = require('genish.js'),
+      effect = require('./effect.js');
+
+module.exports = function (Gibberish) {
+
+  const allPass = Gibberish.filters.genish.AllPass;
+  const combFilter = Gibberish.filters.genish.Comb;
+
+  const tuning = {
+    combCount: 8,
+    combTuning: [1116, 1188, 1277, 1356, 1422, 1491, 1557, 1617],
+    allPassCount: 4,
+    allPassTuning: [225, 556, 441, 341],
+    allPassFeedback: 0.5,
+    fixedGain: 0.015,
+    scaleDamping: 0.4,
+    scaleRoom: 0.28,
+    offsetRoom: 0.7,
+    stereoSpread: 23
+  };
+
+  const Freeverb = inputProps => {
+    const props = Object.assign({}, effect.defaults, Freeverb.defaults, inputProps),
+          reverb = Object.create(effect);
+
+    let out;
+    reverb.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+      } else {
+        isStereo = out.input.isStereo;
+      }
+
+      const combsL = [],
+            combsR = [];
+
+      const input = g.in('input'),
+            inputGain = g.in('inputGain'),
+            wet1 = g.in('wet1'),
+            wet2 = g.in('wet2'),
+            dry = g.in('dry'),
+            roomSize = g.in('roomSize'),
+            damping = g.in('damping');
+
+      const __summedInput = isStereo === true ? g.add(input[0], input[1]) : input,
+            summedInput = g.mul(__summedInput, inputGain),
+            attenuatedInput = g.memo(g.mul(summedInput, tuning.fixedGain));
+
+      // create comb filters in parallel...
+      for (let i = 0; i < 8; i++) {
+        combsL.push(combFilter(attenuatedInput, tuning.combTuning[i], g.mul(damping, .4), g.mul(tuning.scaleRoom + tuning.offsetRoom, roomSize)));
+        combsR.push(combFilter(attenuatedInput, tuning.combTuning[i] + tuning.stereoSpread, g.mul(damping, .4), g.mul(tuning.scaleRoom + tuning.offsetRoom, roomSize)));
+      }
+
+      // ... and sum them with attenuated input, use of let is deliberate here
+      let outL = g.add(attenuatedInput, ...combsL);
+      let outR = g.add(attenuatedInput, ...combsR);
+
+      // run through allpass filters in series
+      for (let i = 0; i < 4; i++) {
+        outL = allPass(outL, tuning.allPassTuning[i] + tuning.stereoSpread);
+        outR = allPass(outR, tuning.allPassTuning[i] + tuning.stereoSpread);
+      }
+
+      const outputL = g.add(g.mul(outL, wet1), g.mul(outR, wet2), g.mul(isStereo === true ? input[0] : input, dry)),
+            outputR = g.add(g.mul(outR, wet1), g.mul(outL, wet2), g.mul(isStereo === true ? input[1] : input, dry));
+
+      reverb.graph = [outputL, outputR];
+    };
+
+    reverb.__createGraph();
+    reverb.__requiresRecompilation = ['input'];
+
+    out = Gibberish.factory(reverb, reverb.graph, ['fx', 'freeverb'], props);
+
+    return out;
+  };
+
+  Freeverb.defaults = {
+    input: 0,
+    wet1: 1,
+    wet2: 0,
+    dry: .5,
+    roomSize: .925,
+    damping: .5
+  };
+
+  return Freeverb;
+};
+
+},{"./effect.js":106,"genish.js":39}],110:[function(require,module,exports){
+let g = require('genish.js'),
+    effect = require('./effect.js');
+
+module.exports = function (Gibberish) {
+
+  let RingMod = inputProps => {
+    let props = Object.assign({}, RingMod.defaults, effect.defaults, inputProps),
+        ringMod = Object.create(effect),
+        out;
+
+    ringMod.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+      } else {
+        isStereo = out.input.isStereo;
+        out.isStereo = isStereo;
+      }
+
+      const input = g.in('input'),
+            inputGain = g.in('inputGain'),
+            frequency = g.in('frequency'),
+            gain = g.in('gain'),
+            mix = g.in('mix');
+
+      const leftInput = isStereo ? g.mul(input[0], inputGain) : g.mul(input, inputGain),
+            sine = g.mul(g.cycle(frequency), gain);
+
+      const left = g.add(g.mul(leftInput, g.sub(1, mix)), g.mul(g.mul(leftInput, sine), mix));
+
+      if (isStereo === true) {
+        const rightInput = g.mul(input[1], inputGain),
+              right = g.add(g.mul(rightInput, g.sub(1, mix)), g.mul(g.mul(rightInput, sine), mix));
+
+        ringMod.graph = [left, right];
+      } else {
+        ringMod.graph = left;
+      }
+    };
+
+    ringMod.__createGraph();
+    ringMod.__requiresRecompilation = ['input'];
+
+    out = Gibberish.factory(ringMod, ringMod.graph, ['fx', 'ringMod'], props);
+
+    return out;
+  };
+
+  RingMod.defaults = {
+    input: 0,
+    frequency: 220,
+    gain: 1,
+    mix: 1
+  };
+
+  return RingMod;
+};
+
+},{"./effect.js":106,"genish.js":39}],111:[function(require,module,exports){
+const g = require('genish.js'),
+      effect = require('./effect.js');
+
+module.exports = function (Gibberish) {
+
+  const Tremolo = inputProps => {
+    const props = Object.assign({}, Tremolo.defaults, effect.defaults, inputProps),
+          tremolo = Object.create(effect);
+
+    let out;
+    tremolo.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+      } else {
+        isStereo = out.input.isStereo;
+        out.isStereo = isStereo;
+      }
+
+      const input = g.in('input'),
+            inputGain = g.in('inputGain'),
+            frequency = g.in('frequency'),
+            amount = g.in('amount');
+
+      const leftInput = isStereo ? g.mul(input[0], inputGain) : g.mul(input, inputGain);
+
+      let osc;
+      if (props.shape === 'square') {
+        osc = g.gt(g.phasor(frequency), 0);
+      } else if (props.shape === 'saw') {
+        osc = g.gtp(g.phasor(frequency), 0);
+      } else {
+        osc = g.cycle(frequency);
+      }
+
+      const mod = g.mul(osc, amount);
+
+      const left = g.sub(leftInput, g.mul(leftInput, mod));
+
+      if (isStereo === true) {
+        const rightInput = g.mul(input[1], inputGain),
+              right = g.mul(rightInput, mod);
+
+        tremolo.graph = [left, right];
+      } else {
+        tremolo.graph = left;
+      }
+    };
+
+    tremolo.__createGraph();
+    tremolo.__requiresRecompilation = ['input'];
+
+    out = Gibberish.factory(tremolo, tremolo.graph, ['fx', 'tremolo'], props);
+    return out;
+  };
+
+  Tremolo.defaults = {
+    input: 0,
+    frequency: 2,
+    amount: 1,
+    shape: 'sine'
+  };
+
+  return Tremolo;
+};
+
+},{"./effect.js":106,"genish.js":39}],112:[function(require,module,exports){
+const g = require('genish.js'),
+      effect = require('./effect.js');
+
+module.exports = function (Gibberish) {
+
+  const Vibrato = inputProps => {
+    const props = Object.assign({}, Vibrato.defaults, effect.defaults, inputProps),
+          vibrato = Object.create(effect);
+
+    let out;
+    vibrato.__createGraph = function () {
+      let isStereo = false;
+      if (out === undefined) {
+        isStereo = typeof props.input.isStereo !== 'undefined' ? props.input.isStereo : false;
+      } else {
+        isStereo = out.input.isStereo;
+        out.isStereo = isStereo;
+      }
+
+      const input = g.in('input'),
+            inputGain = g.in('inputGain'),
+            delayLength = 44100,
+            feedbackCoeff = g.in('feedback'),
+            modAmount = g.in('amount'),
+            frequency = g.in('frequency'),
+            delayBufferL = g.data(delayLength);
+
+      const writeIdx = g.accum(1, 0, { min: 0, max: delayLength, interp: 'none', mode: 'samples' });
+
+      const offset = g.mul(modAmount, 500);
+
+      const readIdx = g.wrap(g.add(g.sub(writeIdx, offset), g.mul(g.cycle(frequency), g.sub(offset, 1))), 0, delayLength);
+
+      const leftInput = isStereo ? g.mul(input[0], inputGain) : g.mul(input, inputGain);
+
+      const delayedOutL = g.peek(delayBufferL, readIdx, { interp: 'linear', mode: 'samples' });
+
+      g.poke(delayBufferL, g.add(leftInput, g.mul(delayedOutL, feedbackCoeff)), writeIdx);
+
+      const left = delayedOutL;
+
+      if (isStereo === true) {
+        const rightInput = g.mul(input[1], inputGain);
+        const delayBufferR = g.data(delayLength);
+
+        const delayedOutR = g.peek(delayBufferR, readIdx, { interp: 'linear', mode: 'samples' });
+
+        g.poke(delayBufferR, g.add(rightInput, mul(delayedOutR, feedbackCoeff)), writeIdx);
+        const right = delayedOutR;
+
+        vibrato.graph = [left, right];
+      } else {
+        vibrato.graph = left;
+      }
+    };
+
+    vibrato.__createGraph();
+    vibrato.__requiresRecompilation = ['input'];
+
+    out = Gibberish.factory(vibrato, vibrato.graph, ['fx', 'vibrato'], props);
+    return out;
+  };
+
+  Vibrato.defaults = {
+    input: 0,
+    feedback: .01,
+    amount: .5,
+    frequency: 4
+  };
+
+  return Vibrato;
+};
+
+},{"./effect.js":106,"genish.js":39}],113:[function(require,module,exports){
 const g = require('genish.js'),
       effect = require('./effect.js');
 
@@ -6640,10 +7408,11 @@ module.exports = function (Gibberish) {
 
   return [Wavefolder, wavestage];
 };
-},{"./effect.js":99,"genish.js":37}],107:[function(require,module,exports){
-let MemoryHelper = require( 'memory-helper' ),
-    genish       = require( 'genish.js' )
-    
+
+},{"./effect.js":106,"genish.js":39}],114:[function(require,module,exports){
+let MemoryHelper = require('memory-helper'),
+    genish = require('genish.js');
+
 let Gibberish = {
   blockCallbacks: [], // called every block
   dirtyUgens: [],
@@ -6654,171 +7423,174 @@ let Gibberish = {
   ugens: {},
   debug: false,
   id: -1,
-  preventProxy:false,
+  preventProxy: false,
   proxyEnabled: true,
 
   output: null,
 
-  memory : null, // 20 minutes by default?
-  factory: null, 
+  memory: null, // 20 minutes by default?
+  factory: null,
   genish,
-  scheduler: require( './scheduling/scheduler.js' ),
+  scheduler: require('./scheduling/scheduler.js'),
   //workletProcessorLoader: require( './workletProcessor.js' ),
   workletProcessor: null,
 
   memoed: {},
-  mode:'scriptProcessor',
+  mode: 'scriptProcessor',
 
   prototypes: {
-    ugen: null,//require('./ugen.js'),
-    instrument: require( './instruments/instrument.js' ),
-    effect: require( './fx/effect.js' ),
-    analyzer: require( './analysis/analyzer.js' )
+    ugen: null, //require('./ugen.js'),
+    instrument: require('./instruments/instrument.js'),
+    effect: require('./fx/effect.js'),
+    analyzer: require('./analysis/analyzer.js')
   },
 
   mixins: {
-    polyinstrument: require( './instruments/polyMixin.js' )
+    polyinstrument: require('./instruments/polyMixin.js')
   },
 
   workletPath: './gibberish_worklet.js',
 
-  init( memAmount, ctx, mode=null, sac=null ) {
-
-    let numBytes = isNaN( memAmount ) ? 20 * 60 * 44100 : memAmount
+  init(memAmount, ctx, mode = 'worklet') {
+    let numBytes = isNaN(memAmount) ? 20 * 60 * 44100 : memAmount;
 
     // regardless of whether or not gibberish is using worklets,
     // we still want genish to output vanilla js functions instead
     // of audio worklet classes; these functions will be called
     // from within the gibberish audioworklet processor node.
-    this.genish.gen.mode = 'scriptProcessor'
+    this.genish.gen.mode = 'scriptProcessor';
 
-    this.memory = MemoryHelper.create( numBytes, Float64Array )
+    this.memory = MemoryHelper.create(numBytes, Float64Array);
 
-    this.mode = window.AudioWorklet !== undefined ? 'worklet' : 'scriptprocessor'
-    if( mode !== null ) this.mode = mode
+    this.mode = mode;
 
-    this.hasWorklet = window.AudioWorklet !== undefined && typeof window.AudioWorklet === 'function'
+    const startup = this.utilities.createWorklet;
 
-    const startup = this.hasWorklet ? this.utilities.createWorklet : this.utilities.createScriptProcessor
+    this.scheduler.init(this);
 
-    this.scheduler.init( this )
-    
-    this.analyzers.dirty = false
+    this.analyzers.dirty = false;
 
-    if( this.mode === 'worklet' ) {
+    if (this.mode === 'worklet') {
 
-      const p = new Promise( (resolve, reject ) => {
+      const p = new Promise((resolve, reject) => {
 
-        const pp = new Promise( (__resolve, __reject ) => {
-          this.utilities.createContext( ctx, startup.bind( this.utilities ), __resolve, sac )
-        }).then( ()=> {
-          Gibberish.preventProxy = true
-          Gibberish.load()
-          Gibberish.preventProxy = false
-          Gibberish.output = this.Bus2()
+        const pp = new Promise((__resolve, __reject) => {
+          this.utilities.createContext(ctx, startup.bind(this.utilities), __resolve);
+        }).then(() => {
+          Gibberish.preventProxy = true;
+          Gibberish.load();
+          Gibberish.preventProxy = false;
+          Gibberish.output = this.Bus2();
 
           // Gibberish.output needs to be assign so that ugens can
           // connect to it by default. There's no other way to assign it
           // outside of evaling code at this point.
-          Gibberish.worklet.port.postMessage({ 
-            address:'eval', 
-            code:`Gibberish.output = this.ugens.get(${Gibberish.output.id});` 
-          })
+          Gibberish.worklet.port.postMessage({
+            address: 'eval',
+            code: `Gibberish.output = this.ugens.get(${Gibberish.output.id});`
+          });
 
-          resolve()
-        })
+          resolve();
+        });
+      });
 
-      })
-      
-      return p
-
-    }else if( this.mode === 'processor' ) {
-      Gibberish.load()
+      return p;
+    } else if (this.mode === 'processor') {
+      Gibberish.load();
     }
   },
 
   load() {
-    this.factory = require( './ugenTemplate.js' )( this )
-    
-    this.Panner       = require( './misc/panner.js' )( this )
-    this.PolyTemplate = require( './instruments/polytemplate.js' )( this )
-    this.oscillators  = require( './oscillators/oscillators.js' )( this )
-    this.filters      = require( './filters/filters.js' )( this )
-    this.binops       = require( './misc/binops.js' )( this )
-    this.monops       = require( './misc/monops.js' )( this )
-    this.Bus          = require( './misc/bus.js' )( this )
-    this.Bus2         = require( './misc/bus2.js' )( this )
-    this.instruments  = require( './instruments/instruments.js' )( this )
-    this.fx           = require( './fx/effects.js' )( this )
-    this.Sequencer    = require( './scheduling/sequencer.js' )( this )
-    this.Sequencer2   = require( './scheduling/seq2.js' )( this )
-    this.Tidal        = require( './scheduling/tidal.js' )( this )
-    this.envelopes    = require( './envelopes/envelopes.js' )( this )
-    this.analysis     = require( './analysis/analyzers.js' )( this )
-    this.time         = require( './misc/time.js' )( this )
-    this.Proxy        = require( './workletProxy.js' )( this )
+    this.factory = require('./factory.js')(this);
+
+    this.Panner = require('./misc/panner.js')(this);
+    this.PolyTemplate = require('./instruments/polytemplate.js')(this);
+    this.oscillators = require('./oscillators/oscillators.js')(this);
+    this.filters = require('./filters/filters.js')(this);
+    this.binops = require('./misc/binops.js')(this);
+    this.monops = require('./misc/monops.js')(this);
+    this.Bus = require('./misc/bus.js')(this);
+    this.Bus2 = require('./misc/bus2.js')(this);
+    this.instruments = require('./instruments/instruments.js')(this);
+    this.fx = require('./fx/effects.js')(this);
+    this.Sequencer = require('./scheduling/sequencer.js')(this);
+    this.Sequencer2 = require('./scheduling/seq2.js')(this);
+    this.Tidal = require('./scheduling/tidal.js')(this);
+    this.envelopes = require('./envelopes/envelopes.js')(this);
+    this.analysis = require('./analysis/analyzers.js')(this);
+    this.time = require('./misc/time.js')(this);
+    this.Proxy = require('./workletProxy.js')(this);
   },
 
-  export( target, shouldExportGenish=false ) {
-    if( target === undefined ) throw Error('You must define a target object for Gibberish to export variables to.')
+  export(target, shouldExportGenish = false) {
+    if (target === undefined) throw Error('You must define a target object for Gibberish to export variables to.');
 
-    if( shouldExportGenish ) this.genish.export( target )
+    if (shouldExportGenish) this.genish.export(target);
 
-    this.instruments.export( target )
-    this.fx.export( target )
-    this.filters.export( target )
-    this.oscillators.export( target )
-    this.binops.export( target )
-    this.monops.export( target )
-    this.envelopes.export( target )
-    this.analysis.export( target )
-    target.Sequencer = this.Sequencer
-    target.Sequencer2 = this.Sequencer2
-    target.Bus = this.Bus
-    target.Bus2 = this.Bus2
-    target.Scheduler = this.scheduler
-    target.Tidal = this.Tidal
-    this.time.export( target )
-    this.utilities.export( target )
+    this.instruments.export(target);
+    this.fx.export(target);
+    this.filters.export(target);
+    this.oscillators.export(target);
+    this.binops.export(target);
+    this.monops.export(target);
+    this.envelopes.export(target);
+    this.analysis.export(target);
+    target.Sequencer = this.Sequencer;
+    target.Sequencer2 = this.Sequencer2;
+    target.Bus = this.Bus;
+    target.Bus2 = this.Bus2;
+    target.Scheduler = this.scheduler;
+    target.Tidal = this.Tidal;
+    this.time.export(target);
+    this.utilities.export(target);
   },
 
-  print() {
-    console.log( this.callback.toString() )
+  printcb() {
+    Gibberish.worklet.port.postMessage({ address: 'callback' });
+  },
+  printobj(obj) {
+    Gibberish.worklet.port.postMessage({ address: 'print', object: obj.id });
+  },
+  send(msg) {
+    Gibberish.worklet.port.postMessage(msg);
   },
 
-  dirty( ugen ) {
-    if( ugen === this.analyzers ) {
-      this.graphIsDirty = true
-      this.analyzers.dirty = true
+  dirty(ugen) {
+    if (ugen === this.analyzers) {
+      this.graphIsDirty = true;
+      this.analyzers.dirty = true;
     } else {
-      this.dirtyUgens.push( ugen )
-      this.graphIsDirty = true
-      if( this.memoed[ ugen.ugenName ] ) {
-        delete this.memoed[ ugen.ugenName ]
+      this.dirtyUgens.push(ugen);
+      this.graphIsDirty = true;
+      if (this.memoed[ugen.ugenName]) {
+        delete this.memoed[ugen.ugenName];
       }
-    } 
+    }
   },
 
   clear() {
     // do not delete the gain and the pan of the master bus 
-    this.output.inputs.splice( 0, this.output.inputs.length - 2 )
+    this.output.inputs.splice(0, this.output.inputs.length - 2);
     //this.output.inputNames.length = 0
-    this.analyzers.length = 0
-    this.scheduler.clear()
-    this.dirty( this.output )
-    if( this.mode === 'worklet' ) {
-      this.worklet.port.postMessage({ 
-        address:'method', 
-        object:this.id,
-        name:'clear',
-        args:[]
-      })
+    this.analyzers.length = 0;
+    this.scheduler.clear();
+    this.dirty(this.output);
+    if (this.mode === 'worklet') {
+      this.worklet.port.postMessage({
+        address: 'method',
+        object: this.id,
+        name: 'clear',
+        args: []
+      });
     }
-      // clear memory... XXX should this be a MemoryHelper function?
+    // clear memory... XXX should this be a MemoryHelper function?
     //this.memory.heap.fill(0)
     //this.memory.list = {}
+
+    Gibberish.genish.gen.removeAllListeners('memory init');
+    Gibberish.genish.gen.histories.clear();
+
     //Gibberish.output = this.Bus2()
-    
   },
 
   // used to sort analysis ugens by priority.
@@ -6826,318 +7598,315 @@ let Gibberish = {
   // which means they will run first in the callback function.
   // by defult, analysis ugens are assigned a priority of 0 in the
   // analysis prototype.
-  analysisCompare( a,b ) {
-    return (isNaN(b.priority) ? 0 : b.priority) - (isNaN(a.priority) ? 0: a.priority )
+  analysisCompare(a, b) {
+    return (isNaN(b.priority) ? 0 : b.priority) - (isNaN(a.priority) ? 0 : a.priority);
   },
 
   generateCallback() {
-    if( this.mode === 'worklet' ) {
-      Gibberish.callback = function() { return 0 }
-      return Gibberish.callback
+    if (this.mode === 'worklet') {
+      Gibberish.callback = function () {
+        return 0;
+      };
+      Gibberish.callback.out = [];
+      return Gibberish.callback;
     }
     let uid = 0,
-        callbackBody, lastLine, analysis=''
+        callbackBody,
+        lastLine,
+        analysis = '';
 
-    this.memoed = {}
+    this.memoed = {};
 
-    callbackBody = this.processGraph( this.output )
-    lastLine = callbackBody[ callbackBody.length - 1]
-    callbackBody.unshift( "\t'use strict'" )
+    callbackBody = this.processGraph(this.output);
+    lastLine = callbackBody[callbackBody.length - 1];
+    callbackBody.unshift("\t'use strict'");
 
-    this.analyzers
-      .sort( this.analysisCompare )
-      .forEach( v=> {
-        const analysisBlock = Gibberish.processUgen( v )
-        //if( Gibberish.mode === 'processor' ) {
-        //  console.log( 'analysis:', analysisBlock, v  )
-        //}
-        let analysisLine
+    this.analyzers.sort(this.analysisCompare).forEach(v => {
+      const analysisBlock = Gibberish.processUgen(v);
+      //if( Gibberish.mode === 'processor' ) {
+      //  console.log( 'analysis:', analysisBlock, v  )
+      //}
+      let analysisLine;
 
-        if( typeof analysisBlock === 'object' ) {
-          analysisLine = analysisBlock.pop()
+      if (typeof analysisBlock === 'object') {
+        analysisLine = analysisBlock.pop();
 
-          analysisBlock.forEach( v => {
-            callbackBody.splice( callbackBody.length - 1, 0, v )
-          })
-        }else{
-          analysisLine = analysisBlock
-        }
+        analysisBlock.forEach(v => {
+          callbackBody.splice(callbackBody.length - 1, 0, v);
+        });
+      } else {
+        analysisLine = analysisBlock;
+      }
 
-        callbackBody.push( analysisLine )
-      })
+      callbackBody.push(analysisLine);
+    });
 
-    this.analyzers.forEach( v => {
-      if( this.callbackUgens.indexOf( v.callback ) === -1 )
-        this.callbackUgens.push( v.callback )
-    })
+    this.analyzers.forEach(v => {
+      if (this.callbackUgens.indexOf(v.callback) === -1) this.callbackUgens.push(v.callback);
+    });
 
-    this.callbackNames = this.callbackUgens.map( v => v.ugenName )
+    this.callbackNames = this.callbackUgens.map(v => v.ugenName);
 
-    callbackBody.push( '\n\treturn ' + lastLine.split( '=' )[0].split( ' ' )[1] )
+    callbackBody.push('\n\treturn ' + lastLine.split('=')[0].split(' ')[1]);
 
-    if( this.debug === true ) console.log( 'callback:\n', callbackBody.join('\n') )
-    
-    this.callbackNames.push( 'mem' )
-    this.callbackUgens.push( this.memory.heap )
-    this.callback = Function( ...this.callbackNames, callbackBody.join( '\n' ) )//.bind( null, ...this.callbackUgens )
-    this.callback.out = []
+    if (this.debug === true) console.log('callback:\n', callbackBody.join('\n'));
 
-    if( this.oncallback ) this.oncallback( this.callback )
+    this.callbackNames.push('mem');
+    this.callbackUgens.push(this.memory.heap);
+    this.callback = Function(...this.callbackNames, callbackBody.join('\n')); //.bind( null, ...this.callbackUgens )
+    this.callback.out = [];
 
-    return this.callback 
+    if (this.oncallback) this.oncallback(this.callback);
+
+    return this.callback;
   },
 
-  processGraph( output ) {
-    this.callbackUgens.length = 0
-    this.callbackNames.length = 0
+  processGraph(output) {
+    this.callbackUgens.length = 0;
+    this.callbackNames.length = 0;
 
-    this.callbackUgens.push( output.callback )
+    this.callbackUgens.push(output.callback);
 
-    let body = this.processUgen( output )
-    
+    let body = this.processUgen(output);
 
-    this.dirtyUgens.length = 0
-    this.graphIsDirty = false
+    this.dirtyUgens.length = 0;
+    this.graphIsDirty = false;
 
-    return body
+    return body;
   },
-  proxyReplace( obj ) {
-    if( typeof obj === 'object' && obj !== null ) {
-      if( obj.id !== undefined ) {
-        const __obj = processor.ugens.get( obj.id )
+  proxyReplace(obj) {
+    if (typeof obj === 'object' && obj !== null) {
+      if (obj.id !== undefined) {
+        const __obj = processor.ugens.get(obj.id);
         //console.log( 'retrieved:', __obj.name )
 
         //if( obj.prop !== undefined ) console.log( 'got a ssd.out', obj )
-        return obj.prop !== undefined ? __obj[ obj.prop ] : __obj
-      }else if( obj.isFunc === true ) {
-        let func =  eval( '(' + obj.value + ')' )
+        return obj.prop !== undefined ? __obj[obj.prop] : __obj;
+      } else if (obj.isFunc === true) {
+        let func = eval('(' + obj.value + ')');
 
         //console.log( 'replacing function:', func )
 
-        return func
+        return func;
       }
     }
 
-    return obj
+    return obj;
   },
 
-  processUgen( ugen, block ) {
-    if( block === undefined ) block = []
-    if( ugen === undefined ) return block
+  processUgen(ugen, block) {
+    if (block === undefined) block = [];
+    if (ugen === undefined) return block;
 
+    let dirtyIdx = Gibberish.dirtyUgens.indexOf(ugen);
 
-    let dirtyIdx = Gibberish.dirtyUgens.indexOf( ugen )
+    let memo = Gibberish.memoed[ugen.ugenName];
 
-    let memo = Gibberish.memoed[ ugen.ugenName ]
-
-    if( memo !== undefined ) {
-      return memo
-    } else if( ugen === true || ugen === false ) {
+    if (memo !== undefined) {
+      return memo;
+    } else if (ugen === true || ugen === false) {
       throw "Why is ugen a boolean? [true] or [false]";
-    } else if( ugen.block === undefined || dirtyIndex !== -1 ) {
+    } else if (ugen.block === undefined || dirtyIndex !== -1) {
       // weird edge case with analysis (follow) ugen
-      if( ugen.id === undefined ) {
-        ugen.id = ugen.__properties__.overrideid
+      if (ugen.id === undefined) {
+        ugen.id = ugen.__properties__.overrideid;
       }
-      let line = `\tconst v_${ugen.id} = ` 
-      if( !ugen.isop ) line += `${ugen.ugenName}( `
+
+      let line = `\tconst v_${ugen.id} = `;
+      if (!ugen.isop) line += `${ugen.ugenName}( `;
 
       // must get array so we can keep track of length for comma insertion
-      const keys = ugen.isop === true || ugen.type === 'bus'  
-        ? Object.keys( ugen.inputs ) 
-        : [...ugen.inputNames ] 
+      const keys = ugen.isop === true || ugen.type === 'bus' ? Object.keys(ugen.inputs) : [...ugen.inputNames];
 
-      line = ugen.isop === true 
-        ? Gibberish.__processBinop( ugen, line, block, keys ) 
-        : Gibberish.__processNonBinop( ugen, line, block, keys )
+      line = ugen.isop === true ? Gibberish.__processBinop(ugen, line, block, keys) : Gibberish.__processNonBinop(ugen, line, block, keys);
 
-      line = Gibberish.__addLineEnding( line, ugen, keys )
+      line = Gibberish.__addLineEnding(line, ugen, keys);
 
-      block.push( line )
-      
-      Gibberish.memoed[ ugen.ugenName ] = `v_${ugen.id}`
+      block.push(line);
 
-      if( dirtyIdx !== -1 ) {
-        Gibberish.dirtyUgens.splice( dirtyIdx, 1 )
+      Gibberish.memoed[ugen.ugenName] = `v_${ugen.id}`;
+
+      if (dirtyIdx !== -1) {
+        Gibberish.dirtyUgens.splice(dirtyIdx, 1);
       }
-
-    }else if( ugen.block ) {
-      return ugen.block
+    } else if (ugen.block) {
+      return ugen.block;
     }
 
-    return block
-  }, 
-
-  __processBinop( ugen, line, block, keys ) {
-    //__getInputString( line, input, block, key, ugen ) {
-    const isLeftStereo = Gibberish.__isStereo( ugen.inputs[0] ), 
-          isRightStereo = Gibberish.__isStereo( ugen.inputs[1] ),
-          left = Gibberish.__getInputString( line, ugen.inputs[0], block, '0', keys ),
-          right= Gibberish.__getInputString( line, ugen.inputs[1], block, '1', keys ),
-          op = ugen.op
-        
-    let graph, out
-
-    if( isLeftStereo === true && isRightStereo === false ) {
-      line += `[ ${left}[0] ${op} ${right}, ${left}[1] ${op} ${right} ]`
-      //graph = [ g.add( args[0].graph[0], args[1] ), g.add( args[0].graph[1], args[1] )]
-    }else if( isLeftStereo === false && isRightStereo === true ) {
-      //graph = [ g.add( args[0], args[1].graph[0] ), g.add( args[0], args[1].graph[1] )]
-      line += `[ ${left} ${op} ${right}[0], ${left} ${op} ${right}[1] ]`
-    }else if( isLeftStereo === true && isRightStereo === true ) {
-      //graph = [ g.add( args[0].graph[0], args[1].graph[0] ), g.add( args[0].graph[1], args[1].graph[1] )]
-      line += `[ ${left}[0] ${op} ${right}[0], ${left}[1] ${op} ${right}[1] ]`
-    }else{
-      // XXX important, must re-assign when calling processNonBinop
-      line = Gibberish.__processNonBinop( ugen, line, block, keys )
-    }
-    
-    return line
+    return block;
   },
 
-  __processNonBinop( ugen, line, block, keys ) {
-    for( let i = 0; i < keys.length; i++ ) {
-      let key = keys[ i ]
+  __processBinop(ugen, line, block, keys) {
+    //__getInputString( line, input, block, key, ugen ) {
+    const isLeftStereo = Gibberish.__isStereo(ugen.inputs[0]),
+          isRightStereo = Gibberish.__isStereo(ugen.inputs[1]),
+          left = Gibberish.__getInputString(line, ugen.inputs[0], block, '0', keys),
+          right = Gibberish.__getInputString(line, ugen.inputs[1], block, '1', keys),
+          op = ugen.op;
+
+    let graph, out;
+
+    if (isLeftStereo === true && isRightStereo === false) {
+      line += `[ ${left}[0] ${op} ${right}, ${left}[1] ${op} ${right} ]`;
+      //graph = [ g.add( args[0].graph[0], args[1] ), g.add( args[0].graph[1], args[1] )]
+    } else if (isLeftStereo === false && isRightStereo === true) {
+      //graph = [ g.add( args[0], args[1].graph[0] ), g.add( args[0], args[1].graph[1] )]
+      line += `[ ${left} ${op} ${right}[0], ${left} ${op} ${right}[1] ]`;
+    } else if (isLeftStereo === true && isRightStereo === true) {
+      //graph = [ g.add( args[0].graph[0], args[1].graph[0] ), g.add( args[0].graph[1], args[1].graph[1] )]
+      line += `[ ${left}[0] ${op} ${right}[0], ${left}[1] ${op} ${right}[1] ]`;
+    } else {
+      // XXX important, must re-assign when calling processNonBinop
+      line = Gibberish.__processNonBinop(ugen, line, block, keys);
+    }
+
+    return line;
+  },
+
+  __processNonBinop(ugen, line, block, keys) {
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
       // binop.inputs is actual values, not just property names
-      let input 
-      if( ugen.isop || ugen.type ==='bus' ) {
-        input = ugen.inputs[ key ]
-      }else{
-        input = ugen[ key ] 
+      let input;
+      if (ugen.isop || ugen.type === 'bus') {
+        input = ugen.inputs[key];
+      } else {
+        input = ugen[key];
       }
 
-      if( input !== undefined ) { 
-        input = Gibberish.__getBypassedInput( input )
-        line += Gibberish.__getInputString( line, input, block, key, ugen )
-        line  = Gibberish.__addSeparator( line, input, ugen, i < keys.length - 1 )
+      if (input !== undefined) {
+        input = Gibberish.__getBypassedInput(input);
+        line += Gibberish.__getInputString(line, input, block, key, ugen);
+        line = Gibberish.__addSeparator(line, input, ugen, i < keys.length - 1);
       }
     }
 
-    return line
+    return line;
   },
 
   // determine if a ugen is stereo
-  __isStereo( ugen ) {
-    let isStereo = false
+  __isStereo(ugen) {
+    let isStereo = false;
 
-    if( ugen === undefined || ugen === null ) return false
+    if (ugen === undefined || ugen === null) return false;
 
-    if( ugen.isStereo === true ) return true
+    if (ugen.isStereo === true) return true;
 
-    if( ugen.isop === true ) {
-      return Gibberish.__isStereo( ugen.inputs[0] ) || Gibberish.__isStereo( ugen.inputs[1] )
+    if (ugen.isop === true) {
+      return Gibberish.__isStereo(ugen.inputs[0]) || Gibberish.__isStereo(ugen.inputs[1]);
     }
-    
-    return isStereo
+
+    return isStereo;
   },
 
   // if an effect is bypassed, get next one in chain (or output destination)
-  __getBypassedInput( input ) {
-    if( input.bypass === true ) {
+  __getBypassedInput(input) {
+    if (input.bypass === true) {
       // loop through inputs of chain until one is found
       // that is not being bypassed
 
-      let found = false
+      let found = false;
 
-      while( input.input !== 'undefined' && found === false ) {
-        if( typeof input.input.bypass !== 'undefined' ) {
-          input = input.input
-          if( input.bypass === false ) found = true
-        }else{
-          input = input.input
-          found = true
+      while (input.input !== 'undefined' && found === false) {
+        if (typeof input.input.bypass !== 'undefined') {
+          input = input.input;
+          if (input.bypass === false) found = true;
+        } else {
+          input = input.input;
+          found = true;
         }
       }
     }
 
-    return input
+    return input;
   },
 
   // get a string representing a ugen for insertion into callback.
   // if a ugen contains other ugens, trigger codegen for those ugens as well.
-  __getInputString( line, input, block, key, ugen ) {
-    let value = ''
-    if( typeof input === 'number' ) {
-      if( isNaN(key) ) {
-        value += `mem[${ugen.__addresses__[ key ]}]`//input
-      }else{
-        value += input
+  __getInputString(line, input, block, key, ugen) {
+    let value = '';
+    if (typeof input === 'number') {
+      if (isNaN(key)) {
+        value += `mem[${ugen.__addresses__[key]}]`; //input
+      } else {
+        value += input;
       }
-    } else if( typeof input === 'boolean' ) {
-      value += '' + input
-    }else{
+    } else if (typeof input === 'boolean') {
+      value += '' + input;
+    } else {
       //console.log( 'key:', key, 'input:', ugen.inputs, ugen.inputs[ key ] ) 
       // XXX not sure why this has to be here, but somehow non-processed objects
       // that only contain id numbers are being passed here...
 
-      if( Gibberish.mode === 'processor' ) {
-        if( input.ugenName === undefined && input.id !== undefined  ) {
-          if( ugen === undefined  ) {
-            input = Gibberish.processor.ugens.get( input.id )
-          }else{
-            if( ugen.type !== 'seq' ) {
-              input = Gibberish.processor.ugens.get( input.id )
+      if (input !== undefined) {
+        if (Gibberish.mode === 'processor') {
+          if (input.ugenName === undefined && input.id !== undefined) {
+            if (ugen === undefined) {
+              input = Gibberish.processor.ugens.get(input.id);
+            } else {
+              if (ugen.type !== 'seq') {
+                input = Gibberish.processor.ugens.get(input.id);
+              }
             }
           }
         }
-      }
 
-      Gibberish.processUgen( input, block )
+        Gibberish.processUgen(input, block);
 
-      if( !input.isop ) {
-        // check is needed so that graphs with ssds that refer to themselves
-        // don't add the ssd in more than once
-        if( Gibberish.callbackUgens.indexOf( input.callback ) === -1 ) {
-          Gibberish.callbackUgens.push( input.callback )
+        if (!input.isop) {
+          // check is needed so that graphs with ssds that refer to themselves
+          // don't add the ssd in more than once
+          if (Gibberish.callbackUgens.indexOf(input.callback) === -1) {
+            Gibberish.callbackUgens.push(input.callback);
+          }
         }
-      }
 
-      value += `v_${input.id}`
-      input.__varname = value
+        value += `v_${input.id}`;
+        input.__varname = value;
+      }
     }
 
-    return value
+    return value;
   },
 
   // add separators for function calls and handle binops (mono only)
-  __addSeparator( line, input, ugen, isNotEndOfLine ) {
-    if( isNotEndOfLine === true ) {
-      if( ugen.isop === true ) {
-        if( ugen.op === '*' || ugen.op === '/' ) {
-          if( input !== 1 ) {
-            line += ' ' + ugen.op + ' '
-          }else{
-            line = line.slice( 0, -1 * (''+input).length )
+  __addSeparator(line, input, ugen, isNotEndOfLine) {
+    if (isNotEndOfLine === true) {
+      if (ugen.isop === true) {
+        if (ugen.op === '*' || ugen.op === '/') {
+          if (input !== 1) {
+            line += ' ' + ugen.op + ' ';
+          } else {
+            line = line.slice(0, -1 * ('' + input).length);
           }
-        }else{
-          line += ' ' + ugen.op + ' '
+        } else {
+          line += ' ' + ugen.op + ' ';
         }
-      }else{
-        line += ', '
+      } else {
+        line += ', ';
       }
     }
 
-    return line
+    return line;
   },
 
   // add memory to end of function calls and close parenthesis 
-  __addLineEnding( line, ugen, keys ) {
-    if( (ugen.type === 'bus' && keys.length > 0) ) line += ', '
-    if( !ugen.isop && ugen.type !== 'seq' ) line += 'mem'
-    line += ugen.isop ? '' : ' )'
+  __addLineEnding(line, ugen, keys) {
+    if (ugen.type === 'bus' && keys.length > 0) line += ', ';
+    if (!ugen.isop && ugen.type !== 'seq') line += 'mem';
+    line += ugen.isop ? '' : ' )';
 
-    return line
-  },
+    return line;
+  }
 
-}
+};
 
-Gibberish.prototypes.Ugen = Gibberish.prototypes.ugen = require( './ugen.js' )( Gibberish )
-Gibberish.utilities = require( './utilities.js' )( Gibberish )
+Gibberish.prototypes.Ugen = Gibberish.prototypes.ugen = require('./ugen.js')(Gibberish);
+Gibberish.utilities = require('./utilities.js')(Gibberish);
 
+module.exports = Gibberish;
 
-module.exports = Gibberish
-
-},{"./analysis/analyzer.js":76,"./analysis/analyzers.js":77,"./envelopes/envelopes.js":82,"./filters/filters.js":91,"./fx/effect.js":99,"./fx/effects.js":100,"./instruments/instrument.js":114,"./instruments/instruments.js":115,"./instruments/polyMixin.js":119,"./instruments/polytemplate.js":120,"./misc/binops.js":125,"./misc/bus.js":126,"./misc/bus2.js":127,"./misc/monops.js":128,"./misc/panner.js":129,"./misc/time.js":130,"./oscillators/oscillators.js":133,"./scheduling/scheduler.js":137,"./scheduling/seq2.js":138,"./scheduling/sequencer.js":139,"./scheduling/tidal.js":140,"./ugen.js":141,"./ugenTemplate.js":142,"./utilities.js":143,"./workletProxy.js":144,"genish.js":37,"memory-helper":146}],108:[function(require,module,exports){
+},{"./analysis/analyzer.js":79,"./analysis/analyzers.js":80,"./envelopes/envelopes.js":85,"./factory.js":90,"./filters/filters.js":97,"./fx/effect.js":106,"./fx/effects.js":107,"./instruments/instrument.js":121,"./instruments/instruments.js":122,"./instruments/polyMixin.js":126,"./instruments/polytemplate.js":127,"./misc/binops.js":132,"./misc/bus.js":133,"./misc/bus2.js":134,"./misc/monops.js":135,"./misc/panner.js":136,"./misc/time.js":137,"./oscillators/oscillators.js":140,"./scheduling/scheduler.js":144,"./scheduling/seq2.js":145,"./scheduling/sequencer.js":146,"./scheduling/tidal.js":147,"./ugen.js":148,"./utilities.js":149,"./workletProxy.js":150,"genish.js":39,"memory-helper":153}],115:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -7207,10 +7976,11 @@ module.exports = function (Gibberish) {
 
   return Clap;
 };
-},{"./instrument.js":114,"genish.js":37}],109:[function(require,module,exports){
+
+},{"./instrument.js":121,"genish.js":39}],116:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js'),
-      __wavefold = require('../fx/wavefolder.js');
+      __wavefold = require('../fx/wavefolder.dsp.js');
 
 const genish = g;
 
@@ -7319,92 +8089,93 @@ module.exports = function (Gibberish) {
 
   return [Complex, PolyComplex];
 };
-},{"../fx/wavefolder.js":106,"./instrument.js":114,"genish.js":37}],110:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    instrument = require( './instrument.js' )
 
-module.exports = function( Gibberish ) {
+},{"../fx/wavefolder.dsp.js":113,"./instrument.js":121,"genish.js":39}],117:[function(require,module,exports){
+let g = require('genish.js'),
+    instrument = require('./instrument.js');
+
+module.exports = function (Gibberish) {
 
   const Conga = argumentProps => {
-    const conga = Object.create( instrument ),
-          frequency = g.in( 'frequency' ),
-          decay = g.in( 'decay' ),
-          gain  = g.in( 'gain' ),
-          loudness = g.in( 'loudness' ),
-          triggerLoudness = g.in( '__triggerLoudness' )
+    const conga = Object.create(instrument),
+          frequency = g.in('frequency'),
+          decay = g.in('decay'),
+          gain = g.in('gain'),
+          loudness = g.in('loudness'),
+          triggerLoudness = g.in('__triggerLoudness');
 
-    const props = Object.assign( {}, Conga.defaults, argumentProps )
+    const props = Object.assign({}, Conga.defaults, argumentProps);
 
     const trigger = g.bang(),
-          impulse = g.mul( trigger, 60 ),
-          _decay =  g.sub( .101, g.div( decay, 10 ) ), // create range of .001 - .099
-          bpf = g.svf( impulse, frequency, _decay, 2, false ),
-          out = g.mul( bpf, g.mul( g.mul( triggerLoudness,loudness ), gain ) )
-    
-    conga.isStereo = false
-    conga.env = trigger
-    return Gibberish.factory( conga, out, ['instruments','conga'], props  )
-  }
-  
+          impulse = g.mul(trigger, 60),
+          _decay = g.sub(.101, g.div(decay, 10)),
+          // create range of .001 - .099
+    bpf = g.svf(impulse, frequency, _decay, 2, false),
+          out = g.mul(bpf, g.mul(g.mul(triggerLoudness, loudness), gain));
+
+    conga.isStereo = false;
+    conga.env = trigger;
+    return Gibberish.factory(conga, out, ['instruments', 'conga'], props);
+  };
+
   Conga.defaults = {
     gain: .125,
-    frequency:190,
+    frequency: 190,
     decay: .85,
     loudness: 1,
-    __triggerLoudness:1
-  }
+    __triggerLoudness: 1
+  };
 
-  const PolyConga = Gibberish.PolyTemplate( Conga, ['gain','frequency','decay','loudness','__triggerLoudness' ] ) 
-  PolyConga.defaults = Conga.defaults
+  const PolyConga = Gibberish.PolyTemplate(Conga, ['gain', 'frequency', 'decay', 'loudness', '__triggerLoudness']);
+  PolyConga.defaults = Conga.defaults;
 
-  return [ Conga, PolyConga ]
-}
+  return [Conga, PolyConga];
+};
 
-},{"./instrument.js":114,"genish.js":37}],111:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    instrument = require( './instrument.js' )
+},{"./instrument.js":121,"genish.js":39}],118:[function(require,module,exports){
+let g = require('genish.js'),
+    instrument = require('./instrument.js');
 
-module.exports = function( Gibberish ) {
+module.exports = function (Gibberish) {
 
   const Cowbell = argumentProps => {
-    let cowbell = Object.create( instrument )
-    
-    const decay   = g.in( 'decay' ),
-          gain    = g.in( 'gain' ),
-          loudness = g.in( 'loudness' ),
-          triggerLoudness = g.in( '__triggerLoudness' )
+    let cowbell = Object.create(instrument);
 
-    const props = Object.assign( {}, Cowbell.defaults, argumentProps )
+    const decay = g.in('decay'),
+          gain = g.in('gain'),
+          loudness = g.in('loudness'),
+          triggerLoudness = g.in('__triggerLoudness');
 
-    const bpfCutoff = g.param( 'bpfc', 1000 ),
-          s1 = Gibberish.oscillators.factory( 'square', 560 ),
-          s2 = Gibberish.oscillators.factory( 'square', 845 ),
-          eg = g.decay( g.mul( decay, g.gen.samplerate * 2 ), { initValue:0 }), 
-          bpf = g.svf( g.add( s1,s2 ), bpfCutoff, 3, 2, false ),
-          envBpf = g.mul( bpf, eg ),
-          out = g.mul( envBpf, g.mul( gain, loudness, triggerLoudness ) )
+    const props = Object.assign({}, Cowbell.defaults, argumentProps);
 
-    cowbell.env = eg 
+    const bpfCutoff = g.param('bpfc', 1000),
+          s1 = Gibberish.oscillators.factory('square', 560),
+          s2 = Gibberish.oscillators.factory('square', 845),
+          eg = g.decay(g.mul(decay, g.gen.samplerate * 2), { initValue: 0 }),
+          bpf = g.svf(g.add(s1, s2), bpfCutoff, 3, 2, false),
+          envBpf = g.mul(bpf, eg),
+          out = g.mul(envBpf, g.mul(gain, loudness, triggerLoudness));
 
-    cowbell.isStereo = false
+    cowbell.env = eg;
 
-    cowbell = Gibberish.factory( cowbell, out, ['instruments', 'cowbell'], props  )
-    
-    return cowbell
-  }
-  
+    cowbell.isStereo = false;
+
+    cowbell = Gibberish.factory(cowbell, out, ['instruments', 'cowbell'], props);
+
+    return cowbell;
+  };
+
   Cowbell.defaults = {
     gain: 1,
-    decay:.5,
-    loudness:1,
-    __triggerLoudness:1
-  }
+    decay: .5,
+    loudness: 1,
+    __triggerLoudness: 1
+  };
 
-  return Cowbell
+  return Cowbell;
+};
 
-}
-
-},{"./instrument.js":114,"genish.js":37}],112:[function(require,module,exports){
+},{"./instrument.js":121,"genish.js":39}],119:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -7435,6 +8206,10 @@ module.exports = function (Gibberish) {
 
     syn.__createGraph = function () {
       const env = Gibberish.envelopes.factory(props.useADSR, props.shape, attack, decay, sustain, sustainLevel, release, props.triggerRelease);
+
+      syn.advance = () => {
+        env.release();
+      };
 
       const feedbackssd = g.history(0);
 
@@ -7472,13 +8247,16 @@ module.exports = function (Gibberish) {
       }
 
       syn.env = env;
+
+      return env;
     };
 
     syn.__requiresRecompilation = ['carrierWaveform', 'modulatorWaveform', 'antialias', 'filterType', 'filterMode'];
-    syn.__createGraph();
+    const env = syn.__createGraph();
 
     const out = Gibberish.factory(syn, syn.graph, ['instruments', 'FM'], props);
 
+    out.env.advance = out.advance;
     return out;
   };
 
@@ -7519,281 +8297,281 @@ module.exports = function (Gibberish) {
 
   return [FM, PolyFM];
 };
-},{"./instrument.js":114,"genish.js":37}],113:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    instrument = require( './instrument.js' )
 
-module.exports = function( Gibberish ) {
+},{"./instrument.js":121,"genish.js":39}],120:[function(require,module,exports){
+let g = require('genish.js'),
+    instrument = require('./instrument.js');
 
-  let Hat = argumentProps => {
-    let hat = Object.create( instrument ),
-        tune  = g.in( 'tune' ),
-        scaledTune = g.memo( g.add( .4, tune ) ),
-        decay  = g.in( 'decay' ),
-        gain  = g.in( 'gain' ),
-        loudness = g.in( 'loudness' ),
-        triggerLoudness = g.in( '__triggerLoudness' )
+module.exports = function (Gibberish) {
 
-    let props = Object.assign( {}, Hat.defaults, argumentProps )
+    let Hat = argumentProps => {
+        let hat = Object.create(instrument),
+            tune = g.in('tune'),
+            scaledTune = g.memo(g.add(.4, tune)),
+            decay = g.in('decay'),
+            gain = g.in('gain'),
+            loudness = g.in('loudness'),
+            triggerLoudness = g.in('__triggerLoudness');
 
-    let baseFreq = g.mul( 325, scaledTune ), // range of 162.5 - 487.5
-        bpfCutoff = g.mul( g.param( 'bpfc', 7000 ), scaledTune ),
-        hpfCutoff = g.mul( g.param( 'hpfc', 11000 ), scaledTune ),  
-        s1 = Gibberish.oscillators.factory( 'square', baseFreq, false ),
-        s2 = Gibberish.oscillators.factory( 'square', g.mul( baseFreq,1.4471 ) ),
-        s3 = Gibberish.oscillators.factory( 'square', g.mul( baseFreq,1.6170 ) ),
-        s4 = Gibberish.oscillators.factory( 'square', g.mul( baseFreq,1.9265 ) ),
-        s5 = Gibberish.oscillators.factory( 'square', g.mul( baseFreq,2.5028 ) ),
-        s6 = Gibberish.oscillators.factory( 'square', g.mul( baseFreq,2.6637 ) ),
-        sum = g.add( s1,s2,s3,s4,s5,s6 ),
-        eg = g.decay( g.mul( decay, g.gen.samplerate * 2 ), { initValue:0 }), 
-        bpf = g.svf( sum, bpfCutoff, .5, 2, false ),
-        envBpf = g.mul( bpf, eg ),
-        hpf = g.filter24( envBpf, 0, hpfCutoff, 0 ),
-        out = g.mul( hpf, g.mul( gain, g.mul( loudness, triggerLoudness ) ) )
+        let props = Object.assign({}, Hat.defaults, argumentProps);
 
-    hat.env = eg 
-    hat.isStereo = false
+        let baseFreq = g.mul(325, scaledTune),
+            // range of 162.5 - 487.5
+        bpfCutoff = g.mul(g.param('bpfc', 7000), scaledTune),
+            hpfCutoff = g.mul(g.param('hpfc', 11000), scaledTune),
+            s1 = Gibberish.oscillators.factory('square', baseFreq, false),
+            s2 = Gibberish.oscillators.factory('square', g.mul(baseFreq, 1.4471)),
+            s3 = Gibberish.oscillators.factory('square', g.mul(baseFreq, 1.6170)),
+            s4 = Gibberish.oscillators.factory('square', g.mul(baseFreq, 1.9265)),
+            s5 = Gibberish.oscillators.factory('square', g.mul(baseFreq, 2.5028)),
+            s6 = Gibberish.oscillators.factory('square', g.mul(baseFreq, 2.6637)),
+            sum = g.add(s1, s2, s3, s4, s5, s6),
+            eg = g.decay(g.mul(decay, g.gen.samplerate * 2), { initValue: 0 }),
+            bpf = g.svf(sum, bpfCutoff, .5, 2, false),
+            envBpf = g.mul(bpf, eg),
+            hpf = g.filter24(envBpf, 0, hpfCutoff, 0),
+            out = g.mul(hpf, g.mul(gain, g.mul(loudness, triggerLoudness)));
 
-    const __hat = Gibberish.factory( hat, out, ['instruments','hat'], props  )
-    
+        hat.env = eg;
+        hat.isStereo = false;
 
-    return __hat
-  }
-  
-  Hat.defaults = {
-    gain:  .5,
-    tune: .6,
-    decay:.1,
-    loudness:1,
-    __triggerLoudness:1
-  }
+        const __hat = Gibberish.factory(hat, out, ['instruments', 'hat'], props);
 
-  return Hat
+        return __hat;
+    };
 
-}
+    Hat.defaults = {
+        gain: .5,
+        tune: .6,
+        decay: .1,
+        loudness: 1,
+        __triggerLoudness: 1
+    };
 
-},{"./instrument.js":114,"genish.js":37}],114:[function(require,module,exports){
-const ugen = require( '../ugen.js' )()
+    return Hat;
+};
 
-const instrument = Object.create( ugen )
+},{"./instrument.js":121,"genish.js":39}],121:[function(require,module,exports){
+const ugen = require('../ugen.js')();
 
-Object.assign( instrument, {
-  type:'instrument',
+const instrument = Object.create(ugen);
 
-  note( freq, loudness=null ) {
+Object.assign(instrument, {
+  type: 'instrument',
+
+  note(freq, loudness = null) {
     // if binop is should be used...
-    if( isNaN( this.frequency ) ) { 
+    if (isNaN(this.frequency)) {
       // and if we are assigning binop for the first time...
 
-      let obj = Gibberish.processor.ugens.get( this.frequency.id )
-      if( obj.isop !== true ) {
-        obj.inputs[0] = freq
-      }else{
-        obj.inputs[1] = freq
-        Gibberish.dirty( this )
+      let obj = Gibberish.processor.ugens.get(this.frequency.id);
+      if (obj.isop !== true) {
+        obj.inputs[0] = freq;
+      } else {
+        obj.inputs[1] = freq;
+        Gibberish.dirty(this);
       }
-      this.frequency = obj
-    }else{
-      this.frequency = freq
+      this.frequency = obj;
+    } else {
+      this.frequency = freq;
     }
 
-    if( loudness !== null ) {
-      this.__triggerLoudness = loudness 
+    if (loudness !== null) {
+      this.__triggerLoudness = loudness;
     }
 
-    this.env.trigger()
+    this.env.trigger();
   },
 
-  trigger( loudness = 1 ) {
-    this.__triggerLoudness = loudness
-    this.env.trigger()
-  },
-
-})
-
-module.exports = instrument
-
-},{"../ugen.js":141}],115:[function(require,module,exports){
-module.exports = function( Gibberish ) {
-
-const instruments = {
-  Kick        : require( './kick.js' )( Gibberish ),
-  Clave       : require( './conga.js' )( Gibberish )[0], // clave is same as conga with different defaults, see below
-  Hat         : require( './hat.js' )( Gibberish ),
-  Snare       : require( './snare.js' )( Gibberish ),
-  Cowbell     : require( './cowbell.js' )( Gibberish ),
-  Tom         : require( './tom.js' )( Gibberish ),
-  Clap        : require( './clap.js' )( Gibberish )
-}
-
-instruments.Clave.defaults.frequency = 2500
-instruments.Clave.defaults.decay = .5;
-
-[ instruments.Synth, instruments.PolySynth ]     = require( './synth.js' )( Gibberish );
-[ instruments.Complex, instruments.PolyComplex]  = require( './complex.js' )( Gibberish );
-[ instruments.Monosynth, instruments.PolyMono ]  = require( './monosynth.js' )( Gibberish );
-[ instruments.FM, instruments.PolyFM ]           = require( './fm.js' )( Gibberish );
-[ instruments.Sampler, instruments.PolySampler ] = require( './sampler.js' )( Gibberish );
-[ instruments.Karplus, instruments.PolyKarplus ] = require( './karplusstrong.js' )( Gibberish );
-[ instruments.Conga, instruments.PolyConga ]     = require( './conga.js' )( Gibberish )
-
-instruments.export = target => {
-  for( let key in instruments ) {
-    if( key !== 'export' ) {
-      target[ key ] = instruments[ key ]
-    }
+  trigger(loudness = 1) {
+    this.__triggerLoudness = loudness;
+    this.env.trigger();
   }
-}
 
-return instruments
+});
 
-}
+module.exports = instrument;
 
-},{"./clap.js":108,"./complex.js":109,"./conga.js":110,"./cowbell.js":111,"./fm.js":112,"./hat.js":113,"./karplusstrong.js":116,"./kick.js":117,"./monosynth.js":118,"./sampler.js":121,"./snare.js":122,"./synth.js":123,"./tom.js":124}],116:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      instrument = require( './instrument.js' )
+},{"../ugen.js":148}],122:[function(require,module,exports){
+module.exports = function (Gibberish) {
 
-module.exports = function( Gibberish ) {
+  const instruments = {
+    Kick: require('./kick.js')(Gibberish),
+    Clave: require('./conga.js')(Gibberish)[0], // clave is same as conga with different defaults, see below
+    Hat: require('./hat.js')(Gibberish),
+    Snare: require('./snare.js')(Gibberish),
+    Cowbell: require('./cowbell.js')(Gibberish),
+    Tom: require('./tom.js')(Gibberish),
+    Clap: require('./clap.dsp.js')(Gibberish)
+  };
+
+  instruments.Clave.defaults.frequency = 2500;
+  instruments.Clave.defaults.decay = .5;
+
+  [instruments.Synth, instruments.PolySynth] = require('./synth.dsp.js')(Gibberish);
+  [instruments.Complex, instruments.PolyComplex] = require('./complex.dsp.js')(Gibberish);
+  [instruments.Monosynth, instruments.PolyMono] = require('./monosynth.dsp.js')(Gibberish);
+  [instruments.FM, instruments.PolyFM] = require('./fm.dsp.js')(Gibberish);
+  [instruments.Sampler, instruments.PolySampler] = require('./sampler.js')(Gibberish);
+  [instruments.Karplus, instruments.PolyKarplus] = require('./karplusstrong.js')(Gibberish);
+  [instruments.Conga, instruments.PolyConga] = require('./conga.js')(Gibberish);
+
+  instruments.export = target => {
+    for (let key in instruments) {
+      if (key !== 'export') {
+        target[key] = instruments[key];
+      }
+    }
+  };
+
+  return instruments;
+};
+
+},{"./clap.dsp.js":115,"./complex.dsp.js":116,"./conga.js":117,"./cowbell.js":118,"./fm.dsp.js":119,"./hat.js":120,"./karplusstrong.js":123,"./kick.js":124,"./monosynth.dsp.js":125,"./sampler.js":128,"./snare.js":129,"./synth.dsp.js":130,"./tom.js":131}],123:[function(require,module,exports){
+const g = require('genish.js'),
+      instrument = require('./instrument.js');
+
+module.exports = function (Gibberish) {
 
   const Karplus = inputProps => {
 
-    const props = Object.assign( {}, Karplus.defaults, inputProps )
-    let syn = Object.create( instrument )
-    
-    let sampleRate = Gibberish.ctx.sampleRate 
+    const props = Object.assign({}, Karplus.defaults, inputProps);
+    let syn = Object.create(instrument);
+
+    let sampleRate = Gibberish.ctx.sampleRate;
 
     const trigger = g.bang(),
-          // high initialValue stops triggering on initialization
-          phase = g.accum( 1, trigger, { shouldWrapMax:false, initialValue:1000000 } ),
-          env = g.gtp( g.sub( 1, g.div( phase, 200 ) ), 0 ),
-          impulse = g.mul( g.noise(), env ),
+
+    // high initialValue stops triggering on initialization
+    phase = g.accum(1, trigger, { shouldWrapMax: false, initialValue: 1000000 }),
+          env = g.gtp(g.sub(1, g.div(phase, 200)), 0),
+          impulse = g.mul(g.noise(), env),
           feedback = g.history(),
           frequency = g.in('frequency'),
-          glide = g.in( 'glide' ),
-          slidingFrequency = g.slide( frequency, glide, glide ),
-          delay = g.delay( g.add( impulse, feedback.out ), g.div( sampleRate, slidingFrequency )),
-          decayed = g.mul( delay, g.t60( g.mul( g.in('decay'), slidingFrequency ) ) ),
-          damped =  g.mix( decayed, feedback.out, g.in('damping') ),
+          glide = g.in('glide'),
+          slidingFrequency = g.slide(frequency, glide, glide),
+          delay = g.delay(g.add(impulse, feedback.out), g.div(sampleRate, slidingFrequency)),
+          decayed = g.mul(delay, g.t60(g.mul(g.in('decay'), slidingFrequency))),
+          damped = g.mix(decayed, feedback.out, g.in('damping')),
           n = g.noise(),
-          blendValue = g.switch( g.gt( n, g.in('blend') ), -1, 1 ), 
-          withGain = g.mul( g.mul( blendValue, damped ), g.mul( g.mul( g.in('loudness'), g.in('__triggerLoudness') ), g .in('gain') ) )
+          blendValue = g.switch(g.gt(n, g.in('blend')), -1, 1),
+          withGain = g.mul(g.mul(blendValue, damped), g.mul(g.mul(g.in('loudness'), g.in('__triggerLoudness')), g.in('gain')));
 
-    feedback.in( damped )
+    feedback.in(damped);
 
-    const properties = Object.assign( {}, Karplus.defaults, props )
+    const properties = Object.assign({}, Karplus.defaults, props);
 
-    Object.assign( syn, {
-      properties : props,
+    Object.assign(syn, {
+      properties: props,
 
-      env : trigger,
+      env: trigger,
       phase,
 
       getPhase() {
-        return Gibberish.memory.heap[ phase.memory.value.idx ]
-      },
-    })
+        return Gibberish.memory.heap[phase.memory.value.idx];
+      }
+    });
 
-    if( properties.panVoices ) {  
-      const panner = g.pan( withGain, withGain, g.in( 'pan' ) )
-      syn = Gibberish.factory( syn, [panner.left, panner.right], ['instruments','karplus'], props  )
-      syn.isStereo = true
-    }else{
-      syn = Gibberish.factory( syn, withGain, ['instruments','karplus'], props )
-      syn.isStereo = false 
+    if (properties.panVoices) {
+      const panner = g.pan(withGain, withGain, g.in('pan'));
+      syn = Gibberish.factory(syn, [panner.left, panner.right], ['instruments', 'karplus'], props);
+      syn.isStereo = true;
+    } else {
+      syn = Gibberish.factory(syn, withGain, ['instruments', 'karplus'], props);
+      syn.isStereo = false;
     }
 
-    return syn
-  }
-  
+    return syn;
+  };
+
   Karplus.defaults = {
     decay: .97,
-    damping:.2,
+    damping: .2,
     gain: .15,
-    frequency:220,
+    frequency: 220,
     pan: .5,
-    glide:1,
-    panVoices:false,
-    loudness:1,
-    __triggerLoudness:1,
-    blend:1
-  }
+    glide: 1,
+    panVoices: false,
+    loudness: 1,
+    __triggerLoudness: 1,
+    blend: 1
+  };
 
-  let envCheckFactory = ( syn,synth ) => {
-    let envCheck = ()=> {
+  let envCheckFactory = (syn, synth) => {
+    let envCheck = () => {
       let phase = syn.getPhase(),
-          endTime = synth.decay * sampleRate
+          endTime = synth.decay * sampleRate;
 
-      if( phase > endTime ) {
-        synth.disconnectUgen( syn )
-        syn.isConnected = false
-        Gibberish.memory.heap[ syn.phase.memory.value.idx ] = 0 // trigger doesn't seem to reset for some reason
-      }else{
-        Gibberish.blockCallbacks.push( envCheck )
+      if (phase > endTime) {
+        synth.disconnectUgen(syn);
+        syn.isConnected = false;
+        Gibberish.memory.heap[syn.phase.memory.value.idx] = 0; // trigger doesn't seem to reset for some reason
+      } else {
+        Gibberish.blockCallbacks.push(envCheck);
       }
-    }
-    return envCheck
-  }
+    };
+    return envCheck;
+  };
 
-  const PolyKarplus = Gibberish.PolyTemplate( Karplus, ['frequency','decay','damping','pan','gain', 'glide','loudness', '__triggerLoudness'], envCheckFactory ) 
-  PolyKarplus.defaults = Karplus.defaults
+  const PolyKarplus = Gibberish.PolyTemplate(Karplus, ['frequency', 'decay', 'damping', 'pan', 'gain', 'glide', 'loudness', '__triggerLoudness'], envCheckFactory);
+  PolyKarplus.defaults = Karplus.defaults;
 
-  return [ Karplus, PolyKarplus ]
+  return [Karplus, PolyKarplus];
+};
 
-}
+},{"./instrument.js":121,"genish.js":39}],124:[function(require,module,exports){
+let g = require('genish.js'),
+    instrument = require('./instrument.js');
 
-},{"./instrument.js":114,"genish.js":37}],117:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    instrument = require( './instrument.js' )
-
-module.exports = function( Gibberish ) {
+module.exports = function (Gibberish) {
 
   const Kick = inputProps => {
     // establish prototype chain
-    const kick = Object.create( instrument )
+    const kick = Object.create(instrument);
 
     // define inputs
-    const frequency = g.in( 'frequency' ),
-          decay = g.in( 'decay' ),
-          tone  = g.in( 'tone' ),
-          gain  = g.in( 'gain' ),
-          loudness = g.in( 'loudness' ),
-          triggerLoudness = g.in( '__triggerLoudness' ),
-          Loudness = g.mul( loudness, triggerLoudness )
-    
+    const frequency = g.in('frequency'),
+          decay = g.in('decay'),
+          tone = g.in('tone'),
+          gain = g.in('gain'),
+          loudness = g.in('loudness'),
+          triggerLoudness = g.in('__triggerLoudness'),
+          Loudness = g.mul(loudness, triggerLoudness);
+
     // create initial property set
-    const props = Object.assign( {}, Kick.defaults, inputProps )
-    Object.assign( kick, props )
+    const props = Object.assign({}, Kick.defaults, inputProps);
+    Object.assign(kick, props);
 
     // create DSP graph
     const trigger = g.bang(),
-          impulse = g.mul( trigger, 60 ),
-          scaledDecay = g.sub( 1.005, decay ), // -> range { .005, 1.005 }
-          scaledTone = g.add( 50, g.mul( tone, g.mul(4000, Loudness ) ) ), // -> range { 50, 4050 }
-          bpf = g.svf( impulse, frequency, scaledDecay, 2, false ),
-          lpf = g.svf( bpf, scaledTone, .5, 0, false ),
-          graph = g.mul( lpf, g.mul( gain, Loudness ) )
-    
-    kick.env = trigger
-    const out = Gibberish.factory( kick, graph, ['instruments','kick'], props  )
+          impulse = g.mul(trigger, 60),
+          scaledDecay = g.sub(1.005, decay),
+          // -> range { .005, 1.005 }
+    scaledTone = g.add(50, g.mul(tone, g.mul(4000, Loudness))),
+          // -> range { 50, 4050 }
+    bpf = g.svf(impulse, frequency, scaledDecay, 2, false),
+          lpf = g.svf(bpf, scaledTone, .5, 0, false),
+          graph = g.mul(lpf, g.mul(gain, Loudness));
 
-    return out
-  }
-  
+    kick.env = trigger;
+    const out = Gibberish.factory(kick, graph, ['instruments', 'kick'], props);
+
+    return out;
+  };
+
   Kick.defaults = {
     gain: 1,
-    frequency:85,
+    frequency: 85,
     tone: .25,
-    decay:.9,
-    loudness:1,
-    __triggerLoudness:1
-  }
+    decay: .9,
+    loudness: 1,
+    __triggerLoudness: 1
+  };
 
-  return Kick
+  return Kick;
+};
 
-}
-
-},{"./instrument.js":114,"genish.js":37}],118:[function(require,module,exports){
+},{"./instrument.js":121,"genish.js":39}],125:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js'),
       feedbackOsc = require('../oscillators/fmfeedbackosc.js');
@@ -7846,7 +8624,7 @@ module.exports = function (Gibberish) {
       const oscSum = g.add(...oscs),
 
       // XXX horrible hack below to "use" saturation even when not using a diode filter 
-      oscWithEnv = props.filterType === 2 ? g.mul(oscSum, env) : g.mul(oscSum, g.mul(env, saturation)),
+      oscWithEnv = props.filterType === 2 ? g.mul(oscSum, env) : g.sub(g.add(g.mul(oscSum, env), saturation), saturation),
             baseCutoffFreq = g.mul(g.in('cutoff'), g.div(frequency, g.gen.samplerate / 16)),
             cutoff = g.mul(g.mul(baseCutoffFreq, g.pow(2, g.mul(g.in('filterMult'), Loudness))), env),
             filteredOsc = Gibberish.filters.factory(oscWithEnv, cutoff, g.in('saturation'), syn);
@@ -7906,53 +8684,54 @@ module.exports = function (Gibberish) {
 
   return [Mono, PolyMono];
 };
-},{"../oscillators/fmfeedbackosc.js":132,"./instrument.js":114,"genish.js":37}],119:[function(require,module,exports){
+
+},{"../oscillators/fmfeedbackosc.js":139,"./instrument.js":121,"genish.js":39}],126:[function(require,module,exports){
 // XXX TOO MANY GLOBAL GIBBERISH VALUES
 
-const Gibberish = require( '../index.js' )
+const Gibberish = require('../index.js');
 
 module.exports = {
-  note( freq ) {
+  note(freq) {
     // will be sent to processor node via proxy method...
-    if( Gibberish.mode !== 'worklet' ) {
-      let voice = this.__getVoice__()
+    if (Gibberish.mode !== 'worklet') {
+      let voice = this.__getVoice__();
       //Object.assign( voice, this.properties )
       //if( gain === undefined ) gain = this.gain
       //voice.gain = gain
-      voice.__triggerLoudness = this.__triggerLoudness
-      voice.note( freq, this.__triggerLoudness )
-      this.__runVoice__( voice, this )
-      this.triggerNote = freq
+      voice.__triggerLoudness = this.__triggerLoudness;
+      voice.note(freq, this.__triggerLoudness);
+      this.__runVoice__(voice, this);
+      this.triggerNote = freq;
     }
   },
 
   // XXX this is not particularly satisfying...
   // must check for both notes and chords
-  trigger( loudness ) {
-    if( this.triggerChord !== null ) {
-      this.triggerChord.forEach( v => {
-        let voice = this.__getVoice__()
-        Object.assign( voice, this.properties )
-        voice.note( v, loudness )
-        this.__runVoice__( voice, this )
-      })
-    }else if( this.triggerNote !== null ) {
-      let voice = this.__getVoice__()
-      Object.assign( voice, this.properties )
-      voice.note( this.triggerNote, loudness )
-      this.__runVoice__( voice, this )
-    }else{
-      let voice = this.__getVoice__()
-      Object.assign( voice, this.properties )
-      voice.trigger( loudness )
-      this.__runVoice__( voice, this )
+  trigger(loudness) {
+    if (this.triggerChord !== null) {
+      this.triggerChord.forEach(v => {
+        let voice = this.__getVoice__();
+        Object.assign(voice, this.properties);
+        voice.note(v, loudness);
+        this.__runVoice__(voice, this);
+      });
+    } else if (this.triggerNote !== null) {
+      let voice = this.__getVoice__();
+      Object.assign(voice, this.properties);
+      voice.note(this.triggerNote, loudness);
+      this.__runVoice__(voice, this);
+    } else {
+      let voice = this.__getVoice__();
+      Object.assign(voice, this.properties);
+      voice.trigger(loudness);
+      this.__runVoice__(voice, this);
     }
   },
 
-  __runVoice__( voice, _poly ) {
-    if( !voice.isConnected ) {
-      voice.connect( _poly )
-      voice.isConnected = true
+  __runVoice__(voice, _poly) {
+    if (!voice.isConnected) {
+      voice.connect(_poly);
+      voice.isConnected = true;
     }
 
     //let envCheck
@@ -7975,419 +8754,385 @@ module.exports = {
   },
 
   __getVoice__() {
-    return this.voices[ this.voiceCount++ % this.voices.length ]
+    return this.voices[this.voiceCount++ % this.voices.length];
   },
 
-  chord( frequencies ) {
+  chord(frequencies) {
     // will be sent to processor node via proxy method...
-    if( Gibberish !== undefined && Gibberish.mode !== 'worklet' ) {
-      frequencies.forEach( v => this.note( v ) )
-      this.triggerChord = frequencies
+    if (Gibberish !== undefined && Gibberish.mode !== 'worklet') {
+      frequencies.forEach(v => this.note(v));
+      this.triggerChord = frequencies;
     }
   },
 
   free() {
-    for( let child of this.voices ) child.free()
+    for (let child of this.voices) child.free();
   },
 
-  triggerChord:null,
-  triggerNote:null
-}
+  triggerChord: null,
+  triggerNote: null
+};
 
-},{"../index.js":107}],120:[function(require,module,exports){
+},{"../index.js":114}],127:[function(require,module,exports){
 /*
  * This files creates a factory generating polysynth constructors.
  */
 
-const g = require( 'genish.js' )
-const __proxy = require( '../workletProxy.js' )
+const g = require('genish.js');
+const __proxy = require('../workletProxy.js');
 
-module.exports = function( Gibberish ) {
-  const proxy = __proxy( Gibberish )
+module.exports = function (Gibberish) {
+  const proxy = __proxy(Gibberish);
 
-  const TemplateFactory = ( ugen, propertyList, _envCheck ) => {
-    /* 
-     * polysynths are basically busses that connect child synth voices.
-     * We create separate prototypes for mono vs stereo instances.
-     */
-
-    const monoProto   = Object.create( Gibberish.Bus() ),
-          stereoProto = Object.create( Gibberish.Bus2() )
-
-    // since there are two prototypes we can't assign directly to one of them...
-    Object.assign( monoProto,   Gibberish.mixins.polyinstrument )
-    Object.assign( stereoProto, Gibberish.mixins.polyinstrument )
+  const TemplateFactory = (ugen, propertyList, _envCheck) => {
 
     const Template = props => {
-      const properties = Object.assign( {}, { isStereo:true, maxVoices:4 }, props )
+      const properties = Object.assign({}, { isStereo: true, maxVoices: 4 }, props);
 
       //const synth = properties.isStereo === true ? Object.create( stereoProto ) : Object.create( monoProto )
-      const synth = properties.isStereo === true ? Gibberish.Bus2({ __useProxy__:false }) : Gibberish.Bus({ __useProxy__:false }) 
+      const synth = properties.isStereo === true ? Gibberish.Bus2({ __useProxy__: false }) : Gibberish.Bus({ __useProxy__: false });
 
-      Object.assign( 
-        synth, 
+      Object.assign(synth, {
+        maxVoices: properties.maxVoices,
+        voiceCount: 0,
+        envCheck: _envCheck,
+        dirty: true,
+        ugenName: 'poly' + ugen.name + '_' + synth.id + '_' + (properties.isStereo ? 2 : 1),
+        properties
+      }, Gibberish.mixins.polyinstrument);
 
-        {
-          maxVoices: properties.maxVoices, 
-          voiceCount: 0,
-          envCheck: _envCheck,
-          dirty: true,
-          ugenName: 'poly' + ugen.name + '_' + synth.id + '_' + ( properties.isStereo ? 2 : 1 ),
-          properties
-        },
+      properties.panVoices = true; //false//properties.isStereo
+      synth.callback.ugenName = synth.ugenName;
 
-        Gibberish.mixins.polyinstrument
-      )
+      const storedId = properties.id;
+      if (properties.id !== undefined) delete properties.id;
 
-      properties.panVoices = true//false//properties.isStereo
-      synth.callback.ugenName = synth.ugenName
+      const voices = [];
+      for (let i = 0; i < synth.maxVoices; i++) {
+        properties.id = synth.id + '_' + i;
+        voices[i] = ugen(properties);
+        if (Gibberish.mode === 'processor') voices[i].callback.ugenName = voices[i].ugenName;
 
-      const storedId = properties.id
-      if( properties.id !== undefined ) delete properties.id 
-
-      const voices = []
-      for( let i = 0; i < synth.maxVoices; i++ ) {
-        properties.id = synth.id +'_'+i
-        voices[i] = ugen( properties )
-        voices[i].callback.ugenName = voices[i].ugenName
-        voices[i].isConnected = false
+        voices[i].isConnected = false;
         //synth.__voices[i] = proxy( ['instruments', ugen.name], properties, synth.voices[i] )
       }
 
-      let _propertyList 
-      if( properties.isStereo === false ) {
-        _propertyList = propertyList.slice( 0 )
-        const idx =  _propertyList.indexOf( 'pan' )
-        if( idx  > -1 ) _propertyList.splice( idx, 1 )
+      let _propertyList;
+      if (properties.isStereo === false) {
+        _propertyList = propertyList.slice(0);
+        const idx = _propertyList.indexOf('pan');
+        if (idx > -1) _propertyList.splice(idx, 1);
       }
 
-      properties.id = storedId
+      properties.id = storedId;
 
-      TemplateFactory.setupProperties( synth, ugen, properties.isStereo ? propertyList : _propertyList )
-      
-      const p = proxy( ['instruments', 'Poly'+ugen.name], properties, synth ) 
+      TemplateFactory.setupProperties(synth, ugen, properties.isStereo ? propertyList : _propertyList);
+
+      const p = proxy(['instruments', 'Poly' + ugen.name], properties, synth);
 
       // proxy workaround nightmare... if we include the voices when we create
       // the proxy, they wind up being strangely unaddressable. perhaps they
       // are being overwritting in the Processor.ugens map object?
       // manually adding each one seems to work around the problem
-      if( Gibberish.mode === 'worklet' ) {
-        p.voices = []
-        let count = 0
-        for( let v of voices ) {
+      if (Gibberish.mode === 'worklet') {
+        p.voices = [];
+        let count = 0;
+        for (let v of voices) {
           Gibberish.worklet.port.postMessage({
             address: 'addObjectToProperty',
             object: synth.id,
-            name:'voices',
-            key:count,
-            value:v.id
-          })
+            name: 'voices',
+            key: count,
+            value: v.id
+          });
 
-          p.voices[ count ] = v
-          count++
+          p.voices[count] = v;
+          count++;
         }
       }
 
-      return p 
-    }
+      return p;
+    };
 
-    return Template
-  }
+    return Template;
+  };
 
-  TemplateFactory.setupProperties = function( synth, ugen, props ) {
-    for( let property of props ) {
-      if( property === 'pan' || property === 'id' ) continue
-      Object.defineProperty( synth, property, {
+  TemplateFactory.setupProperties = function (synth, ugen, props) {
+    for (let property of props) {
+      if (property === 'pan' || property === 'id') continue;
+      Object.defineProperty(synth, property, {
         get() {
-          return synth.properties[ property ] || ugen.defaults[ property ]
+          return synth.properties[property] || ugen.defaults[property];
         },
-        set( v ) {
-          synth.properties[ property ] = v
-          for( let child of synth.voices ) {
-            child[ property ] = v
+        set(v) {
+          synth.properties[property] = v;
+          for (let child of synth.voices) {
+            child[property] = v;
           }
         }
-      })
+      });
     }
-  }
+  };
 
-  return TemplateFactory
+  return TemplateFactory;
+};
 
-}
+},{"../workletProxy.js":150,"genish.js":39}],128:[function(require,module,exports){
+const g = require('genish.js'),
+      instrument = require('./instrument.js');
 
-},{"../workletProxy.js":144,"genish.js":37}],121:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      instrument = require( './instrument.js' )
+module.exports = function (Gibberish) {
+  const proto = Object.create(instrument);
+  const memo = {};
 
-module.exports = function( Gibberish ) {
-  const proto = Object.create( instrument )
-  const memo = {}
-
-  Object.assign( proto, {
-    note( rate ) {
-      this.rate = rate
-      if( rate > 0 ) {
-        this.__trigger()
-      }else{
-        this.__phase__.value = this.end * (this.data.buffer.length - 1)
+  Object.assign(proto, {
+    note(rate) {
+      this.rate = rate;
+      if (rate > 0) {
+        this.__trigger();
+      } else {
+        this.__phase__.value = this.end * (this.data.buffer.length - 1);
       }
     },
-    trigger( volume ) {
-      if( volume !== undefined ) this.gain = volume
+    trigger(volume) {
+      if (volume !== undefined) this.gain = volume;
 
-      if( Gibberish.mode === 'processor' ) {
+      if (Gibberish.mode === 'processor') {
         // if we're playing the sample forwards...
-        if( Gibberish.memory.heap[ this.__rateStorage__.memory.values.idx ] > 0 ) {
-          this.__trigger()
-        }else{
-          this.__phase__.value = this.end * (this.data.buffer.length - 1)
+        if (Gibberish.memory.heap[this.__rateStorage__.memory.values.idx] > 0) {
+          this.__trigger();
+        } else {
+          this.__phase__.value = this.end * (this.data.buffer.length - 1);
         }
       }
-    },
-  })
+    }
+  });
 
   const Sampler = inputProps => {
-    const syn = Object.create( proto )
+    const syn = Object.create(proto);
 
-    const props = Object.assign( { onload:null }, Sampler.defaults, inputProps )
+    const props = Object.assign({ onload: null }, Sampler.defaults, inputProps);
 
-    syn.isStereo = props.isStereo !== undefined ? props.isStereo : false
+    syn.isStereo = props.isStereo !== undefined ? props.isStereo : false;
 
-    const start = g.in( 'start' ), end = g.in( 'end' ), 
-          bufferLength = g.in( 'bufferLength' ), 
-          rate = g.in( 'rate' ), shouldLoop = g.in( 'loops' ),
-          loudness = g.in( 'loudness' ),
-          triggerLoudness = g.in( '__triggerLoudness' ),
-          // rate storage is used to determine whether we're playing
-          // the sample forward or in reverse, for use in the 'trigger' method.
-          rateStorage = g.data([0], 1, { meta:true })
+    const start = g.in('start'),
+          end = g.in('end'),
+          bufferLength = g.in('bufferLength'),
+          rate = g.in('rate'),
+          shouldLoop = g.in('loops'),
+          loudness = g.in('loudness'),
+          triggerLoudness = g.in('__triggerLoudness'),
 
-    Object.assign( syn, props )
+    // rate storage is used to determine whether we're playing
+    // the sample forward or in reverse, for use in the 'trigger' method.
+    rateStorage = g.data([0], 1, { meta: true });
 
-    if( Gibberish.mode === 'worklet' ) {
+    Object.assign(syn, props);
+
+    if (Gibberish.mode === 'worklet') {
       syn.__meta__ = {
-        address:'add',
+        address: 'add',
         name: ['instruments', 'Sampler'],
-        properties: JSON.stringify(props), 
+        properties: JSON.stringify(props),
         id: syn.id
-      }
+      };
 
-      Gibberish.worklet.ugens.set( syn.id, syn )
+      Gibberish.worklet.ugens.set(syn.id, syn);
 
-      Gibberish.worklet.port.postMessage( syn.__meta__ )
+      Gibberish.worklet.port.postMessage(syn.__meta__);
     }
 
-    syn.__createGraph = function() {
-      syn.__bang__ = g.bang()
-      syn.__trigger = syn.__bang__.trigger
+    syn.__createGraph = function () {
+      syn.__bang__ = g.bang();
+      syn.__trigger = syn.__bang__.trigger;
 
-      syn.__phase__ = g.counter( rate, g.mul(start,bufferLength), g.mul( end, bufferLength ), syn.__bang__, shouldLoop, { shouldWrap:false, initialValue:9999999 })
-      
-      syn.__rateStorage__ = rateStorage
-      rateStorage[0] = rate
+      syn.__phase__ = g.counter(rate, g.mul(start, bufferLength), g.mul(end, bufferLength), syn.__bang__, shouldLoop, { shouldWrap: false, initialValue: 9999999 });
+
+      syn.__rateStorage__ = rateStorage;
+      rateStorage[0] = rate;
 
       // XXX we added our recorded 'rate' param and then effectively subtract it,
       // so that its presence in the graph will force genish to actually record the 
       // rate as the input. this is extremely hacky... there should be a way to record
       // value without having to include it in the graph!
-      syn.graph = g.add( g.mul( 
-        g.ifelse( 
-          g.and( g.gte( syn.__phase__, g.mul(start,bufferLength) ), g.lt( syn.__phase__, g.mul(end,bufferLength) ) ),
-          g.peek( 
-            syn.data, 
-            syn.__phase__,
-            { mode:'samples' }
-          ),
-          0
-        ), 
-        g.mul( g.mul( loudness, triggerLoudness ), g.in('gain') )
-      ), rateStorage[0], g.mul( rateStorage[0], -1 ) )
-      
-      if( syn.panVoices === true ) { 
-        const panner = g.pan( syn.graph, syn.graph, g.in( 'pan' ) ) 
-        syn.graph = [ panner.left, panner.right ]
-      }
-    }
+      syn.graph = g.add(g.mul(g.ifelse(g.and(g.gte(syn.__phase__, g.mul(start, bufferLength)), g.lt(syn.__phase__, g.mul(end, bufferLength))), g.peek(syn.data, syn.__phase__, { mode: 'samples' }), 0), g.mul(g.mul(loudness, triggerLoudness), g.in('gain'))), rateStorage[0], g.mul(rateStorage[0], -1));
 
-    const onload = (buffer,filename) => {
-      if( buffer === undefined ) return
-      if( Gibberish.mode === 'worklet' ) {
+      if (syn.panVoices === true) {
+        const panner = g.pan(syn.graph, syn.graph, g.in('pan'));
+        syn.graph = [panner.left, panner.right];
+      }
+    };
+
+    const onload = (buffer, filename) => {
+      if (buffer === undefined) return;
+      if (Gibberish.mode === 'worklet') {
         //const memIdx = memo[ filename ].idx !== undefined ? memo[ filename ].idx : Gibberish.memory.alloc( syn.data.memory.values.length, true )
 
-        const memIdx = Gibberish.memory.alloc( buffer.length, true )
+        const memIdx = Gibberish.memory.alloc(buffer.length, true);
         //memo[ filename ].idx = memIdx
 
         Gibberish.worklet.port.postMessage({
-          address:'copy',
-          id:     syn.id,
-          idx:    memIdx,
+          address: 'copy',
+          id: syn.id,
+          idx: memIdx,
           buffer
-        })
-
-      }else if ( Gibberish.mode === 'processor' ) {
-        syn.data.buffer = buffer
-        syn.data.memory.values.length = syn.data.dim = buffer.length
-        syn.__redoGraph() 
+        });
+      } else if (Gibberish.mode === 'processor') {
+        syn.data.buffer = buffer;
+        syn.data.memory.values.length = syn.data.dim = buffer.length;
+        syn.__redoGraph();
       }
 
-      if( typeof syn.onload === 'function' ){  
-        syn.onload( buffer || syn.data.buffer )
+      if (typeof syn.onload === 'function') {
+        syn.onload(buffer || syn.data.buffer);
       }
-      if( syn.bufferLength === -999999999 && syn.data.buffer !== undefined ) syn.bufferLength = syn.data.buffer.length - 1
-    }
+      if (syn.bufferLength === -999999999 && syn.data.buffer !== undefined) syn.bufferLength = syn.data.buffer.length - 1;
+    };
 
     //if( props.filename ) {
-    syn.loadFile = function( filename ) {
+    syn.loadFile = function (filename) {
       //if( memo[ filename ] === undefined ) {
-        if( Gibberish.mode !== 'processor' ) {
-          syn.data = g.data( filename, 1, { onload })
+      if (Gibberish.mode !== 'processor') {
+        syn.data = g.data(filename, 1, { onload });
 
-
-          // check to see if a promise is returned; a valid
-          // data object is only return if the file has been
-          // previously loaded and the corresponding buffer has
-          // been cached.
-          if( syn.data instanceof Promise ) {
-            syn.data.then( d => {
-              syn.data = d
-              memo[ filename ] = syn.data
-              onload( d.buffer, filename )
-            })
-          }else{
-            // using a cached data buffer, no need
-            // for asynchronous loading.
-            memo[ filename ] = syn.data
-            onload( syn.data.buffer, filename )
-          }     
-        }else{
-          syn.data = g.data( new Float32Array(), 1, { onload, filename })
-          //memo[ filename ] = syn.data
+        // check to see if a promise is returned; a valid
+        // data object is only return if the file has been
+        // previously loaded and the corresponding buffer has
+        // been cached.
+        if (syn.data instanceof Promise) {
+          syn.data.then(d => {
+            syn.data = d;
+            memo[filename] = syn.data;
+            onload(d.buffer, filename);
+          });
+        } else {
+          // using a cached data buffer, no need
+          // for asynchronous loading.
+          memo[filename] = syn.data;
+          onload(syn.data.buffer, filename);
         }
+      } else {
+        syn.data = g.data(new Float32Array(), 1, { onload, filename });
+        //memo[ filename ] = syn.data
+      }
       //}else{
       //  syn.data = memo[ filename ]
       //  console.log( 'memo data:', syn.data )
       //  onload( syn.data.buffer, filename )
       //}
-    }
+    };
 
-    syn.loadBuffer = function( buffer ) {
-      if( Gibberish.mode === 'processor' ) {
-        syn.data.buffer = buffer
-        syn.data.memory.values.length = syn.data.dim = buffer.length
-        syn.__redoGraph() 
+    syn.loadBuffer = function (buffer) {
+      if (Gibberish.mode === 'processor') {
+        syn.data.buffer = buffer;
+        syn.data.memory.values.length = syn.data.dim = buffer.length;
+        syn.__redoGraph();
       }
+    };
+
+    if (props.filename !== undefined) {
+      syn.loadFile(props.filename);
+    } else {
+      syn.data = g.data(new Float32Array());
     }
 
-    if( props.filename !== undefined ) {
-      syn.loadFile( props.filename )
-    }else{
-      syn.data = g.data( new Float32Array() )
+    if (syn.data !== undefined) {
+      syn.data.onload = onload;
+
+      syn.__createGraph();
     }
 
-    if( syn.data !== undefined ) {
-      syn.data.onload = onload
+    const out = Gibberish.factory(syn, syn.graph, ['instruments', 'sampler'], props);
 
-      syn.__createGraph()
-    }
-    
-
-
-    const out = Gibberish.factory( 
-      syn,
-      syn.graph,
-      ['instruments','sampler'], 
-      props 
-    ) 
-
-    return out
-  }
+    return out;
+  };
 
   Sampler.defaults = {
     gain: 1,
     pan: .5,
     rate: 1,
-    panVoices:false,
+    panVoices: false,
     loops: 0,
-    start:0,
-    end:1,
-    bufferLength:-999999999,
-    loudness:1,
-    __triggerLoudness:1
-  }
+    start: 0,
+    end: 1,
+    bufferLength: -999999999,
+    loudness: 1,
+    __triggerLoudness: 1
+  };
 
-  const envCheckFactory = function( voice, _poly ) {
+  const envCheckFactory = function (voice, _poly) {
 
     const envCheck = () => {
-      const phase = Gibberish.memory.heap[ voice.__phase__.memory.value.idx ]
-      if( ( voice.rate > 0 && phase > voice.end ) || ( voice.rate < 0 && phase < 0 ) ) {
-        _poly.disconnectUgen.call( _poly, voice )
-        voice.isConnected = false
-      }else{
-        Gibberish.blockCallbacks.push( envCheck )
+      const phase = Gibberish.memory.heap[voice.__phase__.memory.value.idx];
+      if (voice.rate > 0 && phase > voice.end || voice.rate < 0 && phase < 0) {
+        _poly.disconnectUgen.call(_poly, voice);
+        voice.isConnected = false;
+      } else {
+        Gibberish.blockCallbacks.push(envCheck);
       }
-    }
+    };
 
-    return envCheck
-  }
+    return envCheck;
+  };
 
-  const PolySampler = Gibberish.PolyTemplate( Sampler, ['rate','pan','gain','start','end','loops','bufferLength','__triggerLoudness','loudness'], envCheckFactory ) 
+  const PolySampler = Gibberish.PolyTemplate(Sampler, ['rate', 'pan', 'gain', 'start', 'end', 'loops', 'bufferLength', '__triggerLoudness', 'loudness'], envCheckFactory);
 
-  return [ Sampler, PolySampler ]
-}
+  return [Sampler, PolySampler];
+};
 
+},{"./instrument.js":121,"genish.js":39}],129:[function(require,module,exports){
+const g = require('genish.js'),
+      instrument = require('./instrument.js');
 
-},{"./instrument.js":114,"genish.js":37}],122:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      instrument = require( './instrument.js' )
-  
-module.exports = function( Gibberish ) {
+module.exports = function (Gibberish) {
 
   const Snare = argumentProps => {
-    const snare = Object.create( instrument ),
-          decay = g.in( 'decay' ),
-          scaledDecay = g.mul( decay, g.gen.samplerate * 2 ),
-          snappy= g.in( 'snappy' ),
-          tune  = g.in( 'tune' ),
-          gain  = g.in( 'gain' ),
-          loudness = g.in( 'loudness' ),
+    const snare = Object.create(instrument),
+          decay = g.in('decay'),
+          scaledDecay = g.mul(decay, g.gen.samplerate * 2),
+          snappy = g.in('snappy'),
+          tune = g.in('tune'),
+          gain = g.in('gain'),
+          loudness = g.in('loudness'),
           triggerLoudness = g.in('__triggerLoudness'),
-          Loudness = g.mul( loudness, triggerLoudness ),
-          eg = g.decay( scaledDecay, { initValue:0 } ), 
-          check = g.memo( g.gt( eg, .0005 ) ),
-          rnd = g.mul( g.noise(), eg ),
-          hpf = g.svf( rnd, g.add( 1000, g.mul( g.add( 1, tune), 1000 ) ), .5, 1, false ),
-          snap = g.mul( g.gtp( g.mul( hpf, snappy ), 0 ), Loudness ), // rectify
-          bpf1 = g.svf( eg, g.mul( 180, g.add( tune, 1 ) ), .05, 2, false ),
-          bpf2 = g.svf( eg, g.mul( 330, g.add( tune, 1 ) ), .05, 2, false ),
-          out  = g.memo( g.add( snap, bpf1, g.mul( bpf2, .8 ) ) ), //XXX why is memo needed?
-          scaledOut = g.mul( out, g.mul( gain, Loudness ) ),
-          ife = g.switch( check, scaledOut, 0 ),
-          props = Object.assign( {}, Snare.defaults, argumentProps )
+          Loudness = g.mul(loudness, triggerLoudness),
+          eg = g.decay(scaledDecay, { initValue: 0 }),
+          check = g.memo(g.gt(eg, .0005)),
+          rnd = g.mul(g.noise(), eg),
+          hpf = g.svf(rnd, g.add(1000, g.mul(g.add(1, tune), 1000)), .5, 1, false),
+          snap = g.mul(g.gtp(g.mul(hpf, snappy), 0), Loudness),
+          // rectify
+    bpf1 = g.svf(eg, g.mul(180, g.add(tune, 1)), .05, 2, false),
+          bpf2 = g.svf(eg, g.mul(330, g.add(tune, 1)), .05, 2, false),
+          out = g.memo(g.add(snap, bpf1, g.mul(bpf2, .8))),
+          //XXX why is memo needed?
+    scaledOut = g.mul(out, g.mul(gain, Loudness)),
+          ife = g.switch(check, scaledOut, 0),
+          props = Object.assign({}, Snare.defaults, argumentProps);
 
     // XXX TODO : make above switch work with ifelse. the problem is that poke ugens put their
     // code at the bottom of the callback function, instead of at the end of the
     // associated if/else block.
-    
-    snare.env = eg 
-    const __snare = Gibberish.factory( snare, ife, ['instruments','snare'], props  )
-    
-    return __snare
-  }
-  
+
+    snare.env = eg;
+    const __snare = Gibberish.factory(snare, ife, ['instruments', 'snare'], props);
+
+    return __snare;
+  };
+
   Snare.defaults = {
     gain: .5,
-    tune:0,
+    tune: 0,
     snappy: 1,
-    decay:.1,
-    loudness:1,
-    __triggerLoudness:1
-  }
+    decay: .1,
+    loudness: 1,
+    __triggerLoudness: 1
+  };
 
-  return Snare
+  return Snare;
+};
 
-}
-
-},{"./instrument.js":114,"genish.js":37}],123:[function(require,module,exports){
+},{"./instrument.js":121,"genish.js":39}],130:[function(require,module,exports){
 const g = require('genish.js'),
       instrument = require('./instrument.js');
 
@@ -8417,8 +9162,11 @@ module.exports = function (Gibberish) {
 
       const env = Gibberish.envelopes.factory(props.useADSR, props.shape, attack, decay, sustain, sustainLevel, release, props.triggerRelease);
 
+      // syn.env = env
       // below doesn't work as it attempts to assign to release property triggering codegen...
-      // syn.release = ()=> { syn.env.release() }
+      syn.advance = () => {
+        env.release();
+      };
 
       {
         'use jsdsp';
@@ -8432,7 +9180,10 @@ module.exports = function (Gibberish) {
         const filteredOsc = Gibberish.filters.factory(oscWithEnv, cutoff, saturation, props);
 
         let synthWithGain = genish.mul(filteredOsc, g.in('gain'));
-        if (props.filterType !== 2) synthWithGain = genish.mul(synthWithGain, saturation);
+
+        // XXX This line has to be here for correct code generation to work when
+        // saturation is not being used... obviously this should cancel out. 
+        if (syn.filterType !== 2) synthWithGain = genish.sub(genish.add(synthWithGain, saturation), saturation);
 
         if (syn.panVoices === true) {
           panner = g.pan(synthWithGain, synthWithGain, g.in('pan'));
@@ -8447,12 +9198,16 @@ module.exports = function (Gibberish) {
         syn.osc = osc;
         syn.filter = filteredOsc;
       }
+
+      return env;
     };
 
     syn.__requiresRecompilation = ['waveform', 'antialias', 'filterType', 'filterMode', 'useADSR', 'shape'];
-    syn.__createGraph();
+    const env = syn.__createGraph();
 
     const out = Gibberish.factory(syn, syn.graph, ['instruments', 'synth'], props, null, true, ['saturation']);
+
+    out.env.advance = out.advance;
 
     return out;
   };
@@ -8489,523 +9244,524 @@ module.exports = function (Gibberish) {
 
   return [Synth, PolySynth];
 };
-},{"./instrument.js":114,"genish.js":37}],124:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      instrument = require( './instrument.js' )
 
-module.exports = function( Gibberish ) {
+},{"./instrument.js":121,"genish.js":39}],131:[function(require,module,exports){
+const g = require('genish.js'),
+      instrument = require('./instrument.js');
+
+module.exports = function (Gibberish) {
 
   const Tom = argumentProps => {
-    let tom = Object.create( instrument )
-    
-    const decay   = g.in( 'decay' ),
-          pitch   = g.in( 'frequency' ),
-          gain    = g.in( 'gain' ),
-          loudness = g.in( 'loudness' ),
-          triggerLoudness = g.in( '__triggerLoudness' )
+    let tom = Object.create(instrument);
 
-    const props = Object.assign( {}, Tom.defaults, argumentProps )
+    const decay = g.in('decay'),
+          pitch = g.in('frequency'),
+          gain = g.in('gain'),
+          loudness = g.in('loudness'),
+          triggerLoudness = g.in('__triggerLoudness');
+
+    const props = Object.assign({}, Tom.defaults, argumentProps);
 
     const trigger = g.bang(),
-          impulse = g.mul( trigger, 1 ),
-          eg = g.decay( g.mul( decay, g.gen.samplerate * 2 ), { initValue:0 } ), 
-          bpf = g.mul( g.svf( impulse, pitch, .0175, 2, false ), 10 ),
-          noise = g.gtp( g.noise(), 0 ), // rectify noise
-          envelopedNoise = g.mul( noise, eg ),
-          lpf = g.mul( g.svf( envelopedNoise, 120, .5, 0, false ), 2.5 ),
-          out = g.mul( g.add( bpf, lpf ), g.mul( gain, g.mul( loudness, triggerLoudness ) ) )
+          impulse = g.mul(trigger, 1),
+          eg = g.decay(g.mul(decay, g.gen.samplerate * 2), { initValue: 0 }),
+          bpf = g.mul(g.svf(impulse, pitch, .0175, 2, false), 10),
+          noise = g.gtp(g.noise(), 0),
+          // rectify noise
+    envelopedNoise = g.mul(noise, eg),
+          lpf = g.mul(g.svf(envelopedNoise, 120, .5, 0, false), 2.5),
+          out = g.mul(g.add(bpf, lpf), g.mul(gain, g.mul(loudness, triggerLoudness)));
 
     tom.env = {
-      trigger: function() {
-        eg.trigger()
-        trigger.trigger()
+      trigger: function () {
+        eg.trigger();
+        trigger.trigger();
       }
-    }
+    };
 
-    tom.isStereo = false
+    tom.isStereo = false;
 
-    tom = Gibberish.factory( tom, out, ['instruments', 'tom'], props  )
-    
-    return tom
-  }
-  
+    tom = Gibberish.factory(tom, out, ['instruments', 'tom'], props);
+
+    return tom;
+  };
+
   Tom.defaults = {
     gain: 1,
-    decay:.7,
-    frequency:120,
-    loudness:1,
-    __triggerLoudness:1
-  }
+    decay: .7,
+    frequency: 120,
+    loudness: 1,
+    __triggerLoudness: 1
+  };
 
-  return Tom
-}
+  return Tom;
+};
 
-},{"./instrument.js":114,"genish.js":37}],125:[function(require,module,exports){
-const ugenproto = require( '../ugen.js' )(),
-     __proxy     = require( '../workletProxy.js' ),
-     g = require( 'genish.js' )
+},{"./instrument.js":121,"genish.js":39}],132:[function(require,module,exports){
+const ugenproto = require('../ugen.js')(),
+      __proxy = require('../workletProxy.js'),
+      g = require('genish.js');
 
-module.exports = function( Gibberish ) {
-  const proxy = __proxy( Gibberish )
+module.exports = function (Gibberish) {
+  const proxy = __proxy(Gibberish);
 
-  const createProperties = function( p, id ) {
-    for( let i = 0; i < 2; i++ ) {
-      Object.defineProperty( p, i, {
-        get() { return p.inputs[ i ] },
+  const createProperties = function (p, id) {
+    for (let i = 0; i < 2; i++) {
+      Object.defineProperty(p, i, {
+        get() {
+          return p.inputs[i];
+        },
         set(v) {
-          p.inputs[ i ] = v
-          if( Gibberish.mode === 'worklet' ) {
-            if( typeof v === 'number' ) {
-              Gibberish.worklet.port.postMessage({ 
-                address:'addToProperty', 
-                object:id,
-                name:'inputs',
-                key:i,
-                value:v
-              })
-            }else{
-              Gibberish.worklet.port.postMessage({ 
-                address:'addObjectToProperty', 
-                object:id,
-                name:'inputs',
-                key:i,
-                value:v.id
-              })
+          p.inputs[i] = v;
+          if (Gibberish.mode === 'worklet') {
+            if (typeof v === 'number') {
+              Gibberish.worklet.port.postMessage({
+                address: 'addToProperty',
+                object: id,
+                name: 'inputs',
+                key: i,
+                value: v
+              });
+            } else {
+              Gibberish.worklet.port.postMessage({
+                address: 'addObjectToProperty',
+                object: id,
+                name: 'inputs',
+                key: i,
+                value: v.id
+              });
             }
             Gibberish.worklet.port.postMessage({
-              address:'dirty',
+              address: 'dirty',
               id
-            })
+            });
           }
         }
-      })
+      });
     }
-  }
+  };
 
   const Binops = {
-    export( obj ) {
-      for( let key in Binops ) {
-        if( key !== 'export' ) {
-          obj[ key ] = Binops[ key ]
+    export(obj) {
+      for (let key in Binops) {
+        if (key !== 'export') {
+          obj[key] = Binops[key];
         }
       }
     },
-    
-    Add( ...args ) {
-      const id = Gibberish.factory.getUID()
-      const ugen = Object.create( ugenproto )
-      const isStereo = Gibberish.__isStereo( args[0] ) || Gibberish.__isStereo( args[1] )
-      Object.assign( ugen, { isop:true, op:'+', inputs:args, ugenName:'add' + id, id, isStereo } )
-      
-      const p = proxy( ['binops','Add'], { isop:true, inputs:args }, ugen )
-      createProperties( p, id )
 
-      return p
+    Add(...args) {
+      const id = Gibberish.factory.getUID();
+      const ugen = Object.create(ugenproto);
+      const isStereo = Gibberish.__isStereo(args[0]) || Gibberish.__isStereo(args[1]);
+      Object.assign(ugen, { isop: true, op: '+', inputs: args, ugenName: 'add' + id, id, isStereo });
+
+      const p = proxy(['binops', 'Add'], { isop: true, inputs: args }, ugen);
+      createProperties(p, id);
+
+      return p;
     },
 
-    Sub( ...args ) {
-      const id = Gibberish.factory.getUID()
-      const ugen = Object.create( ugenproto )
-      const isStereo = Gibberish.__isStereo( args[0] ) || Gibberish.__isStereo( args[1] )
-      Object.assign( ugen, { isop:true, op:'-', inputs:args, ugenName:'sub' + id, id, isStereo } )
+    Sub(...args) {
+      const id = Gibberish.factory.getUID();
+      const ugen = Object.create(ugenproto);
+      const isStereo = Gibberish.__isStereo(args[0]) || Gibberish.__isStereo(args[1]);
+      Object.assign(ugen, { isop: true, op: '-', inputs: args, ugenName: 'sub' + id, id, isStereo });
 
-      return proxy( ['binops','Sub'], { isop:true, inputs:args }, ugen )
+      return proxy(['binops', 'Sub'], { isop: true, inputs: args }, ugen);
     },
 
-    Mul( ...args ) {
-      const id = Gibberish.factory.getUID()
-      const ugen = Object.create( ugenproto )
-      const isStereo = Gibberish.__isStereo( args[0] ) || Gibberish.__isStereo( args[1] )
-      Object.assign( ugen, { isop:true, op:'*', inputs:args, ugenName:'mul' + id, id, isStereo } )
+    Mul(...args) {
+      const id = Gibberish.factory.getUID();
+      const ugen = Object.create(ugenproto);
+      const isStereo = Gibberish.__isStereo(args[0]) || Gibberish.__isStereo(args[1]);
+      Object.assign(ugen, { isop: true, op: '*', inputs: args, ugenName: 'mul' + id, id, isStereo });
 
-      const p = proxy( ['binops','Mul'], { isop:true, inputs:args }, ugen )
-      createProperties( p, id )
-      return p
+      const p = proxy(['binops', 'Mul'], { isop: true, inputs: args }, ugen);
+      createProperties(p, id);
+      return p;
     },
 
-    Div( ...args ) {
-      const id = Gibberish.factory.getUID()
-      const ugen = Object.create( ugenproto )
-      const isStereo = Gibberish.__isStereo( args[0] ) || Gibberish.__isStereo( args[1] )
-      Object.assign( ugen, { isop:true, op:'/', inputs:args, ugenName:'div' + id, id, isStereo} )
-    
-      const p = proxy( ['binops','Div'], { isop:true, inputs:args }, ugen )
-      createProperties( p, id )
+    Div(...args) {
+      const id = Gibberish.factory.getUID();
+      const ugen = Object.create(ugenproto);
+      const isStereo = Gibberish.__isStereo(args[0]) || Gibberish.__isStereo(args[1]);
+      Object.assign(ugen, { isop: true, op: '/', inputs: args, ugenName: 'div' + id, id, isStereo });
 
-      return p
+      const p = proxy(['binops', 'Div'], { isop: true, inputs: args }, ugen);
+      createProperties(p, id);
+
+      return p;
     },
 
-    Mod( ...args ) {
-      const id = Gibberish.factory.getUID()
-      const ugen = Object.create( ugenproto )
-      const isStereo = Gibberish.__isStereo( args[0] ) || Gibberish.__isStereo( args[1] )
-      Object.assign( ugen, { isop:true, op:'%', inputs:args, ugenName:'mod' + id, id, isStereo} )
+    Mod(...args) {
+      const id = Gibberish.factory.getUID();
+      const ugen = Object.create(ugenproto);
+      const isStereo = Gibberish.__isStereo(args[0]) || Gibberish.__isStereo(args[1]);
+      Object.assign(ugen, { isop: true, op: '%', inputs: args, ugenName: 'mod' + id, id, isStereo });
 
-      const p = proxy( ['binops','Mod'], { isop:true, inputs:args }, ugen )
-      createProperties( p, id )
+      const p = proxy(['binops', 'Mod'], { isop: true, inputs: args }, ugen);
+      createProperties(p, id);
 
-      return p
-    },   
+      return p;
+    }
+  };
+
+  for (let key in Binops) {
+    Binops[key].defaults = { 0: 0, 1: 0 };
   }
 
-  for( let key in Binops ) {
-    Binops[ key ].defaults = { 0:0, 1:0 }
-  }
+  return Binops;
+};
 
-  return Binops
-}
+},{"../ugen.js":148,"../workletProxy.js":150,"genish.js":39}],133:[function(require,module,exports){
+let g = require('genish.js'),
+    ugen = require('../ugen.js')(),
+    __proxy = require('../workletProxy.js');
 
-},{"../ugen.js":141,"../workletProxy.js":144,"genish.js":37}],126:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    ugen = require( '../ugen.js' )(),
-    __proxy= require( '../workletProxy.js' )
+module.exports = function (Gibberish) {
+  const proxy = __proxy(Gibberish);
+  const Bus = Object.create(ugen);
 
-module.exports = function( Gibberish ) {
-  const proxy = __proxy( Gibberish )
-  const Bus = Object.create( ugen )
-
-  Object.assign( Bus, {
+  Object.assign(Bus, {
     gain: {
-      set( v ) {
-        this.mul.inputs[ 1 ] = v
-        Gibberish.dirty( this )
+      set(v) {
+        this.mul.inputs[1] = v;
+        Gibberish.dirty(this);
       },
       get() {
-        return this.mul[ 1 ]
+        return this.mul[1];
       }
     },
 
-    __addInput( input ) {
-      this.sum.inputs.push( input )
-      Gibberish.dirty( this )
+    __addInput(input) {
+      this.sum.inputs.push(input);
+      Gibberish.dirty(this);
     },
 
-    create( _props ) {
-      const props = Object.assign({}, Bus.defaults, { inputs:[0] }, _props )
+    create(_props) {
+      const props = Object.assign({}, Bus.defaults, { inputs: [0] }, _props);
 
-      const sum = Gibberish.binops.Add( ...props.inputs )
-      const mul = Gibberish.binops.Mul( sum, props.gain )
+      // MUST PREVENT PROXY
+      // Othherwise these binops are created in the worklet and sent
+      // across the thread to be instantiated, and then instantiated again
+      // when the bus is created in the processor thread, messing up the various
+      // uids involved. By preventing proxying the binops are only created
+      // a single time when the bus is sent across the thread.
+      Gibberish.preventProxy = true;
+      const sum = Gibberish.binops.Add(...props.inputs);
+      const mul = Gibberish.binops.Mul(sum, props.gain);
+      Gibberish.preventProxy = false;
 
-      const graph = Gibberish.Panner({ input:mul, pan: props.pan })
+      const graph = Gibberish.Panner({ input: mul, pan: props.pan });
 
-      graph.sum = sum
-      graph.mul = mul
-      graph.disconnectUgen = Bus.disconnectUgen
+      graph.sum = sum;
+      graph.mul = mul;
+      graph.disconnectUgen = Bus.disconnectUgen;
 
-      graph.__properties__ = props
+      graph.__properties__ = props;
 
-      const out = props.__useProxy__ === true ? proxy( ['Bus'], props, graph ) : graph
+      const out = props.__useProxy__ === true ? proxy(['Bus'], props, graph) : graph;
 
-      Object.defineProperty( out, 'gain', Bus.gain )
+      Object.defineProperty(out, 'gain', Bus.gain);
 
-      if( false && Gibberish.preventProxy === false && Gibberish.mode === 'worklet' ) {
+      if (false && Gibberish.preventProxy === false && Gibberish.mode === 'worklet') {
         const meta = {
-          address:'add',
-          name:['Bus'],
-          props, 
-          id:graph.id
-        }
-        Gibberish.worklet.port.postMessage( meta )
-        Gibberish.worklet.port.postMessage({ 
-          address:'method', 
-          object:graph.id,
-          name:'connect',
-          args:[]
-        })
+          address: 'add',
+          name: ['Bus'],
+          props,
+          id: graph.id
+        };
+        Gibberish.worklet.port.postMessage(meta);
+        Gibberish.worklet.port.postMessage({
+          address: 'method',
+          object: graph.id,
+          name: 'connect',
+          args: []
+        });
       }
 
-      return out 
+      return out;
     },
 
-    disconnectUgen( ugen ) {
-      let removeIdx = this.sum.inputs.indexOf( ugen )
+    disconnectUgen(ugen) {
+      let removeIdx = this.sum.inputs.indexOf(ugen);
 
-      if( removeIdx !== -1 ) {
-        this.sum.inputs.splice( removeIdx, 1 )
-        Gibberish.dirty( this )
+      if (removeIdx !== -1) {
+        this.sum.inputs.splice(removeIdx, 1);
+        Gibberish.dirty(this);
       }
     },
 
     // can't include inputs here as it will be sucked up by Gibber,
     // instead pass during Object.assign() after defaults.
-    defaults: { gain:1, pan:.5, __useProxy__:true }
-  })
+    defaults: { gain: 1, pan: .5, __useProxy__: true }
+  });
 
-  const constructor = Bus.create.bind( Bus )
-  constructor.defaults = Bus.defaults
+  const constructor = Bus.create.bind(Bus);
+  constructor.defaults = Bus.defaults;
 
-  return constructor
-}
+  return constructor;
+};
 
+},{"../ugen.js":148,"../workletProxy.js":150,"genish.js":39}],134:[function(require,module,exports){
+const g = require('genish.js'),
+      ugen = require('../ugen.js')(),
+      __proxy = require('../workletProxy.js');
 
-},{"../ugen.js":141,"../workletProxy.js":144,"genish.js":37}],127:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      ugen = require( '../ugen.js' )(),
-      __proxy = require( '../workletProxy.js' )
+module.exports = function (Gibberish) {
+  const Bus2 = Object.create(ugen);
+  const proxy = __proxy(Gibberish);
 
+  let bufferL, bufferR;
 
-module.exports = function( Gibberish ) {
-  const Bus2 = Object.create( ugen )
-  const proxy = __proxy( Gibberish )
+  Object.assign(Bus2, {
+    create(__props) {
 
-  let bufferL, bufferR
-  
-  Object.assign( Bus2, { 
-    create( __props ) {
+      if (bufferL === undefined) {
+        const p = g.pan();
 
-      if( bufferL === undefined ) {
-        const p = g.pan()
-        
         // copy memory... otherwise the wavetables don't have memory indices.
-        bufferL = Gibberish.memory.alloc(1024)
-        Gibberish.memory.heap.set( Gibberish.genish.gen.globals.panL.buffer, bufferL )
+        bufferL = Gibberish.memory.alloc(1024);
+        Gibberish.memory.heap.set(Gibberish.genish.gen.globals.panL.buffer, bufferL);
 
-        bufferR = Gibberish.memory.alloc(1024)
-        Gibberish.memory.heap.set( Gibberish.genish.gen.globals.panR.buffer, bufferR )
+        bufferR = Gibberish.memory.alloc(1024);
+        Gibberish.memory.heap.set(Gibberish.genish.gen.globals.panR.buffer, bufferR);
       }
 
       // XXX must be same type as what is returned by genish for type checks to work correctly
-      const output = new Float64Array( 2 ) 
+      const output = new Float64Array(2);
 
-      const bus = Object.create( Bus2 )
+      const bus = Object.create(Bus2);
 
-      let init = false
+      let init = false;
 
-      const props = Object.assign({}, Bus2.defaults, __props )
+      const props = Object.assign({}, Bus2.defaults, __props);
 
-      Object.assign( 
-        bus,
+      Object.assign(bus, {
+        callback() {
+          output[0] = output[1] = 0;
+          const lastIdx = arguments.length - 1;
+          const memory = arguments[lastIdx];
+          let pan = arguments[lastIdx - 1];
+          const gain = arguments[lastIdx - 2];
 
-        {
-          callback() {
-            output[ 0 ] = output[ 1 ] = 0
-            const lastIdx = arguments.length - 1
-            const memory  = arguments[ lastIdx ]
-            let pan  = arguments[ lastIdx - 1 ]
-            const gain = arguments[ lastIdx - 2 ]
+          for (let i = 0; i < lastIdx - 2; i += 3) {
+            const input = arguments[i],
+                  level = arguments[i + 1],
+                  isStereo = arguments[i + 2];
 
-            for( let i = 0; i < lastIdx - 2; i+= 3 ) {
-              const input = arguments[ i ],
-                    level = arguments[ i + 1 ],
-                    isStereo = arguments[ i + 2 ]
+            output[0] += isStereo === true ? input[0] * level : input * level;
 
-              output[ 0 ] += isStereo === true ? input[ 0 ] * level : input * level
+            output[1] += isStereo === true ? input[1] * level : input * level;
+          }
 
-              output[ 1 ] += isStereo === true ? input[ 1 ] * level : input * level
-            }
+          if (pan < 0) {
+            pan = 0;
+          } else if (pan > 1) {
+            pan = 1;
+          }
 
-            if( pan < 0 ) {
-              pan = 0
-            }else if( pan > 1 ){
-              pan = 1
-            }
+          const panRawIndex = pan * 1023,
+                panBaseIndex = panRawIndex | 0,
+                panNextIndex = panBaseIndex + 1 & 1023,
+                interpAmount = panRawIndex - panBaseIndex,
+                panL = memory[bufferL + panBaseIndex] + interpAmount * (memory[bufferL + panNextIndex] - memory[bufferL + panBaseIndex]),
+                panR = memory[bufferR + panBaseIndex] + interpAmount * (memory[bufferR + panNextIndex] - memory[bufferR + panBaseIndex]);
 
-            const panRawIndex  = pan * 1023,
-                  panBaseIndex = panRawIndex | 0,
-                  panNextIndex = (panBaseIndex + 1) & 1023,
-                  interpAmount = panRawIndex - panBaseIndex,
-                  panL = memory[ bufferL + panBaseIndex ] 
-                    + ( interpAmount * ( memory[ bufferL + panNextIndex ] - memory[ bufferL + panBaseIndex ] ) ),
-                  panR = memory[ bufferR + panBaseIndex ] 
-                    + ( interpAmount * ( memory[ bufferR + panNextIndex ] - memory[ bufferR + panBaseIndex ] ) )
-            
-            output[0] *= gain * panL
-            output[1] *= gain * panR
+          output[0] *= gain * panL;
+          output[1] *= gain * panR;
 
-            return output
-          },
-          id : Gibberish.factory.getUID(),
-          dirty : false,
-          type : 'bus',
-          inputs:[ 1, .5 ],
-          isStereo: true,
-          __properties__:props
+          return output;
         },
+        id: Gibberish.factory.getUID(),
+        dirty: false,
+        type: 'bus',
+        inputs: [1, .5],
+        isStereo: true,
+        __properties__: props
+      }, Bus2.defaults, props);
 
-        Bus2.defaults,
+      bus.ugenName = bus.callback.ugenName = 'bus2_' + bus.id;
 
-        props
-      )
-
-      bus.ugenName = bus.callback.ugenName = 'bus2_' + bus.id
-
-      const out = bus.__useProxy__ === true ? proxy( ['Bus2'], props, bus ) : bus
-
+      const out = bus.__useProxy__ === true ? proxy(['Bus2'], props, bus) : bus;
 
       // we have to include custom properties for these as the argument list for
       // the compiled output function is variable
       // so codegen can't know the correct argument order for the function
-      let pan = .5
-      Object.defineProperty( out, 'pan', {
-        get() { return pan },
-        set(v){ 
-          pan = v
-          out.inputs[ out.inputs.length - 1 ] = pan
-          Gibberish.dirty( out )
+      let pan = .5;
+      Object.defineProperty(out, 'pan', {
+        get() {
+          return pan;
+        },
+        set(v) {
+          pan = v;
+          out.inputs[out.inputs.length - 1] = pan;
+          Gibberish.dirty(out);
         }
-      })
+      });
 
-      let gain = 1
-      Object.defineProperty( out, 'gain', {
-        get() { return gain },
-        set(v){ 
-          gain = v
-          out.inputs[ out.inputs.length - 2 ] = gain
-          Gibberish.dirty( out )
+      let gain = 1;
+      Object.defineProperty(out, 'gain', {
+        get() {
+          return gain;
+        },
+        set(v) {
+          gain = v;
+          out.inputs[out.inputs.length - 2] = gain;
+          Gibberish.dirty(out);
         }
-      })
+      });
 
-      return out
+      return out;
     },
-    
-    disconnectUgen( ugen ) {
-      let removeIdx = this.inputs.indexOf( ugen )
 
-      if( removeIdx !== -1 ) {
-        this.inputs.splice( removeIdx, 3 )
-        Gibberish.dirty( this )
+    disconnectUgen(ugen) {
+      let removeIdx = this.inputs.indexOf(ugen);
+
+      if (removeIdx !== -1) {
+        this.inputs.splice(removeIdx, 3);
+        Gibberish.dirty(this);
       }
     },
 
-    defaults: { gain:1, pan:.5, __useProxy__:true }
-  })
+    defaults: { gain: 1, pan: .5, __useProxy__: true }
+  });
 
-  const constructor = Bus2.create.bind( Bus2 )
-  constructor.defaults = Bus2.defaults
+  const constructor = Bus2.create.bind(Bus2);
+  constructor.defaults = Bus2.defaults;
 
-  return constructor
+  return constructor;
+};
 
-}
+},{"../ugen.js":148,"../workletProxy.js":150,"genish.js":39}],135:[function(require,module,exports){
+const g = require('genish.js'),
+      ugen = require('../ugen.js')();
 
-},{"../ugen.js":141,"../workletProxy.js":144,"genish.js":37}],128:[function(require,module,exports){
-const  g    = require( 'genish.js'  ),
-       ugen = require( '../ugen.js' )()
-
-module.exports = function( Gibberish ) {
+module.exports = function (Gibberish) {
 
   const Monops = {
-    export( obj ) {
-      for( let key in Monops ) {
-        if( key !== 'export' ) {
-          obj[ key ] = Monops[ key ]
+    export(obj) {
+      for (let key in Monops) {
+        if (key !== 'export') {
+          obj[key] = Monops[key];
         }
       }
     },
-    
-    Abs( input ) {
-      const abs = Object.create( ugen )
-      const graph = g.abs( g.in('input') )
-      
-      const __out = Gibberish.factory( abs, graph, ['monops','abs'], Object.assign({}, Monops.defaults, { inputs:[input], isop:true }) )
 
-      return __out
+    Abs(input) {
+      const abs = Object.create(ugen);
+      const graph = g.abs(g.in('input'));
+
+      const __out = Gibberish.factory(abs, graph, ['monops', 'abs'], Object.assign({}, Monops.defaults, { inputs: [input], isop: true }));
+
+      return __out;
     },
 
-    Pow( input, exponent ) {
-      const pow = Object.create( ugen )
-      const graph = g.pow( g.in('input'), g.in('exponent') )
-      
-      Gibberish.factory( pow, graph, ['monops','pow'], Object.assign({}, Monops.defaults, { inputs:[input], exponent, isop:true }) )
+    Pow(input, exponent) {
+      const pow = Object.create(ugen);
+      const graph = g.pow(g.in('input'), g.in('exponent'));
 
-      return pow
+      Gibberish.factory(pow, graph, ['monops', 'pow'], Object.assign({}, Monops.defaults, { inputs: [input], exponent, isop: true }));
+
+      return pow;
     },
-    Clamp( input, min, max ) {
-      const clamp = Object.create( ugen )
-      const graph = g.clamp( g.in('input'), g.in('min'), g.in('max') )
-      
-      const __out = Gibberish.factory( clamp, graph, ['monops','clamp'], Object.assign({}, Monops.defaults, { inputs:[input], isop:true, min, max }) )
+    Clamp(input, min, max) {
+      const clamp = Object.create(ugen);
+      const graph = g.clamp(g.in('input'), g.in('min'), g.in('max'));
 
-      return __out
+      const __out = Gibberish.factory(clamp, graph, ['monops', 'clamp'], Object.assign({}, Monops.defaults, { inputs: [input], isop: true, min, max }));
+
+      return __out;
     },
 
-    Merge( input ) {
-      const merger = Object.create( ugen )
-      const cb = function( _input ) {
-        return _input[0] + _input[1]
-      }
+    Merge(input) {
+      const merger = Object.create(ugen);
+      const cb = function (_input) {
+        return _input[0] + _input[1];
+      };
 
-      Gibberish.factory( merger, g.in( 'input' ), ['monops','merge'], { inputs:[input], isop:true }, cb )
-      merger.type = 'analysis'
-      merger.inputNames = [ 'input' ]
-      merger.inputs = [ input ]
-      merger.input = input
-      
-      return merger
-    },
-  }
+      Gibberish.factory(merger, g.in('input'), ['monops', 'merge'], { inputs: [input], isop: true }, cb);
+      merger.type = 'analysis';
+      merger.inputNames = ['input'];
+      merger.inputs = [input];
+      merger.input = input;
 
-  Monops.defaults = { input:0 }
+      return merger;
+    }
+  };
 
-  return Monops
-}
+  Monops.defaults = { input: 0 };
 
-},{"../ugen.js":141,"genish.js":37}],129:[function(require,module,exports){
-const g = require( 'genish.js' )
+  return Monops;
+};
 
-const ugen = require( '../ugen.js' )()
+},{"../ugen.js":148,"genish.js":39}],136:[function(require,module,exports){
+const g = require('genish.js');
 
-module.exports = function( Gibberish ) {
- 
-let Panner = inputProps => {
-  const props  = Object.assign( {}, Panner.defaults, inputProps ),
-        panner = Object.create( ugen )
+const ugen = require('../ugen.js')();
 
-  const isStereo = props.input.isStereo !== undefined ? props.input.isStereo : Array.isArray( props.input ) 
-  
-  const input = g.in( 'input' ),
-        pan   = g.in( 'pan' )
+module.exports = function (Gibberish) {
 
-  let graph 
-  if( isStereo ) {
-    graph = g.pan( input[0], input[1], pan )  
-  }else{
-    graph = g.pan( input, input, pan )
-  }
+  let Panner = inputProps => {
+    const props = Object.assign({}, Panner.defaults, inputProps),
+          panner = Object.create(ugen);
 
-  Gibberish.factory( panner, [ graph.left, graph.right], ['panner'], props )
-  
-  return panner
-}
+    const isStereo = props.input.isStereo !== undefined ? props.input.isStereo : Array.isArray(props.input);
 
-Panner.defaults = {
-  input:0,
-  pan:.5
-}
+    const input = g.in('input'),
+          pan = g.in('pan');
 
-return Panner 
+    let graph;
+    if (isStereo) {
+      graph = g.pan(input[0], input[1], pan);
+    } else {
+      graph = g.pan(input, input, pan);
+    }
 
-}
+    Gibberish.factory(panner, [graph.left, graph.right], ['panner'], props);
 
-},{"../ugen.js":141,"genish.js":37}],130:[function(require,module,exports){
-module.exports = function( Gibberish ) {
+    return panner;
+  };
+
+  Panner.defaults = {
+    input: 0,
+    pan: .5
+  };
+
+  return Panner;
+};
+
+},{"../ugen.js":148,"genish.js":39}],137:[function(require,module,exports){
+module.exports = function (Gibberish) {
 
   const Time = {
     bpm: 120,
 
-    export: function(target) {
-      Object.assign( target, Time )
+    export: function (target) {
+      Object.assign(target, Time);
     },
 
-    ms : function(val) {
+    ms: function (val) {
       return val * Gibberish.ctx.sampleRate / 1000;
     },
 
-    seconds : function(val) {
+    seconds: function (val) {
       return val * Gibberish.ctx.sampleRate;
     },
 
-    beats : function(val) {
-      return function() { 
-        var samplesPerBeat = Gibberish.ctx.sampleRate / ( Gibberish.Time.bpm / 60 ) ;
-        return samplesPerBeat * val ;
-      }
+    beats: function (val) {
+      return function () {
+        var samplesPerBeat = Gibberish.ctx.sampleRate / (Gibberish.Time.bpm / 60);
+        return samplesPerBeat * val;
+      };
     }
-  }
+  };
 
-  return Time
-}
+  return Time;
+};
 
-},{}],131:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       noise = genish.noise;
@@ -9017,7 +9773,7 @@ module.exports = function () {
 
   const white = genish.sub(genish.mul(noise(), 2), 1);
 
-  let out = genish.add(last.out, genish.div(genish.mul(.02, white), 1.02));
+  let out = genish.div(genish.add(last.out, genish.mul(.02, white)), 1.02);
 
   last.in(out);
 
@@ -9025,262 +9781,243 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":37}],132:[function(require,module,exports){
-let g = require( 'genish.js' )
 
-let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
-  if( argumentProps === undefined ) argumentProps = { type: 0 }
+},{"genish.js":39}],139:[function(require,module,exports){
+let g = require('genish.js');
+
+let feedbackOsc = function (frequency, filter, pulsewidth = .5, argumentProps) {
+  if (argumentProps === undefined) argumentProps = { type: 0 };
 
   let lastSample = g.history(),
-      // determine phase increment and memoize result
-      w = g.memo( g.div( frequency, g.gen.samplerate ) ),
-      // create scaling factor
-      n = g.sub( -.5, w ),
-      scaling = g.mul( g.mul( 13, filter ), g.pow( n, 5 ) ),
-      // calculate dc offset and normalization factors
-      DC = g.sub( .376, g.mul( w, .752 ) ),
-      norm = g.sub( 1, g.mul( 2, w ) ),
-      // determine phase
-      osc1Phase = g.accum( w, 0, { min:-1 }),
-      osc1, out
+
+  // determine phase increment and memoize result
+  w = g.memo(g.div(frequency, g.gen.samplerate)),
+
+  // create scaling factor
+  n = g.sub(-.5, w),
+      scaling = g.mul(g.mul(13, filter), g.pow(n, 5)),
+
+  // calculate dc offset and normalization factors
+  DC = g.sub(.376, g.mul(w, .752)),
+      norm = g.sub(1, g.mul(2, w)),
+
+  // determine phase
+  osc1Phase = g.accum(w, 0, { min: -1 }),
+      osc1,
+      out;
 
   // create current sample... from the paper:
   // osc = (osc + sin(2*pi*(phase + osc*scaling)))*0.5f;
-  osc1 = g.memo( 
-    g.mul(
-      g.add(
-        lastSample.out,
-        g.sin(
-          g.mul(
-            Math.PI * 2,
-            g.memo( g.add( osc1Phase, g.mul( lastSample.out, scaling ) ) )
-          )
-        )
-      ),
-      .5
-    )
-  )
+  osc1 = g.memo(g.mul(g.add(lastSample.out, g.sin(g.mul(Math.PI * 2, g.memo(g.add(osc1Phase, g.mul(lastSample.out, scaling)))))), .5));
 
   // store sample to use as modulation
-  lastSample.in( osc1 )
+  lastSample.in(osc1);
 
   // if pwm / square waveform instead of sawtooth...
-  if( argumentProps.type === 1 ) { 
-    const lastSample2 = g.history() // for osc 2
-    const lastSampleMaster = g.history() // for sum of osc1,osc2
+  if (argumentProps.type === 1) {
+    const lastSample2 = g.history(); // for osc 2
+    const lastSampleMaster = g.history(); // for sum of osc1,osc2
 
-    const osc2 = g.mul(
-      g.add(
-        lastSample2.out,
-        g.sin(
-          g.mul(
-            Math.PI * 2,
-            g.memo( g.add( osc1Phase, g.mul( lastSample2.out, scaling ), pulsewidth ) )
-          )
-        )
-      ),
-      .5
-    )
+    const osc2 = g.mul(g.add(lastSample2.out, g.sin(g.mul(Math.PI * 2, g.memo(g.add(osc1Phase, g.mul(lastSample2.out, scaling), pulsewidth))))), .5);
 
-    lastSample2.in( osc2 )
-    out = g.memo( g.sub( lastSample.out, lastSample2.out ) )
-    out = g.memo( g.add( g.mul( 2.5, out ), g.mul( -1.5, lastSampleMaster.out ) ) )
-    
-    lastSampleMaster.in( g.sub( osc1, osc2 ) )
+    lastSample2.in(osc2);
+    out = g.memo(g.sub(lastSample.out, lastSample2.out));
+    out = g.memo(g.add(g.mul(2.5, out), g.mul(-1.5, lastSampleMaster.out)));
 
-  }else{
-     // offset and normalize
-    osc1 = g.add( g.mul( 2.5, osc1 ), g.mul( -1.5, lastSample.out ) )
-    osc1 = g.add( osc1, DC )
- 
-    out = osc1
+    lastSampleMaster.in(g.sub(osc1, osc2));
+  } else {
+    // offset and normalize
+    osc1 = g.add(g.mul(2.5, osc1), g.mul(-1.5, lastSample.out));
+    osc1 = g.add(osc1, DC);
+
+    out = osc1;
   }
 
-  return g.mul( out, norm )
-}
+  return g.mul(out, norm);
+};
 
-module.exports = feedbackOsc
+module.exports = feedbackOsc;
 
-},{"genish.js":37}],133:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      ugen = require( '../ugen.js' )(),
-      feedbackOsc = require( './fmfeedbackosc.js' ),
-      polyBlep = require( './polyblep.js' )
+},{"genish.js":39}],140:[function(require,module,exports){
+const g = require('genish.js'),
+      ugen = require('../ugen.js')(),
+      feedbackOsc = require('./fmfeedbackosc.js'),
+      polyBlep = require('./polyblep.dsp.js');
 
 //  __makeOscillator__( type, frequency, antialias ) {
-    
-module.exports = function( Gibberish ) {
+
+module.exports = function (Gibberish) {
   let Oscillators = {
-    export( obj ) {
-      for( let key in Oscillators ) {
-        if( key !== 'export' ) {
-          obj[ key ] = Oscillators[ key ]
+    export(obj) {
+      for (let key in Oscillators) {
+        if (key !== 'export') {
+          obj[key] = Oscillators[key];
         }
       }
     },
 
     genish: {
-      Brown: require( './brownnoise.js' ),
-      Pink:  require( './pinknoise.js'  )
+      Brown: require('./brownnoise.dsp.js'),
+      Pink: require('./pinknoise.dsp.js')
     },
 
-    Wavetable: require( './wavetable.js' )( Gibberish ),
-    
-    Square( inputProps ) {
-      const sqr   = Object.create( ugen ) 
-      const props = Object.assign({ antialias:false }, Oscillators.defaults, inputProps )
-      const osc   = Oscillators.factory( 'square', g.in( 'frequency' ), props.antialias )
-      const graph = g.mul( osc, g.in('gain' ) )
+    Wavetable: require('./wavetable.js')(Gibberish),
 
-      const out = Gibberish.factory( sqr, graph, ['oscillators','square'], props )
+    Square(inputProps) {
+      const sqr = Object.create(ugen);
+      const props = Object.assign({ antialias: false }, Oscillators.defaults, inputProps);
+      const osc = Oscillators.factory('square', g.in('frequency'), props.antialias);
+      const graph = g.mul(osc, g.in('gain'));
 
-      return out
+      const out = Gibberish.factory(sqr, graph, ['oscillators', 'square'], props);
+
+      return out;
     },
 
-    Triangle( inputProps ) {
-      const tri= Object.create( ugen ) 
-      const props = Object.assign({ antialias:false }, Oscillators.defaults, inputProps )
-      const osc   = Oscillators.factory( 'triangle', g.in( 'frequency' ), props.antialias )
-      const graph = g.mul( osc, g.in('gain' ) )
+    Triangle(inputProps) {
+      const tri = Object.create(ugen);
+      const props = Object.assign({ antialias: false }, Oscillators.defaults, inputProps);
+      const osc = Oscillators.factory('triangle', g.in('frequency'), props.antialias);
+      const graph = g.mul(osc, g.in('gain'));
 
-      const out =Gibberish.factory( tri, graph, ['oscillators','triangle'], props )
+      const out = Gibberish.factory(tri, graph, ['oscillators', 'triangle'], props);
 
-      return out
+      return out;
     },
 
-    PWM( inputProps ) {
-      const pwm   = Object.create( ugen ) 
-      const props = Object.assign({ antialias:false, pulsewidth:.25 }, Oscillators.defaults, inputProps )
-      const osc   = Oscillators.factory( 'pwm', g.in( 'frequency' ), props.antialias )
-      const graph = g.mul( osc, g.in('gain' ) )
+    PWM(inputProps) {
+      const pwm = Object.create(ugen);
+      const props = Object.assign({ antialias: false, pulsewidth: .25 }, Oscillators.defaults, inputProps);
+      const osc = Oscillators.factory('pwm', g.in('frequency'), props.antialias);
+      const graph = g.mul(osc, g.in('gain'));
 
-      const out = Gibberish.factory( pwm, graph, ['oscillators','PWM'], props )
+      const out = Gibberish.factory(pwm, graph, ['oscillators', 'PWM'], props);
 
-      return out
+      return out;
     },
 
-    Sine( inputProps ) {
-      const sine  = Object.create( ugen )
-      const props = Object.assign({}, Oscillators.defaults, inputProps )
-      const graph = g.mul( g.cycle( g.in('frequency') ), g.in('gain') )
+    Sine(inputProps) {
+      const sine = Object.create(ugen);
+      const props = Object.assign({}, Oscillators.defaults, inputProps);
+      const graph = g.mul(g.cycle(g.in('frequency')), g.in('gain'));
 
-      const out = Gibberish.factory( sine, graph, ['oscillators','sine'], props )
-      
-      return out
+      const out = Gibberish.factory(sine, graph, ['oscillators', 'sine'], props);
+
+      return out;
     },
 
-    Noise( inputProps ) {
-      const noise = Object.create( ugen )
-      const props = Object.assign( {}, { gain: 1, color:'white' }, inputProps )
-      let graph 
+    Noise(inputProps) {
+      const noise = Object.create(ugen);
+      const props = Object.assign({}, { gain: 1, color: 'white' }, inputProps);
+      let graph;
 
-      switch( props.color ) {
+      switch (props.color) {
         case 'brown':
-          graph = g.mul( Oscillators.genish.Brown(), g.in('gain') )
+          graph = g.mul(Oscillators.genish.Brown(), g.in('gain'));
           break;
         case 'pink':
-          graph = g.mul( Oscillators.genish.Pink(), g.in('gain') )
+          graph = g.mul(Oscillators.genish.Pink(), g.in('gain'));
           break;
         default:
-          graph = g.mul( g.noise(), g.in('gain') )
+          graph = g.mul(g.noise(), g.in('gain'));
           break;
       }
 
-      const out = Gibberish.factory( noise, graph, ['oscillators','noise'], props )
+      const out = Gibberish.factory(noise, graph, ['oscillators', 'noise'], props);
 
-      return out
+      return out;
     },
 
-    Saw( inputProps ) {
-      const saw   = Object.create( ugen ) 
-      const props = Object.assign({ antialias:false }, Oscillators.defaults, inputProps )
-      const osc   = Oscillators.factory( 'saw', g.in( 'frequency' ), props.antialias )
-      const graph = g.mul( osc, g.in('gain' ) )
+    Saw(inputProps) {
+      const saw = Object.create(ugen);
+      const props = Object.assign({ antialias: false }, Oscillators.defaults, inputProps);
+      const osc = Oscillators.factory('saw', g.in('frequency'), props.antialias);
+      const graph = g.mul(osc, g.in('gain'));
 
-      const out = Gibberish.factory( saw, graph, ['oscillators','saw'], props )
+      const out = Gibberish.factory(saw, graph, ['oscillators', 'saw'], props);
 
-      return out
+      return out;
     },
 
-    ReverseSaw( inputProps ) {
-      const saw   = Object.create( ugen ) 
-      const props = Object.assign({ antialias:false }, Oscillators.defaults, inputProps )
-      const osc   = g.sub( 1, Oscillators.factory( 'saw', g.in( 'frequency' ), props.antialias ) )
-      const graph = g.mul( osc, g.in( 'gain' ) )
+    ReverseSaw(inputProps) {
+      const saw = Object.create(ugen);
+      const props = Object.assign({ antialias: false }, Oscillators.defaults, inputProps);
+      const osc = g.sub(1, Oscillators.factory('saw', g.in('frequency'), props.antialias));
+      const graph = g.mul(osc, g.in('gain'));
 
-      const out = Gibberish.factory( saw, graph, ['oscillators','ReverseSaw'], props )
-      
-      return out
+      const out = Gibberish.factory(saw, graph, ['oscillators', 'ReverseSaw'], props);
+
+      return out;
     },
 
-    factory( type, frequency, antialias=false ) {
-      let osc
+    factory(type, frequency, antialias = false) {
+      let osc;
 
-      switch( type ) {
+      switch (type) {
         case 'pwm':
-          let pulsewidth = g.in('pulsewidth')
-          if( antialias == true ) {
-            osc = feedbackOsc( frequency, 1, pulsewidth, { type:1 })
-          }else{
-            let phase = g.phasor( frequency, 0, { min:0 } )
-            osc = g.lt( phase, pulsewidth )
+          let pulsewidth = g.in('pulsewidth');
+          if (antialias == true) {
+            osc = feedbackOsc(frequency, 1, pulsewidth, { type: 1 });
+          } else {
+            let phase = g.phasor(frequency, 0, { min: 0 });
+            osc = g.lt(phase, pulsewidth);
           }
           break;
         case 'saw':
-          if( antialias == false ) {
-            osc = g.phasor( frequency )
-          }else{
-            osc = polyBlep( frequency, { type })
+          if (antialias == false) {
+            osc = g.phasor(frequency);
+          } else {
+            osc = polyBlep(frequency, { type });
           }
           break;
         case 'sine':
-          osc = g.cycle( frequency )
+          osc = g.cycle(frequency);
           break;
         case 'square':
-          if( antialias === true ) {
+          if (antialias === true) {
             //osc = feedbackOsc( frequency, 1, .5, { type:1 })
-            osc = polyBlep( frequency, { type })
-          }else{
-            osc = g.wavetable( frequency, { buffer:Oscillators.Square.buffer, name:'square' } )
+            osc = polyBlep(frequency, { type });
+          } else {
+            osc = g.wavetable(frequency, { buffer: Oscillators.Square.buffer, name: 'square' });
           }
           break;
         case 'triangle':
-          if( antialias == true ) {
-            osc = polyBlep( frequency, { type })
-          }else{
-            osc = g.wavetable( frequency, { buffer:Oscillators.Triangle.buffer, name:'triangle' } )
+          if (antialias == true) {
+            osc = polyBlep(frequency, { type });
+          } else {
+            osc = g.wavetable(frequency, { buffer: Oscillators.Triangle.buffer, name: 'triangle' });
           }
           break;
         case 'noise':
-          osc = g.noise()
+          osc = g.noise();
           break;
       }
 
-      return osc
+      return osc;
     }
+  };
+
+  Oscillators.Square.buffer = new Float32Array(1024);
+
+  for (let i = 1023; i >= 0; i--) {
+    Oscillators.Square.buffer[i] = i / 1024 > .5 ? 1 : -1;
   }
 
-  Oscillators.Square.buffer = new Float32Array( 1024 )
+  Oscillators.Triangle.buffer = new Float32Array(1024);
 
-  for( let i = 1023; i >= 0; i-- ) { 
-    Oscillators.Square.buffer [ i ] = i / 1024 > .5 ? 1 : -1
+  for (let i = 1024; i--; i = i) {
+    Oscillators.Triangle.buffer[i] = 1 - 4 * Math.abs((i / 1024 + 0.25) % 1 - 0.5);
   }
-
-  Oscillators.Triangle.buffer = new Float32Array( 1024 )
-
-  
-  for( let i = 1024; i--; i = i ) { Oscillators.Triangle.buffer[i] = 1 - 4 * Math.abs(( (i / 1024) + 0.25) % 1 - 0.5); }
 
   Oscillators.defaults = {
     frequency: 440,
     gain: 1
-  }
+  };
 
-  return Oscillators
+  return Oscillators;
+};
 
-}
-
-},{"../ugen.js":141,"./brownnoise.js":131,"./fmfeedbackosc.js":132,"./pinknoise.js":134,"./polyblep.js":135,"./wavetable.js":136,"genish.js":37}],134:[function(require,module,exports){
+},{"../ugen.js":148,"./brownnoise.dsp.js":138,"./fmfeedbackosc.js":139,"./pinknoise.dsp.js":141,"./polyblep.dsp.js":142,"./wavetable.js":143,"genish.js":39}],141:[function(require,module,exports){
 const genish = require('genish.js'),
       ssd = genish.history,
       data = genish.data,
@@ -9305,7 +10042,8 @@ module.exports = function () {
 
   return out;
 };
-},{"genish.js":37}],135:[function(require,module,exports){
+
+},{"genish.js":39}],142:[function(require,module,exports){
 const genish = require('genish.js');
 const g = genish;
 
@@ -9363,1287 +10101,1636 @@ const polyBlep = function (__frequency, argumentProps) {
 };
 
 module.exports = polyBlep;
-},{"genish.js":37}],136:[function(require,module,exports){
-let g = require( 'genish.js' ),
-    ugen = require( '../ugen.js' )()
 
-module.exports = function( Gibberish ) {
+},{"genish.js":39}],143:[function(require,module,exports){
+let g = require('genish.js'),
+    ugen = require('../ugen.js')();
 
-  const Wavetable = function( inputProps ) {
-    const wavetable = Object.create( ugen )
-    const props  = Object.assign({}, Gibberish.oscillators.defaults, inputProps )
-    const osc = g.wavetable( g.in('frequency'), props )
-    const graph = g.mul( 
-      osc, 
-      g.in( 'gain' )
-    )
+module.exports = function (Gibberish) {
 
-    Gibberish.factory( wavetable, graph, 'wavetable', props )
+  const Wavetable = function (inputProps) {
+    const wavetable = Object.create(ugen);
+    const props = Object.assign({}, Gibberish.oscillators.defaults, inputProps);
+    const osc = g.wavetable(g.in('frequency'), props);
+    const graph = g.mul(osc, g.in('gain'));
 
-    return wavetable
-  }
+    Gibberish.factory(wavetable, graph, 'wavetable', props);
 
-  g.wavetable = function( frequency, props ) {
-    let dataProps = { immutable:true }
+    return wavetable;
+  };
 
-    // use global references if applicable
-    if( props.name !== undefined ) dataProps.global = props.name
+  g.wavetable = function (frequency, props) {
+    let dataProps = { immutable: true
 
-    const buffer = g.data( props.buffer, 1, dataProps )
+      // use global references if applicable
+    };if (props.name !== undefined) dataProps.global = props.name;
 
-    return g.peek( buffer, g.phasor( frequency, 0, { min:0 } ) )
-  }
+    const buffer = g.data(props.buffer, 1, dataProps);
 
-  return Wavetable
-}
+    return g.peek(buffer, g.phasor(frequency, 0, { min: 0 }));
+  };
 
-},{"../ugen.js":141,"genish.js":37}],137:[function(require,module,exports){
-const Queue = require( '../external/priorityqueue.js' )
+  return Wavetable;
+};
 
-let Gibberish = null
+},{"../ugen.js":148,"genish.js":39}],144:[function(require,module,exports){
+const Queue = require('../external/priorityqueue.js');
+
+let Gibberish = null;
 
 const Scheduler = {
   phase: 0,
 
-  queue: new Queue( ( a, b ) => {
-    if( a.time === b.time ) { 
+  queue: new Queue((a, b) => {
+    if (a.time === b.time) {
       return a.priority < b.priority ? -1 : a.priority > b.priority ? 1 : 0;
-    }else{
-      return a.time - b.time //a.time.minus( b.time )
+    } else {
+      return a.time - b.time; //a.time.minus( b.time )
     }
   }),
 
-  init( __Gibberish ) {
-    Gibberish = __Gibberish
+  init(__Gibberish) {
+    Gibberish = __Gibberish;
   },
 
   clear() {
-    this.queue.data.length = 0
-    this.queue.length = 0
+    this.queue.data.length = 0;
+    this.queue.length = 0;
   },
 
-  add( time, func, priority = 0 ) {
-    time += this.phase
+  add(time, func, priority = 0) {
+    time += this.phase;
 
-    this.queue.push({ time, func, priority })
+    this.queue.push({ time, func, priority });
   },
 
-  tick( usingSync = false ) {
-    if( this.shouldSync === usingSync ) {
-      if( this.queue.length ) {
-        let next = this.queue.peek()
+  tick(usingSync = false) {
+    if (this.shouldSync === usingSync) {
+      if (this.queue.length) {
+        let next = this.queue.peek();
 
-        if( isNaN( next.time ) ) {
-          this.queue.pop()
+        if (isNaN(next.time)) {
+          this.queue.pop();
         }
-        
-        while( this.phase >= next.time ) {
-          next.func( next.priority )
-          this.queue.pop()
-          next = this.queue.peek()
+
+        while (this.phase >= next.time) {
+          next.func(next.priority);
+          this.queue.pop();
+          next = this.queue.peek();
 
           // XXX this happens when calling sequencer.stop()... why?
-          if( next === undefined ) break
+          if (next === undefined) break;
         }
       }
 
-      this.phase++
+      this.phase++;
     }
   },
 
-  advance( amt ) {
-    this.phase += amt
-    this.tick( true )
+  advance(amt) {
+    this.phase += amt;
+    this.tick(true);
   }
-}
+};
 
-let shouldSync = false
-Object.defineProperty( Scheduler, 'shouldSync', {
-  get() { return shouldSync },
-  set(v){ 
-    shouldSync = v
-    if( Gibberish.mode === 'worklet' ) {
+let shouldSync = false;
+Object.defineProperty(Scheduler, 'shouldSync', {
+  get() {
+    return shouldSync;
+  },
+  set(v) {
+    shouldSync = v;
+    if (Gibberish.mode === 'worklet') {
       Gibberish.worklet.port.postMessage({
-        address:'eval',
-        code:'Gibberish.scheduler.shouldSync = ' + v
-      })
+        address: 'eval',
+        code: 'Gibberish.scheduler.shouldSync = ' + v
+      });
     }
   }
-})
+});
 
-module.exports = Scheduler
+module.exports = Scheduler;
 
-},{"../external/priorityqueue.js":84}],138:[function(require,module,exports){
-const g = require( 'genish.js' ),
-      __proxy = require( '../workletProxy.js' ),
-      ugen = require( '../ugen.js' )()
+},{"../external/priorityqueue.js":88}],145:[function(require,module,exports){
+const g = require('genish.js'),
+      __proxy = require('../workletProxy.js'),
+      ugen = require('../ugen.js')();
 
-module.exports = function( Gibberish ) {
-  const __proto__ = Object.create( ugen )
+module.exports = function (Gibberish) {
+  const __proto__ = Object.create(ugen);
 
-  const proxy = __proxy( Gibberish )
+  const proxy = __proxy(Gibberish);
 
-  Object.assign( __proto__, {
-    start( delay=0 ) {
-      if( delay !== 0 ) {
-        Gibberish.scheduler.add( delay, ()=> {
-          Gibberish.analyzers.push( this )
-          Gibberish.dirty( Gibberish.analyzers )
-        })
-      }else{
-        Gibberish.analyzers.push( this )
-        Gibberish.dirty( Gibberish.analyzers )
+  Object.assign(__proto__, {
+    start(delay = 0) {
+      if (delay !== 0) {
+        Gibberish.scheduler.add(delay, () => {
+          Gibberish.analyzers.push(this);
+          Gibberish.dirty(Gibberish.analyzers);
+        });
+      } else {
+        Gibberish.analyzers.push(this);
+        Gibberish.dirty(Gibberish.analyzers);
       }
-      return this
+      return this;
     },
     stop() {
-      const idx = Gibberish.analyzers.indexOf( this )
-      if( idx > -1 ) {
-        Gibberish.analyzers.splice( idx, 1 )
-        Gibberish.dirty( Gibberish.analyzers )
+      const idx = Gibberish.analyzers.indexOf(this);
+      if (idx > -1) {
+        Gibberish.analyzers.splice(idx, 1);
+        Gibberish.dirty(Gibberish.analyzers);
       }
-      this.phase = 0
-      this.nextTime = 0
+      this.phase = 0;
+      this.nextTime = 0;
 
-      return this
+      return this;
     },
-    fire(){
-      let value  = typeof this.values  === 'function' ? this.values  : this.values[ this.__valuesPhase++  % this.values.length  ]
-      if( typeof value === 'function' && this.target === undefined ) {
-        value()
-      }else if( typeof this.target[ this.key ] === 'function' ) {
-        if( typeof value === 'function' ) {
-          value = value()
+    fire() {
+      let value = typeof this.values === 'function' ? this.values : this.values[this.__valuesPhase++ % this.values.length];
+      if (typeof value === 'function' && this.target === undefined) {
+        value();
+      } else if (typeof this.target[this.key] === 'function') {
+        if (typeof value === 'function') {
+          value = value();
         }
-        if( value !== this.DNR ) {
-          this.target[ this.key ]( value )
+        if (value !== this.DNR) {
+          this.target[this.key](value);
         }
-      }else{
-        if( typeof value === 'function' ) value = value()
-        if( value !== this.DNR )
-          this.target[ this.key ] = value
+      } else {
+        if (typeof value === 'function') value = value();
+        if (value !== this.DNR) this.target[this.key] = value;
       }
     }
-  })
+  });
 
   // XXX we need to implement priority, which will in turn determine the order
   // that the sequencers are added to the callback function.
-  const Seq2 = { 
-    create( inputProps ) {
-      const seq = Object.create( __proto__ ),
-            properties = Object.assign({}, Seq2.defaults, inputProps )
+  const Seq2 = {
+    create(inputProps) {
+      const seq = Object.create(__proto__),
+            properties = Object.assign({}, Seq2.defaults, inputProps);
 
-      seq.phase = 0
-      seq.inputNames = [ 'rate', 'density' ]
-      seq.inputs = [ 1, 1 ]
-      seq.nextTime = 0
-      seq.__valuesPhase = 0
-      seq.__timingsPhase = 0
-      seq.id = Gibberish.factory.getUID()
-      seq.dirty = true
-      seq.type = 'seq'
-      seq.__addresses__ = {}
-      seq.DNR = -987654321
+      seq.phase = 0;
+      seq.inputNames = ['rate', 'density'];
+      seq.inputs = [1, 1];
+      seq.nextTime = 0;
+      seq.__valuesPhase = 0;
+      seq.__timingsPhase = 0;
+      seq.id = Gibberish.factory.getUID();
+      seq.dirty = true;
+      seq.type = 'seq';
+      seq.__addresses__ = {};
+      seq.DNR = -987654321;
 
-      properties.id = Gibberish.factory.getUID()
+      properties.id = Gibberish.factory.getUID();
 
-      Object.assign( seq, properties ) 
-      seq.__properties__ = properties
+      Object.assign(seq, properties);
+      seq.__properties__ = properties;
 
       // support for sequences that are triggered via other means,
       // in Gibber this is when you provide timing to one sequence
       // on an object and want to use that one pattern to trigger
       // multiple sequences.
-      if( seq.timings === null ) { seq.nextTime = Infinity } 
+      if (seq.timings === null) {
+        seq.nextTime = Infinity;
+      }
 
       // XXX this needs to be optimized as much as humanly possible, since it's running at audio rate...
-      seq.callback = function( rate, density ) {
-        while( seq.phase >= seq.nextTime ) {
-          let value  = typeof seq.values  === 'function' ? seq.values  : seq.values[ seq.__valuesPhase++  % seq.values.length  ],
-              shouldRun = true
-          
-          let timing = null
-          if( seq.timings !== null && seq.timings !== undefined ) { 
-            timing = typeof seq.timings === 'function' ? seq.timings : seq.timings[ seq.__timingsPhase++ % seq.timings.length ]
-            if( typeof timing === 'function' ) timing = timing()
+      seq.callback = function (rate, density) {
+        while (seq.phase >= seq.nextTime) {
+          let value = typeof seq.values === 'function' ? seq.values : seq.values[seq.__valuesPhase++ % seq.values.length],
+              shouldRun = true;
+
+          let timing = null;
+          if (seq.timings !== null && seq.timings !== undefined) {
+            timing = typeof seq.timings === 'function' ? seq.timings : seq.timings[seq.__timingsPhase++ % seq.timings.length];
+            if (typeof timing === 'function') timing = timing();
           }
-          
-          let shouldIncreaseSpeed = density <= 1 ? false : true
+
+          let shouldIncreaseSpeed = density <= 1 ? false : true;
 
           // XXX this supports an edge case in Gibber, where patterns like Euclid / Hex return
           // objects indicating both whether or not they should should trigger values as well
           // as the next time they should run. perhaps this could be made more generalizable?
-          if( timing !== null && typeof timing === 'object' ) {
-            if( timing.shouldExecute === 1 ) {
-              shouldRun = true
-            }else{
-              shouldRun = false
+          if (timing !== null && typeof timing === 'object') {
+            if (timing.shouldExecute === 1) {
+              shouldRun = true;
+            } else {
+              shouldRun = false;
             }
-            timing = timing.time 
-          }else if( timing !== null ) {
-            if( Math.random() >= density ) shouldRun = false
+            timing = timing.time;
+          } else if (timing !== null) {
+            if (Math.random() >= density) shouldRun = false;
           }
 
-          if( shouldRun ) {
-            if( seq.mainthreadonly !== undefined ) {
-              if( typeof value === 'function' ) {
-                value = value()
+          if (shouldRun) {
+            if (seq.mainthreadonly !== undefined) {
+              if (typeof value === 'function') {
+                value = value();
               }
-              Gibberish.processor.messages.push( seq.mainthreadonly, seq.key, value )
-            }else if( typeof value === 'function' && seq.target === undefined ) {
-              value()
-            }else if( typeof seq.target[ seq.key ] === 'function' ) {
-              if( typeof value === 'function' ) {
-                value = value()
+              Gibberish.processor.messages.push(seq.mainthreadonly, seq.key, value);
+            } else if (typeof value === 'function' && seq.target === undefined) {
+              value();
+            } else if (typeof seq.target[seq.key] === 'function') {
+              if (typeof value === 'function') {
+                value = value();
               }
-              if( value !== seq.DNR ) {
-                seq.target[ seq.key ]( value )
+              if (value !== seq.DNR) {
+                seq.target[seq.key](value);
               }
-            }else{
-              if( typeof value === 'function' ) value = value()
-              if( value !== seq.DNR )
-                seq.target[ seq.key ] = value
+            } else {
+              if (typeof value === 'function') value = value();
+              if (value !== seq.DNR) seq.target[seq.key] = value;
             }
           }
 
-          if( timing === null ) return
+          if (timing === null) return;
 
-          seq.phase -= seq.nextTime
+          seq.phase -= seq.nextTime;
 
-          if( shouldIncreaseSpeed ) {
-            timing = Math.random() > (2 - density) ? timing / 2 : timing
+          if (shouldIncreaseSpeed) {
+            timing = Math.random() > 2 - density ? timing / 2 : timing;
           }
-          seq.nextTime = timing
+          seq.nextTime = timing;
         }
 
-        seq.phase += rate
+        seq.phase += rate;
 
-        return 0
-      }
+        return 0;
+      };
 
-      seq.ugenName = seq.callback.ugenName = 'seq_' + seq.id
+      seq.ugenName = seq.callback.ugenName = 'seq_' + seq.id;
 
       // since we're not passing our sequencer through the ugen template, we need
       // to grab a memory address for its rate so it can be sequenced and define
       // a property that manipulates that memory address.
-      const idx = Gibberish.memory.alloc( 1 )
-      Gibberish.memory.heap[ idx ] = seq.rate
-      seq.__addresses__.rate = idx
+      const idx = Gibberish.memory.alloc(1);
+      Gibberish.memory.heap[idx] = seq.rate;
+      seq.__addresses__.rate = idx;
 
-      let value = seq.rate
-      Object.defineProperty( seq, 'rate', {
-        get() { return value },
-        set( v ) {
-          if( value !== v ) {
-            if( typeof v === 'number' ) Gibberish.memory.heap[ idx ] = v
+      let value = seq.rate;
+      Object.defineProperty(seq, 'rate', {
+        get() {
+          return value;
+        },
+        set(v) {
+          if (value !== v) {
+            if (typeof v === 'number') Gibberish.memory.heap[idx] = v;
 
-            Gibberish.dirty( Gibberish.analyzers )
-            value = v
+            Gibberish.dirty(Gibberish.analyzers);
+            value = v;
           }
         }
-      })
+      });
 
-      const didx = Gibberish.memory.alloc( 1 )
-      Gibberish.memory.heap[ didx ] = seq.density
-      seq.__addresses__.density = didx
+      const didx = Gibberish.memory.alloc(1);
+      Gibberish.memory.heap[didx] = seq.density;
+      seq.__addresses__.density = didx;
 
-      let dvalue = seq.density
-      Object.defineProperty( seq, 'density', {
-        get() { return dvalue },
-        set( v ) {
-          if( dvalue !== v ) {
-            if( typeof v === 'number' ) Gibberish.memory.heap[ didx ] = v
+      let dvalue = seq.density;
+      Object.defineProperty(seq, 'density', {
+        get() {
+          return dvalue;
+        },
+        set(v) {
+          if (dvalue !== v) {
+            if (typeof v === 'number') Gibberish.memory.heap[didx] = v;
 
-            Gibberish.dirty( Gibberish.analyzers )
-            dvalue = v
+            Gibberish.dirty(Gibberish.analyzers);
+            dvalue = v;
           }
         }
-      })
+      });
 
-      return proxy( ['Sequencer2'], properties, seq ) 
+      return proxy(['Sequencer2'], properties, seq);
     }
-  }
+  };
 
-  Seq2.defaults = { rate: 1, density:1, priority:0, phase:0 }
-  Seq2.create.DO_NOT_OUTPUT = -987654321
+  Seq2.defaults = { rate: 1, density: 1, priority: 0, phase: 0 };
+  Seq2.create.DO_NOT_OUTPUT = -987654321;
 
-  return Seq2.create
+  return Seq2.create;
+};
 
-}
+},{"../ugen.js":148,"../workletProxy.js":150,"genish.js":39}],146:[function(require,module,exports){
+const __proxy = require('../workletProxy.js');
 
+module.exports = function (Gibberish) {
 
-},{"../ugen.js":141,"../workletProxy.js":144,"genish.js":37}],139:[function(require,module,exports){
-const __proxy = require( '../workletProxy.js' )
+  const proxy = __proxy(Gibberish);
 
-module.exports = function( Gibberish ) {
+  const Sequencer = props => {
+    let __seq;
+    const seq = {
+      __isRunning: false,
 
-const proxy = __proxy( Gibberish )
+      __valuesPhase: 0,
+      __timingsPhase: 0,
+      __type: 'seq',
 
-const Sequencer = props => {
-  let __seq
-  const seq = {
-    __isRunning:false,
+      tick(priority) {
+        let value = typeof seq.values === 'function' ? seq.values : seq.values[seq.__valuesPhase++ % seq.values.length],
+            timing = typeof seq.timings === 'function' ? seq.timings : seq.timings[seq.__timingsPhase++ % seq.timings.length],
+            shouldRun = true;
 
-    __valuesPhase:  0,
-    __timingsPhase: 0,
-    __type:'seq',
+        if (typeof timing === 'function') timing = timing();
 
-    tick( priority ) {
-      let value  = typeof seq.values  === 'function' ? seq.values  : seq.values[  seq.__valuesPhase++  % seq.values.length  ],
-          timing = typeof seq.timings === 'function' ? seq.timings : seq.timings[ seq.__timingsPhase++ % seq.timings.length ],
-          shouldRun = true
-
-      if( typeof timing === 'function' ) timing = timing()
-
-      // XXX this supports an edge case in Gibber, where patterns like Euclid / Hex return
-      // objects indicating both whether or not they should should trigger values as well
-      // as the next time they should run. perhaps this could be made more generalizable?
-      if( typeof timing === 'object' ) {
-        if( timing.shouldExecute === 1 ) {
-          shouldRun = true
-        }else{
-          shouldRun = false
-        }
-        timing = timing.time 
-      }
-
-      timing *= seq.rate
-
-      if( shouldRun ) {
-        if( seq.mainthreadonly !== undefined ) {
-          if( typeof value === 'function' ) {
-            value = value()
+        // XXX this supports an edge case in Gibber, where patterns like Euclid / Hex return
+        // objects indicating both whether or not they should should trigger values as well
+        // as the next time they should run. perhaps this could be made more generalizable?
+        if (typeof timing === 'object') {
+          if (timing.shouldExecute === 1) {
+            shouldRun = true;
+          } else {
+            shouldRun = false;
           }
-          Gibberish.processor.messages.push( seq.mainthreadonly, seq.key, value )
-        }else if( typeof value === 'function' && seq.target === undefined ) {
-          value()
-        }else if( typeof seq.target[ seq.key ] === 'function' ) {
-          if( typeof value === 'function' ) value = value()
-          seq.target[ seq.key ]( value )
-        }else{
-          if( typeof value === 'function' ) value = value()
-          seq.target[ seq.key ] = value
-        }
-      }
-      
-      if( Gibberish.mode === 'processor' ) {
-        if( seq.__isRunning === true && !isNaN( timing ) ) {
-          Gibberish.scheduler.add( timing, seq.tick, seq.priority )
-        }
-      }
-    },
-
-    start( delay = 0 ) {
-      seq.__isRunning = true
-      Gibberish.scheduler.add( delay, seq.tick, seq.priority )
-      return __seq
-    },
-
-    stop() {
-      seq.__isRunning = false
-      return __seq
-    }
-  }
-
-  props.id = Gibberish.factory.getUID()
-
-  // need a separate reference to the properties for worklet meta-programming
-  const properties = Object.assign( {}, Sequencer.defaults, props )
-  Object.assign( seq, properties ) 
-  seq.__properties__ = properties
-
-  __seq =  proxy( ['Sequencer'], properties, seq )
-
-  return __seq
-}
-
-Sequencer.defaults = { priority:100000, values:[], timings:[], rate:1 }
-
-Sequencer.make = function( values, timings, target, key, priority ) {
-  return Sequencer({ values, timings, target, key, priority })
-}
-
-return Sequencer
-
-}
-
-},{"../workletProxy.js":144}],140:[function(require,module,exports){
-const __proxy = require( '../workletProxy.js' )
-const Pattern = require( 'tidal.pegjs' )
-
-module.exports = function( Gibberish ) {
-
-const proxy = __proxy( Gibberish )
-
-const Sequencer = props => {
-  let __seq
-  const seq = {
-    __isRunning:false,
-
-    __phase:  0,
-    __type:'seq',
-    __pattern: Pattern( props.pattern, { addLocations:true, addUID:true, enclose:true }),
-    __events: null,
-
-    tick( priority ) {
-      // running for first time, perform a query
-      if( seq.__events === null || seq.__events.length === 0 ) {
-        seq.__events = seq.__pattern.query( seq.__phase++, 1 )
-      }
-
-      // used when scheduling events that are very far apart
-      if( seq.__events.length <= 0 ) {
-        if( Gibberish.mode === 'processor' ) {
-          if( seq.__isRunning === true  ) {
-            Gibberish.scheduler.add( Gibberish.ctx.sampleRate / Sequencer.clock.cps, seq.tick, seq.priority )
-          }
-
+          timing = timing.time;
         }
 
-        return
-      }
+        timing *= seq.rate;
 
-      const startTime = seq.__events[ 0 ].arc.start
-
-      if( seq.key !== 'chord' ) {
-        while( seq.__events.length > 0 && startTime.valueOf() === seq.__events[0].arc.start.valueOf() ) {
-          let event  = seq.__events.shift(),
-              value  = event.value,
-              uid    = event.uid
-
-          // for bjorklund etc.
-          if( typeof value === 'object' ) value = value.value
-
-          if( seq.filters !== null ) value = seq.filters.reduce( (currentValue, filter) => filter( currentValue, seq, uid ), value )  
-          if( seq.mainthreadonly !== undefined ) {
-            if( typeof value === 'function' ) {
-              value = value()
+        if (shouldRun) {
+          if (seq.mainthreadonly !== undefined) {
+            if (typeof value === 'function') {
+              value = value();
             }
-            Gibberish.processor.messages.push( seq.mainthreadonly, seq.key, value )
-          }else if( typeof seq.target[ seq.key ] === 'function' ) {
-            seq.target[ seq.key ]( value )
-          }else{
-            seq.target[ seq.key ] = value
-          }
-        }
-      }else{
-        let value = seq.__events.filter( evt => startTime.valueOf() === evt.arc.start.valueOf() ).map( evt => evt.value )
-        let uid = seq.__events[0].uid
-
-        const events = seq.__events.splice( 0, value.length )
-
-        if( seq.filters !== null ) {
-          if( value.length === 1 ) {
-            value = seq.filters.reduce( (currentValue, filter) => filter( currentValue, seq, uid ), value )  
-          }else{
-            value.forEach( (v,i) => seq.filters.reduce( (currentValue, filter) => filter( currentValue, seq, events[ i ].uid ), v ) )
+            Gibberish.processor.messages.push(seq.mainthreadonly, seq.key, value);
+          } else if (typeof value === 'function' && seq.target === undefined) {
+            value();
+          } else if (typeof seq.target[seq.key] === 'function') {
+            if (typeof value === 'function') value = value();
+            seq.target[seq.key](value);
+          } else {
+            if (typeof value === 'function') value = value();
+            seq.target[seq.key] = value;
           }
         }
 
-        if( typeof seq.target[ seq.key ] === 'function' ) {
-          seq.target[ seq.key ]( value )
-        }else{
-          seq.target[ seq.key ] = value
+        if (Gibberish.mode === 'processor') {
+          if (seq.__isRunning === true && !isNaN(timing)) {
+            Gibberish.scheduler.add(timing, seq.tick, seq.priority);
+          }
+        }
+      },
+
+      start(delay = 0) {
+        seq.__isRunning = true;
+        Gibberish.scheduler.add(delay, seq.tick, seq.priority);
+        return __seq;
+      },
+
+      stop() {
+        seq.__isRunning = false;
+        return __seq;
+      }
+    };
+
+    props.id = Gibberish.factory.getUID();
+
+    // need a separate reference to the properties for worklet meta-programming
+    const properties = Object.assign({}, Sequencer.defaults, props);
+    Object.assign(seq, properties);
+    seq.__properties__ = properties;
+
+    __seq = proxy(['Sequencer'], properties, seq);
+
+    return __seq;
+  };
+
+  Sequencer.defaults = { priority: 100000, values: [], timings: [], rate: 1 };
+
+  Sequencer.make = function (values, timings, target, key, priority) {
+    return Sequencer({ values, timings, target, key, priority });
+  };
+
+  return Sequencer;
+};
+
+},{"../workletProxy.js":150}],147:[function(require,module,exports){
+const __proxy = require('../workletProxy.js');
+const Pattern = require('tidal.pegjs');
+
+module.exports = function (Gibberish) {
+
+  const proxy = __proxy(Gibberish);
+
+  const Sequencer = props => {
+    let __seq;
+    const seq = {
+      __isRunning: false,
+
+      __phase: 0,
+      __type: 'seq',
+      __pattern: Pattern(props.pattern, { addLocations: true, addUID: true, enclose: true }),
+      __events: null,
+
+      tick(priority) {
+        // running for first time, perform a query
+        if (seq.__events === null || seq.__events.length === 0) {
+          seq.__events = seq.__pattern.query(seq.__phase++, 1);
+        }
+
+        // used when scheduling events that are very far apart
+        if (seq.__events.length <= 0) {
+          if (Gibberish.mode === 'processor') {
+            if (seq.__isRunning === true) {
+              Gibberish.scheduler.add(Gibberish.ctx.sampleRate / Sequencer.clock.cps, seq.tick, seq.priority);
+            }
+          }
+
+          return;
+        }
+
+        const startTime = seq.__events[0].arc.start;
+
+        if (seq.key !== 'chord') {
+          while (seq.__events.length > 0 && startTime.valueOf() === seq.__events[0].arc.start.valueOf()) {
+            let event = seq.__events.shift(),
+                value = event.value,
+                uid = event.uid;
+
+            // for bjorklund etc.
+            if (typeof value === 'object') value = value.value;
+
+            if (seq.filters !== null) value = seq.filters.reduce((currentValue, filter) => filter(currentValue, seq, uid), value);
+            if (seq.mainthreadonly !== undefined) {
+              if (typeof value === 'function') {
+                value = value();
+              }
+              Gibberish.processor.messages.push(seq.mainthreadonly, seq.key, value);
+            } else if (typeof seq.target[seq.key] === 'function') {
+              seq.target[seq.key](value);
+            } else {
+              seq.target[seq.key] = value;
+            }
+          }
+        } else {
+          let value = seq.__events.filter(evt => startTime.valueOf() === evt.arc.start.valueOf()).map(evt => evt.value);
+          let uid = seq.__events[0].uid;
+
+          const events = seq.__events.splice(0, value.length);
+
+          if (seq.filters !== null) {
+            if (value.length === 1) {
+              value = seq.filters.reduce((currentValue, filter) => filter(currentValue, seq, uid), value);
+            } else {
+              value.forEach((v, i) => seq.filters.reduce((currentValue, filter) => filter(currentValue, seq, events[i].uid), v));
+            }
+          }
+
+          if (typeof seq.target[seq.key] === 'function') {
+            seq.target[seq.key](value);
+          } else {
+            seq.target[seq.key] = value;
+          }
+        }
+
+        if (Gibberish.mode === 'processor') {
+          let timing;
+          if (seq.__events.length <= 0) {
+            let time = 0;
+            while (seq.__events.length <= 0) {
+              seq.__events = seq.__pattern.query(seq.__phase++, 1);
+              time++;
+            }
+            //seq.__events.forEach( evt => {
+            //  evt.arc.start = evt.arc.start.add( 1 ).sub( startTime ) 
+            //  evt.arc.end   = evt.arc.end.add( 1 ).sub( startTime )
+            //})
+
+            timing = time - startTime.valueOf();
+          } else {
+            timing = seq.__events[0].arc.start.sub(startTime).valueOf();
+          }
+
+          timing *= Math.ceil(Gibberish.ctx.sampleRate / Sequencer.clock.cps) + 1;
+
+          if (seq.__isRunning === true && !isNaN(timing) && timing > 0) {
+            // XXX this supports an edge case in Gibber, where patterns like Euclid / Hex return
+            // objects indicating both whether or not they should should trigger values as well
+            // as the next time they should run. perhaps this could be made more generalizable?
+
+            //if( typeof timing === 'object' ) {
+            //  if( timing.shouldExecute === 1 ) {
+            //    shouldRun = true
+            //  }else{
+            //    shouldRun = false
+            //  }
+            //  timing = timing.time 
+            //}
+
+            //timing *= seq.rate
+
+            Gibberish.scheduler.add(timing, seq.tick, seq.priority);
+          }
+        }
+      },
+
+      rotate(amt) {
+        seq.__phase += amt;
+        return __seq;
+      },
+
+      start(delay = 0) {
+        seq.__isRunning = true;
+        Gibberish.scheduler.add(delay, seq.tick, seq.priority);
+        return __seq;
+      },
+
+      stop() {
+        seq.__isRunning = false;
+        return __seq;
+      }
+    };
+
+    props.id = Gibberish.factory.getUID();
+
+    // need a separate reference to the properties for worklet meta-programming
+    const properties = Object.assign({}, Sequencer.defaults, props);
+    Object.assign(seq, properties);
+    seq.__properties__ = properties;
+
+    __seq = proxy(['Tidal'], properties, seq);
+
+    return __seq;
+  };
+
+  Sequencer.defaults = { priority: 100000, pattern: '', rate: 1, filters: null };
+
+  Sequencer.make = function (values, timings, target, key, priority) {
+    return Sequencer({ values, timings, target, key, priority });
+  };
+
+  let __uid = 0;
+  Sequencer.getUID = () => {
+    return __uid++;
+  };
+
+  Sequencer.clock = { cps: 1 };
+
+  Sequencer.id = Gibberish.utilities.getUID();
+
+  if (Gibberish.mode === 'worklet') {
+    Gibberish.worklet.port.postMessage({
+      address: 'eval',
+      code: `Gibberish.Tidal.clock.id = ${Sequencer.id}; Gibberish.ugens.set( ${Sequencer.id}, Gibberish.Tidal.clock )`
+    });
+
+    let cps = 1;
+    Object.defineProperty(Sequencer, 'cps', {
+      get() {
+        return cps;
+      },
+      set(v) {
+        cps = v;
+        if (Gibberish.mode === 'worklet') {
+          Gibberish.worklet.port.postMessage({
+            address: 'set',
+            object: Sequencer.id,
+            name: 'cps',
+            value: cps
+          });
         }
       }
-
-      if( Gibberish.mode === 'processor' ) {
-        let timing
-        if( seq.__events.length <= 0 ) {
-          let time = 0
-          while( seq.__events.length <= 0 ) {
-            seq.__events = seq.__pattern.query( seq.__phase++, 1 )
-            time++
-          }
-          //seq.__events.forEach( evt => {
-          //  evt.arc.start = evt.arc.start.add( 1 ).sub( startTime ) 
-          //  evt.arc.end   = evt.arc.end.add( 1 ).sub( startTime )
-          //})
-
-          timing = time - startTime.valueOf() 
-        }else{
-          timing = seq.__events[0].arc.start.sub( startTime ).valueOf() 
-        }
-        
-        timing *= Math.ceil( Gibberish.ctx.sampleRate / Sequencer.clock.cps ) + 1 
-
-        if( seq.__isRunning === true && !isNaN( timing ) && timing > 0 ) {
-          // XXX this supports an edge case in Gibber, where patterns like Euclid / Hex return
-          // objects indicating both whether or not they should should trigger values as well
-          // as the next time they should run. perhaps this could be made more generalizable?
-          
-          //if( typeof timing === 'object' ) {
-          //  if( timing.shouldExecute === 1 ) {
-          //    shouldRun = true
-          //  }else{
-          //    shouldRun = false
-          //  }
-          //  timing = timing.time 
-          //}
-
-          //timing *= seq.rate
-
-          Gibberish.scheduler.add( timing, seq.tick, seq.priority )
-        }
-      }
-
-
-    },
-
-    rotate( amt ) {
-      seq.__phase += amt
-      return __seq 
-    },
-
-    start( delay = 0 ) {
-      seq.__isRunning = true
-      Gibberish.scheduler.add( delay, seq.tick, seq.priority )
-      return __seq
-    },
-
-    stop() {
-      seq.__isRunning = false
-      return __seq
-    }
+    });
   }
 
-  props.id = Gibberish.factory.getUID()
+  return Sequencer;
+};
 
-  // need a separate reference to the properties for worklet meta-programming
-  const properties = Object.assign( {}, Sequencer.defaults, props )
-  Object.assign( seq, properties ) 
-  seq.__properties__ = properties
+},{"../workletProxy.js":150,"tidal.pegjs":170}],148:[function(require,module,exports){
+let Gibberish = null;
 
-  __seq =  proxy( ['Tidal'], properties, seq )
+const __ugen = function (__Gibberish) {
+  if (__Gibberish !== undefined && Gibberish == null) Gibberish = __Gibberish;
 
-  return __seq
-}
-
-Sequencer.defaults = { priority:100000, pattern:'', rate:1, filters:null }
-
-Sequencer.make = function( values, timings, target, key, priority ) {
-  return Sequencer({ values, timings, target, key, priority })
-}
-
-let __uid = 0
-Sequencer.getUID = ()=> {
-  return __uid++
-}
-
-Sequencer.clock = { cps: 1 }
-
-if( Gibberish.mode === 'worklet' ) {
-  Sequencer.id = Gibberish.utilities.getUID()
-  
-  Gibberish.worklet.port.postMessage({
-    address:'eval',
-    code:`Gibberish.Tidal.clock.id = ${Sequencer.id}; Gibberish.ugens.set( ${Sequencer.id}, Gibberish.Tidal.clock )`
-  })
-  
-  let cps = 1
-  Object.defineProperty( Sequencer, 'cps', {
-    get() { return cps },
-    set(v){ 
-      cps = v
-      if( Gibberish.mode === 'worklet' ) {
-        Gibberish.worklet.port.postMessage({
-          address:'set',
-          object:Sequencer.id,
-          name:'cps',
-          value:cps 
-        }) 
-      }
-    }
-  })
-}
-
-return Sequencer
-
-}
-
-},{"../workletProxy.js":144,"tidal.pegjs":163}],141:[function(require,module,exports){
-let Gibberish = null
-
-const __ugen = function( __Gibberish ) {
-  if( __Gibberish !== undefined && Gibberish == null ) Gibberish = __Gibberish
- 
   const replace = obj => {
-    if( typeof obj === 'object' ) {
-      if( obj.id !== undefined ) {
-        return processor.ugens.get( obj.id )
-      } 
+    if (typeof obj === 'object') {
+      if (obj.id !== undefined) {
+        return processor.ugens.get(obj.id);
+      }
     }
 
-    return obj
-  }
+    return obj;
+  };
 
   const ugen = {
-    __Gibberish:Gibberish,
+    __Gibberish: Gibberish,
 
-    free:function() {
-      Gibberish.genish.gen.free( this.graph )
+    free: function () {
+      Gibberish.genish.gen.free(this.graph);
     },
 
-    print:function() {
-      console.log( this.callback.toString() )
+    print: function () {
+      console.log(this.callback.toString());
     },
 
-    connect:function( target, level=1 ) {
-      if( this.connected === undefined ) this.connected = []
+    connect: function (target, level = 1) {
+      if (this.connected === undefined) this.connected = [];
 
       //let input = level === 1 ? this : Gibberish.binops.Mul( this, level )
-      let input = this
+      let input = this;
 
-      if( target === undefined || target === null ) target = Gibberish.output 
-
+      if (target === undefined || target === null) target = Gibberish.output;
 
       // XXX I forgot, where is __addInput found? Can we control the
       // level of the input?
-      if( typeof target.__addInput == 'function' ) {
-        target.__addInput( input )
-      } else if( target.sum && target.sum.inputs ) {
-        target.sum.inputs.push( input )
-      } else if( target.inputs ) {
-        const idx = target.inputs.indexOf( input )
+      if (typeof target.__addInput == 'function') {
+        target.__addInput(input);
+      } else if (target.sum && target.sum.inputs) {
+        target.sum.inputs.push(input);
+      } else if (target.inputs) {
+        const idx = target.inputs.indexOf(input);
 
         // if no connection exists...
-        if( idx === -1 ) {
-          target.inputs.unshift( input, level, input.isStereo )
-        }else{
+        if (idx === -1) {
+          target.inputs.unshift(input, level, input.isStereo);
+        } else {
           // ... otherwise update the connection's level, which is stored
           // one index higher in the input list.
-          target.inputs[ idx + 1 ] = level
+          target.inputs[idx + 1] = level;
         }
       } else {
-        target.input = input
-        target.inputGain = level
+        target.input = input;
+        target.inputGain = level;
       }
 
-      Gibberish.dirty( target )
+      Gibberish.dirty(target);
 
-      this.connected.push([ target, input, level ])
-      
-      return this
+      this.connected.push([target, input, level]);
+
+      return this;
     },
 
-    disconnect:function( target ) {
-      if( target === undefined ){
-        if( Array.isArray( this.connected ) ) {
-          for( let connection of this.connected ) {
-            if( connection[0].disconnectUgen !== undefined ) {
-              connection[0].disconnectUgen( connection[1] )
-            }else if( connection[0].input === this ) {
-              connection[0].input = 0
+    disconnect: function (target) {
+      if (target === undefined) {
+        if (Array.isArray(this.connected)) {
+          for (let connection of this.connected) {
+            if (connection[0].disconnectUgen !== undefined) {
+              connection[0].disconnectUgen(connection[1]);
+            } else if (connection[0].input === this) {
+              connection[0].input = 0;
             }
           }
-          this.connected.length = 0
+          this.connected.length = 0;
         }
-      }else{
-        const connection = this.connected.find( v => v[0] === target )
+      } else {
+        const connection = this.connected.find(v => v[0] === target);
         // if target is a bus...
-        if( target.disconnectUgen !== undefined ) {
-          if( connection !== undefined ) {
-            target.disconnectUgen( connection[1] )
+        if (target.disconnectUgen !== undefined) {
+          if (connection !== undefined) {
+            target.disconnectUgen(connection[1]);
           }
-        }else{
+        } else {
           // must be an effect, set input to 0
-          target.input = 0
+          target.input = 0;
         }
 
-        const targetIdx = this.connected.indexOf( connection )
+        const targetIdx = this.connected.indexOf(connection);
 
-        if( targetIdx !== -1 ) {
-          this.connected.splice( targetIdx, 1 )
+        if (targetIdx !== -1) {
+          this.connected.splice(targetIdx, 1);
         }
       }
     },
 
-    chain:function( target, level=1 ) {
-      this.connect( target,level )
+    chain: function (target, level = 1) {
+      this.connect(target, level);
 
-      return target
+      return target;
     },
 
-    __redoGraph:function() {
-      let isStereo = this.isStereo
-      this.__createGraph()
-      this.callback = Gibberish.genish.gen.createCallback( this.graph, Gibberish.memory, false, true )
-      this.inputNames = new Set( Gibberish.genish.gen.parameters ) 
-      this.callback.ugenName = this.ugenName
-      Gibberish.dirty( this )
+    __redoGraph: function () {
+      let isStereo = this.isStereo;
+      this.__createGraph();
+      this.callback = Gibberish.genish.gen.createCallback(this.graph, Gibberish.memory, false, true);
+      this.inputNames = new Set(Gibberish.genish.gen.parameters);
+      this.callback.ugenName = this.ugenName;
+      Gibberish.dirty(this);
 
       // if channel count has changed after recompiling graph...
-      if( isStereo !== this.isStereo ) {
+      if (isStereo !== this.isStereo) {
 
         // check for any connections before iterating...
-        if( this.connected === undefined ) return
+        if (this.connected === undefined) return;
         // loop through all busses the ugen is connected to
-        for( let connection of this.connected ) {
+        for (let connection of this.connected) {
           // set the dirty flag of the bus
-          Gibberish.dirty( connection[ 0 ] )
+          Gibberish.dirty(connection[0]);
 
           // check for inputs array, which indicates connection is to a bus
-          if( connection[0].inputs !== undefined ) {
+          if (connection[0].inputs !== undefined) {
             // find the input in the busses 'inputs' array
-            const inputIdx = connection[ 0 ].inputs.indexOf( connection[ 1 ] )
+            const inputIdx = connection[0].inputs.indexOf(connection[1]);
 
             // assumiing it is found...
-            if( inputIdx !== -1 ) {
+            if (inputIdx !== -1) {
               // change stereo field
-              connection[ 0 ].inputs[ inputIdx + 2 ] = this.isStereo
+              connection[0].inputs[inputIdx + 2] = this.isStereo;
             }
-          }else if( connection[0].input !== undefined ) {
-            if( connection[0].__redoGraph !== undefined ) {
-              connection[0].__redoGraph()
-            }
-          }
-        }
-      }
-    },
-  }
-
-  return ugen
-
-}
-
-module.exports = __ugen
-
-},{}],142:[function(require,module,exports){
-const __proxy = require( './workletProxy.js' )
-const effectProto = require( './fx/effect.js' )
-
-module.exports = function( Gibberish ) {
-  const proxy = __proxy( Gibberish )
-  
-  const factory = function( ugen, graph, __name, values, cb=null, shouldProxy = true ) {
-    ugen.callback = cb === null ? Gibberish.genish.gen.createCallback( graph, Gibberish.memory, false, true ) : cb
-
-    let name = Array.isArray( __name ) ? __name[ __name.length - 1 ] : __name
-
-    Object.assign( ugen, {
-      //type: 'ugen',
-      id: values.id || Gibberish.utilities.getUID(), 
-      ugenName: name + '_',
-      graph: graph,
-      inputNames: ugen.inputNames || new Set( Gibberish.genish.gen.parameters ),
-      isStereo: Array.isArray( graph ),
-      dirty: true,
-      __properties__:values,
-      __addresses__:{}
-    })
-
-    ugen.ugenName += ugen.id
-    ugen.callback.ugenName = ugen.ugenName // XXX hacky
-    ugen.callback.id = ugen.id
-
-    //console.log( 'ugen name/id:', ugen.ugenName, ugen.id )
-    //console.log( 'callback name/id:', ugen.callback.ugenName, ugen.callback.id )
-
-    for( let param of ugen.inputNames ) {
-      if( param === 'memory' ) continue
-
-      let value = values[ param ],
-          isNumber = typeof value === 'object' || isNaN( value ) ? false : true,
-          idx
-
-      if( isNumber ) { 
-        idx = Gibberish.memory.alloc( 1 )
-        Gibberish.memory.heap[ idx ] = value
-        ugen.__addresses__[ param ] = idx
-      }
-
-      // TODO: do we need to check for a setter?
-      let desc = Object.getOwnPropertyDescriptor( ugen, param ),
-          setter
-
-      if( desc !== undefined ) {
-        setter = desc.set
-      }
-
-      Object.defineProperty( ugen, param, {
-        configurable:true,
-        get() { 
-          if( isNumber ) {
-            return Gibberish.memory.heap[ idx ]
-          }else{
-            return value 
-          }
-        },
-        set( v ) {
-          //if( param === 'input' ) console.log( 'INPUT:', v, isNumber )
-          if( value !== v ) {
-            if( setter !== undefined ) setter( v )
-            if( !isNaN( v ) ) {
-              Gibberish.memory.heap[ idx ] = value = v
-              if( isNumber === false ) Gibberish.dirty( ugen )
-              isNumber = true
-            }else{
-              value = v
-              /*if( isNumber === true )*/ Gibberish.dirty( ugen )
-              //console.log( 'switching from number:', param, value )
-              isNumber = false
+          } else if (connection[0].input !== undefined) {
+            if (connection[0].__redoGraph !== undefined) {
+              connection[0].__redoGraph();
             }
           }
         }
-      })
-    }
-
-    // add bypass 
-    if( effectProto.isPrototypeOf( ugen ) ) {
-      let value = ugen.bypass
-      Object.defineProperty( ugen, 'bypass', {
-        configurable:true,
-        get() { return value },
-        set( v ) {
-          if( value !== v ) {
-            Gibberish.dirty( ugen )
-            value = v
-          }
-        }
-      })
-
-    }
-
-    if( ugen.__requiresRecompilation !== undefined ) {
-      ugen.__requiresRecompilation.forEach( prop => {
-        let value = values[ prop ]
-        let isNumber = !isNaN( value )
-
-        Object.defineProperty( ugen, prop, {
-          configurable:true,
-          get() { 
-            if( isNumber ) {
-              let idx = ugen.__addresses__[ prop ]
-              return Gibberish.memory.heap[ idx ]
-            }else{
-              //console.log( 'returning:', prop, value, Gibberish.mode )
-              return value 
-            }
-          },
-          set( v ) {
-            if( value !== v ) {
-              if( !isNaN( v ) ) {
-                let idx = ugen.__addresses__[ prop ]
-                if( idx === undefined ){
-                  idx = Gibberish.memory.alloc( 1 )
-                  ugen.__addresses__[ prop ] = idx
-                }
-                value = values[ prop ] = Gibberish.memory.heap[ idx ] = v
-                isNumber = true
-              }else{
-                value = values[ prop ] = v
-                isNumber = false
-                //console.log( 'setting ugen', value, Gibberish.mode )
-                Gibberish.dirty( ugen )
-              }
-
-              //console.log( 'SETTING REDO GRAPH', prop, Gibberish.mode )
-              
-              // needed for filterType at the very least, becauae the props
-              // are reused when re-creating the graph. This seems like a cheaper
-              // way to solve this problem.
-              //values[ prop ] = v
-
-              this.__redoGraph()
-            }
-          }
-        })
-      })
-    }
-
-    // will only create proxy if worklets are being used
-    // otherwise will return unaltered ugen
-
-    if( values.shouldAddToUgen === true ) Object.assign( ugen, values )
-
-    return shouldProxy ? proxy( __name, values, ugen ) : ugen
-  }
-
-  factory.getUID = () => { return Gibberish.utilities.getUID() }
-
-  return factory
-}
-
-},{"./fx/effect.js":99,"./workletProxy.js":144}],143:[function(require,module,exports){
-const genish = require( 'genish.js' )
-
-module.exports = function( Gibberish ) {
-
-let uid = 0
-let sac = null
-const utilities = {
-  createContext( ctx, cb, resolve, __sac=null ) {
-    let AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
-
-    sac = __sac
-
-    let start = () => {
-      if( typeof AC !== 'undefined' ) {
-        Gibberish.ctx = ctx === undefined ? new AC() : ctx
-        genish.gen.samplerate = Gibberish.ctx.sampleRate
-        genish.utilities.ctx = Gibberish.ctx
-
-        if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
-          window.removeEventListener( 'touchstart', start )
-
-          if( 'ontouchstart' in document.documentElement ){ // required to start audio under iOS 6
-            let mySource = utilities.ctx.createBufferSource()
-            mySource.connect( utilities.ctx.destination )
-            mySource.noteOn( 0 )
-          }
-        }else{
-          window.removeEventListener( 'mousedown', start )
-          window.removeEventListener( 'keydown', start )
-        }
-      }
-
-      if( typeof cb === 'function' ) cb( resolve )
-    }
-
-    if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
-      window.addEventListener( 'touchstart', start )
-    }else{
-      window.addEventListener( 'mousedown', start )
-      window.addEventListener( 'keydown', start )
-    }
-
-    return Gibberish.ctx
-  },
-
-  createScriptProcessor( resolve ) {
-    Gibberish.node = Gibberish.ctx.createScriptProcessor( 1024, 0, 2 ),
-    Gibberish.clearFunction = function() { return 0 },
-    Gibberish.callback = Gibberish.clearFunction
-
-    Gibberish.node.onaudioprocess = function( audioProcessingEvent ) {
-      let gibberish = Gibberish,
-          callback  = gibberish.callback,
-          outputBuffer = audioProcessingEvent.outputBuffer,
-          scheduler = Gibberish.scheduler,
-          //objs = gibberish.callbackUgens.slice( 0 ),
-          length
-
-      let left = outputBuffer.getChannelData( 0 ),
-          right= outputBuffer.getChannelData( 1 )
-
-      let callbacklength = Gibberish.blockCallbacks.length
-      
-      if( callbacklength !== 0 ) {
-        for( let i=0; i< callbacklength; i++ ) {
-          Gibberish.blockCallbacks[ i ]()
-        }
-
-        // can't just set length to 0 as callbacks might be added during for loop, so splice pre-existing functions
-        Gibberish.blockCallbacks.splice( 0, callbacklength )
-      }
-
-      for (let sample = 0, length = left.length; sample < length; sample++) {
-        scheduler.tick()
-
-        if( gibberish.graphIsDirty ) { 
-          callback = gibberish.generateCallback()
-        }
-        
-        // XXX cant use destructuring, babel makes it something inefficient...
-        let out = callback.apply( null, gibberish.callbackUgens )
-
-        left[ sample  ] = out[0]
-        right[ sample ] = out[1]
       }
     }
+  };
 
-    Gibberish.node.connect( Gibberish.ctx.destination )
+  return ugen;
+};
 
-    resolve()
+module.exports = __ugen;
 
-    return Gibberish.node
-  }, 
+},{}],149:[function(require,module,exports){
+const genish = require('genish.js'),
+      AWPF = require('./external/audioworklet-polyfill.js');
 
-  createWorklet( resolve ) {
-    Gibberish.ctx.audioWorklet.addModule( Gibberish.workletPath ).then( () => {
-      Gibberish.worklet = new AudioWorkletNode( Gibberish.ctx, 'gibberish', { outputChannelCount:[2] } )
-        //: new sac.AudioWorkletNode( Gibberish.ctx, 'gibbersh', { outputChannelCount:[2] } )
+module.exports = function (Gibberish) {
 
-      Gibberish.worklet.connect( Gibberish.ctx.destination )
-      Gibberish.worklet.port.onmessage = event => {
-        Gibberish.utilities.workletHandlers[ event.data.address ]( event )        
-      }
-      Gibberish.worklet.ugens = new Map()
+  let uid = 0;
+  const utilities = {
+    Make: function (props) {
+      const name = props.name || 'Ugen' + Math.floor(Math.random() * 10000);
+      const type = props.type || 'Ugen';
+      const properties = props.properties || {};
+      const block = `
+    const ugen = Object.create( Gibberish.prototypes[ '${type}' ] )
+    const graphfnc = ${props.constructor.toString()}
 
-      resolve()
-    })
-  },
+    const proxy = Gibberish.factory( ugen, graphfnc(), '${name}', ${JSON.stringify(properties)} )
+    if( typeof props === 'object' ) Object.assign( proxy, props )
 
-  future( fnc, time, dict ) {
-    const keys = Object.keys( dict )
-    const code = `
-      const fnc = ${fnc.toString()}
-      const args = [${keys.map( key => dict[ key ].id ).join(',')}]
-      const objs = args.map( v => Gibberish.processor.ugens.get(v) )
-      Gibberish.scheduler.add( ${time}, ()=> fnc( ...objs ), 1 )
-    ` 
-    Gibberish.worklet.port.postMessage({ 
-      address:'eval', 
-      code
-    })
-  },
+    return proxy`;
 
-  workletHandlers: {
-    get( event ) {
-      let name = event.data.name
-      let value
-      if( name[0] === 'Gibberish' ) {
-        value = Gibberish
-        name.shift()
-      }
-      for( let segment of name ) {
-        value = value[ segment ]
-      }
+      Gibberish[name] = new Function('props', block);
 
       Gibberish.worklet.port.postMessage({
-        address:'set',
-        name:'Gibberish.' + name.join('.'),
-        value
-      })
+        name,
+        address: 'addConstructor',
+        constructorString: `function( Gibberish ) {
+      const fnc = ${Gibberish[name].toString()}
+
+      return fnc
+    }`
+      });
+
+      return Gibberish[name];
     },
-    state( event ){
-      const messages = event.data.messages
-      if( messages.length === 0 ) return
 
-      // XXX is preventProxy actually used?
-      Gibberish.preventProxy = true
-      Gibberish.proxyEnabled = false
+    createContext(ctx, cb, resolve, bufferSize = 2048) {
+      let AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext;
 
-      for( let i = 0; i < messages.length; i+= 3 ) {
-        const id = messages[ i ] 
-        const propName = messages[ i + 1 ]
-        const value = messages[ i + 2 ]
-        const obj = Gibberish.worklet.ugens.get( id )
+      AWPF(window, bufferSize);
 
-        if( Gibberish.worklet.debug === true ) {
-          //if( propName !== 'output' ) console.log( propName, value, id )
-          console.log( propName, value, id )
-        }
+      const start = () => {
+        if (typeof AC !== 'undefined') {
+          this.ctx = Gibberish.ctx = ctx === undefined ? new AC({ latencyHint: .025 }) : ctx;
 
-        if( obj !== undefined && propName.indexOf('.') === -1 && propName !== 'id' ) { 
-          if( obj[ propName ] !== undefined ) {
-            if( typeof obj[ propName ] !== 'function' ) {
-              obj[ propName ] = value
-            }else{
-              obj[ propName ]( value )
-            }
-          }else{
-            obj[ propName ] = value
+          genish.gen.samplerate = this.ctx.sampleRate;
+          genish.utilities.ctx = this.ctx;
+
+          if (document && document.documentElement && 'ontouchstart' in document.documentElement) {
+            window.removeEventListener('touchstart', start);
+          } else {
+            window.removeEventListener('mousedown', start);
+            window.removeEventListener('keydown', start);
           }
-        }else if( obj !== undefined ) {
-          const propSplit = propName.split('.')
-          if( obj[ propSplit[ 0 ] ] !== undefined ) {
-            if( typeof obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ] !== 'function' ) {
-              obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ] = value
-            }else{
-              obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ]( value )
-            }
-          }else{
-            //console.log( 'undefined split property!', id, propSplit[0], propSplit[1], value, obj )
-          }
-        }
-        // XXX double check and make sure this isn't getting sent back to processornode...
-        // console.log( propName, value, obj )
-      }
-      Gibberish.preventProxy = false
-      Gibberish.proxyEnabled = true
-    }
-  },
 
-  wrap( func, ...args ) {
-    const out = {
-      action:'wrap',
-      value:func,
-      // must return objects containing only the id number to avoid
-      // creating circular JSON references that would result from passing actual ugens
-      args: args.map( v => { return { id:v.id } })
-    }
-    return out
-  },
-
-  export( obj ) {
-    obj.wrap = this.wrap
-    obj.future = this.future
-  },
-
-  getUID() { 
-    return uid++
-  }
-}
-
-return utilities
-
-}
-
-},{"genish.js":37}],144:[function(require,module,exports){
-const serialize = require('serialize-javascript')
-
-module.exports = function( Gibberish ) {
-
-const replaceObj = function( obj, shouldSerializeFunctions = true ) {
-  if( typeof obj === 'object' && obj !== null && obj.id !== undefined ) {
-    if( obj.__type !== 'seq' ) { // XXX why?
-      return { id:obj.id, prop:obj.prop }
-    }else{
-      // shouldn't I be serializing most objects, not just seqs?
-      return serialize( obj )
-    }
-  }else if( typeof obj === 'function' && shouldSerializeFunctions === true ) {
-    return { isFunc:true, value:serialize( obj ) }
-  }
-  return obj
-}
-
-const makeAndSendObject = function( __name, values, obj ) {
-  const properties = {}
-
-  // object has already been sent through messageport...
-
-  for( let key in values ) {
-    const alreadyProcessed = (typeof values[ key ] === 'object' && values[ key ] !== null && values[ key ].__meta__ !== undefined) ||
-      (typeof values[key] === 'function' && values[ key ].__meta__ !== undefined )
-
-    if( alreadyProcessed ) { 
-      properties[ key ] = { id:values[ key ].__meta__.id }
-    }else if( Array.isArray( values[ key ] ) ) {
-      const arr = []
-      for( let i = 0; i < values[ key ].length; i++ ) {
-        arr[ i ] = replaceObj( values[ key ][i], false  )
-      }
-      properties[ key ] = arr
-    }else if( typeof values[key] === 'object' && values[key] !== null ){
-      properties[ key ] = replaceObj( values[ key ], false )
-    }else{
-      properties[ key ] = values[ key ]
-    }
-  }
-
-  let serializedProperties = serialize( properties )
-
-  if( Array.isArray( __name ) ) {
-    const oldName = __name[ __name.length - 1 ]
-    __name[ __name.length - 1 ] = oldName[0].toUpperCase() + oldName.substring(1)
-  }else{
-    __name = [ __name[0].toUpperCase() + __name.substring(1) ]
-  }
-
-  obj.__meta__ = {
-    address:'add',
-    name:__name,
-    properties:serializedProperties, 
-    id:obj.id
-  }
-
-  Gibberish.worklet.ugens.set( obj.id, obj )
-
-  Gibberish.worklet.port.postMessage( obj.__meta__ )
-}
-
-const doNotProxy = [ 'connected', 'input', 'callback', 'inputNames' ]
-   
-const __proxy = function( __name, values, obj ) {
-
-  if( Gibberish.mode === 'worklet' && Gibberish.preventProxy === false ) {
-    makeAndSendObject( __name, values, obj )
-
-    // proxy for all method calls to send to worklet
-    const proxy = new Proxy( obj, {
-      get( target, prop, receiver ) {
-        if( typeof target[ prop ] === 'function' && prop.indexOf('__') === -1) {
-          const proxy = new Proxy( target[ prop ], {
-            apply( __target, thisArg, args ) {
-
-              if( Gibberish.proxyEnabled === true ) {
-                const __args = args.map( __value => replaceObj( __value, true ) )
-
-                Gibberish.worklet.port.postMessage({ 
-                  address:'method', 
-                  object:obj.id,
-                  name:prop,
-                  args:__args
-                })
-              }
-
-              const temp = Gibberish.proxyEnabled
-              Gibberish.proxyEnabled = false
-              const out =  __target.apply( thisArg, args )
-              Gibberish.proxyEnabled = temp
-              return out
-            }
-          })
-          
-          return proxy
+          const mySource = utilities.ctx.createBufferSource();
+          mySource.connect(utilities.ctx.destination);
+          mySource.start();
         }
 
-        return target[ prop ]
+        if (typeof cb === 'function') cb(resolve);
+      };
+
+      if (document && document.documentElement && 'ontouchstart' in document.documentElement) {
+        window.addEventListener('touchstart', start);
+      } else {
+        window.addEventListener('mousedown', start);
+        window.addEventListener('keydown', start);
+      }
+
+      return Gibberish.ctx;
+    },
+
+    createWorklet(resolve) {
+      Gibberish.ctx.audioWorklet.addModule(Gibberish.workletPath).then(() => {
+        Gibberish.worklet = new AudioWorkletNode(Gibberish.ctx, 'gibberish', { outputChannelCount: [2] });
+
+        Gibberish.worklet.connect(Gibberish.ctx.destination);
+        Gibberish.worklet.port.onmessage = event => {
+          Gibberish.utilities.workletHandlers[event.data.address](event);
+        };
+        Gibberish.worklet.ugens = new Map();
+
+        resolve();
+      });
+    },
+
+    future(fnc, time, dict) {
+      const keys = Object.keys(dict);
+      const code = `
+      const fnc = ${fnc.toString()}
+      const args = [${keys.map(key => dict[key].id).join(',')}]
+      const objs = args.map( v => Gibberish.processor.ugens.get(v) )
+      Gibberish.scheduler.add( ${time}, ()=> fnc( ...objs ), 1 )
+    `;
+      Gibberish.worklet.port.postMessage({
+        address: 'eval',
+        code
+      });
+    },
+
+    workletHandlers: {
+      callback(event) {
+        if (typeof Gibberish.oncallback === 'function') {
+          Gibberish.oncallback(event.data.code);
+        }
       },
-      set( target, prop, value, receiver ) {
-        if( doNotProxy.indexOf( prop ) === -1 ) { 
-          if( Gibberish.proxyEnabled === true ) {
-            const __value = replaceObj( value )
+      get(event) {
+        let name = event.data.name;
+        let value;
+        if (name[0] === 'Gibberish') {
+          value = Gibberish;
+          name.shift();
+        }
+        for (let segment of name) {
+          value = value[segment];
+        }
 
-            if( __value !== undefined ) {
-              Gibberish.worklet.port.postMessage({ 
-                address:'set', 
-                object:obj.id,
-                name:prop,
-                value:__value
-              })
+        Gibberish.worklet.port.postMessage({
+          address: 'set',
+          name: 'Gibberish.' + name.join('.'),
+          value
+        });
+      },
+      state(event) {
+        const messages = event.data.messages;
+        if (messages.length === 0) return;
+
+        // XXX is preventProxy actually used?
+        Gibberish.preventProxy = true;
+        Gibberish.proxyEnabled = false;
+
+        for (let i = 0; i < messages.length; i += 3) {
+          const id = messages[i];
+          const propName = messages[i + 1];
+          const value = messages[i + 2];
+          const obj = Gibberish.worklet.ugens.get(id);
+
+          if (Gibberish.worklet.debug === true) {
+            if (propName !== 'output') console.log(propName, value, id);
+            console.log(propName, value, id);
+          }
+
+          if (obj !== undefined && propName.indexOf('.') === -1 && propName !== 'id') {
+            if (obj[propName] !== undefined) {
+              if (typeof obj[propName] !== 'function') {
+                obj[propName] = value;
+              } else {
+                obj[propName](value);
+              }
+            } else {
+              obj[propName] = value;
+            }
+          } else if (obj !== undefined) {
+            const propSplit = propName.split('.');
+            if (obj[propSplit[0]] !== undefined) {
+              if (typeof obj[propSplit[0]][propSplit[1]] !== 'function') {
+                obj[propSplit[0]][propSplit[1]] = value;
+              } else {
+                obj[propSplit[0]][propSplit[1]](value);
+              }
+            } else {
+              //console.log( 'undefined split property!', id, propSplit[0], propSplit[1], value, obj )
             }
           }
+          // XXX double check and make sure this isn't getting sent back to processornode...
+          // console.log( propName, value, obj )
         }
-
-        target[ prop ] = value
-
-        // must return true for any ES6 proxy setter
-        return true
+        Gibberish.preventProxy = false;
+        Gibberish.proxyEnabled = true;
       }
-    })
+    },
 
-    // XXX XXX XXX XXX XXX XXX
-    // REMEMBER THAT YOU MUST ASSIGN THE RETURNED VALUE TO YOUR UGEN,
-    // YOU CANNOT USE THIS FUNCTION TO MODIFY A UGEN IN PLACE.
-    // XXX XXX XXX XXX XXX XXX
+    wrap(func, ...args) {
+      const out = {
+        action: 'wrap',
+        value: func,
+        // must return objects containing only the id number to avoid
+        // creating circular JSON references that would result from passing actual ugens
+        args: args.map(v => {
+          return { id: v.id };
+        })
+      };
+      return out;
+    },
 
-    return proxy
-  }else if( Gibberish.mode === 'processor' && Gibberish.preventProxy === false ) {
+    export(obj) {
+      obj.wrap = this.wrap;
+      obj.future = this.future;
+      obj.Make = this.Make;
+    },
 
-    const proxy = new Proxy( obj, {
-      //get( target, prop, receiver ) { return target[ prop ] },
-      set( target, prop, value, receiver ) {
-        let valueType = typeof value
-        if( prop.indexOf('__') === -1 && valueType !== 'function' && valueType !== 'object' ) {
-          if( Gibberish.processor !== undefined ) { 
-            Gibberish.processor.messages.push( obj.id, prop, value )
+    getUID() {
+      return uid++;
+    }
+  };
+
+  return utilities;
+};
+
+},{"./external/audioworklet-polyfill.js":87,"genish.js":39}],150:[function(require,module,exports){
+const serialize = require('serialize-javascript');
+
+module.exports = function (Gibberish) {
+
+  const replaceObj = function (obj, shouldSerializeFunctions = true) {
+    if (typeof obj === 'object' && obj !== null && obj.id !== undefined) {
+      if (obj.__type !== 'seq') {
+        // XXX why?
+        return { id: obj.id, prop: obj.prop };
+      } else {
+        // shouldn't I be serializing most objects, not just seqs?
+        return serialize(obj);
+      }
+    } else if (typeof obj === 'function' && shouldSerializeFunctions === true) {
+      return { isFunc: true, value: serialize(obj) };
+    }
+    return obj;
+  };
+
+  const makeAndSendObject = function (__name, values, obj) {
+    const properties = {};
+
+    // object has already been sent through messageport...
+
+    for (let key in values) {
+      const alreadyProcessed = typeof values[key] === 'object' && values[key] !== null && values[key].__meta__ !== undefined || typeof values[key] === 'function' && values[key].__meta__ !== undefined;
+
+      if (alreadyProcessed) {
+        properties[key] = { id: values[key].__meta__.id };
+      } else if (Array.isArray(values[key])) {
+        const arr = [];
+        for (let i = 0; i < values[key].length; i++) {
+          arr[i] = replaceObj(values[key][i], false);
+        }
+        properties[key] = arr;
+      } else if (typeof values[key] === 'object' && values[key] !== null) {
+        properties[key] = replaceObj(values[key], false);
+      } else {
+        properties[key] = values[key];
+      }
+    }
+
+    let serializedProperties = serialize(properties);
+
+    if (Array.isArray(__name)) {
+      const oldName = __name[__name.length - 1];
+      __name[__name.length - 1] = oldName[0].toUpperCase() + oldName.substring(1);
+    } else {
+      __name = [__name[0].toUpperCase() + __name.substring(1)];
+    }
+
+    obj.__meta__ = {
+      address: 'add',
+      name: __name,
+      properties: serializedProperties,
+      id: obj.id
+    };
+
+    Gibberish.worklet.ugens.set(obj.id, obj);
+
+    Gibberish.worklet.port.postMessage(obj.__meta__);
+  };
+
+  const doNotProxy = ['connected', 'input', 'callback', 'inputNames'];
+
+  const __proxy = function (__name, values, obj) {
+
+    if (Gibberish.mode === 'worklet' && Gibberish.preventProxy === false) {
+      makeAndSendObject(__name, values, obj);
+
+      // proxy for all method calls to send to worklet
+      const proxy = new Proxy(obj, {
+        get(target, prop, receiver) {
+          if (typeof target[prop] === 'function' && prop.indexOf('__') === -1) {
+            const proxy = new Proxy(target[prop], {
+              apply(__target, thisArg, args) {
+
+                if (Gibberish.proxyEnabled === true) {
+                  const __args = args.map(__value => replaceObj(__value, true));
+
+                  Gibberish.worklet.port.postMessage({
+                    address: 'method',
+                    object: obj.id,
+                    name: prop,
+                    args: __args
+                  });
+                }
+
+                const temp = Gibberish.proxyEnabled;
+                Gibberish.proxyEnabled = false;
+                const out = __target.apply(thisArg, args);
+                Gibberish.proxyEnabled = temp;
+                return out;
+              }
+            });
+
+            return proxy;
           }
+
+          return target[prop];
+        },
+        set(target, prop, value, receiver) {
+          if (doNotProxy.indexOf(prop) === -1) {
+            if (Gibberish.proxyEnabled === true) {
+              const __value = replaceObj(value);
+
+              if (__value !== undefined) {
+                Gibberish.worklet.port.postMessage({
+                  address: 'set',
+                  object: obj.id,
+                  name: prop,
+                  value: __value
+                });
+              }
+            }
+          }
+
+          target[prop] = value;
+
+          // must return true for any ES6 proxy setter
+          return true;
         }
-        target[ prop ] = value
+      });
 
-        // must return true for any ES6 proxy setter
-        return true
-      }
-    })
+      // XXX XXX XXX XXX XXX XXX
+      // REMEMBER THAT YOU MUST ASSIGN THE RETURNED VALUE TO YOUR UGEN,
+      // YOU CANNOT USE THIS FUNCTION TO MODIFY A UGEN IN PLACE.
+      // XXX XXX XXX XXX XXX XXX
 
-    return proxy
+      return proxy;
+    } else if (Gibberish.mode === 'processor' && Gibberish.preventProxy === false) {
+
+      const proxy = new Proxy(obj, {
+        //get( target, prop, receiver ) { return target[ prop ] },
+        set(target, prop, value, receiver) {
+          let valueType = typeof value;
+          if (prop.indexOf('__') === -1 && valueType !== 'function' && valueType !== 'object') {
+            if (Gibberish.processor !== undefined) {
+              Gibberish.processor.messages.push(obj.id, prop, value);
+            }
+          }
+          target[prop] = value;
+
+          // must return true for any ES6 proxy setter
+          return true;
+        }
+      });
+
+      return proxy;
+    }
+
+    return obj;
+  };
+
+  return __proxy;
+};
+
+},{"serialize-javascript":155}],151:[function(require,module,exports){
+
+},{}],152:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var objectCreate = Object.create || objectCreatePolyfill
+var objectKeys = Object.keys || objectKeysPolyfill
+var bind = Function.prototype.bind || functionBindPolyfill
+
+function EventEmitter() {
+  if (!this._events || !Object.prototype.hasOwnProperty.call(this, '_events')) {
+    this._events = objectCreate(null);
+    this._eventsCount = 0;
   }
 
-  return obj
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+var defaultMaxListeners = 10;
+
+var hasDefineProperty;
+try {
+  var o = {};
+  if (Object.defineProperty) Object.defineProperty(o, 'x', { value: 0 });
+  hasDefineProperty = o.x === 0;
+} catch (err) { hasDefineProperty = false }
+if (hasDefineProperty) {
+  Object.defineProperty(EventEmitter, 'defaultMaxListeners', {
+    enumerable: true,
+    get: function() {
+      return defaultMaxListeners;
+    },
+    set: function(arg) {
+      // check whether the input is a positive number (whose value is zero or
+      // greater and not a NaN).
+      if (typeof arg !== 'number' || arg < 0 || arg !== arg)
+        throw new TypeError('"defaultMaxListeners" must be a positive number');
+      defaultMaxListeners = arg;
+    }
+  });
+} else {
+  EventEmitter.defaultMaxListeners = defaultMaxListeners;
 }
 
-return __proxy
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function setMaxListeners(n) {
+  if (typeof n !== 'number' || n < 0 || isNaN(n))
+    throw new TypeError('"n" argument must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
 
+function $getMaxListeners(that) {
+  if (that._maxListeners === undefined)
+    return EventEmitter.defaultMaxListeners;
+  return that._maxListeners;
 }
 
-},{"serialize-javascript":148}],145:[function(require,module,exports){
+EventEmitter.prototype.getMaxListeners = function getMaxListeners() {
+  return $getMaxListeners(this);
+};
 
-},{}],146:[function(require,module,exports){
-arguments[4][75][0].apply(exports,arguments)
-},{"dup":75}],147:[function(require,module,exports){
+// These standalone emit* functions are used to optimize calling of event
+// handlers for fast cases because emit() itself often has a variable number of
+// arguments and can be deoptimized because of that. These functions always have
+// the same number of arguments and thus do not get deoptimized, so the code
+// inside them can execute faster.
+function emitNone(handler, isFn, self) {
+  if (isFn)
+    handler.call(self);
+  else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      listeners[i].call(self);
+  }
+}
+function emitOne(handler, isFn, self, arg1) {
+  if (isFn)
+    handler.call(self, arg1);
+  else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      listeners[i].call(self, arg1);
+  }
+}
+function emitTwo(handler, isFn, self, arg1, arg2) {
+  if (isFn)
+    handler.call(self, arg1, arg2);
+  else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      listeners[i].call(self, arg1, arg2);
+  }
+}
+function emitThree(handler, isFn, self, arg1, arg2, arg3) {
+  if (isFn)
+    handler.call(self, arg1, arg2, arg3);
+  else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      listeners[i].call(self, arg1, arg2, arg3);
+  }
+}
+
+function emitMany(handler, isFn, self, args) {
+  if (isFn)
+    handler.apply(self, args);
+  else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      listeners[i].apply(self, args);
+  }
+}
+
+EventEmitter.prototype.emit = function emit(type) {
+  var er, handler, len, args, i, events;
+  var doError = (type === 'error');
+
+  events = this._events;
+  if (events)
+    doError = (doError && events.error == null);
+  else if (!doError)
+    return false;
+
+  // If there is no 'error' event listener then throw.
+  if (doError) {
+    if (arguments.length > 1)
+      er = arguments[1];
+    if (er instanceof Error) {
+      throw er; // Unhandled 'error' event
+    } else {
+      // At least give some kind of context to the user
+      var err = new Error('Unhandled "error" event. (' + er + ')');
+      err.context = er;
+      throw err;
+    }
+    return false;
+  }
+
+  handler = events[type];
+
+  if (!handler)
+    return false;
+
+  var isFn = typeof handler === 'function';
+  len = arguments.length;
+  switch (len) {
+      // fast cases
+    case 1:
+      emitNone(handler, isFn, this);
+      break;
+    case 2:
+      emitOne(handler, isFn, this, arguments[1]);
+      break;
+    case 3:
+      emitTwo(handler, isFn, this, arguments[1], arguments[2]);
+      break;
+    case 4:
+      emitThree(handler, isFn, this, arguments[1], arguments[2], arguments[3]);
+      break;
+      // slower
+    default:
+      args = new Array(len - 1);
+      for (i = 1; i < len; i++)
+        args[i - 1] = arguments[i];
+      emitMany(handler, isFn, this, args);
+  }
+
+  return true;
+};
+
+function _addListener(target, type, listener, prepend) {
+  var m;
+  var events;
+  var existing;
+
+  if (typeof listener !== 'function')
+    throw new TypeError('"listener" argument must be a function');
+
+  events = target._events;
+  if (!events) {
+    events = target._events = objectCreate(null);
+    target._eventsCount = 0;
+  } else {
+    // To avoid recursion in the case that type === "newListener"! Before
+    // adding it to the listeners, first emit "newListener".
+    if (events.newListener) {
+      target.emit('newListener', type,
+          listener.listener ? listener.listener : listener);
+
+      // Re-assign `events` because a newListener handler could have caused the
+      // this._events to be assigned to a new object
+      events = target._events;
+    }
+    existing = events[type];
+  }
+
+  if (!existing) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    existing = events[type] = listener;
+    ++target._eventsCount;
+  } else {
+    if (typeof existing === 'function') {
+      // Adding the second element, need to change to array.
+      existing = events[type] =
+          prepend ? [listener, existing] : [existing, listener];
+    } else {
+      // If we've already got an array, just append.
+      if (prepend) {
+        existing.unshift(listener);
+      } else {
+        existing.push(listener);
+      }
+    }
+
+    // Check for listener leak
+    if (!existing.warned) {
+      m = $getMaxListeners(target);
+      if (m && m > 0 && existing.length > m) {
+        existing.warned = true;
+        var w = new Error('Possible EventEmitter memory leak detected. ' +
+            existing.length + ' "' + String(type) + '" listeners ' +
+            'added. Use emitter.setMaxListeners() to ' +
+            'increase limit.');
+        w.name = 'MaxListenersExceededWarning';
+        w.emitter = target;
+        w.type = type;
+        w.count = existing.length;
+        if (typeof console === 'object' && console.warn) {
+          console.warn('%s: %s', w.name, w.message);
+        }
+      }
+    }
+  }
+
+  return target;
+}
+
+EventEmitter.prototype.addListener = function addListener(type, listener) {
+  return _addListener(this, type, listener, false);
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.prependListener =
+    function prependListener(type, listener) {
+      return _addListener(this, type, listener, true);
+    };
+
+function onceWrapper() {
+  if (!this.fired) {
+    this.target.removeListener(this.type, this.wrapFn);
+    this.fired = true;
+    switch (arguments.length) {
+      case 0:
+        return this.listener.call(this.target);
+      case 1:
+        return this.listener.call(this.target, arguments[0]);
+      case 2:
+        return this.listener.call(this.target, arguments[0], arguments[1]);
+      case 3:
+        return this.listener.call(this.target, arguments[0], arguments[1],
+            arguments[2]);
+      default:
+        var args = new Array(arguments.length);
+        for (var i = 0; i < args.length; ++i)
+          args[i] = arguments[i];
+        this.listener.apply(this.target, args);
+    }
+  }
+}
+
+function _onceWrap(target, type, listener) {
+  var state = { fired: false, wrapFn: undefined, target: target, type: type, listener: listener };
+  var wrapped = bind.call(onceWrapper, state);
+  wrapped.listener = listener;
+  state.wrapFn = wrapped;
+  return wrapped;
+}
+
+EventEmitter.prototype.once = function once(type, listener) {
+  if (typeof listener !== 'function')
+    throw new TypeError('"listener" argument must be a function');
+  this.on(type, _onceWrap(this, type, listener));
+  return this;
+};
+
+EventEmitter.prototype.prependOnceListener =
+    function prependOnceListener(type, listener) {
+      if (typeof listener !== 'function')
+        throw new TypeError('"listener" argument must be a function');
+      this.prependListener(type, _onceWrap(this, type, listener));
+      return this;
+    };
+
+// Emits a 'removeListener' event if and only if the listener was removed.
+EventEmitter.prototype.removeListener =
+    function removeListener(type, listener) {
+      var list, events, position, i, originalListener;
+
+      if (typeof listener !== 'function')
+        throw new TypeError('"listener" argument must be a function');
+
+      events = this._events;
+      if (!events)
+        return this;
+
+      list = events[type];
+      if (!list)
+        return this;
+
+      if (list === listener || list.listener === listener) {
+        if (--this._eventsCount === 0)
+          this._events = objectCreate(null);
+        else {
+          delete events[type];
+          if (events.removeListener)
+            this.emit('removeListener', type, list.listener || listener);
+        }
+      } else if (typeof list !== 'function') {
+        position = -1;
+
+        for (i = list.length - 1; i >= 0; i--) {
+          if (list[i] === listener || list[i].listener === listener) {
+            originalListener = list[i].listener;
+            position = i;
+            break;
+          }
+        }
+
+        if (position < 0)
+          return this;
+
+        if (position === 0)
+          list.shift();
+        else
+          spliceOne(list, position);
+
+        if (list.length === 1)
+          events[type] = list[0];
+
+        if (events.removeListener)
+          this.emit('removeListener', type, originalListener || listener);
+      }
+
+      return this;
+    };
+
+EventEmitter.prototype.removeAllListeners =
+    function removeAllListeners(type) {
+      var listeners, events, i;
+
+      events = this._events;
+      if (!events)
+        return this;
+
+      // not listening for removeListener, no need to emit
+      if (!events.removeListener) {
+        if (arguments.length === 0) {
+          this._events = objectCreate(null);
+          this._eventsCount = 0;
+        } else if (events[type]) {
+          if (--this._eventsCount === 0)
+            this._events = objectCreate(null);
+          else
+            delete events[type];
+        }
+        return this;
+      }
+
+      // emit removeListener for all listeners on all events
+      if (arguments.length === 0) {
+        var keys = objectKeys(events);
+        var key;
+        for (i = 0; i < keys.length; ++i) {
+          key = keys[i];
+          if (key === 'removeListener') continue;
+          this.removeAllListeners(key);
+        }
+        this.removeAllListeners('removeListener');
+        this._events = objectCreate(null);
+        this._eventsCount = 0;
+        return this;
+      }
+
+      listeners = events[type];
+
+      if (typeof listeners === 'function') {
+        this.removeListener(type, listeners);
+      } else if (listeners) {
+        // LIFO order
+        for (i = listeners.length - 1; i >= 0; i--) {
+          this.removeListener(type, listeners[i]);
+        }
+      }
+
+      return this;
+    };
+
+function _listeners(target, type, unwrap) {
+  var events = target._events;
+
+  if (!events)
+    return [];
+
+  var evlistener = events[type];
+  if (!evlistener)
+    return [];
+
+  if (typeof evlistener === 'function')
+    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
+
+  return unwrap ? unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
+}
+
+EventEmitter.prototype.listeners = function listeners(type) {
+  return _listeners(this, type, true);
+};
+
+EventEmitter.prototype.rawListeners = function rawListeners(type) {
+  return _listeners(this, type, false);
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  if (typeof emitter.listenerCount === 'function') {
+    return emitter.listenerCount(type);
+  } else {
+    return listenerCount.call(emitter, type);
+  }
+};
+
+EventEmitter.prototype.listenerCount = listenerCount;
+function listenerCount(type) {
+  var events = this._events;
+
+  if (events) {
+    var evlistener = events[type];
+
+    if (typeof evlistener === 'function') {
+      return 1;
+    } else if (evlistener) {
+      return evlistener.length;
+    }
+  }
+
+  return 0;
+}
+
+EventEmitter.prototype.eventNames = function eventNames() {
+  return this._eventsCount > 0 ? Reflect.ownKeys(this._events) : [];
+};
+
+// About 1.5x faster than the two-arg version of Array#splice().
+function spliceOne(list, index) {
+  for (var i = index, k = i + 1, n = list.length; k < n; i += 1, k += 1)
+    list[i] = list[k];
+  list.pop();
+}
+
+function arrayClone(arr, n) {
+  var copy = new Array(n);
+  for (var i = 0; i < n; ++i)
+    copy[i] = arr[i];
+  return copy;
+}
+
+function unwrapListeners(arr) {
+  var ret = new Array(arr.length);
+  for (var i = 0; i < ret.length; ++i) {
+    ret[i] = arr[i].listener || arr[i];
+  }
+  return ret;
+}
+
+function objectCreatePolyfill(proto) {
+  var F = function() {};
+  F.prototype = proto;
+  return new F;
+}
+function objectKeysPolyfill(obj) {
+  var keys = [];
+  for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k)) {
+    keys.push(k);
+  }
+  return k;
+}
+function functionBindPolyfill(context) {
+  var fn = this;
+  return function () {
+    return fn.apply(context, arguments);
+  };
+}
+
+},{}],153:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"dup":78}],154:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -10829,7 +11916,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],148:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -11004,7 +12091,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],149:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -11029,14 +12116,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],150:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],151:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -11626,7 +12713,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":150,"_process":147,"inherits":149}],152:[function(require,module,exports){
+},{"./support/isBuffer":157,"_process":154,"inherits":156}],159:[function(require,module,exports){
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -14005,7 +15092,7 @@ module.exports = {
   parse:       peg$parse
 };
 
-},{}],153:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 function bjorklund(slots, pulses){
   var pattern = [],
       count = [],
@@ -14046,7 +15133,7 @@ module.exports = function(m, k){
   else return bjorklund(k, m);
 };
 
-},{}],154:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 /**
  * @license Fraction.js v4.0.12 09/09/2015
  * http://www.xarg.org/2014/03/rational-numbers-in-javascript/
@@ -14882,7 +15969,7 @@ module.exports = function(m, k){
 
 })(this);
 
-},{}],155:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -14944,7 +16031,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":156,"./lib/tychei":157,"./lib/xor128":158,"./lib/xor4096":159,"./lib/xorshift7":160,"./lib/xorwow":161,"./seedrandom":162}],156:[function(require,module,exports){
+},{"./lib/alea":163,"./lib/tychei":164,"./lib/xor128":165,"./lib/xor4096":166,"./lib/xorshift7":167,"./lib/xorwow":168,"./seedrandom":169}],163:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -15060,7 +16147,7 @@ if (module && module.exports) {
 
 
 
-},{}],157:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -15165,7 +16252,7 @@ if (module && module.exports) {
 
 
 
-},{}],158:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -15248,7 +16335,7 @@ if (module && module.exports) {
 
 
 
-},{}],159:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -15396,7 +16483,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],160:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -15495,7 +16582,7 @@ if (module && module.exports) {
 );
 
 
-},{}],161:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -15583,7 +16670,7 @@ if (module && module.exports) {
 
 
 
-},{}],162:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 /*
 Copyright 2019 David Bau.
 
@@ -15608,15 +16695,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-(function (pool, math) {
+(function (global, pool, math) {
 //
 // The following constants are related to IEEE 754 limits.
 //
 
-// Detect the global object, even if operating in strict mode.
-// http://stackoverflow.com/a/14387057/265298
-var global = (0, eval)('this'),
-    width = 256,        // each RC4 output is 0 <= x < 256
+var width = 256,        // each RC4 output is 0 <= x < 256
     chunks = 6,         // at least six RC4 outputs for each double
     digits = 52,        // there are 52 significant digits in a double
     rngname = 'random', // rngname: name for Math.random and Math.seedrandom
@@ -15834,11 +16918,14 @@ if ((typeof module) == 'object' && module.exports) {
 
 // End anonymous scope, and pass initial values.
 })(
+  // global: `self` in browsers (including strict mode and web workers),
+  // otherwise `this` in Node and other environments
+  (typeof self !== 'undefined') ? self : this,
   [],     // pool: entropy pool starts empty
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":145}],163:[function(require,module,exports){
+},{"crypto":151}],170:[function(require,module,exports){
 const parse = require('../dist/tidal.js').parse
 const query = require('./queryArc.js' ).queryArc
 const Fraction = require( 'fraction.js' )
@@ -15898,7 +16985,7 @@ const Pattern = ( patternString, opts ) => {
 
 module.exports = Pattern
 
-},{"../dist/tidal.js":152,"./queryArc.js":164,"fraction.js":154}],164:[function(require,module,exports){
+},{"../dist/tidal.js":159,"./queryArc.js":171,"fraction.js":161}],171:[function(require,module,exports){
 const Fraction = require( 'fraction.js' )
 const util     = require( 'util' )
 const bjork    = require( 'bjork' ) 
@@ -16486,7 +17573,7 @@ const handlers = {
 
 module.exports.queryArc = queryArc
 
-},{"bjork":153,"fraction.js":154,"seedrandom":155,"util":151}]},{},[107])(107)
+},{"bjork":160,"fraction.js":161,"seedrandom":162,"util":158}]},{},[114])(114)
 });
 let processor = null
 
@@ -16645,7 +17732,12 @@ class GibberishProcessor extends AudioWorkletProcessor {
       // XXX this is the exact same as the 'set' key... ugh.
       const dict = event.data
       const obj  = this.ugens.get( dict.object )
-      obj[ dict.name ] = dict.value
+      let value = dict.value
+      if( typeof dict.value === 'object' && dict.value !== null && dict.value.id !== undefined ) {
+        value = this.ugens.get( dict.value.id )
+      }
+      obj[ dict.name ] = value
+
     }else if( event.data.address === 'print' ) {
       const dict = event.data
       const obj  = this.ugens.get( dict.object ) 
@@ -16657,8 +17749,11 @@ class GibberishProcessor extends AudioWorkletProcessor {
     }else if( event.data.address === 'set' ) {
       const dict = event.data
       const obj = this.ugens.get( dict.object )
-      //console.log( 'setting:', dict.name, dict.value, obj )
-      obj[ dict.name ] = dict.value
+      let value = dict.value
+      if( typeof dict.value === 'object' && dict.value !== null && dict.value.id !== undefined ) {
+        value = this.ugens.get( dict.value.id )
+      }
+      obj[ dict.name ] = value
     }else if( event.data.address === 'copy' ) {
       const target = this.ugens.get( event.data.id )
 
@@ -16747,7 +17842,7 @@ class GibberishProcessor extends AudioWorkletProcessor {
           try{
             cb = gibberish.generateCallback()
           } catch(e) {
-            console.log( 'callback error:', e, callback.toString() )
+            console.log( 'callback error:', e )
 
             cb = oldCallback
             gibberish.callbackUgens = oldUgens
@@ -16757,6 +17852,7 @@ class GibberishProcessor extends AudioWorkletProcessor {
           } finally {
             ugens = gibberish.callbackUgens
             this.callback = callback = cb
+            this.port.postMessage({ address:'callback', code:cb.toString() }) 
           } 
         }
         const out = callback.apply( null, ugens )
