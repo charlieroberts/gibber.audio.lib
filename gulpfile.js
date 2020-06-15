@@ -14,7 +14,7 @@ const gulp = require( 'gulp' ),
 
 gulp.task( 'client', function(){
   //var out = gulp.src( './js/audio.js' )//gulp.src( './node_modules/gibber.core.lib/scripts/gibber.js')
-  const out = browserify({ standalone:'Gibber', transform:['glslify'] })
+  const out = browserify({ standalone:'Gibber' }) //, transform:['glslify'] })
     .require( './js/audio.js', { entry: true })
     .bundle()
     .pipe( source('gibber.audio.js' ) )
