@@ -69,7 +69,7 @@ window.onload = function() {
   } 
 
   let server
-  Promise.all( [ getURL("./terndefs/gibber.audio.def.json" ), getURL("./terndefs/gibber.graphics.def.json" ) ] ).then( defs => {
+  Promise.all( [ getURL("../dist/gibber.def.json" ) ] ).then( defs => {
     environment.server = server = new CodeMirror.TernServer({defs: defs.map( JSON.parse ), options:{ hintDelay:5000, responseFilter:filter } })
 
     cm.setOption("extraKeys", {
@@ -244,7 +244,7 @@ lead.note.seq(
   const start = () => {
     cm.setValue( defaultCode )
     Gibber.init( workletPath ).then( ()=> {
-      
+      Gibber.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
     })
   
 
