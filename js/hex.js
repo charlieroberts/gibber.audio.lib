@@ -1,8 +1,8 @@
 module.exports = function( Gibber ) {
 
-let Pattern = Gibber.Pattern
+const Pattern = Gibber.Pattern
 
-let Hex = function( hexString, time = 1/16, rotation ) {
+const Hex = function( hexString, time = 1/16, rotation ) {
   let count = 0,
       onesAndZeros = ''
 
@@ -24,7 +24,7 @@ let Hex = function( hexString, time = 1/16, rotation ) {
 
   let __onesAndZeros = onesAndZeros.split('') 
 
-  let pattern = Pattern( ...__onesAndZeros ) 
+  const pattern = Pattern( ...__onesAndZeros ) 
   pattern.isPattern = true
   pattern.type = 'Hex'
 
