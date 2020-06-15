@@ -1,7 +1,9 @@
 gibber.audio.lib
 ==========
 
-This is a pre-alpha build of the new gibber audio engine. Not currently intended for use.
+Gibber is an audiovisual programming library and live coding environment for the browser.
+
+[Try the playground](./playground/index.html)
 
 ## Building (for development)
 
