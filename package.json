@@ -24,16 +24,13 @@
   "dependencies": {
     "acorn": "^6.2.0",
     "acorn-walk": "^6.2.0",
-    "gibberish-dsp": "~3.0.0",
-    "glslify": "^7.0.0"
+    "gibberish-dsp": "~3.0.0"
   },
   "bugs": {
     "url": "https://github.com/charlieroberts/gibber.audio.lib/issues"
   },
-  "main": "./scripts/gibber/audio.js",
-  "scripts": {
-    "test": "node ./scripts/tests/gibber.audio.lib.node.test.js"
-  },
+  "main": "./js/audio.js",
+  "scripts": {},
   "keywords": [
     "audio",
     "music",
