@@ -245,6 +245,7 @@ lead.note.seq(
     cm.setValue( defaultCode )
     Gibber.init( workletPath ).then( ()=> {
       Gibber.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
+      Gibber.Graphics.export( window )
     })
   
 
