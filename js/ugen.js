@@ -192,6 +192,9 @@ const createProperty = function( obj, propertyName, __wrappedObject, timeProps, 
         store.__wrapped__.widget.clear()
       }
 
+      prop.value.from = from
+      prop.value.to = to
+
       return obj
     },
 
@@ -543,6 +546,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
           const sum = dest.mods.concat( dest.preModValue )
           const add = Gibber.binops.Add( ...sum ) 
+          // below works for oscillators, above works for instruments...
+          //const add = Gibber.Gibberish.binops.Add( ...sum ) 
           add.__useMapping = false
           dest.ugen[ dest.name ] = add
 
