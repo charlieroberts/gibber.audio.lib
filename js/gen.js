@@ -34,6 +34,7 @@ const Gen  = {
     Gen.names.push( ...Object.keys( Gen.functions ) )
     //Gen.names.push( ...Object.keys( Gen.composites ) )
     Gen.names.push( 'gen' )
+    Gen.names.push( 'lfo' )
 
     //Gibber.subscribe( 'clear', ()=> Gen.lastConnected.length = 0 )
   },
@@ -161,7 +162,6 @@ const Gen  = {
     sqrt2 :   Math.SQRT2,
     sqrt1_2:  Math.SQRT1_2,
     twopi :   Math.PI * 2,
-    time  :   'time',
     samplerate: 'samplerate'
   },
 
@@ -443,7 +443,7 @@ const Gen  = {
         Gibber.Gibberish.genish.gen.samplerate = samplerate
         const params = []
         const __graph = eval( graph.gen( params ) )
-        const callback = g.gen.createCallback( __graph, 4096 )
+        const callback = g.gen.createCallback( __graph )
         Gibber.Gibberish.genish.gen.samplerate = store      
 
         const out = callback.bind( null, ...params.map( v => v[1] ), g.memory )
