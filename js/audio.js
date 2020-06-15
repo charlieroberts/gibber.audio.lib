@@ -78,7 +78,7 @@ const Audio = {
 
     this.createPubSub()
 
-    this.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
+    //this.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
