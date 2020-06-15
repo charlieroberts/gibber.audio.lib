@@ -15,8 +15,8 @@ const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
-const Arp         = require( './arp.js' )
-const __Automata  = require( './automata.js' )
+//const Arp         = require( './arp.js' )
+//const __Automata  = require( './automata.js' )
 
 const Audio = {
   Clock: require( './clock.js' ),
@@ -52,8 +52,8 @@ const Audio = {
       obj.Clock = this.Clock
       obj.WavePattern = this.WavePattern
       obj.Master = this.Master
-      obj.Arp = this.Arp
-      obj.Automata = this.Automata
+      //obj.Arp = this.Arp
+      //obj.Automata = this.Automata
       obj.Out = this.Out
       obj.Steps = this.Steps
       obj.HexSteps = this.HexSteps
@@ -71,7 +71,7 @@ const Audio = {
   },
 
   //init( workletPath = '../dist/workletCopy.js', workerPath = '../dist/gibberish_worker.js' ) {
-  init( workletPath = '../dist/gibberish_worklet.js', ctx=null, sac=null ) { 
+  init( workletPath = '../dist/gibberish_worklet.js', ctx=null ) { 
     this.Gibberish = Gibberish
 
     Gibberish.workletPath = workletPath 
@@ -80,19 +80,18 @@ const Audio = {
 
     this.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
 
-
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AudioContext({ latencyHint:.065 })
+        ctx = new AudioContext({ latencyHint:.05 })
         //ctx = new AudioContext()
       }
 
-      Gibberish.init( {}, ctx, null, sac ).then( processorNode => {
+      Gibberish.init( 44100*60*10, ctx ).then( processorNode => {
         Audio.initialized = true
         Audio.node = processorNode
         Audio.Gen = Gen( Gibber )
         Audio.Gen.init()
-        Audio.Arp = Arp( Gibber )
+        //Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
         Audio.Theory.init( Gibber )
         Audio.Ugen = Ugen
@@ -118,9 +117,9 @@ const Audio = {
 
         Audio.export( window )
 
-        const drums = Audio.Drums('x*o-')
-        drums.disconnect()
-        drums.stop()
+        //const drums = Audio.Drums('x*o-')
+        //drums.disconnect()
+        //drums.stop()
 
         // store last location in memory... we can clear everything else in Gibber.clear9)
         const memIdx = Object.keys( Gibberish.memory.list ).reverse()[0]
@@ -130,6 +129,8 @@ const Audio = {
         // running, but it's about as hacky as it can get...
         const __start = Gibber.instruments.Synth().connect()
         __start.disconnect()
+
+        Gibber.Gibberish.genish.gen.histories.clear()
 
         resolve()
       })
@@ -192,7 +193,7 @@ const Audio = {
     this.Pattern = Pattern( this )
     this.Hex = require( './hex.js' )( Gibber )
     this.Triggers = require( './triggers.js' )( Gibber )
-    this.Automata = __Automata( this )
+    //this.Automata = __Automata( this )
     this.Make = this.Make( this )
     
     const drums = require( './drums.js' )( this )
