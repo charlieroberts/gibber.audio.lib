@@ -424,11 +424,11 @@ const Graphics = {
       Graphics.createProperty( instance, 'x', 0, wrapped.transform.translation ) 
       Graphics.createProperty( instance, 'y', 0, wrapped.transform.translation ) 
       Graphics.createProperty( instance, 'z', 0, wrapped.transform.translation ) 
-      Graphics.createProperty( instance.rotation, 'x', 0, instance.__rotation ) 
-      Graphics.createProperty( instance.rotation, 'y', 0, instance.__rotation ) 
-      Graphics.createProperty( instance.rotation, 'z', 0, instance.__rotation ) 
-      Graphics.createProperty( instance.rotation, 'angle', 0, wrapped.transform.rotation ) 
-      Graphics.createProperty( instance, 'scale', 0, wrapped.transform.scale ) 
+      Graphics.createProperty( instance.rotation, 'x', 0, instance.__rotation) 
+      Graphics.createProperty( instance.rotation, 'y', 0, instance.__rotation) 
+      Graphics.createProperty( instance.rotation, 'z', 0, instance.__rotation) 
+      Graphics.createProperty( instance.rotation, 'angle', 0, instance.__rotation ) 
+      Graphics.createProperty( instance, 'scale', 0, wrapped) 
 
       // hack to make audio sequencing work with graphical objects
       Gibber.Gibberish.worklet.ugens.set( instance.__id, instance )
@@ -647,20 +647,37 @@ const Graphics = {
       }
     }
 
-    const __getter = () => obj[ '__'+name ]
-    const __setter = v => {
-      obj['__'+name].value = v
 
-      if( !isNaN( wrapped[ name ] ) ) {
-        wrapped[ name ] = v
+    if( typeof wrapped[ name ] === 'function' ) {
+      obj[ name ] = v => {
+        wrapped[ name ]( v )
+        return obj
       }
-    }
+    }else{
 
-    Object.defineProperty( obj, name, {
-      configurable:true,
-      get: __getter,
-      set: __setter
-    })
+      const __getter = () => obj[ '__'+name ]
+      const __setter = v => {
+        if( typeof obj['__'+name].value === 'function' ) {
+          obj['__'+name].value.call( obj.__wrapped, v )
+        }else{
+          obj['__'+name].value = v
+        }
+
+        if( !isNaN( wrapped[ name ] ) ) {
+          if( typeof wrapped[ name ] === 'function' ) 
+            wrapped[ name ]( v )
+          else
+            wrapped[ name ] = v
+        }
+      }
+
+      Object.defineProperty( obj, name, {
+        configurable:true,
+        get: __getter,
+        set: __setter
+      })
+
+    }
   }
 
 
