@@ -44,3 +44,27 @@ The library can be used with plain script tags, or CommonJS-/ AMD- style include
 
 </html>
 ```
+
+Gibber uses a file (`dist/gibberish_worklet.js`) and needs to know where it is in order to function. By default, it assumes that you have a directory structure similar to the following:
+
+```
+index.html
+dist
+  > gibber.audio.js
+  > gibberish_worklet.js
+```
+
+If you don't have this directory structure, you need to tell Gibber where `gibberish_worklet.js` is when you call `Gibber.init()`. For example, if you create an index.html page and then use `npm install gibber.audio.lib` to install the library, you'll get the following directory structure:
+
+```
+index.html
+node_modules
+  > gibber.audio.lib
+    > dist
+      > gibber.audio.js
+      > gibberish_worklet.js
+```
+
+In this instance, we would need to both change the `src` attribute of our `<script>` and also pass the location of the worklet *relative to the location of the `index.html` file*. Our call to `Gibber.init` would be:
+
+`Gibber.init('node_modules/gibber.audio.lib/dist/gibberish_worklet.js')`
