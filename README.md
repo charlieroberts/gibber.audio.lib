@@ -24,14 +24,14 @@ The library can be used with plain script tags, or CommonJS-/ AMD- style include
   <script src='./dist/gibber.audio.js'></script>
 </head>
 
-<body></body>
+<body><p>click window to begin.</p></body>
 
 <script>
 
   window.onclick = function() {
     Gibber.init().then( () => {
 
-      const syn = Synth().connect()
+      const syn = Synth()
       syn.note.seq( [0,1], 1/4 )
 
       window.onclick = null
