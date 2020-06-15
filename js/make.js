@@ -26,7 +26,7 @@ module.exports = function( Gibber ) {
 
     const out = Gibber.Ugen( 
       Gibberish[ name  ],
-      { properties, methods:[], name:'Mysine', category:'instruments'},
+      { properties, methods:[], name, category:'instruments'},
       Gibber
     )
     return out
