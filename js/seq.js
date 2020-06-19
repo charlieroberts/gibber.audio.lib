@@ -140,6 +140,17 @@ module.exports = function( Audio ) {
 
     Seq.sequencers.push( seq )
 
+    if( props.standalone === false ) { 
+      let prevSeq = target[ '__' + key ].sequencers[ props.number ] 
+      if( prevSeq !== undefined ) { 
+        prevSeq.clear();
+      }
+
+      // XXX you have to add a method that does all this shit on the worklet. crap.
+      target[ '__' + key ].sequencers[ props.number ] = target[ '__'+key ][ props.number ] = seq
+      seq.start( Audio.Clock.time( delay ) )
+    }
+
     return seq
   }
 
