@@ -4722,8 +4722,13 @@ const Audio = {
     } 
   },
 
-  //init( workletPath = '../dist/workletCopy.js', workerPath = '../dist/gibberish_worker.js' ) {
-  init( workletPath = '../dist/gibberish_worklet.js', ctx=null ) { 
+  __defaults : {
+    workletPath: '../dist/gibberish_worklet.js',
+    ctx:         null
+  },
+
+  init( options ) {
+    let { workletPath, ctx } = Object.assign( {}, this.__defaults, options ) 
     this.Gibberish = Gibberish
 
     Gibberish.workletPath = workletPath 
@@ -4933,88 +4938,7 @@ const Audio = {
       }
     }
   },
-  // When a property is created, a proxy-ish object is made that is
-  // prefaced by a double underscore. This object holds the value of the 
-  // property, sequencers for the property, and modulations for the property.
-  // Alternative getter/setter methods can be passed as arguments.
-  createProperty( obj, name, value, post=null, priority=0 ) {
-    obj[ '__' + name ] = { 
-      value,
-      isProperty:true,
-      sequencers:[],
-      tidals:[],
-      mods:[],
-      name,
-
-      seq( values, timings, number = 0, delay = 0 ) {
-        let prevSeq = obj[ '__' + name ].sequencers[ number ] 
-        if( prevSeq !== undefined ) { 
-          prevSeq.clear();
-        }
-
-        // XXX you have to add a method that does all this shit on the worklet. crap.
-        obj[ '__' + name ].sequencers[ number ] = obj[ '__'+name ][ number ] = Audio.Seq({ 
-          values, 
-          timings, 
-          target:obj,
-          key:name,
-          priority
-        })
-        .start( Audio.Clock.time( delay ) )
-
-        // return object for method chaining
-        return obj
-      },
-      tidal( pattern,  number = 0, delay = 0 ) {
-        let prevSeq = obj[ '__' + name ].tidals[ number ] 
-        if( prevSeq !== undefined ) {
-          const idx = obj.__sequencers.indexOf( prevSeq )
-          obj.__sequencers.splice( idx, 1 )
-          // XXX stop() destroys an extra sequencer for some reason????
-          prevSeq.stop()
-          prevSeq.clear()
-          //removeSeq( obj, prevSeq )
-        }
-
-        const s = Audio.Tidal({ 
-          pattern, 
-          target:obj, 
-          key:name,
-        })
-
-        s.start( Audio.Clock.time( delay ) )
-
-        obj[ '__' + name ].tidals[ number ] = obj[ '__' + name ][ number ] = s
-
-        // return object for method chaining
-        return obj
-      },
-    }
-
-    const getter = () => obj['__'+name]
-
-    const setter = v => {
-      obj['__'+name].value = v
-      if( Gibberish.mode === 'worklet' ) {
-        Gibberish.worklet.port.postMessage({
-          address:'property',
-          object:obj.id,
-          name,
-          value:obj['__'+name].value
-        }) 
-      }
-      if( post !== null ) {
-        post.call( obj )
-      }
-    }
-
-    Object.defineProperty( obj, name, {
-      configurable:true,
-      get: getter,
-      set: setter
-    })
-  }
-  
+    
 }
 
 module.exports = Audio
@@ -9916,7 +9840,7 @@ const Theory = {
 
     this.Tune.TuningList = this.__tunings
 
-    this.initProperties()
+    //this.initProperties()
   },
 
   // adapted from https://gist.github.com/stuartmemo/3766449
@@ -10108,7 +10032,7 @@ const Theory = {
         post:'store'
       })
 
-      this.initProperties()
+      //this.initProperties()
     }
     this.__initDegrees()
   },
@@ -21660,7 +21584,6 @@ let Gibberish = {
 
 Gibberish.prototypes.Ugen = Gibberish.prototypes.ugen = require( './ugen.js' )( Gibberish )
 Gibberish.utilities = require( './utilities.js' )( Gibberish )
-
 
 module.exports = Gibberish
 

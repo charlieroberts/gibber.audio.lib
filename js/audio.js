@@ -70,8 +70,13 @@ const Audio = {
     } 
   },
 
-  //init( workletPath = '../dist/workletCopy.js', workerPath = '../dist/gibberish_worker.js' ) {
-  init( workletPath = '../dist/gibberish_worklet.js', ctx=null ) { 
+  __defaults : {
+    workletPath: '../dist/gibberish_worklet.js',
+    ctx:         null
+  },
+
+  init( options ) {
+    let { workletPath, ctx } = Object.assign( {}, this.__defaults, options ) 
     this.Gibberish = Gibberish
 
     Gibberish.workletPath = workletPath 
