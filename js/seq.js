@@ -33,6 +33,7 @@ module.exports = function( Audio ) {
       //}
     }
 
+    // trigger autotrig patterns
     if( key === 'note' || key === 'chord' || key === 'trigger' ) {
       values.addFilter( ( args,ptrn ) => {
         if( ptrn.seq.target.autotrig !== undefined ) {
@@ -43,6 +44,16 @@ module.exports = function( Audio ) {
         return args
       })
     } 
+
+    // process time values
+    if( Audio.timeProps[ target.name ] !== undefined && Audio.timeProps[ target.name ].indexOf( key ) !== -1  ) {
+      values.addFilter( (args,ptrn) => {
+        if( Gibberish.mode === 'processor' ) {
+          args[0] = Gibberish.Clock.time( args[0] )
+          return args
+        }
+      })
+    }
 
     let timings
     if( Array.isArray( __timings ) ) {
@@ -120,6 +131,13 @@ module.exports = function( Audio ) {
     }else{
       if( target.autotrig === undefined ) {
         target.autotrig = []
+        Gibberish.worklet.port.postMessage({
+          address:'property',
+          name:'autotrig',
+          value:[],
+          object:target.id
+        })
+
       }
       // object name key value
       if( Gibberish.mode === 'worklet' ) {
@@ -140,6 +158,8 @@ module.exports = function( Audio ) {
 
     Seq.sequencers.push( seq )
 
+    // if x.y.seq() etc. 
+    // standalone === false is most common use case
     if( props.standalone === false ) { 
       let prevSeq = target[ '__' + key ].sequencers[ props.number ] 
       if( prevSeq !== undefined ) { 

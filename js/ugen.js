@@ -2,20 +2,6 @@ const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
 
-// what properties should be automatically (automagickally?)
-// filtered through Audio.Clock.time()?
-const __timeProps = {
-  Synth:[ 'attack', 'decay', 'sustain', 'release' ],
-  PolySynth:[ 'attack', 'decay', 'sustain', 'release' ],
-  Complex:[ 'attack', 'decay', 'sustain', 'release' ],
-  PolyComplex:[ 'attack', 'decay', 'sustain', 'release' ],
-  FM:[ 'attack', 'decay', 'sustain', 'release' ],
-  PolyFM:[ 'attack', 'decay', 'sustain', 'release' ],
-  Monosynth:[ 'attack', 'decay', 'sustain', 'release' ],
-  PolyMono:[ 'attack', 'decay', 'sustain', 'release' ],
-  Delay:[ 'time' ], 
-}
-
 // Gibber ugens are essentially wrappers around underlying gibberish 
 // ugens, providing convenience methods for rapidly sequencing
 // and modulating them.
@@ -57,174 +43,6 @@ const createMapping = function( from, to, name, wrappedTo ) {
     wrappedTo[ name ] = gen
   }
 }
-const createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio, isPoly=false ) {
-  const namestore = propertyName 
-  if( isPoly === true ) propertyName += 'V'
-
-  const prop =  obj[ '__' + propertyName ] = {
-    isProperty:true,
-    sequencers:[],
-    type:'audio',
-    tidals:[],
-    mods:[],
-    name:propertyName,
-    __isPoly:isPoly,
-
-    get value() {
-      return __wrappedObject[ propertyName ]
-    },
-    set value(v) {
-      if( v !== undefined ) {
-        if( typeof v === 'number' || typeof v === 'string' ) {
-          const value = timeProps.indexOf( isPoly===true ? namestore : propertyName ) > -1 && typeof v === 'number' ? Audio.Clock.time( v ) : v
-
-          if( isPoly === true ) {
-            __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ][ namestore ] = value
-          }else{
-            __wrappedObject[ propertyName ] = value
-          }
-        }else{
-          createMapping( v, obj, propertyName, __wrappedObject )
-        }
-      }
-    },
-
-    seq( values, timings, number = 0, delay = 0 ) {
-      let prevSeq = obj[ propertyName ].sequencers[ number ] 
-      if( prevSeq !== undefined ) {
-        const idx = obj.__sequencers.indexOf( prevSeq )
-        obj.__sequencers.splice( idx, 1 )
-        // XXX stop() destroys an extra sequencer for some reason????
-        //prevSeq.stop()
-        prevSeq.clear()
-        //removeSeq( obj, prevSeq )
-      }
-
-      const s = Audio.Seq({ 
-        values, 
-        timings, 
-        target:__wrappedObject, 
-        key:propertyName,
-      })
-
-      if( timeProps.indexOf( isPoly === true ? namestore : propertyName ) !== -1  ) {
-        s.values.addFilter( (args,ptrn) => {
-          if( Gibberish.mode === 'processor' ) {
-            args[0] = Gibberish.Clock.time( args[0] )
-            return args
-          }
-        })
-      }
-
-      s.start( Audio.Clock.time( delay ) )
-
-      obj[ propertyName ].sequencers[ number ] = obj[ propertyName ][ number ] = s
-      obj.__sequencers.push( s )
-
-      // return object for method chaining
-      return obj
-    },
-
-    tidal( pattern,  number = 0, delay = 0 ) {
-      let prevSeq = obj[ propertyName ].tidals[ number ] 
-      if( prevSeq !== undefined ) {
-        const idx = obj.__tidals.indexOf( prevSeq )
-        obj.__tidals.splice( idx, 1 )
-        // XXX stop() destroys an extra sequencer for some reason????
-        prevSeq.stop()
-        prevSeq.clear()
-        //removeSeq( obj, prevSeq )
-      }
-
-      const s = Audio.Tidal({ 
-        pattern, 
-        target:__wrappedObject, 
-        key:propertyName,
-      })
-
-      s.start( Audio.Clock.time( delay ) )
-
-      obj[ propertyName ].tidals[ number ] = obj[ propertyName ][ number ] = s
-      obj.__tidals.push( s )
-
-      // return object for method chaining
-      return obj
-    },
-
-    fade( from=null, to=null, time=1 ) {
-      if( from === null ) from = prop.value
-      if( to === null ) to = prop.value
-
-      time = Gibber.Clock.time( time )
-
-      // XXX only covers condition where ramps from fades are assigned...
-      // does this need to be more generic?
-      if( isNaN( from ) && from.__wrapped__.ugenName.indexOf('ramp') > -1 ) {
-        from = from.to.value
-      }
-      if( isNaN( to ) && to.__wrapped__.ugenName.indexOf('ramp') > -1 ) {
-        to = to.to.value
-      }
-
-      let value = Gibber.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
-      // this is a key to not use an envelope follower for mapping
-      value.__useMapping = false
-
-      prop.value = value
-
-      if( prop.value.__wrapped__ === undefined ) prop.value.__wrapped__ = {}
-      prop.value.__wrapped__.values = []
-
-      prop.value.__wrapped__.output = v => {
-        if( prop.value.__wrapped__ !== undefined ) {
-          prop.value.__wrapped__.values.unshift( v )
-          while( prop.value.__wrapped__.values.length > 60 ) prop.value.__wrapped__.values.pop()
-        }
-      }
-
-      prop.value.__wrapped__.finalize = () => {
-        const store = prop.value
-
-        // XXX I can't quite figure out why I have to wait to reset the property
-        // value here... if I don't, then the fade ugen stays assigned in the worklet processor.
-        // and 0 doesn't work!
-        setTimeout( ()=> obj[ propertyName ] = store.to.value === 0 ? .000001 : store.to.value, 0 )
-        store.__wrapped__.widget.clear()
-      }
-
-      prop.value.from = from
-      prop.value.to = to
-
-      return obj
-    },
-
-    ugen:obj
-  }
-
-  prop.mods.clear = ()=> prop.mods.length = 0
-
-  Object.defineProperty( obj, propertyName, {
-    get() { return obj[ '__' + propertyName ] },
-    set(v){
-      // XXX need to accomodate non-scalar values
-      // i.e. mappings
-
-      if( v === undefined || v === null ) return
-      if( typeof v === 'number' && isNaN(v) ) {
-        if( obj.__isGen !== true ) {
-          console.warn('An invalid property assignment was attempted. Did you forget to use property.value?')
-          return
-        }
-      }
-
-      //if( v !== null && typeof v !== 'object' ) 
-        obj[ '__' + propertyName ].value = v
-      //else
-      //  obj[ '__' + propertyName ] = v
-    }
-  })
-
-}
 
 const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool = false, isBinop = false ) {
 
@@ -233,7 +51,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
   const constructor = function( ...args ) {
     const properties = Presets.process( description, args, Audio ) 
-    const timeProps = __timeProps[ description.name ] === undefined ? [] : __timeProps[ description.name ]
+    const timeProps = Audio.timeProps[ description.name ] === undefined ? [] : Audio.timeProps[ description.name ]
 
     if( timeProps.length > 0 ) {
       for( let key in properties ) {
@@ -268,6 +86,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       __wrapped__ :__wrappedObject,
       __sequencers : [], 
       __tidals: [],
+      name:description.name,
       type:'audio',
 
       stop( time=null ) {
@@ -340,17 +159,27 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       obj.voices = obj.__wrapped__.voices
     }
 
+    // createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio, isPoly=false ) {
+    // createProperty( obj, name, value, post=null, priority=0 ) {
     // wrap properties and add sequencing to them
     for( let propertyName in description.properties ) {
+      if( __wrappedObject.__requiredRecompilation && __wrappedObject.__requiresRecompilation.indexOf( propertyName ) > -1 ) continue
       // XXX we have to pass id in the values dictionary under 
       // certain conditions involoving gen ugens, but we don't 
       // want .id to be sequencable!
       if( propertyName !== 'id' && propertyName !== 'type' ){
-        createProperty( obj, propertyName, __wrappedObject, timeProps, Audio )
+        const transform = timeProps.indexOf( propertyName ) > -1 
+          ? v => typeof v === 'number' ? Audio.Clock.time( v ) : v 
+          : null
+
+        Audio.createProperty( obj, propertyName, __wrappedObject[ propertyName ], null, 0, transform )//, timeProps, Audio )
+        //Audio.createProperty( __wrappedObject, propertyName, __wrappedObject[ propertyName ], null, 0, transform )//, timeProps, Audio )
 
         // create per-voice version of property... what properties should be excluded?
         if( description.name.indexOf('Poly') > -1 ) {
-          createProperty( obj, propertyName, __wrappedObject, timeProps, Audio, true )
+          Audio.createProperty( obj, propertyName+'V', __wrappedObject[ propertyName], null, 0, transform, true )//, timeProps, Audio, true )
+
+          //createProperty( obj, propertyName, __wrappedObject, timeProps, Audio, true )
           // we don't have a way to add properties to objects in the processor thread
           // so we'll just add a method... sequencing will still work the same.
           Gibberish.worklet.port.postMessage({
@@ -615,7 +444,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
   //  poolCount = 0
   //}
   
-  Ugen.createProperty = createProperty
+  //Ugen.createProperty = createProperty
 
   return constructor
 }

@@ -15,6 +15,7 @@ const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
+const Core       = require( 'gibber.core.lib' )
 //const Arp         = require( './arp.js' )
 //const __Automata  = require( './automata.js' )
 
@@ -24,6 +25,7 @@ const Audio = {
   Presets: require( './presets.js' ),
   Graphics: require( './graphics.js' ),
   Make: require( './make.js' ),
+  Core,
   initialized:false,
   autoConnect:true,
   shouldDelay:false,
@@ -92,6 +94,9 @@ const Audio = {
       }
 
       Gibberish.init( 44100*60*10, ctx ).then( processorNode => {
+        // XXX remove once gibber.core.lib has been properly integrated 
+        Audio.Core.Audio = Audio.Core.audio = Audio
+
         Audio.initialized = true
         Audio.node = processorNode
         Audio.Gen = Gen( Gibber )
@@ -286,7 +291,152 @@ const Audio = {
       }
     }
   },
-    
+
+  createProperty: Core.createProperty,
+
+  createMapping( from, to, name, wrappedTo ) {
+    if( from.__useMapping === false ) {
+      to[ name ].value = from
+    }else if( from.type === 'audio' ) {
+      const f = to[ '__' + name ].follow = Follow({ input: from })
+
+      let m = f.multiplier
+      Object.defineProperty( to[ name ], 'multiplier', {
+        get() { return m },
+        set(v) { m = v; f.multiplier = m }
+      })
+
+      let o = f.offset
+      Object.defineProperty( to[ name ], 'offset', {
+        get() { return o },
+        set(v) { o = v; f.offset = o }
+      })
+
+      wrappedTo[ name ] = f
+    }else if( from.type === 'gen' ) {
+      // gen objects can be referred to without the graphics/audio abstraction,
+      // in which case they will have no .render() function, and don't need to be rendered
+      const gen = from.render !== undefined ? from.render() : from
+
+      wrappedTo[ name ] = gen
+    }
+  },
+
+  createGetter( obj, name ) { return () => obj[ '__' + name ] },
+
+  createSetter( obj, name, post, transform=null, isPoly=false ) {
+    const setter = v => {
+      let value, shouldSend = true
+
+      if( typeof v === 'number' || typeof v === 'string' ) {
+        value = transform !== null ? transform( v ) : v
+
+        if( isPoly === true ) {
+          const __wrappedObject = obj.__wrapped__
+          const voice = __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ]
+          voice[ name ] = value
+
+          shouldSend = false
+
+          Gibberish.worklet.port.postMessage({
+            address:'property',
+            object:voice.id,
+            name,
+            value
+          }) 
+
+        }else{
+          obj[ '__'+name].value = v
+        }
+      }else if( typeof v === 'object' && v !== null && v.type === 'gen' ) {
+        // gen objects can be referred to without the graphics/audio abstraction,
+        // in which case they will have no .render() function, and don't need to be rendered
+        const gen = v.render !== undefined ? v.render() : from
+
+        obj['__'+ name ].value = gen
+        value = { id: gen.id }
+      }else{
+        obj[ '__'+name].value = v
+        value = v !== null ? { id:v.id } : v
+      }
+        //Audio.createMapping( v, obj, name, obj.__wrapped__ )
+
+      if( Gibberish.mode === 'worklet' && shouldSend === true ) {
+        Gibberish.worklet.port.postMessage({
+          address:'property',
+          object:obj.id,
+          name,
+          value
+        }) 
+      }
+      if( post !== null ) {
+        post.call( obj )
+      }     
+    }
+
+    return setter
+  },
+
+  createFade( from=null, to=null, time=1, obj, name ) {
+    if( from === null ) from = obj[ name ].value
+    if( to === null ) to = obj[ name ].value
+
+    time = Gibber.Clock.time( time )
+
+    // XXX only covers condition where ramps from fades are assigned...
+    // does this need to be more generic?
+    if( isNaN( from ) && from.__wrapped__.ugenName.indexOf('ramp') > -1 ) {
+      from = from.to.value
+    }
+    if( isNaN( to ) && to.__wrapped__.ugenName.indexOf('ramp') > -1 ) {
+      to = to.to.value
+    }
+
+    let ramp = Gibber.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
+    // this is a key to not use an envelope follower for mapping
+    ramp.__useMapping = false
+
+    obj[ name ] = ramp
+
+    if( ramp.__wrapped__ === undefined ) ramp.__wrapped__ = {}
+    ramp.__wrapped__.values = []
+
+    ramp.__wrapped__.output = v => {
+      if( ramp.__wrapped__ !== undefined ) {
+        ramp.__wrapped__.values.unshift( v )
+        while( ramp.__wrapped__.values.length > 60 ) ramp.__wrapped__.values.pop()
+      }
+    }
+
+    ramp.__wrapped__.finalize = () => {
+      const store = ramp.__wrapped__
+
+      // XXX I can't quite figure out why I have to wait to reset the property 
+      // value here... if I don't, then the fade ugen stays assigned in the worklet processor.
+      // and 0 doesn't work!
+      setTimeout( ()=> obj[ name ] = store.to === 0 ? .000001 : store.to, 0 )
+      store.widget.clear()
+    }
+
+    ramp.__wrapped__.from = from
+    ramp.__wrapped__.to = to
+
+    return obj
+  },
+
+  // what properties should be automatically (automagickally?)
+  // filtered through Audio.Clock.time()?
+  timeProps : {
+    Synth:[ 'attack', 'decay', 'sustain', 'release' ],
+    PolySynth:[ 'attack', 'decay', 'sustain', 'release' ],
+    Complex:[ 'attack', 'decay', 'sustain', 'release' ],
+    PolyComplex:[ 'attack', 'decay', 'sustain', 'release' ],
+    FM:[ 'attack', 'decay', 'sustain', 'release' ],
+    PolyFM:[ 'attack', 'decay', 'sustain', 'release' ],
+    Monosynth:[ 'attack', 'decay', 'sustain', 'release' ],
+    PolyMono:[ 'attack', 'decay', 'sustain', 'release' ],
+    Delay:[ 'time' ], 
+  }
 }
 
 module.exports = Audio

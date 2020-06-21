@@ -6,6 +6,7 @@ module.exports = function( Audio ) {
     const pattern   = props.pattern
     const target    = props.target
     const key       = props.key
+    const number    = props.number
     const priority  = props.priority || 0
     let   rate      = props.rate || 1
     let   density   = props.density || 1
@@ -74,6 +75,24 @@ module.exports = function( Audio ) {
     Seq.sequencers.push( seq )
 
     Audio.subscribe( 'clear', ()=> seq.clear() )
+
+    // if x.y.tidal() etc. 
+    // standalone === false is most common use case
+    if( props.standalone === false ) {
+      let prevSeq = target[ '__' + key ].tidals[ number ] 
+      if( prevSeq !== undefined ) {
+        const idx = target.__sequencers.indexOf( prevSeq )
+        target.__sequencers.splice( idx, 1 )
+        // XXX stop() destroys an extra sequencer for some reason????
+        prevSeq.stop()
+        prevSeq.clear()
+        //removeSeq( obj, prevSeq )
+      }
+
+      seq.start( Audio.Clock.time( delay ) )
+
+      target[ '__' + key ].tidals[ number ] = obj[ '__' + key ][ number ] = seq
+    }
 
     return seq
   }
