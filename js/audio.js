@@ -23,7 +23,6 @@ const Audio = {
   Clock: require( './clock.js' ),
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
-  Graphics: require( './graphics.js' ),
   Make: require( './make.js' ),
   Core,
   initialized:false,
@@ -40,7 +39,6 @@ const Audio = {
       
       Utility.export( obj )
       this.Gen.export( obj )
-      this.Graphics.export( obj )
       this.Pattern.export( obj )
 
       obj.gen = this.Gen.make
@@ -63,7 +61,6 @@ const Audio = {
       obj.Triggers = this.Triggers
       obj.Seq = this.Seq
       obj.Tidal = this.Tidal
-      obj.Graphics = this.Graphics
       obj.Make = this.Make
       obj.Gibberish = this.Gibberish
       obj.future = this.Gibberish.utilities.future
@@ -84,8 +81,6 @@ const Audio = {
     Gibberish.workletPath = workletPath 
 
     this.createPubSub()
-
-    //this.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
