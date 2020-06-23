@@ -62,7 +62,6 @@ const Audio = {
       obj.WavePattern = this.WavePattern
 
       obj.Out = this.Out
-      obj.Steps = this.Steps
       obj.Make = this.Make
       obj.Gibberish = this.Gibberish
       obj.future = this.Gibberish.utilities.future
@@ -191,8 +190,6 @@ const Audio = {
     this.effects = Effects.create( this )
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
-    this.Steps = require( './steps.js' )( this )
-    this.HexSteps = require( './hexSteps.js' )( this )
     this.waveObjects = WaveObjects( this )
     const Pattern = Core.Pattern
     Pattern.transfer( this, Pattern.toString() )
