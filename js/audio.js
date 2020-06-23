@@ -55,10 +55,6 @@ const Audio = {
       obj.Out = this.Out
       obj.Steps = this.Steps
       obj.HexSteps = this.HexSteps
-      obj.Hex = this.Hex
-      obj.Triggers = this.Triggers
-      obj.Seq = this.Seq
-      obj.Tidal = this.Tidal
       obj.Make = this.Make
       obj.Gibberish = this.Gibberish
       obj.future = this.Gibberish.utilities.future
@@ -92,14 +88,14 @@ const Audio = {
 
         Audio.initialized = true
         Audio.node = processorNode
-        Audio.Gen = Gen( Gibber )
+        Audio.Gen = Gen( Audio )
         Audio.Gen.init()
         //Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
-        Audio.Theory.init( Gibber )
+        Audio.Theory.init( Audio )
         Audio.Ugen = Ugen
         Audio.Utilities = Utility
-        Audio.WavePattern = WavePattern( Gibber )
+        Audio.WavePattern = WavePattern( Audio )
         Audio.ctx = ctx
         Audio.Out = Gibberish.output
         
@@ -130,10 +126,10 @@ const Audio = {
 
         // XXX this forces the gibberish scheduler to start
         // running, but it's about as hacky as it can get...
-        const __start = Gibber.instruments.Synth().connect()
+        const __start = Audio.instruments.Synth().connect()
         __start.disconnect()
 
-        Gibber.Gibberish.genish.gen.histories.clear()
+        Audio.Gibberish.genish.gen.histories.clear()
 
         resolve()
       })
@@ -187,67 +183,16 @@ const Audio = {
     this.effects = Effects.create( this )
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
-    this.Seq = require( './seq.js' )( this )
-    this.Tidal = require( './tidal.js' )( this )
     this.Steps = require( './steps.js' )( this )
     this.HexSteps = require( './hexSteps.js' )( this )
     this.waveObjects = WaveObjects( this )
     const Pattern = Core.Pattern
     Pattern.transfer( this, Pattern.toString() )
-    //this.Pattern = Pattern( this )
-    this.Hex = require( './hex.js' )( Gibber )
-    this.Triggers = require( './triggers.js' )( Gibber )
     //this.Automata = __Automata( this )
     this.Make = this.Make( this )
     
     const drums = require( './drums.js' )( this )
     Object.assign( this, drums )
-  },
-
-  addSequencing( obj, methodName, priority=0 ) {
-
-    if( Gibberish.mode === 'worklet' ) {
-      obj[ methodName ].sequencers = []
-      obj[ methodName ].tidals = []
-
-      obj[ methodName ].seq = function( values, timings, number=0, delay=0 ) {
-        let prevSeq = obj[ methodName ].sequencers[ number ] 
-        if( prevSeq !== undefined ) prevSeq.stop()
-
-        let s = Audio.Seq({ values, timings, target:obj, key:methodName, priority })
-
-        s.start() // Audio.Clock.time( delay ) )
-        obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
-
-        // return object for method chaining
-        return obj
-      }
-      obj[ methodName ].tidal= function( pattern, number=0, delay=0 ) {
-          let prevSeq = obj[ methodName ].tidals[ number ] 
-          if( prevSeq !== undefined ) { 
-            const idx = obj.__tidals.indexOf( prevSeq )
-            obj.__tidals.splice( idx, 1 )
-            prevSeq.stop()
-            prevSeq.clear()
-            // removeSeq( obj, prevSeq )
-          }
-
-          let s = Audio.Tidal({ pattern, target:obj, key:methodName })
-          
-          s.start( Audio.Clock.time( delay ) )
-          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
-          obj.__tidals.push( s )
-
-          // XXX need to clean this up! this is solely here for annotations, and to 
-          // match what I did for ensembles... 
-          obj[ methodName ].__tidal = s
-
-          // return object for method chaining
-          return obj
-        }
-
-      return obj[ methodName ].sequencers
-    }
   },
 
   printcb() { 

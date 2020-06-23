@@ -4707,10 +4707,6 @@ const Audio = {
       obj.Out = this.Out
       obj.Steps = this.Steps
       obj.HexSteps = this.HexSteps
-      obj.Hex = this.Hex
-      obj.Triggers = this.Triggers
-      obj.Seq = this.Seq
-      obj.Tidal = this.Tidal
       obj.Make = this.Make
       obj.Gibberish = this.Gibberish
       obj.future = this.Gibberish.utilities.future
@@ -4744,14 +4740,14 @@ const Audio = {
 
         Audio.initialized = true
         Audio.node = processorNode
-        Audio.Gen = Gen( Gibber )
+        Audio.Gen = Gen( Audio )
         Audio.Gen.init()
         //Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
-        Audio.Theory.init( Gibber )
+        Audio.Theory.init( Audio )
         Audio.Ugen = Ugen
         Audio.Utilities = Utility
-        Audio.WavePattern = WavePattern( Gibber )
+        Audio.WavePattern = WavePattern( Audio )
         Audio.ctx = ctx
         Audio.Out = Gibberish.output
         
@@ -4782,10 +4778,10 @@ const Audio = {
 
         // XXX this forces the gibberish scheduler to start
         // running, but it's about as hacky as it can get...
-        const __start = Gibber.instruments.Synth().connect()
+        const __start = Audio.instruments.Synth().connect()
         __start.disconnect()
 
-        Gibber.Gibberish.genish.gen.histories.clear()
+        Audio.Gibberish.genish.gen.histories.clear()
 
         resolve()
       })
@@ -4839,67 +4835,16 @@ const Audio = {
     this.effects = Effects.create( this )
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
-    this.Seq = require( './seq.js' )( this )
-    this.Tidal = require( './tidal.js' )( this )
     this.Steps = require( './steps.js' )( this )
     this.HexSteps = require( './hexSteps.js' )( this )
     this.waveObjects = WaveObjects( this )
     const Pattern = Core.Pattern
     Pattern.transfer( this, Pattern.toString() )
-    //this.Pattern = Pattern( this )
-    this.Hex = require( './hex.js' )( Gibber )
-    this.Triggers = require( './triggers.js' )( Gibber )
     //this.Automata = __Automata( this )
     this.Make = this.Make( this )
     
     const drums = require( './drums.js' )( this )
     Object.assign( this, drums )
-  },
-
-  addSequencing( obj, methodName, priority=0 ) {
-
-    if( Gibberish.mode === 'worklet' ) {
-      obj[ methodName ].sequencers = []
-      obj[ methodName ].tidals = []
-
-      obj[ methodName ].seq = function( values, timings, number=0, delay=0 ) {
-        let prevSeq = obj[ methodName ].sequencers[ number ] 
-        if( prevSeq !== undefined ) prevSeq.stop()
-
-        let s = Audio.Seq({ values, timings, target:obj, key:methodName, priority })
-
-        s.start() // Audio.Clock.time( delay ) )
-        obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
-
-        // return object for method chaining
-        return obj
-      }
-      obj[ methodName ].tidal= function( pattern, number=0, delay=0 ) {
-          let prevSeq = obj[ methodName ].tidals[ number ] 
-          if( prevSeq !== undefined ) { 
-            const idx = obj.__tidals.indexOf( prevSeq )
-            obj.__tidals.splice( idx, 1 )
-            prevSeq.stop()
-            prevSeq.clear()
-            // removeSeq( obj, prevSeq )
-          }
-
-          let s = Audio.Tidal({ pattern, target:obj, key:methodName })
-          
-          s.start( Audio.Clock.time( delay ) )
-          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
-          obj.__tidals.push( s )
-
-          // XXX need to clean this up! this is solely here for annotations, and to 
-          // match what I did for ensembles... 
-          obj[ methodName ].__tidal = s
-
-          // return object for method chaining
-          return obj
-        }
-
-      return obj[ methodName ].sequencers
-    }
   },
 
   printcb() { 
@@ -5087,7 +5032,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{"./analysis.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js","./binops.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js","./busses.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js","./clock.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js","./drums.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js","./effects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js","./ensemble.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js","./envelopes.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js","./filters.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js","./freesound.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js","./gen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js","./hex.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js","./hexSteps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js","./instruments.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js","./make.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/make.js","./oscillators.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js","./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./seq.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js","./steps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","./tidal.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/tidal.js","./triggers.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","./utility.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js","./waveObjects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js","./wavePattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js","gibber.core.lib":"/Users/charlie/Documents/code/gibber.core.lib/js/index.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js":[function(require,module,exports){
+},{"./analysis.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js","./binops.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js","./busses.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js","./clock.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js","./drums.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js","./effects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js","./ensemble.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js","./envelopes.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js","./filters.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js","./freesound.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js","./gen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js","./hexSteps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js","./instruments.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js","./make.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/make.js","./oscillators.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js","./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./steps.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","./utility.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js","./waveObjects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js","./wavePattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js","gibber.core.lib":"/Users/charlie/Documents/code/gibber.core.lib/js/index.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js":[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -6662,89 +6607,6 @@ Gen.init()
 return Gen 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js":[function(require,module,exports){
-module.exports = function( Gibber ) {
-
-const Pattern = Gibber.Pattern
-
-const Hex = function( hexString, time = 1/16, rotation ) {
-  let count = 0,
-      onesAndZeros = ''
-
-  if( typeof hexString === 'string' ) {
-    for( let chr of hexString ) {
-      let num = Number( '0x'+chr )
-
-      onesAndZeros += (num & 8) > 0 ? 1 : 0
-      onesAndZeros += (num & 4) > 0 ? 1 : 0
-      onesAndZeros += (num & 2) > 0 ? 1 : 0
-      onesAndZeros += (num & 1) > 0 ? 1 : 0
-    }
-  }else{
-    onesAndZeros = hexString.toString(2)
-    while( onesAndZeros.length < 16 ) {
-      onesAndZeros = '0'+onesAndZeros
-    }
-  }
-
-  let __onesAndZeros = onesAndZeros.split('') 
-
-  const pattern = Pattern( ...__onesAndZeros ) 
-  
-  pattern.onrender = function( rendered ) {
-    rendered.type = 'Hex'
-
-    rendered.time = time
-
-    rendered.output = { time, shouldExecute: 0 }
-
-    rendered.addFilter( ( args, ptrn ) => {
-      let val = args[ 0 ]
-
-      ptrn.output.time = Gibberish.Clock.time( ptrn.time )
-      ptrn.output.shouldExecute = parseInt(val) 
-
-      args[ 0 ] = ptrn.output 
-
-      return args
-    })
-  }
-
-  pattern.reseed = ( ...args )=> {
-    let n, k
-    
-    if( Array.isArray( args[0] ) ) {
-      k = args[0][0]
-      n = args[0][1]
-    }else{
-      k = args[0]
-      n = args[1]
-    }
-
-    if( n === undefined ) n = 16
-    
-    out = createStartingArray( n,k )
-    let _onesAndZeros = Inner( n,k )
-    
-    pattern.set( _onesAndZeros )
-    pattern.time = 1 / n
-
-    // this.checkForUpdateFunction( 'reseed', pattern )
-
-    return pattern
-  }
-
-  //Gibber.addSequencingToMethod( pattern, 'reseed' )
-
-  if( typeof rotation === 'number' ) pattern.rotate( rotation )
-
-  return pattern
-}
-
-return Hex
-
-}
-
 },{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/hexSteps.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
   
@@ -7910,202 +7772,7 @@ module.exports = {
   }
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/seq.js":[function(require,module,exports){
-const Gibberish = require( 'gibberish-dsp' )
-
-module.exports = function( Audio ) {
-
-  const Seq = function( props ) { 
-    let   __values  = props.values
-    const __timings = props.timings
-    const delay     = props.delay
-    const target    = props.target
-    const key       = props.key
-    const priority  = props.priority
-    let   rate      = props.rate || 1
-    let   density   = props.density || 1
-    let   autotrig  = false
-
-    if( __values.type === 'gen' ) __values = __values.render()
-
-    let values
-    if( Array.isArray( __values ) ) {
-      values =  Audio.Pattern( ...__values )
-    }else{
-      values = Audio.Pattern( __values )
-    }
-
-    values = values.render()
-
-    if( __values.randomFlag ) {
-      values.addFilter( ( args,ptrn ) => {
-        const range = ptrn.values.length - 1
-        const idx = Math.round( Math.random() * range )
-        return [ ptrn.values[ idx ], 1, idx ] 
-      })
-      //for( let i = 0; i < this.values.randomArgs.length; i+=2 ) {
-      //  valuesPattern.repeat( this.values.randomArgs[ i ], this.values.randomArgs[ i + 1 ] )
-      //}
-    }
-
-    // trigger autotrig patterns
-    if( key === 'note' || key === 'chord' || key === 'trigger' ) {
-      values.addFilter( ( args,ptrn ) => {
-        if( ptrn.seq.target.autotrig !== undefined ) {
-          for( let s of ptrn.seq.target.autotrig ) {
-            s.fire()
-          }
-        }
-        return args
-      })
-    } 
-
-    // process time values
-    if( Audio.timeProps[ target.name ] !== undefined && Audio.timeProps[ target.name ].indexOf( key ) !== -1  ) {
-      values.addFilter( (args,ptrn) => {
-        if( Gibberish.mode === 'processor' ) {
-          args[0] = Gibberish.Clock.time( args[0] )
-          return args
-        }
-      })
-    }
-
-    let timings
-    if( Array.isArray( __timings ) ) {
-      timings  = Audio.Pattern( ...__timings )
-    }else if( typeof __timings === 'function' && __timings.isPattern === true ) {
-      timings = __timings
-    }else if( __timings !== undefined && __timings !== null ) {
-      timings = Audio.Pattern( __timings )
-    }else{
-      timings = null
-      autotrig = true
-    }
-
-    if( timings !== null ) timings = timings.render()
-
-    if( autotrig === false ) {
-      if( __timings.randomFlag ) {
-        timings.addFilter( ( args,ptrn ) => {
-          const range = ptrn.values.length - 1
-          const idx = Math.round( Math.random() * range )
-          return [ ptrn.values[ idx ], 1, idx ] 
-        })
-        //for( let i = 0; i < this.values.randomArgs.length; i+=2 ) {
-        //  valuesPattern.repeat( this.values.randomArgs[ i ], this.values.randomArgs[ i + 1 ] )
-        //}
-      }
-      timings.output = { time:'time', shouldExecute:0 }
-      timings.density = 1
-
-      timings.addFilter( function( args ) {
-        if( !isNaN( args[0] ) ) {
-          args[ 0 ] = Gibberish.Clock.time( args[0] )
-        }
-
-        return args
-      })
-
-      // XXX delay annotations so that they occur after values annotations have occurred. There might
-      // need to be more checks for this flag in the various annotation update files... right now
-      // the check is only in createBorderCycle.js.
-      timings.__delayAnnotations = true
-    }
-
-    const clear = function() {
-      this.stop()
-      
-      if( this.values !== undefined && this.values.clear !== undefined  ) {
-        this.values.clear()
-      }
-      if( this.timings !== undefined && this.timings !== null && this.timings.clear !== undefined ) this.timings.clear()
-
-      
-      if( Gibberish.mode === 'worklet' ) {
-        const idx = Seq.sequencers.indexOf( seq )
-        seq.stop()
-        const __seq = Seq.sequencers.splice( idx, 1 )[0]
-        if( __seq !== undefined ) {
-          __seq.stop()
-        }
-      }
-      
-
-    }
-
-    values.__patternType = 'values'
-    if( timings !== null ) timings.__patternType = 'timings'
-
-    //const offsetRate = Gibberish.binops.Mul(rate, Audio.Clock.audioClock )
-
-    // XXX need to fix so that we can use the clock rate as the base
-    const seq = Gibberish.Sequencer2({ values, timings, density, target, key, priority, rate:1/*Audio.Clock.audioClock*/, clear, autotrig, mainthreadonly:props.mainthreadonly })
-
-    values.setSeq( seq )
-
-    if( autotrig === false ) {
-      timings.setSeq( seq )
-    }else{
-      if( target.autotrig === undefined ) {
-        target.autotrig = []
-        Gibberish.worklet.port.postMessage({
-          address:'property',
-          name:'autotrig',
-          value:[],
-          object:target.id
-        })
-
-      }
-      // object name key value
-      if( Gibberish.mode === 'worklet' ) {
-        Gibberish.worklet.port.postMessage({
-          address:'addObjectToProperty',
-          name:'autotrig',
-          object:target.id,
-          key:target.autotrig.length,
-          value:seq.id
-        })
-        target.autotrig.push( seq )
-      }
-    } 
-
-    //Gibberish.proxyEnabled = false
-    //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
-    //Gibberish.proxyEnabled = true
-
-    Seq.sequencers.push( seq )
-
-    // if x.y.seq() etc. 
-    // standalone === false is most common use case
-    if( props.standalone === false ) { 
-      let prevSeq = target[ '__' + key ].sequencers[ props.number ] 
-      if( prevSeq !== undefined ) { 
-        prevSeq.clear();
-      }
-
-      // XXX you have to add a method that does all this shit on the worklet. crap.
-      target[ '__' + key ].sequencers[ props.number ] = target[ '__'+key ][ props.number ] = seq
-      seq.start( Audio.Clock.time( delay ) )
-    }
-
-    return seq
-  }
-
-  Seq.sequencers = []
-  Seq.clear = function() {
-    Seq.sequencers.forEach( seq => seq.clear() )
-    //for( let i = Seq.sequencers.length - 1; i >= 0; i-- ) {
-    //  Seq.sequencers[ i ].clear()
-    //}
-    Seq.sequencers = []
-  }
-  Seq.DNR = -987654321
-
-  return Seq
-
-}
-
-},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js":[function(require,module,exports){
+},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/steps.js":[function(require,module,exports){
 module.exports = function( Gibber ) {
  
 const Steps = {
@@ -8688,172 +8355,7 @@ const Theory = {
 
 module.exports = Theory
 
-},{"./external/tune-api-only.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/tidal.js":[function(require,module,exports){
-const Gibberish = require( 'gibberish-dsp' )
-
-module.exports = function( Audio ) {
-
-  const Seq = function( props ) { 
-    const pattern   = props.pattern
-    const target    = props.target
-    const key       = props.key
-    const number    = props.number
-    const priority  = props.priority || 0
-    let   rate      = props.rate || 1
-    let   density   = props.density || 1
-    let   autotrig  = false
-
-    // XXX TODO
-    //if( key === 'note' || key === 'chord' || key === 'trigger' ) {
-    //  values.addFilter( ( args,ptrn ) => {
-    //    if( ptrn.seq.target.autotrig !== undefined ) {
-    //      for( let s of ptrn.seq.target.autotrig ) {
-    //        s.fire()
-    //      }
-    //    }
-    //    return args
-    //  })
-    //} 
-
-    const clear = function() {
-      this.stop()
-      
-      if( Gibberish.mode === 'worklet' ) {
-        const idx = Seq.sequencers.indexOf( seq )
-        seq.stop()
-        const __seq = Seq.sequencers.splice( idx, 1 )[0]
-        if( __seq !== undefined ) {
-          __seq.stop()
-        }
-        if( seq.update && seq.update.clear ) {
-          seq.update.clear()
-        }
-      }
-    }
-
-    const filters = [
-      // report back triggered tokens for annotations
-      function( val, tidal, uid ) {
-        if( Gibberish.mode === 'processor' ) {
-          Gibberish.processor.messages.push( tidal.id, 'update.uid', uid )   
-          Gibberish.processor.messages.push( tidal.id, 'update.value', val )   
-        }
-        return val
-      } 
-    ]
-
-    if( key === 'note' || key === 'chord' || key === 'trigger' ) {
-      filters.push( ( args,tidal ) => {
-        if( tidal.target.autotrig !== undefined ) {
-          for( let s of tidal.target.autotrig ) {
-            s.fire()
-          }
-        }
-        return args
-      })
-    }
-
-    const seq = Gibberish.Tidal({ pattern, target, key, priority, filters, mainthreadonly:props.mainthreadonly })
-    seq.clear = clear
-    seq.uid = Gibberish.Tidal.getUID()
-    
-    //Gibberish.proxyEnabled = false
-    //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
-    //Gibberish.proxyEnabled = true
-
-    Audio.addSequencing( seq, 'rotate', 1 )
-
-    Seq.sequencers.push( seq )
-
-    Audio.subscribe( 'clear', ()=> seq.clear() )
-
-    // if x.y.tidal() etc. 
-    // standalone === false is most common use case
-    if( props.standalone === false ) {
-      let prevSeq = target[ '__' + key ].tidals[ number ] 
-      if( prevSeq !== undefined ) {
-        const idx = target.__sequencers.indexOf( prevSeq )
-        target.__sequencers.splice( idx, 1 )
-        // XXX stop() destroys an extra sequencer for some reason????
-        prevSeq.stop()
-        prevSeq.clear()
-        //removeSeq( obj, prevSeq )
-      }
-
-      seq.start( Audio.Clock.time( delay ) )
-
-      target[ '__' + key ].tidals[ number ] = obj[ '__' + key ][ number ] = seq
-    }
-
-    return seq
-  }
-
-  Seq.sequencers = []
-  Seq.clear = function() {
-    Seq.sequencers.forEach( seq => seq.clear() )
-    //for( let i = Seq.sequencers.length - 1; i >= 0; i-- ) {
-    //  Seq.sequencers[ i ].clear()
-    //}
-    Seq.sequencers = []
-  }
-  Seq.DNR = -987654321
-
-  let val = 1 
-  Object.defineProperty( Seq, 'cps', {
-    get() { return val },
-    set(v) {
-      val = v
-      Gibber.Gibberish.Tidal.cps = v
-    }
-  })
-
-  return Seq
-
-}
-
-},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js":[function(require,module,exports){
-module.exports = function( Gibber ) {
-
-const Pattern = Gibber.Pattern
-
-const Triggers = function( __values ) {
-  const values = __values.split('')
-  const pattern = Pattern( ...values ) 
-  pattern.isPattern = true
-  pattern.type = 'Triggers'
-  // need to define custom function to use key as value
-  pattern.onrender = function( rendered ) {
-    rendered.addFilter( new Function( 'args', 'ptrn', 
-     `let sym = args[ 0 ],
-          velocity = parseInt( sym, 16 ) / 15
-
-      if( isNaN( velocity ) ) {
-        velocity = 0
-      }
-
-      if( velocity !== 0 ) {
-        ptrn.seq.target.__triggerLoudness = velocity
-      }
-
-      ptrn.output = {
-        time : Gibberish.Clock.time( ${1/values.length} ),
-        shouldExecute: sym !== '.' ? 1 : 0
-      }
-
-      args[0] = ptrn.output
-
-      return args`
-    ))
-  }
-
-  return pattern
-}
-
-return Triggers
-
-}
-
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js":[function(require,module,exports){
+},{"./external/tune-api-only.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js":[function(require,module,exports){
 const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
@@ -11381,7 +10883,88 @@ return Euclid
 }
 
 },{}],"/Users/charlie/Documents/code/gibber.core.lib/js/hex.js":[function(require,module,exports){
-arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/js/hex.js"][0].apply(exports,arguments)
+module.exports = function( Gibber ) {
+
+const Pattern = Gibber.Pattern
+
+const Hex = function( hexString, time = 1/16, rotation ) {
+  let count = 0,
+      onesAndZeros = ''
+
+  if( typeof hexString === 'string' ) {
+    for( let chr of hexString ) {
+      let num = Number( '0x'+chr )
+
+      onesAndZeros += (num & 8) > 0 ? 1 : 0
+      onesAndZeros += (num & 4) > 0 ? 1 : 0
+      onesAndZeros += (num & 2) > 0 ? 1 : 0
+      onesAndZeros += (num & 1) > 0 ? 1 : 0
+    }
+  }else{
+    onesAndZeros = hexString.toString(2)
+    while( onesAndZeros.length < 16 ) {
+      onesAndZeros = '0'+onesAndZeros
+    }
+  }
+
+  let __onesAndZeros = onesAndZeros.split('') 
+
+  const pattern = Pattern( ...__onesAndZeros ) 
+  
+  pattern.onrender = function( rendered ) {
+    rendered.type = 'Hex'
+
+    rendered.time = time
+
+    rendered.output = { time, shouldExecute: 0 }
+
+    rendered.addFilter( ( args, ptrn ) => {
+      let val = args[ 0 ]
+
+      ptrn.output.time = Gibberish.Clock.time( ptrn.time )
+      ptrn.output.shouldExecute = parseInt(val) 
+
+      args[ 0 ] = ptrn.output 
+
+      return args
+    })
+  }
+
+  pattern.reseed = ( ...args )=> {
+    let n, k
+    
+    if( Array.isArray( args[0] ) ) {
+      k = args[0][0]
+      n = args[0][1]
+    }else{
+      k = args[0]
+      n = args[1]
+    }
+
+    if( n === undefined ) n = 16
+    
+    out = createStartingArray( n,k )
+    let _onesAndZeros = Inner( n,k )
+    
+    pattern.set( _onesAndZeros )
+    pattern.time = 1 / n
+
+    // this.checkForUpdateFunction( 'reseed', pattern )
+
+    return pattern
+  }
+
+  //Gibber.addSequencingToMethod( pattern, 'reseed' )
+
+  if( typeof rotation === 'number' ) pattern.rotate( rotation )
+
+  return pattern
+}
+
+return Hex
+
+}
+
 },{}],"/Users/charlie/Documents/code/gibber.core.lib/js/index.js":[function(require,module,exports){
 const Gibber = {
   initialized: false,
@@ -11424,33 +11007,31 @@ const Gibber = {
   },
 
   export( obj, Gibber ) {
-      //Utility.export( obj )
-      //this.Gen.export( obj )
-      //this.Pattern( Gibber ).export( obj )
-      obj.Pattern = this.Pattern( Gibber )
-      obj.Euclid  = require( './euclid.js'  )( Gibber )
-      obj.Hex     = require( './hex.js'     )( Gibber ) 
-      obj.Triggers= require( './triggers.js')( Gibber )
+    // XXX must keep reference to main pattern function
+    // so it can be serialized and transferred to audioworklet  
+    obj.Pattern  = this.Pattern( Gibber )
+    obj.Seq      = require( './seq.js'      )( Gibber )
+    obj.Tidal    = require( './tidal.js'    )( Gibber )
+    obj.Euclid   = require( './euclid.js'   )( Gibber )
+    obj.Hex      = require( './hex.js'      )( Gibber ) 
+    obj.Triggers = require( './triggers.js' )( Gibber )
 
-      //obj.gen = this.Gen.make
-      //obj.lfo = this.Gen.composites.lfo
-      //obj.Euclid = Euclid( this )
-      //obj.Clock = this.Clock
-      //obj.WavePattern = this.WavePattern
-      //obj.Master = this.Master
-      ////obj.Arp = this.Arp
-      ////obj.Automata = this.Automata
-      //obj.Out = this.Out
-      //obj.Steps = this.Steps
-      //obj.HexSteps = this.HexSteps
-      //obj.Hex = this.Hex
-      //obj.Triggers = this.Triggers
-      //obj.Seq = this.Seq
-      //obj.Tidal = this.Tidal
-      //obj.future = this.Gibberish.utilities.future
-    //}else{
-    //  Gibber.exportTarget = obj
-    //} 
+    //obj.gen = this.Gen.make
+    //obj.lfo = this.Gen.composites.lfo
+    //obj.Euclid = Euclid( this )
+    //obj.Clock = this.Clock
+    //obj.WavePattern = this.WavePattern
+    //obj.Master = this.Master
+    ////obj.Arp = this.Arp
+    ////obj.Automata = this.Automata
+    //obj.Out = this.Out
+    //obj.Steps = this.Steps
+    //obj.HexSteps = this.HexSteps
+    //obj.Hex = this.Hex
+    //obj.Triggers = this.Triggers
+    //obj.Seq = this.Seq
+    //obj.Tidal = this.Tidal
+    //obj.future = this.Gibberish.utilities.future
   },
 
   // XXX stop clock from being cleared.
@@ -11503,58 +11084,63 @@ const Gibber = {
       mods:[],
       name,
 
-      seq( values, timings, number = 0, delay = 0 ) {
-        if( value ) value.name = obj.name
-        const type = obj.type === 'gen' ? 'audio' : obj.type
-        Gibber[ type ].Seq({ 
-          values, 
-          timings, 
-          target:obj,
-          key:name,
-          priority,
-          delay,
-          number,
-          standalone:false,
-          name:obj.name
-        })
-        
-        return obj
-      },
-
-      tidal( pattern,  number = 0, delay = 0 ) {
-        if( value ) value.name = obj.name
-        const type = obj.type === 'gen' ? 'audio' : obj.type
-        const s = Gibber[ type ].Tidal({ 
-          pattern, 
-          target:obj, 
-          key:name,
-          number,
-          delay,
-          standalone:false
-        })
-
-        // return object for method chaining
-        return obj
-      },
-
       fade( from=0, to=1, time=4 ) {
         Gibber[ obj.type ].createFade( from, to, time, obj, name )
         return obj
       }
     }
 
+    Gibber.addSequencing( obj, name, priority, value, '__' )
+
     Object.defineProperty( obj, name, {
       configurable:true,
       get: Gibber[ obj.type ].createGetter( obj, name ),
       set: Gibber[ obj.type ].createSetter( obj, name, post, transform, isPoly )
     })
+  },
+
+  addSequencing( obj, name, priority, value, prefix='' ) {
+    obj[ prefix+name ].sequencers = []
+    obj[ prefix+name ].seq = function ( values, timings, number = 0, delay = 0 ) {
+      if( value !== undefined ) value.name = obj.name
+      const type = obj.type === 'gen' ? 'audio' : obj.type
+      Gibber[ type ].Seq({ 
+        values, 
+        timings, 
+        target:obj,
+        key:name,
+        priority,
+        delay,
+        number,
+        standalone:false,
+        name:obj.name
+      })
+
+      return obj
+    }
+
+    obj[ prefix+name ].tidal = function( pattern,  number = 0, delay = 0 ) {
+      if( value !== undefined ) value.name = obj.name
+      const type = obj.type === 'gen' ? 'audio' : obj.type
+      const s = Gibber[ type ].Tidal({ 
+        pattern, 
+        target:obj, 
+        key:name,
+        number,
+        delay,
+        standalone:false
+      })
+
+      // return object for method chaining
+      return obj
+    }
   }
   
 }
 
 module.exports = Gibber 
 
-},{"./euclid.js":"/Users/charlie/Documents/code/gibber.core.lib/js/euclid.js","./hex.js":"/Users/charlie/Documents/code/gibber.core.lib/js/hex.js","./pattern.js":"/Users/charlie/Documents/code/gibber.core.lib/js/pattern.js","./triggers.js":"/Users/charlie/Documents/code/gibber.core.lib/js/triggers.js"}],"/Users/charlie/Documents/code/gibber.core.lib/js/pattern.js":[function(require,module,exports){
+},{"./euclid.js":"/Users/charlie/Documents/code/gibber.core.lib/js/euclid.js","./hex.js":"/Users/charlie/Documents/code/gibber.core.lib/js/hex.js","./pattern.js":"/Users/charlie/Documents/code/gibber.core.lib/js/pattern.js","./seq.js":"/Users/charlie/Documents/code/gibber.core.lib/js/seq.js","./tidal.js":"/Users/charlie/Documents/code/gibber.core.lib/js/tidal.js","./triggers.js":"/Users/charlie/Documents/code/gibber.core.lib/js/triggers.js"}],"/Users/charlie/Documents/code/gibber.core.lib/js/pattern.js":[function(require,module,exports){
 const patternWrapper = function( Gibber ) {
   "use strict"
 
@@ -12167,9 +11753,9 @@ const patternWrapper = function( Gibber ) {
 
     if( Gibberish.mode === 'worklet' ) {
       for( let key of PatternProto.__methodNames ) { 
-        fnc.sequences[ key ] = Gibber.addSequencing( fnc, key, 2 ) 
+        fnc.sequences[ key ] = Gibber.Core.addSequencing( fnc, key, 2 ) 
       }
-      fnc.sequences.reset = Gibber.addSequencing( fnc, 'reset', 1 )
+      fnc.sequences.reset = Gibber.Core.addSequencing( fnc, 'reset', 1 )
     }
     
     // TODO: Gibber.createProxyProperties( fnc, { 'stepSize':0, 'start':0, 'end':0 })
@@ -12297,8 +11883,382 @@ patternWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = patternWrapper
 
+},{}],"/Users/charlie/Documents/code/gibber.core.lib/js/seq.js":[function(require,module,exports){
+module.exports = function( Gibber ) {
+
+  const Seq = function( props ) { 
+    let   __values  = props.values
+    const __timings = props.timings
+    const delay     = props.delay
+    const target    = props.target
+    const key       = props.key
+    const priority  = props.priority
+    let   rate      = props.rate || 1
+    let   density   = props.density || 1
+    let   autotrig  = false
+    const render    = props.render || 'audio'
+
+    const Gibberish = Gibber.Gibberish !== undefined ? Gibber.Gibberish : null
+
+    if( __values.type === 'gen' ) __values = __values.render()
+
+    const values = Array.isArray( __values ) 
+      ? Gibber.Pattern( ...__values ).render()
+      : Gibber.Pattern( __values    ).render()
+
+    if( __values.randomFlag ) {
+      values.addFilter( ( args,ptrn ) => {
+        const range = ptrn.values.length - 1
+        const idx = Math.round( Math.random() * range )
+        return [ ptrn.values[ idx ], 1, idx ] 
+      })
+      //for( let i = 0; i < this.values.randomArgs.length; i+=2 ) {
+      //  valuesPattern.repeat( this.values.randomArgs[ i ], this.values.randomArgs[ i + 1 ] )
+      //}
+    }
+
+    // trigger autotrig patterns
+    if( key === 'note' || key === 'chord' || key === 'trigger' ) {
+      values.addFilter( ( args,ptrn ) => {
+        if( ptrn.seq.target.autotrig !== undefined ) {
+          for( let s of ptrn.seq.target.autotrig ) {
+            s.fire()
+          }
+        }
+        return args
+      })
+    } 
+
+    // process time values
+    if( Gibber.timeProps[ target.name ] !== undefined && Gibber.timeProps[ target.name ].indexOf( key ) !== -1  ) {
+      const filter = render === 'audio' 
+        ? (args,ptrn) => {
+            args[0] = Gibberish.Clock.time( args[0] )
+            return args
+          }
+        : (args,ptrn) => {
+            args[0] = Gibber.Clock.time( args[0] )
+            return args
+          }
+
+      values.addFilter( filter )
+    }
+
+    let timings
+    if( Array.isArray( __timings ) ) {
+      timings  = Gibber.Pattern( ...__timings )
+    }else if( typeof __timings === 'function' && __timings.isPattern === true ) {
+      timings = __timings
+    }else if( __timings !== undefined && __timings !== null ) {
+      timings = Gibber.Pattern( __timings )
+    }else{
+      timings = null
+      autotrig = true
+    }
+
+    if( timings !== null ) timings = timings.render()
+
+    if( autotrig === false ) {
+      if( __timings.randomFlag ) {
+        timings.addFilter( ( args,ptrn ) => {
+          const range = ptrn.values.length - 1
+          const idx = Math.round( Math.random() * range )
+          return [ ptrn.values[ idx ], 1, idx ] 
+        })
+        //for( let i = 0; i < this.values.randomArgs.length; i+=2 ) {
+        //  valuesPattern.repeat( this.values.randomArgs[ i ], this.values.randomArgs[ i + 1 ] )
+        //}
+      }
+      timings.output = { time:'time', shouldExecute:0 }
+      timings.density = 1
+      const filter = render === 'audio' 
+        ? (args,ptrn) => {
+          if( typeof args[0] === 'number' )
+            args[0] = Gibberish.Clock.time( args[0] )
+
+          return args
+        }
+        : (args,ptrn) => {
+          if( typeof args[0] === 'number' )
+            args[0] = Gibber.Clock.time( args[0] )
+
+          return args
+        }  
+
+      timings.addFilter( filter ) 
+
+      // XXX delay annotations so that they occur after values annotations have occurred. There might
+      // need to be more checks for this flag in the various annotation update files... right now
+      // the check is only in createBorderCycle.js.
+      timings.__delayAnnotations = true
+    }
+
+    const clear = render === 'audio'
+      ? function() {
+          this.stop()
+          
+          if( this.values !== undefined && this.values.clear !== undefined  ) {
+            this.values.clear()
+          }
+          if( this.timings !== undefined && this.timings !== null && this.timings.clear !== undefined ) this.timings.clear()
+
+          
+          if( Gibberish.mode === 'worklet' ) {
+            const idx = Seq.sequencers.indexOf( seq )
+            seq.stop()
+            const __seq = Seq.sequencers.splice( idx, 1 )[0]
+            if( __seq !== undefined ) {
+              __seq.stop()
+            }
+          }
+        }
+      : function() {
+          this.stop()
+          
+          if( this.values !== undefined && this.values.clear !== undefined  ) this.values.clear()
+          if( this.timings !== undefined && this.timings !== null && this.timings.clear !== undefined ) this.timings.clear()
+
+          const idx = Seq.sequencers.indexOf( seq )
+          const __seq = Seq.sequencers.splice( idx, 1 )[0]
+          if( __seq !== undefined ) {
+            __seq.stop()
+          }
+      }
+
+    values.__patternType = 'values'
+    if( timings !== null ) timings.__patternType = 'timings'
+
+    //const offsetRate = Gibberish.binops.Mul(rate, Gibber.Clock.audioClock )
+
+    // XXX need to fix so that we can use the clock rate as the base
+    // XXX need to abstract this so that a graphics sequencer could also be called...
+    const seq = Gibberish.Sequencer2({ values, timings, density, target, key, priority, rate:1/*Gibber.Clock.audioClock*/, clear, autotrig, mainthreadonly:props.mainthreadonly })
+
+    values.setSeq( seq )
+
+    if( autotrig === false ) {
+      timings.setSeq( seq )
+    }else{
+      if( target.autotrig === undefined ) {
+        target.autotrig = []
+        Gibberish.worklet.port.postMessage({
+          address:'property',
+          name:'autotrig',
+          value:[],
+          object:target.id
+        })
+
+      }
+      // object name key value
+      if( Gibberish.mode === 'worklet' ) {
+        Gibberish.worklet.port.postMessage({
+          address:'addObjectToProperty',
+          name:'autotrig',
+          object:target.id,
+          key:target.autotrig.length,
+          value:seq.id
+        })
+        target.autotrig.push( seq )
+      }
+    } 
+
+    //Gibberish.proxyEnabled = false
+    //Gibber.Ugen.createProperty( seq, 'density', timings, [], Gibber )
+    //Gibberish.proxyEnabled = true
+
+    Seq.sequencers.push( seq )
+
+    // if x.y.seq() etc. 
+    // standalone === false is most common use case
+    if( props.standalone === false ) { 
+      let prevSeq = target[ '__' + key ].sequencers[ props.number ] 
+      if( prevSeq !== undefined ) { 
+        prevSeq.clear();
+      }
+
+      // XXX you have to add a method that does all this shit on the worklet. crap.
+      target[ '__' + key ].sequencers[ props.number ] = target[ '__'+key ][ props.number ] = seq
+      seq.start( Gibber.Clock.time( delay ) )
+    }
+
+    return seq
+  }
+
+  Seq.sequencers = []
+  Seq.clear = function() {
+    Seq.sequencers.forEach( seq => seq.clear() )
+    //for( let i = Seq.sequencers.length - 1; i >= 0; i-- ) {
+    //  Seq.sequencers[ i ].clear()
+    //}
+    Seq.sequencers = []
+  }
+  Seq.DNR = -987654321
+
+  return Seq
+
+}
+
+},{}],"/Users/charlie/Documents/code/gibber.core.lib/js/tidal.js":[function(require,module,exports){
+module.exports = function( Gibber ) {
+
+  const Seq = function( props ) { 
+    const pattern   = props.pattern
+    const target    = props.target
+    const key       = props.key
+    const number    = props.number
+    const priority  = props.priority || 0
+    let   rate      = props.rate || 1
+    let   density   = props.density || 1
+    let   autotrig  = false
+
+    const render    = target.type.toLowerCase() || 'audio'
+    const Gibberish = Gibber.Gibberish !== undefined ? Gibber.Gibberish : null
+
+    const clear = render === 'audio'
+      ? function() {
+          this.stop()
+          
+          if( Gibberish.mode === 'worklet' ) {
+            const idx = Seq.sequencers.indexOf( seq )
+            seq.stop()
+            const __seq = Seq.sequencers.splice( idx, 1 )[0]
+            if( __seq !== undefined ) {
+              __seq.stop()
+            }
+          }
+        }
+      : function() {
+          this.stop()
+          
+          const idx = Seq.sequencers.indexOf( seq )
+          const __seq = Seq.sequencers.splice( idx, 1 )[0]
+          if( __seq !== undefined ) {
+            __seq.stop()
+          }
+      }
+
+    const filters = [
+      // report back triggered tokens for annotations
+      function( val, tidal, uid ) {
+        if( Gibberish.mode === 'processor' ) {
+          Gibberish.processor.messages.push( tidal.id, 'update.uid', uid )   
+          Gibberish.processor.messages.push( tidal.id, 'update.value', val )   
+        }
+        return val
+      } 
+    ]
+
+    if( key === 'note' || key === 'chord' || key === 'trigger' ) {
+      filters.push( ( args,tidal ) => {
+        if( tidal.target.autotrig !== undefined ) {
+          for( let s of tidal.target.autotrig ) {
+            s.fire()
+          }
+        }
+        return args
+      })
+    }
+
+    const seq = Gibberish.Tidal({ pattern, target, key, priority, filters, mainthreadonly:props.mainthreadonly })
+    seq.clear = clear
+    seq.uid = Gibberish.Tidal.getUID()
+    
+    //Gibberish.proxyEnabled = false
+    //Audio.Ugen.createProperty( seq, 'density', timings, [], Audio )
+    //Gibberish.proxyEnabled = true
+
+    Gibber.Core.addSequencing( seq, 'rotate', 1 )
+
+    Seq.sequencers.push( seq )
+
+    Gibber.subscribe( 'clear', ()=> seq.clear() )
+
+    // if x.y.tidal() etc. 
+    // standalone === false is most common use case
+    if( props.standalone === false ) {
+      let prevSeq = target[ '__' + key ].tidals[ number ] 
+      if( prevSeq !== undefined ) {
+        const idx = target.__sequencers.indexOf( prevSeq )
+        target.__sequencers.splice( idx, 1 )
+        // XXX stop() destroys an extra sequencer for some reason????
+        prevSeq.stop()
+        prevSeq.clear()
+        //removeSeq( obj, prevSeq )
+      }
+
+      seq.start( Gibber.Clock.time( delay ) )
+
+      target[ '__' + key ].tidals[ number ] = obj[ '__' + key ][ number ] = seq
+    }
+
+    return seq
+  }
+
+  Seq.sequencers = []
+  Seq.clear = function() {
+    Seq.sequencers.forEach( seq => seq.clear() )
+    //for( let i = Seq.sequencers.length - 1; i >= 0; i-- ) {
+    //  Seq.sequencers[ i ].clear()
+    //}
+    Seq.sequencers = []
+  }
+  Seq.DNR = -987654321
+
+  let val = 1 
+  Object.defineProperty( Seq, 'cps', {
+    get() { return val },
+    set(v) {
+      val = v
+      Gibber.Gibberish.Tidal.cps = v
+    }
+  })
+
+  return Seq
+
+}
+
 },{}],"/Users/charlie/Documents/code/gibber.core.lib/js/triggers.js":[function(require,module,exports){
-arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/js/triggers.js"][0].apply(exports,arguments)
+module.exports = function( Gibber ) {
+
+const Pattern = Gibber.Pattern
+
+const Triggers = function( __values ) {
+  const values = __values.split('')
+  const pattern = Pattern( ...values ) 
+  pattern.isPattern = true
+  pattern.type = 'Triggers'
+  // need to define custom function to use key as value
+  pattern.onrender = function( rendered ) {
+    rendered.addFilter( new Function( 'args', 'ptrn', 
+     `let sym = args[ 0 ],
+          velocity = parseInt( sym, 16 ) / 15
+
+      if( isNaN( velocity ) ) {
+        velocity = 0
+      }
+
+      if( velocity !== 0 ) {
+        ptrn.seq.target.__triggerLoudness = velocity
+      }
+
+      ptrn.output = {
+        time : Gibberish.Clock.time( ${1/values.length} ),
+        shouldExecute: sym !== '.' ? 1 : 0
+      }
+
+      args[0] = ptrn.output
+
+      return args`
+    ))
+  }
+
+  return pattern
+}
+
+return Triggers
+
+}
+
 },{}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js":[function(require,module,exports){
 let ugen = require( '../ugen.js' )
 
@@ -18099,14 +18059,25 @@ module.exports = function( Gibberish ) {
       }
       return this
     },
-    stop() {
+    stop( delay=0 ) {
       const idx = Gibberish.analyzers.indexOf( this )
-      if( idx > -1 ) {
-        Gibberish.analyzers.splice( idx, 1 )
-        Gibberish.dirty( Gibberish.analyzers )
+      if( delay === 0 ) {
+        if( idx > -1 ) {
+          Gibberish.analyzers.splice( idx, 1 )
+          Gibberish.dirty( Gibberish.analyzers )
+        }
+        this.phase = 0
+        this.nextTime = 0
+      }else{
+        Gibberish.scheduler.add( delay, ()=> {
+          if( idx > -1 ) {
+            Gibberish.analyzers.splice( idx, 1 )
+            Gibberish.dirty( Gibberish.analyzers )
+          }
+          this.phase = 0
+          this.nextTime = 0
+        })
       }
-      this.phase = 0
-      this.nextTime = 0
 
       return this
     },
@@ -18290,11 +18261,27 @@ const Sequencer = props => {
     __valuesPhase:  0,
     __timingsPhase: 0,
     __type:'seq',
+    __onlyRunsOnce: false,
+    __repeatCount: null,
 
     tick( priority ) {
       let value  = typeof seq.values  === 'function' ? seq.values  : seq.values[  seq.__valuesPhase++  % seq.values.length  ],
           timing = typeof seq.timings === 'function' ? seq.timings : seq.timings[ seq.__timingsPhase++ % seq.timings.length ],
           shouldRun = true
+      
+      if( seq.__onlyRunsOnce === true ) {
+        if( seq.__valuesPhase === seq.values.length ) {
+          seq.stop()
+        }
+      }else if( seq.__repeatCount !== null ) {
+        if( seq.__valuesPhase % seq.values.length === 0 ) {
+          seq.__repeatCount--
+          if( seq.__repeatCount === 0 ) {
+            seq.stop()
+            seq.__repeatCount = null
+          }
+        }
+      }
 
       if( typeof timing === 'function' ) timing = timing()
 
@@ -18342,8 +18329,22 @@ const Sequencer = props => {
       return __seq
     },
 
-    stop() {
-      seq.__isRunning = false
+    stop( delay = null ) {
+      if( delay === null ) {
+        seq.__isRunning = false
+      }else{
+        Gibberish.scheduler.add( delay, seq.stop )
+      }
+      return __seq
+    },
+
+    once() {
+      seq.__onlyRunsOnce = true
+      return __seq
+    },
+
+    repeat( repeatCount = 2 ) {
+      seq.__repeatCount = repeatCount
       return __seq
     }
   }
