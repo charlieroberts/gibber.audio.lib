@@ -27416,8 +27416,8 @@ lead.note.seq(
   const start = () => {
     cm.setValue( defaultCode )
     Gibber.init( workletPath ).then( ()=> {
-      Gibber.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
-      Gibber.Graphics.export( window )
+      //Gibber.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
+      //Gibber.Graphics.export( window )
     })
   
 
