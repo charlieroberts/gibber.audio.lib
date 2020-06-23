@@ -34,7 +34,18 @@ const Audio = {
 
   export( obj ) {
     if( Audio.initialized ){ 
-      Object.assign( obj, this.instruments, this.oscillators, this.effects, this.filters, this.busses, this.envelopes, this.waveObjects, this.binops, this.analysis )
+      Object.assign( 
+        obj, 
+        this.instruments, 
+        this.oscillators,
+        this.effects,
+        this.filters,
+        this.busses, 
+        this.envelopes, 
+        this.waveObjects, 
+        this.binops, 
+        this.analysis 
+      )
       
       Utility.export( obj )
       this.Gen.export( obj )
@@ -49,12 +60,9 @@ const Audio = {
       obj.Freesound = this.Freesound
       obj.Clock = this.Clock
       obj.WavePattern = this.WavePattern
-      obj.Master = this.Master
-      //obj.Arp = this.Arp
-      //obj.Automata = this.Automata
+
       obj.Out = this.Out
       obj.Steps = this.Steps
-      obj.HexSteps = this.HexSteps
       obj.Make = this.Make
       obj.Gibberish = this.Gibberish
       obj.future = this.Gibberish.utilities.future
