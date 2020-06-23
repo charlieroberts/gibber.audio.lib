@@ -22,6 +22,8 @@ module.exports = function( Audio ) {
       values = Audio.Pattern( __values )
     }
 
+    values = values.render()
+
     if( __values.randomFlag ) {
       values.addFilter( ( args,ptrn ) => {
         const range = ptrn.values.length - 1
@@ -66,6 +68,8 @@ module.exports = function( Audio ) {
       timings = null
       autotrig = true
     }
+
+    if( timings !== null ) timings = timings.render()
 
     if( autotrig === false ) {
       if( __timings.randomFlag ) {

@@ -10,12 +10,11 @@ const Envelopes   = require( './envelopes.js' )
 const Busses      = require( './busses.js' )
 const Ensemble    = require( './ensemble.js' )
 const Utility     = require( './utility.js' )
-const Euclid      = require( './euclid.js' )
 const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
-const Core       = require( 'gibber.core.lib' )
+const Core        = require( 'gibber.core.lib' )
 //const Arp         = require( './arp.js' )
 //const __Automata  = require( './automata.js' )
 
@@ -39,7 +38,7 @@ const Audio = {
       
       Utility.export( obj )
       this.Gen.export( obj )
-      this.Pattern.export( obj )
+      this.Core.export( obj, this )
 
       obj.gen = this.Gen.make
       obj.lfo = this.Gen.composites.lfo
@@ -47,7 +46,6 @@ const Audio = {
       obj.Drums = this.Drums
       obj.EDrums = this.EDrums
       obj.Theory = this.Theory
-      obj.Euclid = Euclid( this )
       obj.Freesound = this.Freesound
       obj.Clock = this.Clock
       obj.WavePattern = this.WavePattern
@@ -178,6 +176,7 @@ const Audio = {
   onload() {},
 
   createUgens() {
+    Core.export( this, this )
     this.Freesound = Freesound( this )
     this.binops = Binops.create( this )
     this.analysis = Analysis.create( this )
@@ -193,9 +192,9 @@ const Audio = {
     this.Steps = require( './steps.js' )( this )
     this.HexSteps = require( './hexSteps.js' )( this )
     this.waveObjects = WaveObjects( this )
-    const Pattern = require( './pattern.js' )
+    const Pattern = Core.Pattern
     Pattern.transfer( this, Pattern.toString() )
-    this.Pattern = Pattern( this )
+    //this.Pattern = Pattern( this )
     this.Hex = require( './hex.js' )( Gibber )
     this.Triggers = require( './triggers.js' )( Gibber )
     //this.Automata = __Automata( this )
