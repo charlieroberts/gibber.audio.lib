@@ -4668,7 +4668,6 @@ const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
 const Core        = require( 'gibber.core.lib' )
 //const Arp         = require( './arp.js' )
-//const __Automata  = require( './automata.js' )
 
 const Audio = {
   Clock: require( './clock.js' ),
@@ -4701,7 +4700,7 @@ const Audio = {
       
       Utility.export( obj )
       this.Gen.export( obj )
-      this.Core.export( obj, this )
+      //this.Core.export( obj, this )
 
       obj.gen = this.Gen.make
       obj.lfo = this.Gen.composites.lfo
@@ -4712,6 +4711,7 @@ const Audio = {
       obj.Freesound = this.Freesound
       obj.Clock = this.Clock
       obj.WavePattern = this.WavePattern
+      obj.Gen = this.Gen
 
       obj.Out = this.Out
       obj.Make = this.Make
@@ -4831,7 +4831,8 @@ const Audio = {
   onload() {},
 
   createUgens() {
-    Core.export( this, this )
+    //Core.export( this, this )
+
     this.Freesound = Freesound( this )
     this.binops = Binops.create( this )
     this.analysis = Analysis.create( this )
@@ -4843,9 +4844,10 @@ const Audio = {
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
     this.waveObjects = WaveObjects( this )
-    const Pattern = Core.Pattern
+
+    const Pattern = Core.__Pattern
     Pattern.transfer( this, Pattern.toString() )
-    //this.Automata = __Automata( this )
+
     this.Make = this.Make( this )
     
     const drums = require( './drums.js' )( this )
@@ -10609,7 +10611,7 @@ const Hex = function( hexString, time = 1/16, rotation ) {
 
   let __onesAndZeros = onesAndZeros.split('') 
 
-  const pattern = Pattern( ...__onesAndZeros ) 
+  const pattern = Gibber.Pattern( ...__onesAndZeros ) 
   
   pattern.onrender = function( rendered ) {
     rendered.type = 'Hex'
@@ -10671,7 +10673,7 @@ const Gibber = {
   exportTarget: null,
   plugins: [],
   // needed so audio plugin can transfer pattern function string to worklet
-  Pattern: require( './pattern.js' ),
+  __Pattern: require( './pattern.js' ),
 
   /* 
    * const promises = Gibber.init([
@@ -10687,21 +10689,24 @@ const Gibber = {
   */
 
   init( plugins ) { 
-    this.createPubSub()
+    this.createPubSub( this )
+    this.plugins = plugins
 
     const promises = []
 
     // init each plugin and collect promises
     for( let plugin of plugins ) {
       promises.push( 
-        plugin.init( plugin.options ) 
+        plugin.plugin.init( plugin.options ) 
       )
     }
 
-    const finishedInitPromise = Promise.all( promises, ()=> {
+    const finishedInitPromise = Promise.all( promises )/*, ()=> {
       // do something else here? export?
       Gibber.publish( 'init' )
-    })
+      console.log( 'exporting' )
+      Gibber.export( Gibber, Gibber )
+    })*/
   
     return finishedInitPromise
   },
@@ -10709,7 +10714,7 @@ const Gibber = {
   export( obj, Gibber ) {
     // XXX must keep reference to main pattern function
     // so it can be serialized and transferred to audioworklet  
-    obj.Pattern  = this.Pattern( Gibber )
+    obj.Pattern  = this.__Pattern( Gibber )
     obj.Seq      = require( './seq.js'      )( Gibber )
     obj.Tidal    = require( './tidal.js'    )( Gibber )
     obj.Euclid   = require( './euclid.js'   )( Gibber )
@@ -10717,28 +10722,18 @@ const Gibber = {
     obj.Triggers = require( './triggers.js' )( Gibber )
     obj.Steps    = require( './steps.js'    )( Gibber )
 
-    //obj.gen = this.Gen.make
-    //obj.lfo = this.Gen.composites.lfo
-    //obj.Euclid = Euclid( this )
+    this.plugins.forEach( p => {
+      p.plugin.export( obj, Gibber ) 
+    })
+
     //obj.Clock = this.Clock
     //obj.WavePattern = this.WavePattern
-    //obj.Master = this.Master
-    ////obj.Arp = this.Arp
-    ////obj.Automata = this.Automata
-    //obj.Out = this.Out
-    //obj.Steps = this.Steps
-    //obj.HexSteps = this.HexSteps
-    //obj.Hex = this.Hex
-    //obj.Triggers = this.Triggers
-    //obj.Seq = this.Seq
-    //obj.Tidal = this.Tidal
-    //obj.future = this.Gibberish.utilities.future
   },
 
   // XXX stop clock from being cleared.
   clear() { 
     for( let plugin of Gibber.plugins ) {
-      plugin.clear()
+      plugin.plugin.clear()
     }
 
     this.publish( 'clear' )
@@ -10846,7 +10841,13 @@ const patternWrapper = function( Gibber ) {
   "use strict"
 
   // hack to pass Gibberish to pattern generator from within worklet processor
-  const Gibberish = Gibber.Gibberish === undefined ? Gibber : Gibber.Gibberish
+  let Gibberish
+  if( Gibber.Gibberish === undefined ) {
+    Gibberish = Gibber.Audio !== undefined ? Gibber.Audio.Gibberish : Gibber 
+  }else{
+    Gibberish = Gibber.Gibberish
+  }
+
   let PatternProto = Object.create( function(){} )
 
   // this prototype is somewhat limited, as we want to be able to add
@@ -11454,9 +11455,13 @@ const patternWrapper = function( Gibber ) {
 
     if( Gibberish.mode === 'worklet' ) {
       for( let key of PatternProto.__methodNames ) { 
-        fnc.sequences[ key ] = Gibber.Core.addSequencing( fnc, key, 2 ) 
+        fnc.sequences[ key ] = Gibber.Core !== undefined 
+          ? Gibber.Core.addSequencing( fnc, key, 2 ) 
+          : Gibber.addSequencing( fnc,key,2 )
       }
-      fnc.sequences.reset = Gibber.Core.addSequencing( fnc, 'reset', 1 )
+      fnc.sequences.reset = Gibber.Core !== undefined 
+        ? Gibber.Core.addSequencing( fnc, 'reset', 1 )
+        : Gibber.addSequencing( fnc, 'reset', 1 )
     }
     
     // TODO: Gibber.createProxyProperties( fnc, { 'stepSize':0, 'start':0, 'end':0 })

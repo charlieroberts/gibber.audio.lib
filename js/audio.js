@@ -16,7 +16,6 @@ const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
 const Core        = require( 'gibber.core.lib' )
 //const Arp         = require( './arp.js' )
-//const __Automata  = require( './automata.js' )
 
 const Audio = {
   Clock: require( './clock.js' ),
@@ -49,7 +48,6 @@ const Audio = {
       
       Utility.export( obj )
       this.Gen.export( obj )
-      this.Core.export( obj, this )
 
       obj.gen = this.Gen.make
       obj.lfo = this.Gen.composites.lfo
@@ -60,6 +58,7 @@ const Audio = {
       obj.Freesound = this.Freesound
       obj.Clock = this.Clock
       obj.WavePattern = this.WavePattern
+      obj.Gen = this.Gen
 
       obj.Out = this.Out
       obj.Make = this.Make
@@ -75,8 +74,9 @@ const Audio = {
     ctx:         null
   },
 
-  init( options ) {
+  init( options, Gibber  ) {
     let { workletPath, ctx } = Object.assign( {}, this.__defaults, options ) 
+    this.Gibber = Gibber
     this.Gibberish = Gibberish
 
     Gibberish.workletPath = workletPath 
@@ -138,7 +138,7 @@ const Audio = {
 
         Audio.Gibberish.genish.gen.histories.clear()
 
-        resolve()
+        resolve( Audio )
       })
     })
     
@@ -149,8 +149,6 @@ const Audio = {
   clear() { 
     Gibberish.clear() 
     Audio.Clock.init( Audio.Gen, Audio )
-
-    Audio.Seq.clear()
 
     // the idea is that we only clear memory that was filled after
     // the initial Gibber initialization... this stops objects
@@ -179,7 +177,8 @@ const Audio = {
   onload() {},
 
   createUgens() {
-    Core.export( this, this )
+    //Core.export( this, this )
+
     this.Freesound = Freesound( this )
     this.binops = Binops.create( this )
     this.analysis = Analysis.create( this )
@@ -191,9 +190,10 @@ const Audio = {
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
     this.waveObjects = WaveObjects( this )
-    const Pattern = Core.Pattern
+
+    const Pattern = Core.__Pattern
     Pattern.transfer( this, Pattern.toString() )
-    //this.Automata = __Automata( this )
+
     this.Make = this.Make( this )
     
     const drums = require( './drums.js' )( this )
