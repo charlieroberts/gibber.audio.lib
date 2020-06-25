@@ -10,20 +10,19 @@ const Envelopes   = require( './envelopes.js' )
 const Busses      = require( './busses.js' )
 const Ensemble    = require( './ensemble.js' )
 const Utility     = require( './utility.js' )
-const Euclid      = require( './euclid.js' )
 const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
+const Core        = require( 'gibber.core.lib' )
 //const Arp         = require( './arp.js' )
-//const __Automata  = require( './automata.js' )
 
 const Audio = {
   Clock: require( './clock.js' ),
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
-  Graphics: require( './graphics.js' ),
   Make: require( './make.js' ),
+  Core,
   initialized:false,
   autoConnect:true,
   shouldDelay:false,
@@ -34,12 +33,21 @@ const Audio = {
 
   export( obj ) {
     if( Audio.initialized ){ 
-      Object.assign( obj, this.instruments, this.oscillators, this.effects, this.filters, this.busses, this.envelopes, this.waveObjects, this.binops, this.analysis )
+      Object.assign( 
+        obj, 
+        this.instruments, 
+        this.oscillators,
+        this.effects,
+        this.filters,
+        this.busses, 
+        this.envelopes, 
+        this.waveObjects, 
+        this.binops, 
+        this.analysis 
+      )
       
       Utility.export( obj )
       this.Gen.export( obj )
-      this.Graphics.export( obj )
-      this.Pattern.export( obj )
 
       obj.gen = this.Gen.make
       obj.lfo = this.Gen.composites.lfo
@@ -47,21 +55,12 @@ const Audio = {
       obj.Drums = this.Drums
       obj.EDrums = this.EDrums
       obj.Theory = this.Theory
-      obj.Euclid = Euclid( this )
       obj.Freesound = this.Freesound
       obj.Clock = this.Clock
       obj.WavePattern = this.WavePattern
-      obj.Master = this.Master
-      //obj.Arp = this.Arp
-      //obj.Automata = this.Automata
+      obj.Gen = this.Gen
+
       obj.Out = this.Out
-      obj.Steps = this.Steps
-      obj.HexSteps = this.HexSteps
-      obj.Hex = this.Hex
-      obj.Triggers = this.Triggers
-      obj.Seq = this.Seq
-      obj.Tidal = this.Tidal
-      obj.Graphics = this.Graphics
       obj.Make = this.Make
       obj.Gibberish = this.Gibberish
       obj.future = this.Gibberish.utilities.future
@@ -70,15 +69,19 @@ const Audio = {
     } 
   },
 
-  //init( workletPath = '../dist/workletCopy.js', workerPath = '../dist/gibberish_worker.js' ) {
-  init( workletPath = '../dist/gibberish_worklet.js', ctx=null ) { 
+  __defaults : {
+    workletPath: '../dist/gibberish_worklet.js',
+    ctx:         null
+  },
+
+  init( options, Gibber  ) {
+    let { workletPath, ctx } = Object.assign( {}, this.__defaults, options ) 
+    this.Gibber = Gibber
     this.Gibberish = Gibberish
 
     Gibberish.workletPath = workletPath 
 
     this.createPubSub()
-
-    //this.Graphics.init({ canvas:document.querySelector('canvas') }, Gibber )
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
@@ -87,16 +90,19 @@ const Audio = {
       }
 
       Gibberish.init( 44100*60*10, ctx ).then( processorNode => {
+        // XXX remove once gibber.core.lib has been properly integrated 
+        Audio.Core.Audio = Audio.Core.audio = Audio
+
         Audio.initialized = true
         Audio.node = processorNode
-        Audio.Gen = Gen( Gibber )
+        Audio.Gen = Gen( Audio )
         Audio.Gen.init()
         //Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
-        Audio.Theory.init( Gibber )
+        Audio.Theory.init( Audio )
         Audio.Ugen = Ugen
         Audio.Utilities = Utility
-        Audio.WavePattern = WavePattern( Gibber )
+        Audio.WavePattern = WavePattern( Audio )
         Audio.ctx = ctx
         Audio.Out = Gibberish.output
         
@@ -127,12 +133,12 @@ const Audio = {
 
         // XXX this forces the gibberish scheduler to start
         // running, but it's about as hacky as it can get...
-        const __start = Gibber.instruments.Synth().connect()
+        const __start = Audio.instruments.Synth().connect()
         __start.disconnect()
 
-        Gibber.Gibberish.genish.gen.histories.clear()
+        Audio.Gibberish.genish.gen.histories.clear()
 
-        resolve()
+        resolve( Audio )
       })
     })
     
@@ -143,8 +149,6 @@ const Audio = {
   clear() { 
     Gibberish.clear() 
     Audio.Clock.init( Audio.Gen, Audio )
-
-    Audio.Seq.clear()
 
     // the idea is that we only clear memory that was filled after
     // the initial Gibber initialization... this stops objects
@@ -173,6 +177,8 @@ const Audio = {
   onload() {},
 
   createUgens() {
+    //Core.export( this, this )
+
     this.Freesound = Freesound( this )
     this.binops = Binops.create( this )
     this.analysis = Analysis.create( this )
@@ -183,67 +189,15 @@ const Audio = {
     this.effects = Effects.create( this )
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
-    this.Seq = require( './seq.js' )( this )
-    this.Tidal = require( './tidal.js' )( this )
-    this.Steps = require( './steps.js' )( this )
-    this.HexSteps = require( './hexSteps.js' )( this )
     this.waveObjects = WaveObjects( this )
-    const Pattern = require( './pattern.js' )
+
+    const Pattern = Core.__Pattern
     Pattern.transfer( this, Pattern.toString() )
-    this.Pattern = Pattern( this )
-    this.Hex = require( './hex.js' )( Gibber )
-    this.Triggers = require( './triggers.js' )( Gibber )
-    //this.Automata = __Automata( this )
+
     this.Make = this.Make( this )
     
     const drums = require( './drums.js' )( this )
     Object.assign( this, drums )
-  },
-
-  addSequencing( obj, methodName, priority=0 ) {
-
-    if( Gibberish.mode === 'worklet' ) {
-      obj[ methodName ].sequencers = []
-      obj[ methodName ].tidals = []
-
-      obj[ methodName ].seq = function( values, timings, number=0, delay=0 ) {
-        let prevSeq = obj[ methodName ].sequencers[ number ] 
-        if( prevSeq !== undefined ) prevSeq.stop()
-
-        let s = Audio.Seq({ values, timings, target:obj, key:methodName, priority })
-
-        s.start() // Audio.Clock.time( delay ) )
-        obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
-
-        // return object for method chaining
-        return obj
-      }
-      obj[ methodName ].tidal= function( pattern, number=0, delay=0 ) {
-          let prevSeq = obj[ methodName ].tidals[ number ] 
-          if( prevSeq !== undefined ) { 
-            const idx = obj.__tidals.indexOf( prevSeq )
-            obj.__tidals.splice( idx, 1 )
-            prevSeq.stop()
-            prevSeq.clear()
-            // removeSeq( obj, prevSeq )
-          }
-
-          let s = Audio.Tidal({ pattern, target:obj, key:methodName })
-          
-          s.start( Audio.Clock.time( delay ) )
-          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
-          obj.__tidals.push( s )
-
-          // XXX need to clean this up! this is solely here for annotations, and to 
-          // match what I did for ensembles... 
-          obj[ methodName ].__tidal = s
-
-          // return object for method chaining
-          return obj
-        }
-
-      return obj[ methodName ].sequencers
-    }
   },
 
   printcb() { 
@@ -281,88 +235,152 @@ const Audio = {
       }
     }
   },
-  // When a property is created, a proxy-ish object is made that is
-  // prefaced by a double underscore. This object holds the value of the 
-  // property, sequencers for the property, and modulations for the property.
-  // Alternative getter/setter methods can be passed as arguments.
-  createProperty( obj, name, value, post=null, priority=0 ) {
-    obj[ '__' + name ] = { 
-      value,
-      isProperty:true,
-      sequencers:[],
-      tidals:[],
-      mods:[],
-      name,
 
-      seq( values, timings, number = 0, delay = 0 ) {
-        let prevSeq = obj[ '__' + name ].sequencers[ number ] 
-        if( prevSeq !== undefined ) { 
-          prevSeq.clear();
-        }
+  createProperty: Core.createProperty,
 
-        // XXX you have to add a method that does all this shit on the worklet. crap.
-        obj[ '__' + name ].sequencers[ number ] = obj[ '__'+name ][ number ] = Audio.Seq({ 
-          values, 
-          timings, 
-          target:obj,
-          key:name,
-          priority
-        })
-        .start( Audio.Clock.time( delay ) )
+  createMapping( from, to, name, wrappedTo ) {
+    if( from.__useMapping === false ) {
+      to[ name ].value = from
+    }else if( from.type === 'audio' ) {
+      const f = to[ '__' + name ].follow = Follow({ input: from })
 
-        // return object for method chaining
-        return obj
-      },
-      tidal( pattern,  number = 0, delay = 0 ) {
-        let prevSeq = obj[ '__' + name ].tidals[ number ] 
-        if( prevSeq !== undefined ) {
-          const idx = obj.__sequencers.indexOf( prevSeq )
-          obj.__sequencers.splice( idx, 1 )
-          // XXX stop() destroys an extra sequencer for some reason????
-          prevSeq.stop()
-          prevSeq.clear()
-          //removeSeq( obj, prevSeq )
-        }
+      let m = f.multiplier
+      Object.defineProperty( to[ name ], 'multiplier', {
+        get() { return m },
+        set(v) { m = v; f.multiplier = m }
+      })
 
-        const s = Audio.Tidal({ 
-          pattern, 
-          target:obj, 
-          key:name,
-        })
+      let o = f.offset
+      Object.defineProperty( to[ name ], 'offset', {
+        get() { return o },
+        set(v) { o = v; f.offset = o }
+      })
 
-        s.start( Audio.Clock.time( delay ) )
+      wrappedTo[ name ] = f
+    }else if( from.type === 'gen' ) {
+      // gen objects can be referred to without the graphics/audio abstraction,
+      // in which case they will have no .render() function, and don't need to be rendered
+      const gen = from.render !== undefined ? from.render() : from
 
-        obj[ '__' + name ].tidals[ number ] = obj[ '__' + name ][ number ] = s
-
-        // return object for method chaining
-        return obj
-      },
+      wrappedTo[ name ] = gen
     }
+  },
 
-    const getter = () => obj['__'+name]
+  createGetter( obj, name ) { return () => obj[ '__' + name ] },
 
+  createSetter( obj, name, post, transform=null, isPoly=false ) {
     const setter = v => {
-      obj['__'+name].value = v
-      if( Gibberish.mode === 'worklet' ) {
+      let value, shouldSend = true
+
+      if( typeof v === 'number' || typeof v === 'string' ) {
+        value = transform !== null ? transform( v ) : v
+
+        if( isPoly === true ) {
+          const __wrappedObject = obj.__wrapped__
+          const voice = __wrappedObject.voices[ __wrappedObject.voiceCount % __wrappedObject.voices.length ]
+          voice[ name ] = value
+
+          shouldSend = false
+
+          Gibberish.worklet.port.postMessage({
+            address:'property',
+            object:voice.id,
+            name,
+            value
+          }) 
+
+        }else{
+          obj[ '__'+name].value = v
+        }
+      }else if( typeof v === 'object' && v !== null && v.type === 'gen' ) {
+        // gen objects can be referred to without the graphics/audio abstraction,
+        // in which case they will have no .render() function, and don't need to be rendered
+        const gen = v.render !== undefined ? v.render() : from
+
+        obj['__'+ name ].value = gen
+        value = { id: gen.id }
+      }else{
+        obj[ '__'+name].value = v
+        value = v !== null ? { id:v.id } : v
+      }
+        //Audio.createMapping( v, obj, name, obj.__wrapped__ )
+
+      if( Gibberish.mode === 'worklet' && shouldSend === true ) {
         Gibberish.worklet.port.postMessage({
           address:'property',
           object:obj.id,
           name,
-          value:obj['__'+name].value
+          value
         }) 
       }
       if( post !== null ) {
         post.call( obj )
+      }     
+    }
+
+    return setter
+  },
+
+  createFade( from=null, to=null, time=1, obj, name ) {
+    if( from === null ) from = obj[ name ].value
+    if( to === null ) to = obj[ name ].value
+
+    time = Gibber.Clock.time( time )
+
+    // XXX only covers condition where ramps from fades are assigned...
+    // does this need to be more generic?
+    if( isNaN( from ) && from.__wrapped__.ugenName.indexOf('ramp') > -1 ) {
+      from = from.to.value
+    }
+    if( isNaN( to ) && to.__wrapped__.ugenName.indexOf('ramp') > -1 ) {
+      to = to.to.value
+    }
+
+    let ramp = Gibber.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
+    // this is a key to not use an envelope follower for mapping
+    ramp.__useMapping = false
+
+    obj[ name ] = ramp
+
+    if( ramp.__wrapped__ === undefined ) ramp.__wrapped__ = {}
+    ramp.__wrapped__.values = []
+
+    ramp.__wrapped__.output = v => {
+      if( ramp.__wrapped__ !== undefined ) {
+        ramp.__wrapped__.values.unshift( v )
+        while( ramp.__wrapped__.values.length > 60 ) ramp.__wrapped__.values.pop()
       }
     }
 
-    Object.defineProperty( obj, name, {
-      configurable:true,
-      get: getter,
-      set: setter
-    })
+    ramp.__wrapped__.finalize = () => {
+      const store = ramp.__wrapped__
+
+      // XXX I can't quite figure out why I have to wait to reset the property 
+      // value here... if I don't, then the fade ugen stays assigned in the worklet processor.
+      // and 0 doesn't work!
+      setTimeout( ()=> obj[ name ] = store.to === 0 ? .000001 : store.to, 0 )
+      store.widget.clear()
+    }
+
+    ramp.__wrapped__.from = from
+    ramp.__wrapped__.to = to
+
+    return obj
+  },
+
+  // what properties should be automatically (automagickally?)
+  // filtered through Audio.Clock.time()?
+  timeProps : {
+    Synth:[ 'attack', 'decay', 'sustain', 'release' ],
+    PolySynth:[ 'attack', 'decay', 'sustain', 'release' ],
+    Complex:[ 'attack', 'decay', 'sustain', 'release' ],
+    PolyComplex:[ 'attack', 'decay', 'sustain', 'release' ],
+    FM:[ 'attack', 'decay', 'sustain', 'release' ],
+    PolyFM:[ 'attack', 'decay', 'sustain', 'release' ],
+    Monosynth:[ 'attack', 'decay', 'sustain', 'release' ],
+    PolyMono:[ 'attack', 'decay', 'sustain', 'release' ],
+    Delay:[ 'time' ], 
   }
-  
 }
 
 module.exports = Audio

@@ -11,6 +11,7 @@ const Theory = {
 
   Tune:null,
   id:null,
+  type: 'Audio',
   nogibberish:true,
   quality:'minor',
   baseNumber:60,

@@ -1,4 +1,4 @@
-module.exports = function( Gibber ) {
+module.exports = function( Audio ) {
   
 const binops = [ 
   'min','max','add','sub','mul','div','rdiv','mod',
@@ -381,11 +381,11 @@ const Gen  = {
     //  // final string should be rate( in1, num )
     //}
     beats( b ) {
-      return Gen.ugens.phasor( Gibber.Utilities.btof( b ), 0, { min:0 } )
+      return Gen.ugens.phasor( Audio.Utilities.btof( b ), 0, { min:0 } )
     }, 
     beats2( b ) {
       return Gen.ugens.phasor( 
-        Gibber.Utilities.btof( b ), 
+        Audio.Utilities.btof( b ), 
         0, 
         { min:0 } )
     }, 
@@ -414,7 +414,7 @@ const Gen  = {
       graph, 
       propertyNames,
       type:'gen',
-      id: Gibber.Gibberish.utilities.getUID(),
+      id: Audio.Gibberish.utilities.getUID(),
       rendered:null,
 
       render( samplerate=44100, type='audio' ) {
@@ -437,14 +437,14 @@ const Gen  = {
           return this.rendered
         }
 
-        const store = Gibber.Gibberish.genish.samplerate
-        const g = Gibber.Gibberish.genish
+        const store = Audio.Gibberish.genish.samplerate
+        const g = Audio.Gibberish.genish
 
-        Gibber.Gibberish.genish.gen.samplerate = samplerate
+        Audio.Gibberish.genish.gen.samplerate = samplerate
         const params = []
         const __graph = eval( graph.gen( params ) )
         const callback = g.gen.createCallback( __graph )
-        Gibber.Gibberish.genish.gen.samplerate = store      
+        Audio.Gibberish.genish.gen.samplerate = store      
 
         const out = callback.bind( null, ...params.map( v => v[1] ), g.memory )
 
@@ -471,8 +471,8 @@ const Gen  = {
   },
 
   __make( graph, propertyNames, target ) {
-    const ugen = Gibber.Gibberish.prototypes.Ugen
-    const g = Gibber.Gibberish.genish
+    const ugen = Audio.Gibberish.prototypes.Ugen
+    const g = Audio.Gibberish.genish
 
     // store properties of our gen object in this array
     // they will then become properties of our Gibber object
@@ -489,10 +489,10 @@ const Gen  = {
 
     const id = Gen.getUID()
 
-    params.id = Gibber.Gibberish.utilities.getUID()
+    params.id = Audio.Gibberish.utilities.getUID()
 
     // pass a constructor to our worklet processor
-    Gibber.Gibberish.worklet.port.postMessage({ 
+    Audio.Gibberish.worklet.port.postMessage({ 
       address:'addMethod', 
       id:-1,
       key:'Gen' + id,
@@ -511,7 +511,7 @@ const Gen  = {
       // so we can just input zeroes. hmmmm... I gues it probably matters for
       // sequencing?
       
-      return Gibber.Gibberish.factory( mymod, g.add(0,0), 'Gen'+id, params )
+      return Audio.Gibberish.factory( mymod, g.add(0,0), 'Gen'+id, params )
     }
 
     // XXX do I really have to make a Gibberish constructor and a Gibber constructor to
@@ -521,7 +521,7 @@ const Gen  = {
     // create a Gibber constructor using our Gibberish constructor
     let temp = params.id
     //delete params.id
-    const Make = Gibber.Ugen( make, { name:'Gen'+id, properties:params, methods:[]}, Gibber )
+    const Make = Audio.Ugen( make, { name:'Gen'+id, properties:params, methods:[]}, Audio )
 
     // create Gibber ugen and pass in properties dictionary to initailize
     const out = Make({ params })
@@ -535,10 +535,10 @@ const Gen  = {
       // corresponds to 58 frames a second)
       if( count++ % 6 === 0 ) {
         // XXX this shouldn't happen here, should happen when the annotation is created.
-        if( Gibber.Environment.Annotations.waveform.widgets[ temp ] === undefined ) {
-          Gibber.Environment.Annotations.waveform.widgets[ temp ] = out.widget
+        if( Audio.Gibber.Environment.Annotations.waveform.widgets[ temp ] === undefined ) {
+          Audio.Gibber.Environment.Annotations.waveform.widgets[ temp ] = out.widget
         }
-        Gibber.Environment.Annotations.waveform.updateWidget( out.widget, v, false )
+        Audio.Gibber.Environment.Annotations.waveform.updateWidget( out.widget, v, false )
       }
 
       out.output.value = v

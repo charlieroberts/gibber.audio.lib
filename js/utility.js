@@ -130,8 +130,8 @@ const Utility = {
     return new Function( fncString )
   },
 
-  time( v ) { return Gibber.Clock.time( v ) },
-  btof( beats ) { return 1 / (beats * ( 60 / Gibber.Clock.bpm )) },
+  time( v ) { return Gibber.Audio.Clock.time( v ) },
+  btof( beats ) { return 1 / (beats * ( 60 / Gibber.Audio.Clock.bpm )) },
 
   random() {
     this.randomFlag = true

@@ -17,6 +17,7 @@ gulp.task( 'client', function(){
   const out = browserify({ standalone:'Gibber' }) //, transform:['glslify'] })
     .require( './js/audio.js', { entry: true })
     .bundle()
+    .on( 'error', console.log )
     .pipe( source('gibber.audio.js' ) )
     .pipe( gulp.dest('./dist/') )
 /*    .pipe( buffer() )
@@ -37,7 +38,7 @@ gulp.task('watch', function() {
     console.log("recompiling... ", date.getHours(), date.getMinutes(), date.getSeconds() )
     return bundler.bundle()
       // log errors if they happen
-      //.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+      .on( 'error', console.log ) 
       .pipe( source( 'bundle.js' ) )
       .pipe( rename( 'gibber.audio.js' ) )
       .pipe( gulp.dest( './dist/' ) )

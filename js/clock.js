@@ -30,7 +30,7 @@ const Clock = {
     }
   },
 
-  init:function( Gen, Gibber ) {
+  init:function( Gen, Audio ) {
     // needed so that when the clock is re-initialized (for example, after clearing)
     // gibber won't try and serialized its sequencer
     this.seq = null
@@ -65,7 +65,7 @@ const Clock = {
         set(v){ 
           bpm = v
           if( Gibberish.mode === 'worklet' ) {
-            if( Gibber.Tidal !== undefined ) Gibber.Tidal.cps = bpm/120/2
+            if( Audio.Gibber.Tidal !== undefined ) Audio.Gibber.Tidal.cps = bpm/120/2
             Gibberish.worklet.port.postMessage({
               address:'set',
               object:this.id,

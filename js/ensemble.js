@@ -50,7 +50,7 @@ module.exports = function( Audio ) {
     ens.tidal = (pattern,num=0) => {
       if( ens.tidals[ num ] !== undefined ) ens.tidals[ num ].stop()
 
-      ens.tidals[ num ] = Audio.Tidal({
+      ens.tidals[ num ] = Audio.Gibber.Tidal({
         target:ens,
         key:'play',
         pattern
@@ -63,7 +63,7 @@ module.exports = function( Audio ) {
     ens.seq = (values,timings,num=0,offset=0) => {
       if( ens.__sequencers[ num ] !== undefined ) ens.__sequencers[ num ].stop()
 
-      ens.__sequencers[ num ] = Gibber.Seq({
+      ens.__sequencers[ num ] = Audio.Gibber.Seq({
         target:ens,
         key:'play',
         values,timings,offset

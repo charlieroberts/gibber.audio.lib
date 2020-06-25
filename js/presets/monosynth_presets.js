@@ -224,7 +224,7 @@ module.exports = {
     detune3:-.01 
   },
 
-  shinybass: {
+  shinybass2: {
     Q:.125,
     cutoff:35,
     useADSR:true,
@@ -235,7 +235,7 @@ module.exports = {
     octave:-3,
     panVoices:true
   },
-  shinybass2: {
+  shinybass: {
     Q:.125,
     cutoff:5,
     useADSR:false,
