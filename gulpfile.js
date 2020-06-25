@@ -15,7 +15,7 @@ const gulp = require( 'gulp' ),
 gulp.task( 'client', function(){
   //var out = gulp.src( './js/audio.js' )//gulp.src( './node_modules/gibber.core.lib/scripts/gibber.js')
   const out = browserify({ standalone:'Gibber' }) //, transform:['glslify'] })
-    .require( './js/audio.js', { entry: true })
+    .require( './js/index.js', { entry: true })
     .bundle()
     .on( 'error', console.log )
     .pipe( source('gibber.audio.js' ) )
@@ -29,7 +29,7 @@ gulp.task( 'client', function(){
 });
 
 gulp.task('watch', function() {
-  var bundler = watchify( browserify('./js/audio.js', { standalone:'Gibber', cache: {}, packageCache: {}, fullPaths: true, verbose:true } ) );
+  var bundler = watchify( browserify('./js/index.js', { standalone:'Gibber', cache: {}, packageCache: {}, fullPaths: true, verbose:true } ) );
 
   bundler.on('update', rebundle);
 

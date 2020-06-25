@@ -67,4 +67,4 @@ node_modules
 
 In this instance, we would need to both change the `src` attribute of our `<script>` and also pass the location of the worklet *relative to the location of the `index.html` file*. Our call to `Gibber.init` would be:
 
-`Gibber.init('node_modules/gibber.audio.lib/dist/gibberish_worklet.js')`
+`Gibber.init({ workletPath:'node_modules/gibber.audio.lib/dist/gibberish_worklet.js' })`
