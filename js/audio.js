@@ -15,6 +15,7 @@ const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
 const Core        = require( 'gibber.core.lib' )
+const AWPF        = require( './external/audioworklet-polyfill.js' )
 //const Arp         = require( './arp.js' )
 
 const Audio = {
@@ -71,21 +72,28 @@ const Audio = {
 
   __defaults : {
     workletPath: '../dist/gibberish_worklet.js',
-    ctx:         null
+    ctx:         null,
+    bufferSize:  2048
   },
 
   init( options, Gibber  ) {
-    let { workletPath, ctx } = Object.assign( {}, this.__defaults, options ) 
+    let { workletPath, ctx, bufferSize } = Object.assign( {}, this.__defaults, options ) 
     this.Gibber = Gibber
+    Gibber.Audio = this
     this.Gibberish = Gibberish
 
     Gibberish.workletPath = workletPath 
 
     this.createPubSub()
 
+
+    const AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
+    window.AudioContext = AC
+    AWPF( window, bufferSize ) 
+
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AudioContext({ latencyHint:.05 })
+        ctx = new AC({ latencyHint:.05 })
         //ctx = new AudioContext()
       }
 
