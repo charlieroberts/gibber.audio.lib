@@ -20,6 +20,7 @@ const Theory = {
   __root:440,
   __offset:0,
   __degree:'i',
+  __loadingPrefix:'js/external/tune.json/', 
   __tunings:{
     et: {
       root:'60',
@@ -283,6 +284,7 @@ const Theory = {
       if( this.__tunings[ name ] !== undefined ) {
         this.__tuning.value = name
         this.Tune.loadScale( name )
+
         Gibberish.worklet.port.postMessage({
           address:'method',
           object:this.id,
@@ -292,7 +294,8 @@ const Theory = {
         return
       }
 
-      fetch( 'js/external/tune.json/' + name + '.js' )
+      const path = this.__loadingPrefix + name + '.js' 
+      fetch( path )
         .catch( err => console.error( err ) )
         .then( data => data.json() )
         .then( json => {
