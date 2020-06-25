@@ -1,6 +1,6 @@
 {
   "name": "gibber.audio.lib",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "standalone audio library from Gibber to use in node or in HTML documents",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "acorn": "^6.2.0",
     "acorn-walk": "^6.2.0",
     "gibberish-dsp": "~3.2.0",
-    "gibber.core.lib":"~1.0.0"
+    "gibber.core.lib": "~1.0.0"
   },
   "bugs": {
     "url": "https://github.com/charlieroberts/gibber.audio.lib/issues"
