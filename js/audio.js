@@ -209,13 +209,13 @@ const Audio = {
   },
 
   printcb() { 
-    Gibber.Gibberish.worklet.port.postMessage({ address:'callback' }) 
+    Gibber.Audio.Gibberish.worklet.port.postMessage({ address:'callback' }) 
   },
   printobj( obj ) {
-    Gibber.Gibberish.worklet.port.postMessage({ address:'print', object:obj.id }) 
+    Gibber.Audio.Gibberish.worklet.port.postMessage({ address:'print', object:obj.id }) 
   },
   send( msg ){
-    Gibber.Gibberish.worklet.port.postMessage( msg )
+    Gibber.Audio.Gibberish.worklet.port.postMessage( msg )
   },
 
   createPubSub() {
