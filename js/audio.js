@@ -14,7 +14,7 @@ const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
-const Core        = require( 'gibber.core.lib' )
+//const Core        = require( 'gibber.core.lib' )
 const AWPF        = require( './external/audioworklet-polyfill.js' )
 //const Arp         = require( './arp.js' )
 
@@ -23,7 +23,6 @@ const Audio = {
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
   Make: require( './make.js' ),
-  Core,
   initialized:false,
   autoConnect:true,
   shouldDelay:false,
@@ -79,13 +78,17 @@ const Audio = {
   init( options, Gibber  ) {
     let { workletPath, ctx, bufferSize } = Object.assign( {}, this.__defaults, options ) 
     this.Gibber = Gibber
+    this.Core = Gibber
+
+    // XXX should probably just call Audio.Core.createProperty to avoid confusion...
+    this.createProperty = Gibber.createProperty
+
     Gibber.Audio = this
     this.Gibberish = Gibberish
 
     Gibberish.workletPath = workletPath 
 
     this.createPubSub()
-
 
     const AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
     window.AudioContext = AC
@@ -107,7 +110,7 @@ const Audio = {
         Audio.Gen.init()
         //Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
-        Audio.Theory.init( Audio )
+        Audio.Theory.init( window.Gibber )
         Audio.Ugen = Ugen
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Audio )
@@ -146,7 +149,7 @@ const Audio = {
 
         Audio.Gibberish.genish.gen.histories.clear()
 
-        resolve( Audio )
+        resolve( [Audio,'Audio'] )
       })
     })
     
@@ -199,7 +202,7 @@ const Audio = {
     this.Ensemble = Ensemble( this )
     this.waveObjects = WaveObjects( this )
 
-    const Pattern = Core.__Pattern
+    const Pattern = this.Core.__Pattern
     Pattern.transfer( this, Pattern.toString() )
 
     this.Make = this.Make( this )
@@ -243,8 +246,6 @@ const Audio = {
       }
     }
   },
-
-  createProperty: Core.createProperty,
 
   createMapping( from, to, name, wrappedTo ) {
     if( from.__useMapping === false ) {

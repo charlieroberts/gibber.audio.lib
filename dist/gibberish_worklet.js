@@ -6224,7 +6224,7 @@ module.exports = function (Gibberish) {
         const id = message.id;
         const eventName = message.name;
         const obj = Gibberish.worklet.ugens.get(id);
-        obj.publish(eventName, message);
+        if (obj !== undefined) obj.publish(eventName, message);
       },
       callback(event) {
         if (typeof Gibberish.oncallback === 'function') {
