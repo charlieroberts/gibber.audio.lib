@@ -62,8 +62,8 @@ module.exports = {
   },
 
   winsome : {
-    presetInit : function() { 
-      this.lfo = Gibber.oscillators.Sine({ frequency:2, gain:.075 })
+    presetInit : function( audio ) { 
+      this.lfo = audio.oscillators.Sine({ frequency:2, gain:.075 })
       this.lfo.connect( this.cutoff )
       this.lfo.connect( this.detune2 )
       this.lfo.connect( this.detune3 )
@@ -168,8 +168,8 @@ module.exports = {
   easyfx : {
     attack: audio=> audio.Clock.ms(1),
     decay:2,
-    presetInit: function() {
-      this.fx.add( Gibber.effects.Delay( Clock.time(1/6), .3) )
+    presetInit: function( audio ) {
+      this.fx.add( audio.effects.Delay( Clock.time(1/6), .3) )
     },
     cutoff:.125,
     glide:1000,
@@ -182,8 +182,8 @@ module.exports = {
   chords: {
     attack: audio=> audio.Clock.ms(1),
     decay:1/2,
-    presetInit: function() {
-      this.fx.add( Gibber.effects.Delay( Clock.time(1/6), .75) )
+    presetInit: function( audio ) {
+      this.fx.add( audio.effects.Delay( Clock.time(1/6), .75) )
     },
     amp:.3,
     octave2:0,
@@ -198,8 +198,8 @@ module.exports = {
   'chords.short': {
     attack: audio=> audio.Clock.ms(1),
     decay:1/8,
-    presetInit: function() {
-      this.delay = audio.effects.Delay({ delay:Clock.time(1/8), feedback:.5, wetdry:.25 }) 
+    presetInit: function( audio ) {
+      this.delay = audio.effects.Delay({ delay:audio.Clock.time(1/8), feedback:.5, wetdry:.25 }) 
       this.fx.push( this.delay )
     },
     amp:.3,
@@ -277,7 +277,7 @@ module.exports = {
     detune3:0,
     detune2:0,
     filterMult:0,
-    presetInit: function() { this.fx.add( Gibber.Audio.FX.Gain(.1), Gibber.Audio.FX.Delay(1/6,.75) ) }
+    presetInit: function( audio ) { this.fx.add( audio.effects.Gain(.1), audio.effects.Delay(1/6,.75) ) }
   },
 
 }

@@ -1,4 +1,4600 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gibber = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js":[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Gibber = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'abs',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.abs' : Math.abs })
+
+      out = `${ref}abs( ${inputs[0]} )`
+
+    } else {
+      out = Math.abs( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let abs = Object.create( proto )
+
+  abs.inputs = [ x ]
+
+  return abs
+}
+
+},{"./gen.js":32}],2:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'accum',
+
+  gen() {
+    let code,
+        inputs = gen.getInputs( this ),
+        genName = 'gen.' + this.name,
+        functionBody
+
+    gen.requestMemory( this.memory )
+
+    gen.memory.heap[ this.memory.value.idx ] = this.initialValue
+
+    functionBody = this.callback( genName, inputs[0], inputs[1], `memory[${this.memory.value.idx}]` )
+
+    //gen.closures.add({ [ this.name ]: this }) 
+
+    gen.memo[ this.name ] = this.name + '_value'
+    
+    return [ this.name + '_value', functionBody ]
+  },
+
+  callback( _name, _incr, _reset, valueRef ) {
+    let diff = this.max - this.min,
+        out = '',
+        wrap = ''
+    
+    /* three different methods of wrapping, third is most expensive:
+     *
+     * 1: range {0,1}: y = x - (x | 0)
+     * 2: log2(this.max) == integer: y = x & (this.max - 1)
+     * 3: all others: if( x >= this.max ) y = this.max -x
+     *
+     */
+
+    // must check for reset before storing value for output
+    if( !(typeof this.inputs[1] === 'number' && this.inputs[1] < 1) ) { 
+      if( this.resetValue !== this.min ) {
+
+        out += `  if( ${_reset} >=1 ) ${valueRef} = ${this.resetValue}\n\n`
+        //out += `  if( ${_reset} >=1 ) ${valueRef} = ${this.min}\n\n`
+      }else{
+        out += `  if( ${_reset} >=1 ) ${valueRef} = ${this.min}\n\n`
+        //out += `  if( ${_reset} >=1 ) ${valueRef} = ${this.initialValue}\n\n`
+      }
+    }
+
+    out += `  var ${this.name}_value = ${valueRef}\n`
+    
+    if( this.shouldWrap === false && this.shouldClamp === true ) {
+      out += `  if( ${valueRef} < ${this.max } ) ${valueRef} += ${_incr}\n`
+    }else{
+      out += `  ${valueRef} += ${_incr}\n` // store output value before accumulating  
+    }
+
+    if( this.max !== Infinity  && this.shouldWrapMax ) wrap += `  if( ${valueRef} >= ${this.max} ) ${valueRef} -= ${diff}\n`
+    if( this.min !== -Infinity && this.shouldWrapMin ) wrap += `  if( ${valueRef} < ${this.min} ) ${valueRef} += ${diff}\n`
+
+    //if( this.min === 0 && this.max === 1 ) { 
+    //  wrap =  `  ${valueRef} = ${valueRef} - (${valueRef} | 0)\n\n`
+    //} else if( this.min === 0 && ( Math.log2( this.max ) | 0 ) === Math.log2( this.max ) ) {
+    //  wrap =  `  ${valueRef} = ${valueRef} & (${this.max} - 1)\n\n`
+    //} else if( this.max !== Infinity ){
+    //  wrap = `  if( ${valueRef} >= ${this.max} ) ${valueRef} -= ${diff}\n\n`
+    //}
+
+    out = out + wrap + '\n'
+
+    return out
+  },
+
+  defaults : { min:0, max:1, resetValue:0, initialValue:0, shouldWrap:true, shouldWrapMax: true, shouldWrapMin:true, shouldClamp:false }
+}
+
+module.exports = ( incr, reset=0, properties ) => {
+  const ugen = Object.create( proto )
+      
+  Object.assign( ugen, 
+    { 
+      uid:    gen.getUID(),
+      inputs: [ incr, reset ],
+      memory: {
+        value: { length:1, idx:null }
+      }
+    },
+    proto.defaults,
+    properties 
+  )
+
+  if( properties !== undefined && properties.shouldWrapMax === undefined && properties.shouldWrapMin === undefined ) {
+    if( properties.shouldWrap !== undefined ) {
+      ugen.shouldWrapMin = ugen.shouldWrapMax = properties.shouldWrap
+    }
+  }
+
+  if( properties !== undefined && properties.resetValue === undefined ) {
+    ugen.resetValue = ugen.min
+  }
+
+  if( ugen.initialValue === undefined ) ugen.initialValue = ugen.min
+
+  Object.defineProperty( ugen, 'value', {
+    get()  { 
+      //console.log( 'gen:', gen, gen.memory )
+      return gen.memory.heap[ this.memory.value.idx ] 
+    },
+    set(v) { gen.memory.heap[ this.memory.value.idx ] = v }
+  })
+
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],3:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'acos',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'acos': isWorklet ? 'Math.acos' :Math.acos })
+
+      out = `${ref}acos( ${inputs[0]} )` 
+
+    } else {
+      out = Math.acos( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let acos = Object.create( proto )
+
+  acos.inputs = [ x ]
+  acos.id = gen.getUID()
+  acos.name = `${acos.basename}{acos.id}`
+
+  return acos
+}
+
+},{"./gen.js":32}],4:[function(require,module,exports){
+'use strict'
+
+let gen      = require( './gen.js' ),
+    mul      = require( './mul.js' ),
+    sub      = require( './sub.js' ),
+    div      = require( './div.js' ),
+    data     = require( './data.js' ),
+    peek     = require( './peek.js' ),
+    accum    = require( './accum.js' ),
+    ifelse   = require( './ifelseif.js' ),
+    lt       = require( './lt.js' ),
+    bang     = require( './bang.js' ),
+    env      = require( './env.js' ),
+    add      = require( './add.js' ),
+    poke     = require( './poke.js' ),
+    neq      = require( './neq.js' ),
+    and      = require( './and.js' ),
+    gte      = require( './gte.js' ),
+    memo     = require( './memo.js' ),
+    utilities= require( './utilities.js' )
+
+module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
+  const props = Object.assign({}, { shape:'exponential', alpha:5, trigger:null }, _props )
+  const _bang = props.trigger !== null ? props.trigger : bang(),
+        phase = accum( 1, _bang, { min:0, max: Infinity, initialValue:-Infinity, shouldWrap:false })
+      
+  let bufferData, bufferDataReverse, decayData, out, buffer
+
+  //console.log( 'shape:', props.shape, 'attack time:', attackTime, 'decay time:', decayTime )
+  let completeFlag = data( [0] )
+  
+  // slightly more efficient to use existing phase accumulator for linear envelopes
+  if( props.shape === 'linear' ) {
+    out = ifelse( 
+      and( gte( phase, 0), lt( phase, attackTime )),
+      div( phase, attackTime ),
+
+      and( gte( phase, 0),  lt( phase, add( attackTime, decayTime ) ) ),
+      sub( 1, div( sub( phase, attackTime ), decayTime ) ),
+      
+      neq( phase, -Infinity),
+      poke( completeFlag, 1, 0, { inline:0 }),
+
+      0 
+    )
+  } else {
+    bufferData = env({ length:1024, type:props.shape, alpha:props.alpha })
+    bufferDataReverse = env({ length:1024, type:props.shape, alpha:props.alpha, reverse:true })
+
+    out = ifelse( 
+      and( gte( phase, 0), lt( phase, attackTime ) ), 
+      peek( bufferData, div( phase, attackTime ), { boundmode:'clamp' } ), 
+
+      and( gte(phase,0), lt( phase, add( attackTime, decayTime ) ) ), 
+      peek( bufferDataReverse, div( sub( phase, attackTime ), decayTime ), { boundmode:'clamp' }),
+
+      neq( phase, -Infinity ),
+      poke( completeFlag, 1, 0, { inline:0 }),
+
+      0
+    )
+  }
+
+  const usingWorklet = gen.mode === 'worklet'
+  if( usingWorklet === true ) {
+    out.node = null
+    utilities.register( out )
+  }
+
+  // needed for gibberish... getting this to work right with worklets
+  // via promises will probably be tricky
+  out.isComplete = ()=> {
+    if( usingWorklet === true && out.node !== null ) {
+      const p = new Promise( resolve => {
+        out.node.getMemoryValue( completeFlag.memory.values.idx, resolve )
+      })
+
+      return p
+    }else{
+      return gen.memory.heap[ completeFlag.memory.values.idx ]
+    }
+  }
+
+  out.trigger = ()=> {
+    if( usingWorklet === true && out.node !== null ) {
+      out.node.port.postMessage({ key:'set', idx:completeFlag.memory.values.idx, value:0 })
+    }else{
+      gen.memory.heap[ completeFlag.memory.values.idx ] = 0
+    }
+    _bang.trigger()
+  }
+
+  return out 
+}
+
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":32,"./gte.js":34,"./ifelseif.js":37,"./lt.js":40,"./memo.js":44,"./mul.js":50,"./neq.js":51,"./peek.js":56,"./poke.js":58,"./sub.js":69,"./utilities.js":75}],5:[function(require,module,exports){
+'use strict'
+
+const gen = require('./gen.js')
+
+const proto = { 
+  basename:'add',
+  gen() {
+    let inputs = gen.getInputs( this ),
+        out='',
+        sum = 0, numCount = 0, adderAtEnd = false, alreadyFullSummed = true
+
+    if( inputs.length === 0 ) return 0
+
+    out = `  var ${this.name} = `
+
+    inputs.forEach( (v,i) => {
+      if( isNaN( v ) ) {
+        out += v
+        if( i < inputs.length -1 ) {
+          adderAtEnd = true
+          out += ' + '
+        }
+        alreadyFullSummed = false
+      }else{
+        sum += parseFloat( v )
+        numCount++
+      }
+    })
+
+    if( numCount > 0 ) {
+      out += adderAtEnd || alreadyFullSummed ? sum : ' + ' + sum
+    }
+
+    out += '\n'
+
+    gen.memo[ this.name ] = this.name
+
+    return [ this.name, out ]
+  }
+}
+
+module.exports = ( ...args ) => {
+  const add = Object.create( proto )
+  add.id = gen.getUID()
+  add.name = add.basename + add.id
+  add.inputs = args
+
+  return add
+}
+
+},{"./gen.js":32}],6:[function(require,module,exports){
+'use strict'
+
+let gen      = require( './gen.js' ),
+    mul      = require( './mul.js' ),
+    sub      = require( './sub.js' ),
+    div      = require( './div.js' ),
+    data     = require( './data.js' ),
+    peek     = require( './peek.js' ),
+    accum    = require( './accum.js' ),
+    ifelse   = require( './ifelseif.js' ),
+    lt       = require( './lt.js' ),
+    bang     = require( './bang.js' ),
+    env      = require( './env.js' ),
+    param    = require( './param.js' ),
+    add      = require( './add.js' ),
+    gtp      = require( './gtp.js' ),
+    not      = require( './not.js' ),
+    and      = require( './and.js' ),
+    neq      = require( './neq.js' ),
+    poke     = require( './poke.js' )
+
+module.exports = ( attackTime=44, decayTime=22050, sustainTime=44100, sustainLevel=.6, releaseTime=44100, _props ) => {
+  let envTrigger = bang(),
+      phase = accum( 1, envTrigger, { max: Infinity, shouldWrap:false, initialValue:Infinity }),
+      shouldSustain = param( 1 ),
+      defaults = {
+         shape: 'exponential',
+         alpha: 5,
+         triggerRelease: false,
+      },
+      props = Object.assign({}, defaults, _props ),
+      bufferData, decayData, out, buffer, sustainCondition, releaseAccum, releaseCondition
+
+
+  const completeFlag = data( [0] )
+
+  bufferData = env({ length:1024, alpha:props.alpha, shift:0, type:props.shape })
+
+  sustainCondition = props.triggerRelease 
+    ? shouldSustain
+    : lt( phase, add( attackTime, decayTime, sustainTime ) )
+
+  releaseAccum = props.triggerRelease
+    ? gtp( sub( sustainLevel, accum( div( sustainLevel, releaseTime ) , 0, { shouldWrap:false }) ), 0 )
+    : sub( sustainLevel, mul( div( sub( phase, add( attackTime, decayTime, sustainTime ) ), releaseTime ), sustainLevel ) ), 
+
+  releaseCondition = props.triggerRelease
+    ? not( shouldSustain )
+    : lt( phase, add( attackTime, decayTime, sustainTime, releaseTime ) )
+
+  out = ifelse(
+    // attack 
+    lt( phase,  attackTime ), 
+    peek( bufferData, div( phase, attackTime ), { boundmode:'clamp' } ), 
+
+    // decay
+    lt( phase, add( attackTime, decayTime ) ), 
+    peek( bufferData, sub( 1, mul( div( sub( phase,  attackTime ),  decayTime ), sub( 1,  sustainLevel ) ) ), { boundmode:'clamp' }),
+
+    // sustain
+    and( sustainCondition, neq( phase, Infinity ) ),
+    peek( bufferData,  sustainLevel ),
+
+    // release
+    releaseCondition, //lt( phase,  attackTime +  decayTime +  sustainTime +  releaseTime ),
+    peek( 
+      bufferData,
+      releaseAccum, 
+      //sub(  sustainLevel, mul( div( sub( phase,  attackTime +  decayTime +  sustainTime),  releaseTime ),  sustainLevel ) ), 
+      { boundmode:'clamp' }
+    ),
+
+    neq( phase, Infinity ),
+    poke( completeFlag, 1, 0, { inline:0 }),
+
+    0
+  )
+   
+  const usingWorklet = gen.mode === 'worklet'
+  if( usingWorklet === true ) {
+    out.node = null
+    utilities.register( out )
+  }
+
+  out.trigger = ()=> {
+    shouldSustain.value = 1
+    envTrigger.trigger()
+  }
+ 
+  // needed for gibberish... getting this to work right with worklets
+  // via promises will probably be tricky
+  out.isComplete = ()=> {
+    if( usingWorklet === true && out.node !== null ) {
+      const p = new Promise( resolve => {
+        out.node.getMemoryValue( completeFlag.memory.values.idx, resolve )
+      })
+
+      return p
+    }else{
+      return gen.memory.heap[ completeFlag.memory.values.idx ]
+    }
+  }
+
+
+  out.release = ()=> {
+    shouldSustain.value = 0
+    // XXX pretty nasty... grabs accum inside of gtp and resets value manually
+    // unfortunately envTrigger won't work as it's back to 0 by the time the release block is triggered...
+    if( usingWorklet && out.node !== null ) {
+      out.node.port.postMessage({ key:'set', idx:releaseAccum.inputs[0].inputs[1].memory.value.idx, value:0 })
+    }else{
+      gen.memory.heap[ releaseAccum.inputs[0].inputs[1].memory.value.idx ] = 0
+    }
+  }
+
+  return out 
+}
+
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":32,"./gtp.js":35,"./ifelseif.js":37,"./lt.js":40,"./mul.js":50,"./neq.js":51,"./not.js":53,"./param.js":55,"./peek.js":56,"./poke.js":58,"./sub.js":69}],7:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'and',
+
+  gen() {
+    let inputs = gen.getInputs( this ), out
+
+    out = `  var ${this.name} = (${inputs[0]} !== 0 && ${inputs[1]} !== 0) | 0\n\n`
+
+    gen.memo[ this.name ] = `${this.name}`
+
+    return [ `${this.name}`, out ]
+  },
+
+}
+
+module.exports = ( in1, in2 ) => {
+  let ugen = Object.create( proto )
+  Object.assign( ugen, {
+    uid:     gen.getUID(),
+    inputs:  [ in1, in2 ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],8:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'asin',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'asin': isWorklet ? 'Math.sin' : Math.asin })
+
+      out = `${ref}asin( ${inputs[0]} )` 
+
+    } else {
+      out = Math.asin( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let asin = Object.create( proto )
+
+  asin.inputs = [ x ]
+  asin.id = gen.getUID()
+  asin.name = `${asin.basename}{asin.id}`
+
+  return asin
+}
+
+},{"./gen.js":32}],9:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'atan',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'atan': isWorklet ? 'Math.atan' : Math.atan })
+
+      out = `${ref}atan( ${inputs[0]} )` 
+
+    } else {
+      out = Math.atan( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let atan = Object.create( proto )
+
+  atan.inputs = [ x ]
+  atan.id = gen.getUID()
+  atan.name = `${atan.basename}{atan.id}`
+
+  return atan
+}
+
+},{"./gen.js":32}],10:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen.js' ),
+    history = require( './history.js' ),
+    mul     = require( './mul.js' ),
+    sub     = require( './sub.js' )
+
+module.exports = ( decayTime = 44100 ) => {
+  let ssd = history ( 1 ),
+      t60 = Math.exp( -6.907755278921 / decayTime )
+
+  ssd.in( mul( ssd.out, t60 ) )
+
+  ssd.out.trigger = ()=> {
+    ssd.value = 1
+  }
+
+  return sub( 1, ssd.out )
+}
+
+},{"./gen.js":32,"./history.js":36,"./mul.js":50,"./sub.js":69}],11:[function(require,module,exports){
+'use strict'
+
+let gen = require('./gen.js')
+
+let proto = {
+  gen() {
+    gen.requestMemory( this.memory )
+    
+    let out = 
+`  var ${this.name} = memory[${this.memory.value.idx}]
+  if( ${this.name} === 1 ) memory[${this.memory.value.idx}] = 0      
+      
+`
+    gen.memo[ this.name ] = this.name
+
+    return [ this.name, out ]
+  } 
+}
+
+module.exports = ( _props ) => {
+  let ugen = Object.create( proto ),
+      props = Object.assign({}, { min:0, max:1 }, _props )
+
+  ugen.name = 'bang' + gen.getUID()
+
+  ugen.min = props.min
+  ugen.max = props.max
+
+  const usingWorklet = gen.mode === 'worklet'
+  if( usingWorklet === true ) {
+    ugen.node = null
+    utilities.register( ugen )
+  }
+
+  ugen.trigger = () => {
+    if( usingWorklet === true && ugen.node !== null ) {
+      ugen.node.port.postMessage({ key:'set', idx:ugen.memory.value.idx, value:ugen.max })
+    }else{
+      gen.memory.heap[ ugen.memory.value.idx ] = ugen.max 
+    }
+  }
+
+  ugen.memory = {
+    value: { length:1, idx:null }
+  }
+
+  return ugen
+}
+
+},{"./gen.js":32}],12:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'bool',
+
+  gen() {
+    let inputs = gen.getInputs( this ), out
+
+    out = `${inputs[0]} === 0 ? 0 : 1`
+    
+    //gen.memo[ this.name ] = `gen.data.${this.name}`
+
+    //return [ `gen.data.${this.name}`, ' ' +out ]
+    return out
+  }
+}
+
+module.exports = ( in1 ) => {
+  let ugen = Object.create( proto )
+
+  Object.assign( ugen, { 
+    uid:        gen.getUID(),
+    inputs:     [ in1 ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+
+},{"./gen.js":32}],13:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'ceil',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet ? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.ceil' : Math.ceil })
+
+      out = `${ref}ceil( ${inputs[0]} )`
+
+    } else {
+      out = Math.ceil( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let ceil = Object.create( proto )
+
+  ceil.inputs = [ x ]
+
+  return ceil
+}
+
+},{"./gen.js":32}],14:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js'),
+    floor= require('./floor.js'),
+    sub  = require('./sub.js'),
+    memo = require('./memo.js')
+
+let proto = {
+  basename:'clip',
+
+  gen() {
+    let code,
+        inputs = gen.getInputs( this ),
+        out
+
+    out =
+
+` var ${this.name} = ${inputs[0]}
+  if( ${this.name} > ${inputs[2]} ) ${this.name} = ${inputs[2]}
+  else if( ${this.name} < ${inputs[1]} ) ${this.name} = ${inputs[1]}
+`
+    out = ' ' + out
+    
+    gen.memo[ this.name ] = this.name
+
+    return [ this.name, out ]
+  },
+}
+
+module.exports = ( in1, min=-1, max=1 ) => {
+  let ugen = Object.create( proto )
+
+  Object.assign( ugen, { 
+    min, 
+    max,
+    uid:    gen.getUID(),
+    inputs: [ in1, min, max ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./floor.js":29,"./gen.js":32,"./memo.js":44,"./sub.js":69}],15:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'cos',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    
+    const isWorklet = gen.mode === 'worklet'
+
+    const ref = isWorklet ? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'cos': isWorklet ? 'Math.cos' : Math.cos })
+
+      out = `${ref}cos( ${inputs[0]} )` 
+
+    } else {
+      out = Math.cos( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let cos = Object.create( proto )
+
+  cos.inputs = [ x ]
+  cos.id = gen.getUID()
+  cos.name = `${cos.basename}{cos.id}`
+
+  return cos
+}
+
+},{"./gen.js":32}],16:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'counter',
+
+  gen() {
+    let code,
+        inputs = gen.getInputs( this ),
+        genName = 'gen.' + this.name,
+        functionBody
+       
+    if( this.memory.value.idx === null ) gen.requestMemory( this.memory )
+    gen.memory.heap[ this.memory.value.idx ] = this.initialValue
+    
+    functionBody  = this.callback( genName, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4],  `memory[${this.memory.value.idx}]`, `memory[${this.memory.wrap.idx}]`  )
+
+    gen.memo[ this.name ] = this.name + '_value'
+   
+    if( gen.memo[ this.wrap.name ] === undefined ) this.wrap.gen()
+
+    return [ this.name + '_value', functionBody ]
+  },
+
+  callback( _name, _incr, _min, _max, _reset, loops, valueRef, wrapRef ) {
+    let diff = this.max - this.min,
+        out = '',
+        wrap = ''
+    // must check for reset before storing value for output
+    if( !(typeof this.inputs[3] === 'number' && this.inputs[3] < 1) ) { 
+      out += `  if( ${_reset} >= 1 ) ${valueRef} = ${_min}\n`
+    }
+
+    out += `  var ${this.name}_value = ${valueRef};\n  ${valueRef} += ${_incr}\n` // store output value before accumulating  
+    
+    if( typeof this.max === 'number' && this.max !== Infinity && typeof this.min !== 'number' ) {
+      wrap = 
+`  if( ${valueRef} >= ${this.max} &&  ${loops} > 0) {
+    ${valueRef} -= ${diff}
+    ${wrapRef} = 1
+  }else{
+    ${wrapRef} = 0
+  }\n`
+    }else if( this.max !== Infinity && this.min !== Infinity ) {
+      wrap = 
+`  if( ${valueRef} >= ${_max} &&  ${loops} > 0) {
+    ${valueRef} -= ${_max} - ${_min}
+    ${wrapRef} = 1
+  }else if( ${valueRef} < ${_min} &&  ${loops} > 0) {
+    ${valueRef} += ${_max} - ${_min}
+    ${wrapRef} = 1
+  }else{
+    ${wrapRef} = 0
+  }\n`
+    }else{
+      out += '\n'
+    }
+
+    out = out + wrap
+
+    return out
+  }
+}
+
+module.exports = ( incr=1, min=0, max=Infinity, reset=0, loops=1,  properties ) => {
+  let ugen = Object.create( proto ),
+      defaults = Object.assign( { initialValue: 0, shouldWrap:true }, properties )
+
+  Object.assign( ugen, { 
+    min:    min, 
+    max:    max,
+    initialValue: defaults.initialValue,
+    value:  defaults.initialValue,
+    uid:    gen.getUID(),
+    inputs: [ incr, min, max, reset, loops ],
+    memory: {
+      value: { length:1, idx: null },
+      wrap:  { length:1, idx: null } 
+    },
+    wrap : {
+      gen() { 
+        if( ugen.memory.wrap.idx === null ) {
+          gen.requestMemory( ugen.memory )
+        }
+        gen.getInputs( this )
+        gen.memo[ this.name ] = `memory[ ${ugen.memory.wrap.idx} ]`
+        return `memory[ ${ugen.memory.wrap.idx} ]` 
+      }
+    }
+  },
+  defaults )
+ 
+  Object.defineProperty( ugen, 'value', {
+    get() {
+      if( this.memory.value.idx !== null ) {
+        return gen.memory.heap[ this.memory.value.idx ]
+      }
+    },
+    set( v ) {
+      if( this.memory.value.idx !== null ) {
+        gen.memory.heap[ this.memory.value.idx ] = v 
+      }
+    }
+  })
+  
+  ugen.wrap.inputs = [ ugen ]
+  ugen.name = `${ugen.basename}${ugen.uid}`
+  ugen.wrap.name = ugen.name + '_wrap'
+  return ugen
+} 
+
+},{"./gen.js":32}],17:[function(require,module,exports){
+'use strict'
+
+let gen  = require( './gen.js' ),
+    accum= require( './phasor.js' ),
+    data = require( './data.js' ),
+    peek = require( './peek.js' ),
+    mul  = require( './mul.js' ),
+    phasor=require( './phasor.js')
+
+let proto = {
+  basename:'cycle',
+
+  initTable() {    
+    let buffer = new Float32Array( 1024 )
+
+    for( let i = 0, l = buffer.length; i < l; i++ ) {
+      buffer[ i ] = Math.sin( ( i / l ) * ( Math.PI * 2 ) )
+    }
+
+    gen.globals.cycle = data( buffer, 1, { immutable:true } )
+  }
+
+}
+
+module.exports = ( frequency=1, reset=0, _props ) => {
+  if( typeof gen.globals.cycle === 'undefined' ) proto.initTable() 
+  const props = Object.assign({}, { min:0 }, _props )
+
+  const ugen = peek( gen.globals.cycle, phasor( frequency, reset, props ))
+  ugen.name = 'cycle' + gen.getUID()
+
+  return ugen
+}
+
+},{"./data.js":18,"./gen.js":32,"./mul.js":50,"./peek.js":56,"./phasor.js":57}],18:[function(require,module,exports){
+'use strict'
+
+const gen  = require('./gen.js'),
+      utilities = require( './utilities.js' ),
+      peek = require('./peek.js'),
+      poke = require('./poke.js')
+
+const proto = {
+  basename:'data',
+  globals: {},
+  memo:{},
+
+  gen() {
+    let idx
+    //console.log( 'data name:', this.name, proto.memo )
+    //debugger
+    if( gen.memo[ this.name ] === undefined ) {
+      let ugen = this
+      gen.requestMemory( this.memory, this.immutable ) 
+      idx = this.memory.values.idx
+      if( this.buffer !== undefined ) {
+        try {
+          gen.memory.heap.set( this.buffer, idx )
+        }catch( e ) {
+          console.log( e )
+          throw Error( 'error with request. asking for ' + this.buffer.length +'. current index: ' + gen.memoryIndex + ' of ' + gen.memory.heap.length )
+        }
+      }
+      //gen.data[ this.name ] = this
+      //return 'gen.memory' + this.name + '.buffer'
+      if( this.name.indexOf('data') === -1 ) {
+        proto.memo[ this.name ] = idx
+      }else{
+        gen.memo[ this.name ] = idx
+      }
+    }else{
+      //console.log( 'using gen data memo', proto.memo[ this.name ] )
+      idx = gen.memo[ this.name ]
+    }
+    return idx
+  },
+}
+
+module.exports = ( x, y=1, properties ) => {
+  let ugen, buffer, shouldLoad = false
+  
+  if( properties !== undefined && properties.global !== undefined ) {
+    if( gen.globals[ properties.global ] ) {
+      return gen.globals[ properties.global ]
+    }
+  }
+
+  if( typeof x === 'number' ) {
+    if( y !== 1 ) {
+      buffer = []
+      for( let i = 0; i < y; i++ ) {
+        buffer[ i ] = new Float32Array( x )
+      }
+    }else{
+      buffer = new Float32Array( x )
+    }
+  }else if( Array.isArray( x ) ) { //! (x instanceof Float32Array ) ) {
+    let size = x.length
+    buffer = new Float32Array( size )
+    for( let i = 0; i < x.length; i++ ) {
+      buffer[ i ] = x[ i ]
+    }
+  }else if( typeof x === 'string' ) {
+    //buffer = { length: y > 1 ? y : gen.samplerate * 60 } // XXX what???
+    //if( proto.memo[ x ] === undefined ) {
+      buffer = { length: y > 1 ? y : 1 } // XXX what???
+      shouldLoad = true
+    //}else{
+      //buffer = proto.memo[ x ]
+    //}
+  }else if( x instanceof Float32Array ) {
+    buffer = x
+  }
+  
+  ugen = Object.create( proto ) 
+
+  Object.assign( ugen, 
+  { 
+    buffer,
+    name: proto.basename + gen.getUID(),
+    dim:  buffer !== undefined ? buffer.length : 1, // XXX how do we dynamically allocate this?
+    channels : 1,
+    onload: null,
+    //then( fnc ) {
+    //  ugen.onload = fnc
+    //  return ugen
+    //},
+    immutable: properties !== undefined && properties.immutable === true ? true : false,
+    load( filename, __resolve ) {
+      let promise = utilities.loadSample( filename, ugen )
+      promise.then( _buffer => { 
+        proto.memo[ x ] = _buffer
+        ugen.name = filename
+        ugen.memory.values.length = ugen.dim = _buffer.length
+
+        gen.requestMemory( ugen.memory, ugen.immutable ) 
+        gen.memory.heap.set( _buffer, ugen.memory.values.idx )
+        if( typeof ugen.onload === 'function' ) ugen.onload( _buffer ) 
+        __resolve( ugen )
+      })
+    },
+    memory : {
+      values: { length:buffer !== undefined ? buffer.length : 1, idx:null }
+    }
+  },
+  properties
+  )
+
+  
+  if( properties !== undefined ) {
+    if( properties.global !== undefined ) {
+      gen.globals[ properties.global ] = ugen
+    }
+    if( properties.meta === true ) {
+      for( let i = 0, length = ugen.buffer.length; i < length; i++ ) {
+        Object.defineProperty( ugen, i, {
+          get () {
+            return peek( ugen, i, { mode:'simple', interp:'none' } )
+          },
+          set( v ) {
+            return poke( ugen, v, i )
+          }
+        })
+      }
+    }
+  }
+
+  let returnValue
+  if( shouldLoad === true ) {
+    returnValue = new Promise( (resolve,reject) => {
+      //ugen.load( x, resolve )
+      let promise = utilities.loadSample( x, ugen )
+      promise.then( _buffer => { 
+        proto.memo[ x ] = _buffer
+        ugen.memory.values.length = ugen.dim = _buffer.length
+
+        ugen.buffer = _buffer
+        //gen.once( 'memory init', ()=> {
+        //  console.log( "CALLED", ugen.memory )
+        //  gen.requestMemory( ugen.memory, ugen.immutable ) 
+        //  gen.memory.heap.set( _buffer, ugen.memory.values.idx )
+        //  if( typeof ugen.onload === 'function' ) ugen.onload( _buffer ) 
+        //})
+        
+        resolve( ugen )
+      })     
+    })
+  }else if( proto.memo[ x ] !== undefined ) {
+
+    gen.once( 'memory init', ()=> {
+      gen.requestMemory( ugen.memory, ugen.immutable ) 
+      gen.memory.heap.set( ugen.buffer, ugen.memory.values.idx )
+      if( typeof ugen.onload === 'function' ) ugen.onload( ugen.buffer ) 
+    })
+
+    returnValue = ugen
+  }else{
+    returnValue = ugen
+  }
+
+  return returnValue 
+}
+
+
+},{"./gen.js":32,"./peek.js":56,"./poke.js":58,"./utilities.js":75}],19:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen.js' ),
+    history = require( './history.js' ),
+    sub     = require( './sub.js' ),
+    add     = require( './add.js' ),
+    mul     = require( './mul.js' ),
+    memo    = require( './memo.js' )
+
+module.exports = ( in1 ) => {
+  let x1 = history(),
+      y1 = history(),
+      filter
+
+  //History x1, y1; y = in1 - x1 + y1*0.9997; x1 = in1; y1 = y; out1 = y;
+  filter = memo( add( sub( in1, x1.out ), mul( y1.out, .9997 ) ) )
+  x1.in( in1 )
+  y1.in( filter )
+
+  return filter
+}
+
+},{"./add.js":5,"./gen.js":32,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":69}],20:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen.js' ),
+    history = require( './history.js' ),
+    mul     = require( './mul.js' ),
+    t60     = require( './t60.js' )
+
+module.exports = ( decayTime = 44100, props ) => {
+  let properties = Object.assign({}, { initValue:1 }, props ),
+      ssd = history ( properties.initValue )
+
+  ssd.in( mul( ssd.out, t60( decayTime ) ) )
+
+  ssd.out.trigger = ()=> {
+    ssd.value = 1
+  }
+
+  return ssd.out 
+}
+
+},{"./gen.js":32,"./history.js":36,"./mul.js":50,"./t60.js":71}],21:[function(require,module,exports){
+'use strict'
+
+const gen  = require( './gen.js'  ),
+      data = require( './data.js' ),
+      poke = require( './poke.js' ),
+      peek = require( './peek.js' ),
+      sub  = require( './sub.js'  ),
+      wrap = require( './wrap.js' ),
+      accum= require( './accum.js'),
+      memo = require( './memo.js' )
+
+const proto = {
+  basename:'delay',
+
+  gen() {
+    let inputs = gen.getInputs( this )
+    
+    gen.memo[ this.name ] = inputs[0]
+    
+    return inputs[0]
+  },
+}
+
+const defaults = { size: 512, interp:'none' }
+
+module.exports = ( in1, taps, properties ) => {
+  const ugen = Object.create( proto )
+  let writeIdx, readIdx, delaydata
+
+  if( Array.isArray( taps ) === false ) taps = [ taps ]
+  
+  const props = Object.assign( {}, defaults, properties )
+
+  const maxTapSize = Math.max( ...taps )
+  if( props.size < maxTapSize ) props.size = maxTapSize
+
+  delaydata = data( props.size )
+  
+  ugen.inputs = []
+
+  writeIdx = accum( 1, 0, { max:props.size, min:0 })
+  
+  for( let i = 0; i < taps.length; i++ ) {
+    ugen.inputs[ i ] = peek( delaydata, wrap( sub( writeIdx, taps[i] ), 0, props.size ),{ mode:'samples', interp:props.interp })
+  }
+  
+  ugen.outputs = ugen.inputs // XXX ugh, Ugh, UGH! but i guess it works.
+
+  poke( delaydata, in1, writeIdx )
+
+  ugen.name = `${ugen.basename}${gen.getUID()}`
+
+  return ugen
+}
+
+},{"./accum.js":2,"./data.js":18,"./gen.js":32,"./memo.js":44,"./peek.js":56,"./poke.js":58,"./sub.js":69,"./wrap.js":77}],22:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen.js' ),
+    history = require( './history.js' ),
+    sub     = require( './sub.js' )
+
+module.exports = ( in1 ) => {
+  let n1 = history()
+    
+  n1.in( in1 )
+
+  let ugen = sub( in1, n1.out )
+  ugen.name = 'delta'+gen.getUID()
+
+  return ugen
+}
+
+},{"./gen.js":32,"./history.js":36,"./sub.js":69}],23:[function(require,module,exports){
+'use strict'
+
+let gen = require('./gen.js')
+
+const proto = {
+  basename:'div',
+  gen() {
+    let inputs = gen.getInputs( this ),
+        out=`  var ${this.name} = `,
+        diff = 0, 
+        numCount = 0,
+        lastNumber = inputs[ 0 ],
+        lastNumberIsUgen = isNaN( lastNumber ), 
+        divAtEnd = false
+
+    inputs.forEach( (v,i) => {
+      if( i === 0 ) return
+
+      let isNumberUgen = isNaN( v ),
+        isFinalIdx   = i === inputs.length - 1
+
+      if( !lastNumberIsUgen && !isNumberUgen ) {
+        lastNumber = lastNumber / v
+        out += lastNumber
+      }else{
+        out += `${lastNumber} / ${v}`
+      }
+
+      if( !isFinalIdx ) out += ' / ' 
+    })
+
+    out += '\n'
+
+    gen.memo[ this.name ] = this.name
+
+    return [ this.name, out ]
+  }
+}
+
+module.exports = (...args) => {
+  const div = Object.create( proto )
+  
+  Object.assign( div, {
+    id:     gen.getUID(),
+    inputs: args,
+  })
+
+  div.name = div.basename + div.id
+  
+  return div
+}
+
+},{"./gen.js":32}],24:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen' ),
+    windows = require( './windows' ),
+    data    = require( './data' ),
+    peek    = require( './peek' ),
+    phasor  = require( './phasor' ),
+    defaults = {
+      type:'triangular', length:1024, alpha:.15, shift:0, reverse:false 
+    }
+
+module.exports = props => {
+  
+  let properties = Object.assign( {}, defaults, props )
+  let buffer = new Float32Array( properties.length )
+
+  let name = properties.type + '_' + properties.length + '_' + properties.shift + '_' + properties.reverse + '_' + properties.alpha
+  if( typeof gen.globals.windows[ name ] === 'undefined' ) { 
+
+    for( let i = 0; i < properties.length; i++ ) {
+      buffer[ i ] = windows[ properties.type ]( properties.length, i, properties.alpha, properties.shift )
+    }
+
+    if( properties.reverse === true ) { 
+      buffer.reverse()
+    }
+    gen.globals.windows[ name ] = data( buffer )
+  }
+
+  let ugen = gen.globals.windows[ name ] 
+  ugen.name = 'env' + gen.getUID()
+
+  return ugen
+}
+
+},{"./data":18,"./gen":32,"./peek":56,"./phasor":57,"./windows":76}],25:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'eq',
+
+  gen() {
+    let inputs = gen.getInputs( this ), out
+
+    out = this.inputs[0] === this.inputs[1] ? 1 : `  var ${this.name} = (${inputs[0]} === ${inputs[1]}) | 0\n\n`
+
+    gen.memo[ this.name ] = `${this.name}`
+
+    return [ `${this.name}`, out ]
+  },
+
+}
+
+module.exports = ( in1, in2 ) => {
+  let ugen = Object.create( proto )
+  Object.assign( ugen, {
+    uid:     gen.getUID(),
+    inputs:  [ in1, in2 ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],26:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'exp',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.exp' : Math.exp })
+
+      out = `${ref}exp( ${inputs[0]} )`
+
+    } else {
+      out = Math.exp( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let exp = Object.create( proto )
+
+  exp.inputs = [ x ]
+
+  return exp
+}
+
+},{"./gen.js":32}],27:[function(require,module,exports){
+/**
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+// originally from:
+// https://github.com/GoogleChromeLabs/audioworklet-polyfill
+// I am modifying it to accept variable buffer sizes
+// and to get rid of some strange global initialization that seems required to use it
+// with browserify. Also, I added changes to fix a bug in Safari for the AudioWorkletProcessor
+// property not having a prototype (see:https://github.com/GoogleChromeLabs/audioworklet-polyfill/pull/25)
+// TODO: Why is there an iframe involved? (realm.js)
+
+const Realm = require( './realm.js' )
+
+const AWPF = function( self = window, bufferSize = 4096 ) {
+  const PARAMS = []
+  let nextPort
+
+  if (typeof AudioWorkletNode !== 'function' || !("audioWorklet" in AudioContext.prototype)) {
+    self.AudioWorkletNode = function AudioWorkletNode (context, name, options) {
+      const processor = getProcessorsForContext(context)[name];
+      const outputChannels = options && options.outputChannelCount ? options.outputChannelCount[0] : 2;
+      const scriptProcessor = context.createScriptProcessor( bufferSize, 2, outputChannels);
+
+      scriptProcessor.parameters = new Map();
+      if (processor.properties) {
+        for (let i = 0; i < processor.properties.length; i++) {
+          const prop = processor.properties[i];
+          const node = context.createGain().gain;
+          node.value = prop.defaultValue;
+          // @TODO there's no good way to construct the proxy AudioParam here
+          scriptProcessor.parameters.set(prop.name, node);
+        }
+      }
+
+      const mc = new MessageChannel();
+      nextPort = mc.port2;
+      const inst = new processor.Processor(options || {});
+      nextPort = null;
+
+      scriptProcessor.port = mc.port1;
+      scriptProcessor.processor = processor;
+      scriptProcessor.instance = inst;
+      scriptProcessor.onaudioprocess = onAudioProcess;
+      return scriptProcessor;
+    };
+
+    Object.defineProperty((self.AudioContext || self.webkitAudioContext).prototype, 'audioWorklet', {
+      get () {
+        return this.$$audioWorklet || (this.$$audioWorklet = new self.AudioWorklet(this));
+      }
+    });
+
+    /* XXX - ADDED TO OVERCOME PROBLEM IN SAFARI WHERE AUDIOWORKLETPROCESSOR PROTOTYPE IS NOT AN OBJECT */
+    const AudioWorkletProcessor = function() {
+      this.port = nextPort
+    }
+    AudioWorkletProcessor.prototype = {}
+
+    self.AudioWorklet = class AudioWorklet {
+      constructor (audioContext) {
+        this.$$context = audioContext;
+      }
+
+      addModule (url, options) {
+        return fetch(url).then(r => {
+          if (!r.ok) throw Error(r.status);
+          return r.text();
+        }).then( code => {
+          const context = {
+            sampleRate: this.$$context.sampleRate,
+            currentTime: this.$$context.currentTime,
+            AudioWorkletProcessor,
+            registerProcessor: (name, Processor) => {
+              const processors = getProcessorsForContext(this.$$context);
+              processors[name] = {
+                realm,
+                context,
+                Processor,
+                properties: Processor.parameterDescriptors || []
+              };
+            }
+          };
+
+          context.self = context;
+          const realm = new Realm(context, document.documentElement);
+          realm.exec(((options && options.transpile) || String)(code));
+          return null;
+        });
+      }
+    };
+  }
+
+  function onAudioProcess (e) {
+    const parameters = {};
+    let index = -1;
+    this.parameters.forEach((value, key) => {
+      const arr = PARAMS[++index] || (PARAMS[index] = new Float32Array(this.bufferSize));
+      // @TODO proper values here if possible
+      arr.fill(value.value);
+      parameters[key] = arr;
+    });
+    this.processor.realm.exec(
+      'self.sampleRate=sampleRate=' + this.context.sampleRate + ';' +
+      'self.currentTime=currentTime=' + this.context.currentTime
+    );
+    const inputs = channelToArray(e.inputBuffer);
+    const outputs = channelToArray(e.outputBuffer);
+    this.instance.process([inputs], [outputs], parameters);
+  }
+
+  function channelToArray (ch) {
+    const out = [];
+    for (let i = 0; i < ch.numberOfChannels; i++) {
+      out[i] = ch.getChannelData(i);
+    }
+    return out;
+  }
+
+  function getProcessorsForContext (audioContext) {
+    return audioContext.$$processors || (audioContext.$$processors = {});
+  }
+}
+
+module.exports = AWPF
+
+},{"./realm.js":28}],28:[function(require,module,exports){
+/**
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+module.exports = function Realm (scope, parentElement) {
+  const frame = document.createElement('iframe');
+  frame.style.cssText = 'position:absolute;left:0;top:-999px;width:1px;height:1px;';
+  parentElement.appendChild(frame);
+  const win = frame.contentWindow;
+  const doc = win.document;
+  let vars = 'var window,$hook';
+  for (const i in win) {
+    if (!(i in scope) && i !== 'eval') {
+      vars += ',';
+      vars += i;
+    }
+  }
+  for (const i in scope) {
+    vars += ',';
+    vars += i;
+    vars += '=self.';
+    vars += i;
+  }
+  const script = doc.createElement('script');
+  script.appendChild(doc.createTextNode(
+    `function $hook(self,console) {"use strict";
+        ${vars};return function() {return eval(arguments[0])}}`
+  ));
+  doc.body.appendChild(script);
+  this.exec = win.$hook.call(scope, scope, console);
+}
+
+},{}],29:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'floor',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    if( isNaN( inputs[0] ) ) {
+      //gen.closures.add({ [ this.name ]: Math.floor })
+
+      out = `( ${inputs[0]} | 0 )`
+
+    } else {
+      out = inputs[0] | 0
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let floor = Object.create( proto )
+
+  floor.inputs = [ x ]
+
+  return floor
+}
+
+},{"./gen.js":32}],30:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'fold',
+
+  gen() {
+    let code,
+        inputs = gen.getInputs( this ),
+        out
+
+    out = this.createCallback( inputs[0], this.min, this.max ) 
+
+    gen.memo[ this.name ] = this.name + '_value'
+
+    return [ this.name + '_value', out ]
+  },
+
+  createCallback( v, lo, hi ) {
+    let out =
+` var ${this.name}_value = ${v},
+      ${this.name}_range = ${hi} - ${lo},
+      ${this.name}_numWraps = 0
+
+  if(${this.name}_value >= ${hi}){
+    ${this.name}_value -= ${this.name}_range
+    if(${this.name}_value >= ${hi}){
+      ${this.name}_numWraps = ((${this.name}_value - ${lo}) / ${this.name}_range) | 0
+      ${this.name}_value -= ${this.name}_range * ${this.name}_numWraps
+    }
+    ${this.name}_numWraps++
+  } else if(${this.name}_value < ${lo}){
+    ${this.name}_value += ${this.name}_range
+    if(${this.name}_value < ${lo}){
+      ${this.name}_numWraps = ((${this.name}_value - ${lo}) / ${this.name}_range- 1) | 0
+      ${this.name}_value -= ${this.name}_range * ${this.name}_numWraps
+    }
+    ${this.name}_numWraps--
+  }
+  if(${this.name}_numWraps & 1) ${this.name}_value = ${hi} + ${lo} - ${this.name}_value
+`
+    return ' ' + out
+  }
+}
+
+module.exports = ( in1, min=0, max=1 ) => {
+  let ugen = Object.create( proto )
+
+  Object.assign( ugen, { 
+    min, 
+    max,
+    uid:    gen.getUID(),
+    inputs: [ in1 ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],31:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'gate',
+  controlString:null, // insert into output codegen for determining indexing
+  gen() {
+    let inputs = gen.getInputs( this ), out
+    
+    gen.requestMemory( this.memory )
+    
+    let lastInputMemoryIdx = 'memory[ ' + this.memory.lastInput.idx + ' ]',
+        outputMemoryStartIdx = this.memory.lastInput.idx + 1,
+        inputSignal = inputs[0],
+        controlSignal = inputs[1]
+    
+    /* 
+     * we check to see if the current control inputs equals our last input
+     * if so, we store the signal input in the memory associated with the currently
+     * selected index. If not, we put 0 in the memory associated with the last selected index,
+     * change the selected index, and then store the signal in put in the memery assoicated
+     * with the newly selected index
+     */
+    
+    out =
+
+` if( ${controlSignal} !== ${lastInputMemoryIdx} ) {
+    memory[ ${lastInputMemoryIdx} + ${outputMemoryStartIdx}  ] = 0 
+    ${lastInputMemoryIdx} = ${controlSignal}
+  }
+  memory[ ${outputMemoryStartIdx} + ${controlSignal} ] = ${inputSignal}
+
+`
+    this.controlString = inputs[1]
+    this.initialized = true
+
+    gen.memo[ this.name ] = this.name
+
+    this.outputs.forEach( v => v.gen() )
+
+    return [ null, ' ' + out ]
+  },
+
+  childgen() {
+    if( this.parent.initialized === false ) {
+      gen.getInputs( this ) // parent gate is only input of a gate output, should only be gen'd once.
+    }
+
+    if( gen.memo[ this.name ] === undefined ) {
+      gen.requestMemory( this.memory )
+
+      gen.memo[ this.name ] = `memory[ ${this.memory.value.idx} ]`
+    }
+    
+    return  `memory[ ${this.memory.value.idx} ]`
+  }
+}
+
+module.exports = ( control, in1, properties ) => {
+  let ugen = Object.create( proto ),
+      defaults = { count: 2 }
+
+  if( typeof properties !== undefined ) Object.assign( defaults, properties )
+
+  Object.assign( ugen, {
+    outputs: [],
+    uid:     gen.getUID(),
+    inputs:  [ in1, control ],
+    memory: {
+      lastInput: { length:1, idx:null }
+    },
+    initialized:false
+  },
+  defaults )
+  
+  ugen.name = `${ugen.basename}${gen.getUID()}`
+
+  for( let i = 0; i < ugen.count; i++ ) {
+    ugen.outputs.push({
+      index:i,
+      gen: proto.childgen,
+      parent:ugen,
+      inputs: [ ugen ],
+      memory: {
+        value: { length:1, idx:null }
+      },
+      initialized:false,
+      name: `${ugen.name}_out${gen.getUID()}`
+    })
+  }
+
+  return ugen
+}
+
+},{"./gen.js":32}],32:[function(require,module,exports){
+'use strict'
+
+/* gen.js
+ *
+ * low-level code generation for unit generators
+ *
+ */
+const MemoryHelper = require( 'memory-helper' )
+const EE = require( 'events' ).EventEmitter
+
+const gen = {
+
+  accum:0,
+  getUID() { return this.accum++ },
+  debug:false,
+  samplerate: 44100, // change on audiocontext creation
+  shouldLocalize: false,
+  graph:null,
+  globals:{
+    windows: {},
+  },
+  mode:'worklet',
+  
+  /* closures
+   *
+   * Functions that are included as arguments to master callback. Examples: Math.abs, Math.random etc.
+   * XXX Should probably be renamed callbackProperties or something similar... closures are no longer used.
+   */
+
+  closures: new Set(),
+  params:   new Set(),
+  inputs:   new Set(),
+
+  parameters: new Set(),
+  endBlock: new Set(),
+  histories: new Map(),
+
+  memo: {},
+
+  //data: {},
+  
+  /* export
+   *
+   * place gen functions into another object for easier reference
+   */
+
+  export( obj ) {},
+
+  addToEndBlock( v ) {
+    this.endBlock.add( '  ' + v )
+  },
+  
+  requestMemory( memorySpec, immutable=false ) {
+    for( let key in memorySpec ) {
+      let request = memorySpec[ key ]
+
+      //console.log( 'requesting ' + key + ':' , JSON.stringify( request ) )
+
+      if( request.length === undefined ) {
+        console.log( 'undefined length for:', key )
+
+        continue
+      }
+
+      request.idx = gen.memory.alloc( request.length, immutable )
+    }
+  },
+
+  createMemory( amount=4096, type ) {
+    const mem = MemoryHelper.create( amount, type )
+    return mem
+  },
+
+  createCallback( ugen, mem, debug = false, shouldInlineMemory=false, memType = Float64Array ) {
+    let isStereo = Array.isArray( ugen ) && ugen.length > 1,
+        callback, 
+        channel1, channel2
+
+    if( typeof mem === 'number' || mem === undefined ) {
+      this.memory = this.createMemory( mem, memType )
+    }else{
+      this.memory = mem
+    }
+    
+    this.outputIdx = this.memory.alloc( 2, true )
+    this.emit( 'memory init' )
+
+    //console.log( 'cb memory:', mem )
+    this.graph = ugen
+    this.memo = {} 
+    this.endBlock.clear()
+    this.closures.clear()
+    this.inputs.clear()
+    this.params.clear()
+    this.globals = { windows:{} }
+    
+    this.parameters.clear()
+    
+    this.functionBody = "  'use strict'\n"
+    if( shouldInlineMemory===false ) {
+      this.functionBody += this.mode === 'worklet' ? 
+        "  var memory = this.memory\n\n" :
+        "  var memory = gen.memory\n\n"
+    }
+
+    // call .gen() on the head of the graph we are generating the callback for
+    //console.log( 'HEAD', ugen )
+    for( let i = 0; i < 1 + isStereo; i++ ) {
+      if( typeof ugen[i] === 'number' ) continue
+
+      //let channel = isStereo ? ugen[i].gen() : ugen.gen(),
+      let channel = isStereo ? this.getInput( ugen[i] ) : this.getInput( ugen ), 
+          body = ''
+
+      // if .gen() returns array, add ugen callback (graphOutput[1]) to our output functions body
+      // and then return name of ugen. If .gen() only generates a number (for really simple graphs)
+      // just return that number (graphOutput[0]).
+      body += Array.isArray( channel ) ? channel[1] + '\n' + channel[0] : channel
+
+      // split body to inject return keyword on last line
+      body = body.split('\n')
+     
+      //if( debug ) console.log( 'functionBody length', body )
+      
+      // next line is to accommodate memo as graph head
+      if( body[ body.length -1 ].trim().indexOf('let') > -1 ) { body.push( '\n' ) } 
+
+      // get index of last line
+      let lastidx = body.length - 1
+
+      // insert return keyword
+      body[ lastidx ] = '  memory[' + (this.outputIdx + i) + ']  = ' + body[ lastidx ] + '\n'
+
+      this.functionBody += body.join('\n')
+    }
+    
+    this.histories.forEach( value => {
+      if( value !== null )
+        value.gen()      
+    })
+
+    const returnStatement = isStereo ? `  return [ memory[${this.outputIdx}], memory[${this.outputIdx + 1}] ]` : `  return memory[${this.outputIdx}]`
+    
+    this.functionBody = this.functionBody.split('\n')
+
+    if( this.endBlock.size ) { 
+      this.functionBody = this.functionBody.concat( Array.from( this.endBlock ) )
+      this.functionBody.push( returnStatement )
+    }else{
+      this.functionBody.push( returnStatement )
+    }
+    // reassemble function body
+    this.functionBody = this.functionBody.join('\n')
+
+    // we can only dynamically create a named function by dynamically creating another function
+    // to construct the named function! sheesh...
+    //
+    if( shouldInlineMemory === true ) {
+      this.parameters.add( 'memory' )
+    }
+
+    let paramString = ''
+    if( this.mode === 'worklet' ) {
+      for( let name of this.parameters.values() ) {
+        paramString += name + ','
+      }
+      paramString = paramString.slice(0,-1)
+    }
+
+    const separator = this.parameters.size !== 0 && this.inputs.size > 0 ? ', ' : ''
+
+    let inputString = ''
+    if( this.mode === 'worklet' ) {
+      for( let ugen of this.inputs.values() ) {
+        inputString += ugen.name + ','
+      }
+      inputString = inputString.slice(0,-1)
+    }
+
+    let buildString = this.mode === 'worklet'
+      ? `return function( ${inputString} ${separator} ${paramString} ){ \n${ this.functionBody }\n}`
+      : `return function gen( ${ [...this.parameters].join(',') } ){ \n${ this.functionBody }\n}`
+    
+    if( this.debug || debug ) console.log( buildString ) 
+
+    callback = new Function( buildString )()
+
+    // assign properties to named function
+    for( let dict of this.closures.values() ) {
+      let name = Object.keys( dict )[0],
+          value = dict[ name ]
+
+      callback[ name ] = value
+    }
+
+    for( let dict of this.params.values() ) {
+      let name = Object.keys( dict )[0],
+          ugen = dict[ name ]
+      
+      Object.defineProperty( callback, name, {
+        configurable: true,
+        get() { return ugen.value },
+        set(v){ ugen.value = v }
+      })
+      //callback[ name ] = value
+    }
+
+    callback.members = this.closures
+    callback.data = this.data
+    callback.params = this.params
+    callback.inputs = this.inputs
+    callback.parameters = this.parameters//.slice( 0 )
+    callback.out = this.memory.heap.subarray( this.outputIdx, this.outputIdx + 2 )
+    callback.isStereo = isStereo
+
+    //if( MemoryHelper.isPrototypeOf( this.memory ) ) 
+    callback.memory = this.memory.heap
+
+    this.histories.clear()
+
+    return callback
+  },
+  
+  /* getInputs
+   *
+   * Called by each individual ugen when their .gen() method is called to resolve their various inputs.
+   * If an input is a number, return the number. If
+   * it is an ugen, call .gen() on the ugen, memoize the result and return the result. If the
+   * ugen has previously been memoized return the memoized value.
+   *
+   */
+  getInputs( ugen ) {
+    return ugen.inputs.map( gen.getInput ) 
+  },
+
+  getInput( input ) {
+    let isObject = typeof input === 'object',
+        processedInput
+
+    if( isObject ) { // if input is a ugen... 
+      //console.log( input.name, gen.memo[ input.name ] )
+      if( gen.memo[ input.name ] ) { // if it has been memoized...
+        processedInput = gen.memo[ input.name ]
+      }else if( Array.isArray( input ) ) {
+        gen.getInput( input[0] )
+        gen.getInput( input[1] )
+      }else{ // if not memoized generate code  
+        if( typeof input.gen !== 'function' ) {
+          console.log( 'no gen found:', input, input.gen )
+          input = input.graph
+        }
+        let code = input.gen()
+        //if( code.indexOf( 'Object' ) > -1 ) console.log( 'bad input:', input, code )
+        
+        if( Array.isArray( code ) ) {
+          if( !gen.shouldLocalize ) {
+            gen.functionBody += code[1]
+          }else{
+            gen.codeName = code[0]
+            gen.localizedCode.push( code[1] )
+          }
+          //console.log( 'after GEN' , this.functionBody )
+          processedInput = code[0]
+        }else{
+          processedInput = code
+        }
+      }
+    }else{ // it input is a number
+      processedInput = input
+    }
+
+    return processedInput
+  },
+
+  startLocalize() {
+    this.localizedCode = []
+    this.shouldLocalize = true
+  },
+  endLocalize() {
+    this.shouldLocalize = false
+
+    return [ this.codeName, this.localizedCode.slice(0) ]
+  },
+
+  free( graph ) {
+    if( Array.isArray( graph ) ) { // stereo ugen
+      for( let channel of graph ) {
+        this.free( channel )
+      }
+    } else {
+      if( typeof graph === 'object' ) {
+        if( graph.memory !== undefined ) {
+          for( let memoryKey in graph.memory ) {
+            this.memory.free( graph.memory[ memoryKey ].idx )
+          }
+        }
+        if( Array.isArray( graph.inputs ) ) {
+          for( let ugen of graph.inputs ) {
+            this.free( ugen )
+          }
+        }
+      }
+    }
+  }
+}
+
+gen.__proto__ = new EE()
+
+module.exports = gen
+
+},{"events":116,"memory-helper":78}],33:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'gt',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    out = `  var ${this.name} = `  
+
+    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
+      out += `(( ${inputs[0]} > ${inputs[1]}) | 0 )`
+    } else {
+      out += inputs[0] > inputs[1] ? 1 : 0 
+    }
+    out += '\n\n'
+
+    gen.memo[ this.name ] = this.name
+
+    return [this.name, out]
+  }
+}
+
+module.exports = (x,y) => {
+  let gt = Object.create( proto )
+
+  gt.inputs = [ x,y ]
+  gt.name = gt.basename + gen.getUID()
+
+  return gt
+}
+
+},{"./gen.js":32}],34:[function(require,module,exports){
+'use strict'
+
+let gen = require('./gen.js')
+
+let proto = {
+  name:'gte',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    out = `  var ${this.name} = `  
+
+    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
+      out += `( ${inputs[0]} >= ${inputs[1]} | 0 )`
+    } else {
+      out += inputs[0] >= inputs[1] ? 1 : 0 
+    }
+    out += '\n\n'
+
+    gen.memo[ this.name ] = this.name
+
+    return [this.name, out]
+  }
+}
+
+module.exports = (x,y) => {
+  let gt = Object.create( proto )
+
+  gt.inputs = [ x,y ]
+  gt.name = 'gte' + gen.getUID()
+
+  return gt
+}
+
+},{"./gen.js":32}],35:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'gtp',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
+      out = `(${inputs[ 0 ]} * ( ( ${inputs[0]} > ${inputs[1]} ) | 0 ) )` 
+    } else {
+      out = inputs[0] * ( ( inputs[0] > inputs[1] ) | 0 )
+    }
+    
+    return out
+  }
+}
+
+module.exports = (x,y) => {
+  let gtp = Object.create( proto )
+
+  gtp.inputs = [ x,y ]
+
+  return gtp
+}
+
+},{"./gen.js":32}],36:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+module.exports = ( in1=0 ) => {
+  let ugen = {
+    inputs: [ in1 ],
+    memory: { value: { length:1, idx: null } },
+    recorder: null,
+
+    in( v ) {
+      if( gen.histories.has( v ) ){
+        let memoHistory = gen.histories.get( v )
+        ugen.name = memoHistory.name
+        return memoHistory
+      }
+
+      let obj = {
+        gen() {
+          let inputs = gen.getInputs( ugen )
+
+          if( ugen.memory.value.idx === null ) {
+            gen.requestMemory( ugen.memory )
+            gen.memory.heap[ ugen.memory.value.idx ] = in1
+          }
+
+          let idx = ugen.memory.value.idx
+          
+          gen.addToEndBlock( 'memory[ ' + idx + ' ] = ' + inputs[ 0 ] )
+          
+          // return ugen that is being recorded instead of ssd.
+          // this effectively makes a call to ssd.record() transparent to the graph.
+          // recording is triggered by prior call to gen.addToEndBlock.
+          gen.histories.set( v, obj )
+
+          return inputs[ 0 ]
+        },
+        name: ugen.name + '_in'+gen.getUID(),
+        memory: ugen.memory
+      }
+
+      this.inputs[ 0 ] = v
+      
+      ugen.recorder = obj
+
+      return obj
+    },
+    
+    out: {
+            
+      gen() {
+        if( ugen.memory.value.idx === null ) {
+          if( gen.histories.get( ugen.inputs[0] ) === undefined ) {
+            gen.histories.set( ugen.inputs[0], ugen.recorder )
+          }
+          gen.requestMemory( ugen.memory )
+          gen.memory.heap[ ugen.memory.value.idx ] = parseFloat( in1 )
+        }
+        let idx = ugen.memory.value.idx
+         
+        return 'memory[ ' + idx + ' ] '
+      },
+    },
+
+    uid: gen.getUID(),
+  }
+  
+  ugen.out.memory = ugen.memory 
+
+  ugen.name = 'history' + ugen.uid
+  ugen.out.name = ugen.name + '_out'
+  ugen.in._name  = ugen.name = '_in'
+
+  Object.defineProperty( ugen, 'value', {
+    get() {
+      if( this.memory.value.idx !== null ) {
+        return gen.memory.heap[ this.memory.value.idx ]
+      }
+    },
+    set( v ) {
+      if( this.memory.value.idx !== null ) {
+        gen.memory.heap[ this.memory.value.idx ] = v 
+      }
+    }
+  })
+
+  return ugen
+}
+
+},{"./gen.js":32}],37:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'ifelse',
+
+  gen() {
+    let conditionals = this.inputs[0],
+        defaultValue = gen.getInput( conditionals[ conditionals.length - 1] ),
+        out = `  var ${this.name}_out = ${defaultValue}\n` 
+
+    //console.log( 'conditionals:', this.name, conditionals )
+
+    //console.log( 'defaultValue:', defaultValue )
+
+    for( let i = 0; i < conditionals.length - 2; i+= 2 ) {
+      let isEndBlock = i === conditionals.length - 3,
+          cond  = gen.getInput( conditionals[ i ] ),
+          preblock = conditionals[ i+1 ],
+          block, blockName, output
+
+      //console.log( 'pb', preblock )
+
+      if( typeof preblock === 'number' ){
+        block = preblock
+        blockName = null
+      }else{
+        if( gen.memo[ preblock.name ] === undefined ) {
+          // used to place all code dependencies in appropriate blocks
+          gen.startLocalize()
+
+          gen.getInput( preblock )
+
+          block = gen.endLocalize()
+          blockName = block[0]
+          block = block[ 1 ].join('')
+          block = '  ' + block.replace( /\n/gi, '\n  ' )
+        }else{
+          block = ''
+          blockName = gen.memo[ preblock.name ]
+        }
+      }
+
+      output = blockName === null ? 
+        `  ${this.name}_out = ${block}` :
+        `${block}  ${this.name}_out = ${blockName}`
+      
+      if( i===0 ) out += ' '
+      out += 
+` if( ${cond} === 1 ) {
+${output}
+  }`
+
+      if( !isEndBlock ) {
+        out += ` else`
+      }else{
+        out += `\n`
+      }
+    }
+
+    gen.memo[ this.name ] = `${this.name}_out`
+
+    return [ `${this.name}_out`, out ]
+  }
+}
+
+module.exports = ( ...args  ) => {
+  let ugen = Object.create( proto ),
+      conditions = Array.isArray( args[0] ) ? args[0] : args
+
+  Object.assign( ugen, {
+    uid:     gen.getUID(),
+    inputs:  [ conditions ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],38:[function(require,module,exports){
+'use strict'
+
+let gen = require('./gen.js')
+
+let proto = {
+  basename:'in',
+
+  gen() {
+    const isWorklet = gen.mode === 'worklet'
+
+    if( isWorklet ) {
+      gen.inputs.add( this )
+    }else{
+      gen.parameters.add( this.name )
+    }
+
+    gen.memo[ this.name ] = isWorklet === true ? this.name + '[i]' : this.name
+
+    return gen.memo[ this.name ]
+  } 
+}
+
+module.exports = ( name, inputNumber=0, channelNumber=0, defaultValue=0, min=0, max=1 ) => {
+  let input = Object.create( proto )
+
+  input.id   = gen.getUID()
+  input.name = name !== undefined ? name : `${input.basename}${input.id}`
+  Object.assign( input, { defaultValue, min, max, inputNumber, channelNumber })
+
+  input[0] = {
+    gen() {
+      if( ! gen.parameters.has( input.name ) ) gen.parameters.add( input.name )
+      return input.name + '[0]'
+    }
+  }
+  input[1] = {
+    gen() {
+      if( ! gen.parameters.has( input.name ) ) gen.parameters.add( input.name )
+      return input.name + '[1]'
+    }
+  }
+
+
+  return input
+}
+
+},{"./gen.js":32}],39:[function(require,module,exports){
+'use strict'
+
+const library = {
+  export( destination ) {
+    if( destination === window ) {
+      destination.ssd = library.history    // history is window object property, so use ssd as alias
+      destination.input = library.in       // in is a keyword in javascript
+      destination.ternary = library.switch // switch is a keyword in javascript
+
+      delete library.history
+      delete library.in
+      delete library.switch
+    }
+
+    Object.assign( destination, library )
+
+    Object.defineProperty( library, 'samplerate', {
+      get() { return library.gen.samplerate },
+      set(v) {}
+    })
+
+    library.in = destination.input
+    library.history = destination.ssd
+    library.switch = destination.ternary
+
+    destination.clip = library.clamp
+  },
+
+  gen:      require( './gen.js' ),
+  
+  abs:      require( './abs.js' ),
+  round:    require( './round.js' ),
+  param:    require( './param.js' ),
+  add:      require( './add.js' ),
+  sub:      require( './sub.js' ),
+  mul:      require( './mul.js' ),
+  div:      require( './div.js' ),
+  accum:    require( './accum.js' ),
+  counter:  require( './counter.js' ),
+  sin:      require( './sin.js' ),
+  cos:      require( './cos.js' ),
+  tan:      require( './tan.js' ),
+  tanh:     require( './tanh.js' ),
+  asin:     require( './asin.js' ),
+  acos:     require( './acos.js' ),
+  atan:     require( './atan.js' ),  
+  phasor:   require( './phasor.js' ),
+  data:     require( './data.js' ),
+  peek:     require( './peek.js' ),
+  cycle:    require( './cycle.js' ),
+  history:  require( './history.js' ),
+  delta:    require( './delta.js' ),
+  floor:    require( './floor.js' ),
+  ceil:     require( './ceil.js' ),
+  min:      require( './min.js' ),
+  max:      require( './max.js' ),
+  sign:     require( './sign.js' ),
+  dcblock:  require( './dcblock.js' ),
+  memo:     require( './memo.js' ),
+  rate:     require( './rate.js' ),
+  wrap:     require( './wrap.js' ),
+  mix:      require( './mix.js' ),
+  clamp:    require( './clamp.js' ),
+  poke:     require( './poke.js' ),
+  delay:    require( './delay.js' ),
+  fold:     require( './fold.js' ),
+  mod :     require( './mod.js' ),
+  sah :     require( './sah.js' ),
+  noise:    require( './noise.js' ),
+  not:      require( './not.js' ),
+  gt:       require( './gt.js' ),
+  gte:      require( './gte.js' ),
+  lt:       require( './lt.js' ), 
+  lte:      require( './lte.js' ), 
+  bool:     require( './bool.js' ),
+  gate:     require( './gate.js' ),
+  train:    require( './train.js' ),
+  slide:    require( './slide.js' ),
+  in:       require( './in.js' ),
+  t60:      require( './t60.js'),
+  mtof:     require( './mtof.js'),
+  ltp:      require( './ltp.js'),        // TODO: test
+  gtp:      require( './gtp.js'),        // TODO: test
+  switch:   require( './switch.js' ),
+  mstosamps:require( './mstosamps.js' ), // TODO: needs test,
+  selector: require( './selector.js' ),
+  utilities:require( './utilities.js' ),
+  pow:      require( './pow.js' ),
+  attack:   require( './attack.js' ),
+  decay:    require( './decay.js' ),
+  windows:  require( './windows.js' ),
+  env:      require( './env.js' ),
+  ad:       require( './ad.js'  ),
+  adsr:     require( './adsr.js' ),
+  ifelse:   require( './ifelseif.js' ),
+  bang:     require( './bang.js' ),
+  and:      require( './and.js' ),
+  pan:      require( './pan.js' ),
+  eq:       require( './eq.js' ),
+  neq:      require( './neq.js' ),
+  exp:      require( './exp.js' ),
+  process:  require( './process.js' ),
+  seq:      require( './seq.js' )
+}
+
+library.gen.lib = library
+
+module.exports = library
+
+},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./data.js":18,"./dcblock.js":19,"./decay.js":20,"./delay.js":21,"./delta.js":22,"./div.js":23,"./env.js":24,"./eq.js":25,"./exp.js":26,"./floor.js":29,"./fold.js":30,"./gate.js":31,"./gen.js":32,"./gt.js":33,"./gte.js":34,"./gtp.js":35,"./history.js":36,"./ifelseif.js":37,"./in.js":38,"./lt.js":40,"./lte.js":41,"./ltp.js":42,"./max.js":43,"./memo.js":44,"./min.js":45,"./mix.js":46,"./mod.js":47,"./mstosamps.js":48,"./mtof.js":49,"./mul.js":50,"./neq.js":51,"./noise.js":52,"./not.js":53,"./pan.js":54,"./param.js":55,"./peek.js":56,"./phasor.js":57,"./poke.js":58,"./pow.js":59,"./process.js":60,"./rate.js":61,"./round.js":62,"./sah.js":63,"./selector.js":64,"./seq.js":65,"./sign.js":66,"./sin.js":67,"./slide.js":68,"./sub.js":69,"./switch.js":70,"./t60.js":71,"./tan.js":72,"./tanh.js":73,"./train.js":74,"./utilities.js":75,"./windows.js":76,"./wrap.js":77}],40:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'lt',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    out = `  var ${this.name} = `  
+
+    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
+      out += `(( ${inputs[0]} < ${inputs[1]}) | 0  )`
+    } else {
+      out += inputs[0] < inputs[1] ? 1 : 0 
+    }
+    out += '\n'
+
+    gen.memo[ this.name ] = this.name
+
+    return [this.name, out]
+    
+    return out
+  }
+}
+
+module.exports = (x,y) => {
+  let lt = Object.create( proto )
+
+  lt.inputs = [ x,y ]
+  lt.name = lt.basename + gen.getUID()
+
+  return lt
+}
+
+},{"./gen.js":32}],41:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'lte',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    out = `  var ${this.name} = `  
+
+    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
+      out += `( ${inputs[0]} <= ${inputs[1]} | 0  )`
+    } else {
+      out += inputs[0] <= inputs[1] ? 1 : 0 
+    }
+    out += '\n'
+
+    gen.memo[ this.name ] = this.name
+
+    return [this.name, out]
+    
+    return out
+  }
+}
+
+module.exports = (x,y) => {
+  let lt = Object.create( proto )
+
+  lt.inputs = [ x,y ]
+  lt.name = 'lte' + gen.getUID()
+
+  return lt
+}
+
+},{"./gen.js":32}],42:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'ltp',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
+      out = `(${inputs[ 0 ]} * (( ${inputs[0]} < ${inputs[1]} ) | 0 ) )` 
+    } else {
+      out = inputs[0] * (( inputs[0] < inputs[1] ) | 0 )
+    }
+    
+    return out
+  }
+}
+
+module.exports = (x,y) => {
+  let ltp = Object.create( proto )
+
+  ltp.inputs = [ x,y ]
+
+  return ltp
+}
+
+},{"./gen.js":32}],43:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'max',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.max' : Math.max })
+
+      out = `${ref}max( ${inputs[0]}, ${inputs[1]} )`
+
+    } else {
+      out = Math.max( parseFloat( inputs[0] ), parseFloat( inputs[1] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = (x,y) => {
+  let max = Object.create( proto )
+
+  max.inputs = [ x,y ]
+
+  return max
+}
+
+},{"./gen.js":32}],44:[function(require,module,exports){
+'use strict'
+
+let gen = require('./gen.js')
+
+let proto = {
+  basename:'memo',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    out = `  var ${this.name} = ${inputs[0]}\n`
+
+    gen.memo[ this.name ] = this.name
+
+    return [ this.name, out ]
+  } 
+}
+
+module.exports = (in1,memoName) => {
+  let memo = Object.create( proto )
+  
+  memo.inputs = [ in1 ]
+  memo.id   = gen.getUID()
+  memo.name = memoName !== undefined ? memoName + '_' + gen.getUID() : `${memo.basename}${memo.id}`
+
+  return memo
+}
+
+},{"./gen.js":32}],45:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'min',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.min' : Math.min })
+
+      out = `${ref}min( ${inputs[0]}, ${inputs[1]} )`
+
+    } else {
+      out = Math.min( parseFloat( inputs[0] ), parseFloat( inputs[1] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = (x,y) => {
+  let min = Object.create( proto )
+
+  min.inputs = [ x,y ]
+
+  return min
+}
+
+},{"./gen.js":32}],46:[function(require,module,exports){
+'use strict'
+
+let gen = require('./gen.js'),
+    add = require('./add.js'),
+    mul = require('./mul.js'),
+    sub = require('./sub.js'),
+    memo= require('./memo.js')
+
+module.exports = ( in1, in2, t=.5 ) => {
+  let ugen = memo( add( mul(in1, sub(1,t ) ), mul( in2, t ) ) )
+  ugen.name = 'mix' + gen.getUID()
+
+  return ugen
+}
+
+},{"./add.js":5,"./gen.js":32,"./memo.js":44,"./mul.js":50,"./sub.js":69}],47:[function(require,module,exports){
+'use strict'
+
+let gen = require('./gen.js')
+
+module.exports = (...args) => {
+  let mod = {
+    id:     gen.getUID(),
+    inputs: args,
+
+    gen() {
+      let inputs = gen.getInputs( this ),
+          out='(',
+          diff = 0, 
+          numCount = 0,
+          lastNumber = inputs[ 0 ],
+          lastNumberIsUgen = isNaN( lastNumber ), 
+          modAtEnd = false
+
+      inputs.forEach( (v,i) => {
+        if( i === 0 ) return
+
+        let isNumberUgen = isNaN( v ),
+            isFinalIdx   = i === inputs.length - 1
+
+        if( !lastNumberIsUgen && !isNumberUgen ) {
+          lastNumber = lastNumber % v
+          out += lastNumber
+        }else{
+          out += `${lastNumber} % ${v}`
+        }
+
+        if( !isFinalIdx ) out += ' % ' 
+      })
+
+      out += ')'
+
+      return out
+    }
+  }
+  
+  return mod
+}
+
+},{"./gen.js":32}],48:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'mstosamps',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this ),
+        returnValue
+
+    if( isNaN( inputs[0] ) ) {
+      out = `  var ${this.name } = ${gen.samplerate} / 1000 * ${inputs[0]} \n\n`
+     
+      gen.memo[ this.name ] = out
+      
+      returnValue = [ this.name, out ]
+    } else {
+      out = gen.samplerate / 1000 * this.inputs[0]
+
+      returnValue = out
+    }    
+
+    return returnValue
+  }
+}
+
+module.exports = x => {
+  let mstosamps = Object.create( proto )
+
+  mstosamps.inputs = [ x ]
+  mstosamps.name = proto.basename + gen.getUID()
+
+  return mstosamps
+}
+
+},{"./gen.js":32}],49:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'mtof',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: Math.exp })
+
+      out = `( ${this.tuning} * gen.exp( .057762265 * (${inputs[0]} - 69) ) )`
+
+    } else {
+      out = this.tuning * Math.exp( .057762265 * ( inputs[0] - 69) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = ( x, props ) => {
+  let ugen = Object.create( proto ),
+      defaults = { tuning:440 }
+  
+  if( props !== undefined ) Object.assign( props.defaults )
+
+  Object.assign( ugen, defaults )
+  ugen.inputs = [ x ]
+  
+
+  return ugen
+}
+
+},{"./gen.js":32}],50:[function(require,module,exports){
+'use strict'
+
+const gen = require('./gen.js')
+
+const proto = {
+  basename: 'mul',
+
+  gen() {
+    let inputs = gen.getInputs( this ),
+        out = `  var ${this.name} = `,
+        sum = 1, numCount = 0, mulAtEnd = false, alreadyFullSummed = true
+
+    inputs.forEach( (v,i) => {
+      if( isNaN( v ) ) {
+        out += v
+        if( i < inputs.length -1 ) {
+          mulAtEnd = true
+          out += ' * '
+        }
+        alreadyFullSummed = false
+      }else{
+        if( i === 0 ) {
+          sum = v
+        }else{
+          sum *= parseFloat( v )
+        }
+        numCount++
+      }
+    })
+
+    if( numCount > 0 ) {
+      out += mulAtEnd || alreadyFullSummed ? sum : ' * ' + sum
+    }
+
+    out += '\n'
+
+    gen.memo[ this.name ] = this.name
+
+    return [ this.name, out ]
+  }
+}
+
+module.exports = ( ...args ) => {
+  const mul = Object.create( proto )
+  
+  Object.assign( mul, {
+      id:     gen.getUID(),
+      inputs: args,
+  })
+  
+  mul.name = mul.basename + mul.id
+
+  return mul
+}
+
+},{"./gen.js":32}],51:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'neq',
+
+  gen() {
+    let inputs = gen.getInputs( this ), out
+
+    out = /*this.inputs[0] !== this.inputs[1] ? 1 :*/ `  var ${this.name} = (${inputs[0]} !== ${inputs[1]}) | 0\n\n`
+
+    gen.memo[ this.name ] = this.name
+
+    return [ this.name, out ]
+  },
+
+}
+
+module.exports = ( in1, in2 ) => {
+  let ugen = Object.create( proto )
+  Object.assign( ugen, {
+    uid:     gen.getUID(),
+    inputs:  [ in1, in2 ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],52:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'noise',
+
+  gen() {
+    let out
+
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    gen.closures.add({ 'noise' : isWorklet ? 'Math.random' : Math.random })
+
+    out = `  var ${this.name} = ${ref}noise()\n`
+    
+    gen.memo[ this.name ] = this.name
+
+    return [ this.name, out ]
+  }
+}
+
+module.exports = x => {
+  let noise = Object.create( proto )
+  noise.name = proto.name + gen.getUID()
+
+  return noise
+}
+
+},{"./gen.js":32}],53:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'not',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    if( isNaN( this.inputs[0] ) ) {
+      out = `( ${inputs[0]} === 0 ? 1 : 0 )`
+    } else {
+      out = !inputs[0] === 0 ? 1 : 0
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let not = Object.create( proto )
+
+  not.inputs = [ x ]
+
+  return not
+}
+
+},{"./gen.js":32}],54:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' ),
+    data = require( './data.js' ),
+    peek = require( './peek.js' ),
+    mul  = require( './mul.js' )
+
+let proto = {
+  basename:'pan', 
+  initTable() {    
+    let bufferL = new Float32Array( 1024 ),
+        bufferR = new Float32Array( 1024 )
+
+    const angToRad = Math.PI / 180
+    for( let i = 0; i < 1024; i++ ) { 
+      let pan = i * ( 90 / 1024 )
+      bufferL[i] = Math.cos( pan * angToRad ) 
+      bufferR[i] = Math.sin( pan * angToRad )
+    }
+
+    gen.globals.panL = data( bufferL, 1, { immutable:true })
+    gen.globals.panR = data( bufferR, 1, { immutable:true })
+  }
+
+}
+
+module.exports = ( leftInput, rightInput, pan =.5, properties ) => {
+  if( gen.globals.panL === undefined ) proto.initTable()
+
+  let ugen = Object.create( proto )
+
+  Object.assign( ugen, {
+    uid:     gen.getUID(),
+    inputs:  [ leftInput, rightInput ],
+    left:    mul( leftInput, peek( gen.globals.panL, pan, { boundmode:'clamp' }) ),
+    right:   mul( rightInput, peek( gen.globals.panR, pan, { boundmode:'clamp' }) )
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./data.js":18,"./gen.js":32,"./mul.js":50,"./peek.js":56}],55:[function(require,module,exports){
+'use strict'
+
+let gen = require('./gen.js')
+
+let proto = {
+  basename: 'param',
+
+  gen() {
+    gen.requestMemory( this.memory )
+    
+    gen.params.add( this )
+
+    const isWorklet = gen.mode === 'worklet'
+
+    if( isWorklet ) gen.parameters.add( this.name )
+
+    this.value = this.initialValue
+
+    gen.memo[ this.name ] = isWorklet ? this.name : `memory[${this.memory.value.idx}]`
+
+    return gen.memo[ this.name ]
+  } 
+}
+
+module.exports = ( propName=0, value=0, min=0, max=1 ) => {
+  let ugen = Object.create( proto )
+  
+  if( typeof propName !== 'string' ) {
+    ugen.name = ugen.basename + gen.getUID()
+    ugen.initialValue = propName
+  }else{
+    ugen.name = propName
+    ugen.initialValue = value
+  }
+
+  ugen.min = min
+  ugen.max = max
+  ugen.defaultValue = ugen.initialValue
+
+  // for storing worklet nodes once they're instantiated
+  ugen.waapi = null
+
+  ugen.isWorklet = gen.mode === 'worklet'
+
+  Object.defineProperty( ugen, 'value', {
+    get() {
+      if( this.memory.value.idx !== null ) {
+        return gen.memory.heap[ this.memory.value.idx ]
+      }else{
+        return this.initialValue
+      }
+    },
+    set( v ) {
+      if( this.memory.value.idx !== null ) {
+        if( this.isWorklet && this.waapi !== null ) {
+          this.waapi.value = v
+        }else{
+          gen.memory.heap[ this.memory.value.idx ] = v
+        } 
+      }
+    }
+  })
+
+  ugen.memory = {
+    value: { length:1, idx:null }
+  }
+
+  return ugen
+}
+
+},{"./gen.js":32}],56:[function(require,module,exports){
+
+const gen  = require('./gen.js'),
+      dataUgen = require('./data.js')
+
+let proto = {
+  basename:'peek',
+
+  gen() {
+    let genName = 'gen.' + this.name,
+        inputs = gen.getInputs( this ),
+        out, functionBody, next, lengthIsLog2, idx
+    
+    idx = inputs[1]
+    lengthIsLog2 = (Math.log2( this.data.buffer.length ) | 0)  === Math.log2( this.data.buffer.length )
+
+    if( this.mode !== 'simple' ) {
+
+    functionBody = `  var ${this.name}_dataIdx  = ${idx}, 
+      ${this.name}_phase = ${this.mode === 'samples' ? inputs[0] : inputs[0] + ' * ' + (this.data.buffer.length) }, 
+      ${this.name}_index = ${this.name}_phase | 0,\n`
+
+    if( this.boundmode === 'wrap' ) {
+      next = lengthIsLog2 ?
+      `( ${this.name}_index + 1 ) & (${this.data.buffer.length} - 1)` :
+      `${this.name}_index + 1 >= ${this.data.buffer.length} ? ${this.name}_index + 1 - ${this.data.buffer.length} : ${this.name}_index + 1`
+    }else if( this.boundmode === 'clamp' ) {
+      next = 
+        `${this.name}_index + 1 >= ${this.data.buffer.length - 1} ? ${this.data.buffer.length - 1} : ${this.name}_index + 1`
+    } else if( this.boundmode === 'fold' || this.boundmode === 'mirror' ) {
+      next = 
+        `${this.name}_index + 1 >= ${this.data.buffer.length - 1} ? ${this.name}_index - ${this.data.buffer.length - 1} : ${this.name}_index + 1`
+    }else{
+       next = 
+      `${this.name}_index + 1`     
+    }
+
+    if( this.interp === 'linear' ) {      
+    functionBody += `      ${this.name}_frac  = ${this.name}_phase - ${this.name}_index,
+      ${this.name}_base  = memory[ ${this.name}_dataIdx +  ${this.name}_index ],
+      ${this.name}_next  = ${next},`
+      
+      if( this.boundmode === 'ignore' ) {
+        functionBody += `
+      ${this.name}_out   = ${this.name}_index >= ${this.data.buffer.length - 1} || ${this.name}_index < 0 ? 0 : ${this.name}_base + ${this.name}_frac * ( memory[ ${this.name}_dataIdx + ${this.name}_next ] - ${this.name}_base )\n\n`
+      }else{
+        functionBody += `
+      ${this.name}_out   = ${this.name}_base + ${this.name}_frac * ( memory[ ${this.name}_dataIdx + ${this.name}_next ] - ${this.name}_base )\n\n`
+      }
+    }else{
+      functionBody += `      ${this.name}_out = memory[ ${this.name}_dataIdx + ${this.name}_index ]\n\n`
+    }
+
+    } else { // mode is simple
+      functionBody = `memory[ ${idx} + ${ inputs[0] } ]`
+      
+      return functionBody
+    }
+
+    gen.memo[ this.name ] = this.name + '_out'
+
+    return [ this.name+'_out', functionBody ]
+  },
+
+  defaults : { channels:1, mode:'phase', interp:'linear', boundmode:'wrap' }
+}
+
+module.exports = ( input_data, index=0, properties ) => {
+  let ugen = Object.create( proto )
+
+  //console.log( dataUgen, gen.data )
+
+  // XXX why is dataUgen not the actual function? some type of browserify nonsense...
+  const finalData = typeof input_data.basename === 'undefined' ? gen.lib.data( input_data ) : input_data
+
+  Object.assign( ugen, 
+    { 
+      'data':     finalData,
+      dataName:   finalData.name,
+      uid:        gen.getUID(),
+      inputs:     [ index, finalData ],
+    },
+    proto.defaults,
+    properties 
+  )
+  
+  ugen.name = ugen.basename + ugen.uid
+
+  return ugen
+}
+
+
+},{"./data.js":18,"./gen.js":32}],57:[function(require,module,exports){
+'use strict'
+
+let gen   = require( './gen.js' ),
+    accum = require( './accum.js' ),
+    mul   = require( './mul.js' ),
+    proto = { basename:'phasor' },
+    div   = require( './div.js' )
+
+const defaults = { min: -1, max: 1 }
+
+module.exports = ( frequency = 1, reset = 0, _props ) => {
+  const props = Object.assign( {}, defaults, _props )
+
+  const range = props.max - props.min
+
+  const ugen = typeof frequency === 'number' 
+    ? accum( (frequency * range) / gen.samplerate, reset, props ) 
+    : accum( 
+        div( 
+          mul( frequency, range ),
+          gen.samplerate
+        ), 
+        reset, props 
+    )
+
+  ugen.name = proto.basename + gen.getUID()
+
+  return ugen
+}
+
+},{"./accum.js":2,"./div.js":23,"./gen.js":32,"./mul.js":50}],58:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js'),
+    mul  = require('./mul.js'),
+    wrap = require('./wrap.js')
+
+let proto = {
+  basename:'poke',
+
+  gen() {
+    let dataName = 'memory',
+        inputs = gen.getInputs( this ),
+        idx, out, wrapped
+    
+    idx = this.data.gen()
+
+    //gen.requestMemory( this.memory )
+    //wrapped = wrap( this.inputs[1], 0, this.dataLength ).gen()
+    //idx = wrapped[0]
+    //gen.functionBody += wrapped[1]
+    let outputStr = this.inputs[1] === 0 ?
+      `  ${dataName}[ ${idx} ] = ${inputs[0]}\n` :
+      `  ${dataName}[ ${idx} + ${inputs[1]} ] = ${inputs[0]}\n`
+
+    if( this.inline === undefined ) {
+      gen.functionBody += outputStr
+    }else{
+      return [ this.inline, outputStr ]
+    }
+  }
+}
+module.exports = ( data, value, index, properties ) => {
+  let ugen = Object.create( proto ),
+      defaults = { channels:1 } 
+
+  if( properties !== undefined ) Object.assign( defaults, properties )
+
+  Object.assign( ugen, { 
+    data,
+    dataName:   data.name,
+    dataLength: data.buffer.length,
+    uid:        gen.getUID(),
+    inputs:     [ value, index ],
+  },
+  defaults )
+
+
+  ugen.name = ugen.basename + ugen.uid
+  
+  gen.histories.set( ugen.name, ugen )
+
+  return ugen
+}
+
+},{"./gen.js":32,"./mul.js":50,"./wrap.js":77}],59:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'pow',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
+      gen.closures.add({ 'pow': isWorklet ? 'Math.pow' : Math.pow })
+
+      out = `${ref}pow( ${inputs[0]}, ${inputs[1]} )` 
+
+    } else {
+      if( typeof inputs[0] === 'string' && inputs[0][0] === '(' ) {
+        inputs[0] = inputs[0].slice(1,-1)
+      }
+      if( typeof inputs[1] === 'string' && inputs[1][0] === '(' ) {
+        inputs[1] = inputs[1].slice(1,-1)
+      }
+
+      out = Math.pow( parseFloat( inputs[0] ), parseFloat( inputs[1]) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = (x,y) => {
+  let pow = Object.create( proto )
+
+  pow.inputs = [ x,y ]
+  pow.id = gen.getUID()
+  pow.name = `${pow.basename}{pow.id}`
+
+  return pow
+}
+
+},{"./gen.js":32}],60:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+const proto = {
+  basename:'process',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    gen.closures.add({ [''+this.funcname] : this.func })
+
+    out = `  var ${this.name} = gen['${this.funcname}'](`
+
+    inputs.forEach( (v,i,arr ) => {
+      out += arr[ i ]
+      if( i < arr.length - 1 ) out += ','
+    })
+
+    out += ')\n'
+
+    gen.memo[ this.name ] = this.name
+
+    return [this.name, out]
+    
+    return out
+  }
+}
+
+module.exports = (...args) => {
+  const process = {}// Object.create( proto )
+  const id = gen.getUID()
+  process.name = 'process' + id 
+
+  process.func = new Function( ...args )
+
+  //gen.globals[ process.name ] = process.func
+
+  process.call = function( ...args  ) {
+    const output = Object.create( proto )
+    output.funcname = process.name
+    output.func = process.func
+    output.name = 'process_out_' + id
+    output.process = process
+
+    output.inputs = args
+
+    return output
+  }
+
+  return process 
+}
+
+},{"./gen.js":32}],61:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen.js' ),
+    history = require( './history.js' ),
+    sub     = require( './sub.js' ),
+    add     = require( './add.js' ),
+    mul     = require( './mul.js' ),
+    memo    = require( './memo.js' ),
+    delta   = require( './delta.js' ),
+    wrap    = require( './wrap.js' )
+
+let proto = {
+  basename:'rate',
+
+  gen() {
+    let inputs = gen.getInputs( this ),
+        phase  = history(),
+        inMinus1 = history(),
+        genName = 'gen.' + this.name,
+        filter, sum, out
+
+    gen.closures.add({ [ this.name ]: this }) 
+
+    out = 
+` var ${this.name}_diff = ${inputs[0]} - ${genName}.lastSample
+  if( ${this.name}_diff < -.5 ) ${this.name}_diff += 1
+  ${genName}.phase += ${this.name}_diff * ${inputs[1]}
+  if( ${genName}.phase > 1 ) ${genName}.phase -= 1
+  ${genName}.lastSample = ${inputs[0]}
+`
+    out = ' ' + out
+
+    return [ genName + '.phase', out ]
+  }
+}
+
+module.exports = ( in1, rate ) => {
+  let ugen = Object.create( proto )
+
+  Object.assign( ugen, { 
+    phase:      0,
+    lastSample: 0,
+    uid:        gen.getUID(),
+    inputs:     [ in1, rate ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./add.js":5,"./delta.js":22,"./gen.js":32,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":69,"./wrap.js":77}],62:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'round',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.round' : Math.round })
+
+      out = `${ref}round( ${inputs[0]} )`
+
+    } else {
+      out = Math.round( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let round = Object.create( proto )
+
+  round.inputs = [ x ]
+
+  return round
+}
+
+},{"./gen.js":32}],63:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen.js' )
+
+let proto = {
+  basename:'sah',
+
+  gen() {
+    let inputs = gen.getInputs( this ), out
+
+    //gen.data[ this.name ] = 0
+    //gen.data[ this.name + '_control' ] = 0
+
+    gen.requestMemory( this.memory )
+
+
+    out = 
+` var ${this.name}_control = memory[${this.memory.control.idx}],
+      ${this.name}_trigger = ${inputs[1]} > ${inputs[2]} ? 1 : 0
+
+  if( ${this.name}_trigger !== ${this.name}_control  ) {
+    if( ${this.name}_trigger === 1 ) 
+      memory[${this.memory.value.idx}] = ${inputs[0]}
+    
+    memory[${this.memory.control.idx}] = ${this.name}_trigger
+  }
+`
+    
+    gen.memo[ this.name ] = `memory[${this.memory.value.idx}]`//`gen.data.${this.name}`
+
+    return [ `memory[${this.memory.value.idx}]`, ' ' +out ]
+  }
+}
+
+module.exports = ( in1, control, threshold=0, properties ) => {
+  let ugen = Object.create( proto ),
+      defaults = { init:0 }
+
+  if( properties !== undefined ) Object.assign( defaults, properties )
+
+  Object.assign( ugen, { 
+    lastSample: 0,
+    uid:        gen.getUID(),
+    inputs:     [ in1, control,threshold ],
+    memory: {
+      control: { idx:null, length:1 },
+      value:   { idx:null, length:1 },
+    }
+  },
+  defaults )
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],64:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'selector',
+
+  gen() {
+    let inputs = gen.getInputs( this ), out, returnValue = 0
+    
+    switch( inputs.length ) {
+      case 2 :
+        returnValue = inputs[1]
+        break;
+      case 3 :
+        out = `  var ${this.name}_out = ${inputs[0]} === 1 ? ${inputs[1]} : ${inputs[2]}\n\n`;
+        returnValue = [ this.name + '_out', out ]
+        break;  
+      default:
+        out = 
+` var ${this.name}_out = 0
+  switch( ${inputs[0]} + 1 ) {\n`
+
+        for( let i = 1; i < inputs.length; i++ ){
+          out +=`    case ${i}: ${this.name}_out = ${inputs[i]}; break;\n` 
+        }
+
+        out += '  }\n\n'
+        
+        returnValue = [ this.name + '_out', ' ' + out ]
+    }
+
+    gen.memo[ this.name ] = this.name + '_out'
+
+    return returnValue
+  },
+}
+
+module.exports = ( ...inputs ) => {
+  let ugen = Object.create( proto )
+  
+  Object.assign( ugen, {
+    uid:     gen.getUID(),
+    inputs
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],65:[function(require,module,exports){
+'use strict'
+
+let gen   = require( './gen.js' ),
+    accum = require( './accum.js' ),
+    counter= require( './counter.js' ),
+    peek  = require( './peek.js' ),
+    ssd   = require( './history.js' ),
+    data  = require( './data.js' ),
+    proto = { basename:'seq' }
+
+module.exports = ( durations = 11025, values = [0,1], phaseIncrement = 1) => {
+  let clock
+  
+  if( Array.isArray( durations ) ) {
+    // we want a counter that is using our current
+    // rate value, but we want the rate value to be derived from
+    // the counter. must insert a single-sample dealy to avoid
+    // infinite loop.
+    const clock2 = counter( 0, 0, durations.length )
+    const __durations = peek( data( durations ), clock2, { mode:'simple' }) 
+    clock = counter( phaseIncrement, 0, __durations )
+    
+    // add one sample delay to avoid codegen loop
+    const s = ssd()
+    s.in( clock.wrap )
+    clock2.inputs[0] = s.out
+  }else{
+    // if the rate argument is a single value we don't need to
+    // do anything tricky.
+    clock = counter( phaseIncrement, 0, durations )
+  }
+  
+  const stepper = accum( clock.wrap, 0, { min:0, max:values.length })
+   
+  const ugen = peek( data( values ), stepper, { mode:'simple' })
+
+  ugen.name = proto.basename + gen.getUID()
+  ugen.trigger = clock.wrap
+
+  return ugen
+}
+
+},{"./accum.js":2,"./counter.js":16,"./data.js":18,"./gen.js":32,"./history.js":36,"./peek.js":56}],66:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  name:'sign',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.sign' : Math.sign })
+
+      out = `${ref}sign( ${inputs[0]} )`
+
+    } else {
+      out = Math.sign( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let sign = Object.create( proto )
+
+  sign.inputs = [ x ]
+
+  return sign
+}
+
+},{"./gen.js":32}],67:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'sin',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'sin': isWorklet ? 'Math.sin' : Math.sin })
+
+      out = `${ref}sin( ${inputs[0]} )` 
+
+    } else {
+      out = Math.sin( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let sin = Object.create( proto )
+
+  sin.inputs = [ x ]
+  sin.id = gen.getUID()
+  sin.name = `${sin.basename}{sin.id}`
+
+  return sin
+}
+
+},{"./gen.js":32}],68:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen.js' ),
+    history = require( './history.js' ),
+    sub     = require( './sub.js' ),
+    add     = require( './add.js' ),
+    mul     = require( './mul.js' ),
+    memo    = require( './memo.js' ),
+    gt      = require( './gt.js' ),
+    div     = require( './div.js' ),
+    _switch = require( './switch.js' )
+
+module.exports = ( in1, slideUp = 1, slideDown = 1 ) => {
+  let y1 = history(0),
+      filter, slideAmount
+
+  //y (n) = y (n-1) + ((x (n) - y (n-1))/slide) 
+  slideAmount = _switch( gt(in1,y1.out), slideUp, slideDown )
+
+  filter = memo( add( y1.out, div( sub( in1, y1.out ), slideAmount ) ) )
+
+  y1.in( filter )
+
+  return filter
+}
+
+},{"./add.js":5,"./div.js":23,"./gen.js":32,"./gt.js":33,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":69,"./switch.js":70}],69:[function(require,module,exports){
+'use strict'
+
+const gen = require('./gen.js')
+
+const proto = {
+  basename:'sub',
+  gen() {
+    let inputs = gen.getInputs( this ),
+        out=0,
+        diff = 0,
+        needsParens = false, 
+        numCount = 0,
+        lastNumber = inputs[ 0 ],
+        lastNumberIsUgen = isNaN( lastNumber ), 
+        subAtEnd = false,
+        hasUgens = false,
+        returnValue = 0
+
+    this.inputs.forEach( value => { if( isNaN( value ) ) hasUgens = true })
+
+    out = '  var ' + this.name + ' = '
+
+    inputs.forEach( (v,i) => {
+      if( i === 0 ) return
+
+      let isNumberUgen = isNaN( v ),
+          isFinalIdx   = i === inputs.length - 1
+
+      if( !lastNumberIsUgen && !isNumberUgen ) {
+        lastNumber = lastNumber - v
+        out += lastNumber
+        return
+      }else{
+        needsParens = true
+        out += `${lastNumber} - ${v}`
+      }
+
+      if( !isFinalIdx ) out += ' - ' 
+    })
+
+    out += '\n'
+
+    returnValue = [ this.name, out ]
+
+    gen.memo[ this.name ] = this.name
+
+    return returnValue
+  }
+
+}
+
+module.exports = ( ...args ) => {
+  let sub = Object.create( proto )
+
+  Object.assign( sub, {
+    id:     gen.getUID(),
+    inputs: args
+  })
+       
+  sub.name = 'sub' + sub.id
+
+  return sub
+}
+
+},{"./gen.js":32}],70:[function(require,module,exports){
+'use strict'
+
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'switch',
+
+  gen() {
+    let inputs = gen.getInputs( this ), out
+
+    if( inputs[1] === inputs[2] ) return inputs[1] // if both potential outputs are the same just return one of them
+    
+    out = `  var ${this.name}_out = ${inputs[0]} === 1 ? ${inputs[1]} : ${inputs[2]}\n`
+
+    gen.memo[ this.name ] = `${this.name}_out`
+
+    return [ `${this.name}_out`, out ]
+  },
+
+}
+
+module.exports = ( control, in1 = 1, in2 = 0 ) => {
+  let ugen = Object.create( proto )
+  Object.assign( ugen, {
+    uid:     gen.getUID(),
+    inputs:  [ control, in1, in2 ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":32}],71:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'t60',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this ),
+        returnValue
+
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ [ 'exp' ]: isWorklet ? 'Math.exp' : Math.exp })
+
+      out = `  var ${this.name} = ${ref}exp( -6.907755278921 / ${inputs[0]} )\n\n`
+     
+      gen.memo[ this.name ] = out
+      
+      returnValue = [ this.name, out ]
+    } else {
+      out = Math.exp( -6.907755278921 / inputs[0] )
+
+      returnValue = out
+    }    
+
+    return returnValue
+  }
+}
+
+module.exports = x => {
+  let t60 = Object.create( proto )
+
+  t60.inputs = [ x ]
+  t60.name = proto.basename + gen.getUID()
+
+  return t60
+}
+
+},{"./gen.js":32}],72:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'tan',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'tan': isWorklet ? 'Math.tan' : Math.tan })
+
+      out = `${ref}tan( ${inputs[0]} )` 
+
+    } else {
+      out = Math.tan( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let tan = Object.create( proto )
+
+  tan.inputs = [ x ]
+  tan.id = gen.getUID()
+  tan.name = `${tan.basename}{tan.id}`
+
+  return tan
+}
+
+},{"./gen.js":32}],73:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js')
+
+let proto = {
+  basename:'tanh',
+
+  gen() {
+    let out,
+        inputs = gen.getInputs( this )
+    
+    
+    const isWorklet = gen.mode === 'worklet'
+    const ref = isWorklet? '' : 'gen.'
+
+    if( isNaN( inputs[0] ) ) {
+      gen.closures.add({ 'tanh': isWorklet ? 'Math.tan' : Math.tanh })
+
+      out = `${ref}tanh( ${inputs[0]} )` 
+
+    } else {
+      out = Math.tanh( parseFloat( inputs[0] ) )
+    }
+    
+    return out
+  }
+}
+
+module.exports = x => {
+  let tanh = Object.create( proto )
+
+  tanh.inputs = [ x ]
+  tanh.id = gen.getUID()
+  tanh.name = `${tanh.basename}{tanh.id}`
+
+  return tanh
+}
+
+},{"./gen.js":32}],74:[function(require,module,exports){
+'use strict'
+
+let gen     = require( './gen.js' ),
+    lt      = require( './lt.js' ),
+    accum   = require( './accum.js' ),
+    div     = require( './div.js' )
+
+module.exports = ( frequency=440, pulsewidth=.5 ) => {
+  let graph = lt( accum( div( frequency, 44100 ) ), pulsewidth )
+
+  graph.name = `train${gen.getUID()}`
+
+  return graph
+}
+
+
+},{"./accum.js":2,"./div.js":23,"./gen.js":32,"./lt.js":40}],75:[function(require,module,exports){
+'use strict'
+
+const AWPF = require( './external/audioworklet-polyfill.js' ),
+      gen  = require( './gen.js' ),
+      data = require( './data.js' )
+
+let isStereo = false
+
+const utilities = {
+  ctx: null,
+  buffers: {},
+  isStereo:false,
+
+  clear() {
+    if( this.workletNode !== undefined ) {
+      this.workletNode.disconnect()
+    }else{
+      this.callback = () => 0
+    }
+    this.clear.callbacks.forEach( v => v() )
+    this.clear.callbacks.length = 0
+
+    this.isStereo = false
+
+    if( gen.graph !== null ) gen.free( gen.graph )
+  },
+
+  createContext( bufferSize = 2048 ) {
+    const AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
+    
+    // tell polyfill global object and buffersize
+    AWPF( window, bufferSize )
+
+    const start = () => {
+      if( typeof AC !== 'undefined' ) {
+        this.ctx = new AC({ latencyHint:.0125 })
+
+        gen.samplerate = this.ctx.sampleRate
+
+        if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
+          window.removeEventListener( 'touchstart', start )
+        }else{
+          window.removeEventListener( 'mousedown', start )
+          window.removeEventListener( 'keydown', start )
+        }
+
+        const mySource = utilities.ctx.createBufferSource()
+        mySource.connect( utilities.ctx.destination )
+        mySource.start()
+      }
+    }
+
+    if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
+      window.addEventListener( 'touchstart', start )
+    }else{
+      window.addEventListener( 'mousedown', start )
+      window.addEventListener( 'keydown', start )
+    }
+
+    return this
+  },
+
+  createScriptProcessor() {
+    this.node = this.ctx.createScriptProcessor( 1024, 0, 2 )
+    this.clearFunction = function() { return 0 }
+    if( typeof this.callback === 'undefined' ) this.callback = this.clearFunction
+
+    this.node.onaudioprocess = function( audioProcessingEvent ) {
+      var outputBuffer = audioProcessingEvent.outputBuffer;
+
+      var left = outputBuffer.getChannelData( 0 ),
+          right= outputBuffer.getChannelData( 1 ),
+          isStereo = utilities.isStereo
+
+     for( var sample = 0; sample < left.length; sample++ ) {
+        var out = utilities.callback()
+
+        if( isStereo === false ) {
+          left[ sample ] = right[ sample ] = out 
+        }else{
+          left[ sample  ] = out[0]
+          right[ sample ] = out[1]
+        }
+      }
+    }
+
+    this.node.connect( this.ctx.destination )
+
+    return this
+  },
+
+  // remove starting stuff and add tabs
+  prettyPrintCallback( cb ) {
+    // get rid of "function gen" and start with parenthesis
+    // const shortendCB = cb.toString().slice(9)
+    const cbSplit = cb.toString().split('\n')
+    const cbTrim = cbSplit.slice( 3, -2 )
+    const cbTabbed = cbTrim.map( v => '      ' + v ) 
+    
+    return cbTabbed.join('\n')
+  },
+
+  createParameterDescriptors( cb ) {
+    // [{name: 'amplitude', defaultValue: 0.25, minValue: 0, maxValue: 1}];
+    let paramStr = ''
+
+    //for( let ugen of cb.params.values() ) {
+    //  paramStr += `{ name:'${ugen.name}', defaultValue:${ugen.value}, minValue:${ugen.min}, maxValue:${ugen.max} },\n      `
+    //}
+    for( let ugen of cb.params.values() ) {
+      paramStr += `{ name:'${ugen.name}', automationRate:'k-rate', defaultValue:${ugen.defaultValue}, minValue:${ugen.min}, maxValue:${ugen.max} },\n      `
+    }
+    return paramStr
+  },
+
+  createParameterDereferences( cb ) {
+    let str = cb.params.size > 0 ? '\n      ' : ''
+    for( let ugen of cb.params.values() ) {
+      str += `const ${ugen.name} = parameters.${ugen.name}[0]\n      `
+    }
+
+    return str
+  },
+
+  createParameterArguments( cb ) {
+    let  paramList = ''
+    for( let ugen of cb.params.values() ) {
+      paramList += ugen.name + '[i],'
+    }
+    paramList = paramList.slice( 0, -1 )
+
+    return paramList
+  },
+
+  createInputDereferences( cb ) {
+    let str = cb.inputs.size > 0 ? '\n' : ''
+    for( let input of  cb.inputs.values() ) {
+      str += `const ${input.name} = inputs[ ${input.inputNumber} ][ ${input.channelNumber} ]\n      `
+    }
+
+    return str
+  },
+
+
+  createInputArguments( cb ) {
+    let  paramList = ''
+    for( let input of cb.inputs.values() ) {
+      paramList += input.name + '[i],'
+    }
+    paramList = paramList.slice( 0, -1 )
+
+    return paramList
+  },
+      
+  createFunctionDereferences( cb ) {
+    let memberString = cb.members.size > 0 ? '\n' : ''
+    let memo = {}
+    for( let dict of cb.members.values() ) {
+      const name = Object.keys( dict )[0],
+            value = dict[ name ]
+
+      if( memo[ name ] !== undefined ) continue
+      memo[ name ] = true
+
+      memberString += `      const ${name} = ${value}\n`
+    }
+
+    return memberString
+  },
+
+  createWorkletProcessor( graph, name, debug, mem=44100*10 ) {
+    //const mem = MemoryHelper.create( 4096, Float64Array )
+    const cb = gen.createCallback( graph, mem, debug )
+    const inputs = cb.inputs
+
+    // get all inputs and create appropriate audioparam initializers
+    const parameterDescriptors = this.createParameterDescriptors( cb )
+    const parameterDereferences = this.createParameterDereferences( cb )
+    const paramList = this.createParameterArguments( cb )
+    const inputDereferences = this.createInputDereferences( cb )
+    const inputList = this.createInputArguments( cb )   
+    const memberString = this.createFunctionDereferences( cb )
+
+    // change output based on number of channels.
+    const genishOutputLine = cb.isStereo === false
+      ? `left[ i ] = memory[0]`
+      : `left[ i ] = memory[0];\n\t\tright[ i ] = memory[1]\n`
+
+    const prettyCallback = this.prettyPrintCallback( cb )
+
+    /***** begin callback code ****/
+    // note that we have to check to see that memory has been passed
+    // to the worker before running the callback function, otherwise
+    // it can be passed too slowly and fail on occassion
+
+    const workletCode = `
+class ${name}Processor extends AudioWorkletProcessor {
+
+  static get parameterDescriptors() {
+    const params = [
+      ${ parameterDescriptors }      
+    ]
+    return params
+  }
+ 
+  constructor( options ) {
+    super( options )
+    this.port.onmessage = this.handleMessage.bind( this )
+    this.initialized = false
+  }
+
+  handleMessage( event ) {
+    if( event.data.key === 'init' ) {
+      this.memory = event.data.memory
+      this.initialized = true
+    }else if( event.data.key === 'set' ) {
+      this.memory[ event.data.idx ] = event.data.value
+    }else if( event.data.key === 'get' ) {
+      this.port.postMessage({ key:'return', idx:event.data.idx, value:this.memory[event.data.idx] })     
+    }
+  }
+
+  process( inputs, outputs, parameters ) {
+    if( this.initialized === true ) {
+      const output = outputs[0]
+      const left   = output[ 0 ]
+      const right  = output[ 1 ]
+      const len    = left.length
+      const memory = this.memory ${parameterDereferences}${inputDereferences}${memberString}
+
+      for( let i = 0; i < len; ++i ) {
+        ${prettyCallback}
+        ${genishOutputLine}
+      }
+    }
+    return true
+  }
+}
+    
+registerProcessor( '${name}', ${name}Processor)`
+
+    
+    /***** end callback code *****/
+
+
+    if( debug === true ) console.log( workletCode )
+
+    const url = window.URL.createObjectURL(
+      new Blob(
+        [ workletCode ], 
+        { type: 'text/javascript' }
+      )
+    )
+
+    return [ url, workletCode, inputs, cb.params, cb.isStereo ] 
+  },
+
+  registeredForNodeAssignment: [],
+  register( ugen ) {
+    if( this.registeredForNodeAssignment.indexOf( ugen ) === -1 ) {
+      this.registeredForNodeAssignment.push( ugen )
+    }
+  },
+
+  playWorklet( graph, name, debug=false, mem=44100 * 60 ) {
+    utilities.clear()
+
+    const [ url, codeString, inputs, params, isStereo ] = utilities.createWorkletProcessor( graph, name, debug, mem )
+
+    const nodePromise = new Promise( (resolve,reject) => {
+   
+      utilities.ctx.audioWorklet.addModule( url ).then( ()=> {
+        const workletNode = new AudioWorkletNode( utilities.ctx, name, { outputChannelCount:[ isStereo ? 2 : 1 ] })
+
+        workletNode.callbacks = {}
+        workletNode.onmessage = function( event ) {
+          if( event.data.message === 'return' ) {
+            workletNode.callbacks[ event.data.idx ]( event.data.value )
+            delete workletNode.callbacks[ event.data.idx ]
+          }
+        }
+
+        workletNode.getMemoryValue = function( idx, cb ) {
+          this.workletCallbacks[ idx ] = cb
+          this.workletNode.port.postMessage({ key:'get', idx: idx })
+        }
+        
+        workletNode.port.postMessage({ key:'init', memory:gen.memory.heap })
+        utilities.workletNode = workletNode
+
+        utilities.registeredForNodeAssignment.forEach( ugen => ugen.node = workletNode )
+        utilities.registeredForNodeAssignment.length = 0
+
+        // assign all params as properties of node for easier reference 
+        for( let dict of inputs.values() ) {
+          const name = Object.keys( dict )[0]
+          const param = workletNode.parameters.get( name )
+      
+          Object.defineProperty( workletNode, name, {
+            set( v ) {
+              param.value = v
+            },
+            get() {
+              return param.value
+            }
+          })
+        }
+
+        for( let ugen of params.values() ) {
+          const name = ugen.name
+          const param = workletNode.parameters.get( name )
+          ugen.waapi = param 
+          // initialize?
+          param.value = ugen.defaultValue
+
+          Object.defineProperty( workletNode, name, {
+            set( v ) {
+              param.value = v
+            },
+            get() {
+              return param.value
+            }
+          })
+        }
+
+        if( utilities.console ) utilities.console.setValue( codeString )
+
+        workletNode.connect( utilities.ctx.destination )
+
+        resolve( workletNode )
+      })
+
+    })
+
+    return nodePromise
+  },
+  
+  playGraph( graph, debug, mem=44100*10, memType=Float32Array ) {
+    utilities.clear()
+    if( debug === undefined ) debug = false
+          
+    this.isStereo = Array.isArray( graph )
+
+    utilities.callback = gen.createCallback( graph, mem, debug, false, memType )
+    
+    if( utilities.console ) utilities.console.setValue( utilities.callback.toString() )
+
+    return utilities.callback
+  },
+
+  loadSample( soundFilePath, data ) {
+    const isLoaded = utilities.buffers[ soundFilePath ] !== undefined
+
+    let req = new XMLHttpRequest()
+    req.open( 'GET', soundFilePath, true )
+    req.responseType = 'arraybuffer' 
+    
+    let promise = new Promise( (resolve,reject) => {
+      if( !isLoaded ) {
+        req.onload = function() {
+          var audioData = req.response
+
+          utilities.ctx.decodeAudioData( audioData, (buffer) => {
+            data.buffer = buffer.getChannelData(0)
+            utilities.buffers[ soundFilePath ] = data.buffer
+            resolve( data.buffer )
+          })
+        }
+      }else{
+        setTimeout( ()=> resolve( utilities.buffers[ soundFilePath ] ), 0 )
+      }
+    })
+
+    if( !isLoaded ) req.send()
+
+    return promise
+  }
+
+}
+
+utilities.clear.callbacks = []
+
+module.exports = utilities
+
+},{"./data.js":18,"./external/audioworklet-polyfill.js":27,"./gen.js":32}],76:[function(require,module,exports){
+'use strict'
+
+/*
+ * many windows here adapted from https://github.com/corbanbrook/dsp.js/blob/master/dsp.js
+ * starting at line 1427
+ * taken 8/15/16
+*/ 
+
+const windows = module.exports = { 
+  bartlett( length, index ) {
+    return 2 / (length - 1) * ((length - 1) / 2 - Math.abs(index - (length - 1) / 2)) 
+  },
+
+  bartlettHann( length, index ) {
+    return 0.62 - 0.48 * Math.abs(index / (length - 1) - 0.5) - 0.38 * Math.cos( 2 * Math.PI * index / (length - 1))
+  },
+
+  blackman( length, index, alpha ) {
+    let a0 = (1 - alpha) / 2,
+        a1 = 0.5,
+        a2 = alpha / 2
+
+    return a0 - a1 * Math.cos(2 * Math.PI * index / (length - 1)) + a2 * Math.cos(4 * Math.PI * index / (length - 1))
+  },
+
+  cosine( length, index ) {
+    return Math.cos(Math.PI * index / (length - 1) - Math.PI / 2)
+  },
+
+  gauss( length, index, alpha ) {
+    return Math.pow(Math.E, -0.5 * Math.pow((index - (length - 1) / 2) / (alpha * (length - 1) / 2), 2))
+  },
+
+  hamming( length, index ) {
+    return 0.54 - 0.46 * Math.cos( Math.PI * 2 * index / (length - 1))
+  },
+
+  hann( length, index ) {
+    return 0.5 * (1 - Math.cos( Math.PI * 2 * index / (length - 1)) )
+  },
+
+  lanczos( length, index ) {
+    let x = 2 * index / (length - 1) - 1;
+    return Math.sin(Math.PI * x) / (Math.PI * x)
+  },
+
+  rectangular( length, index ) {
+    return 1
+  },
+
+  triangular( length, index ) {
+    return 2 / length * (length / 2 - Math.abs(index - (length - 1) / 2))
+  },
+
+  // parabola
+  welch( length, _index, ignore, shift=0 ) {
+    //w[n] = 1 - Math.pow( ( n - ( (N-1) / 2 ) ) / (( N-1 ) / 2 ), 2 )
+    const index = shift === 0 ? _index : (_index + Math.floor( shift * length )) % length
+    const n_1_over2 = (length - 1) / 2 
+
+    return 1 - Math.pow( ( index - n_1_over2 ) / n_1_over2, 2 )
+  },
+  inversewelch( length, _index, ignore, shift=0 ) {
+    //w[n] = 1 - Math.pow( ( n - ( (N-1) / 2 ) ) / (( N-1 ) / 2 ), 2 )
+    let index = shift === 0 ? _index : (_index + Math.floor( shift * length )) % length
+    const n_1_over2 = (length - 1) / 2
+
+    return Math.pow( ( index - n_1_over2 ) / n_1_over2, 2 )
+  },
+
+  parabola( length, index ) {
+    if( index <= length / 2 ) {
+      return windows.inversewelch( length / 2, index ) - 1
+    }else{
+      return 1 - windows.inversewelch( length / 2, index - length / 2 )
+    }
+  },
+
+  exponential( length, index, alpha ) {
+    return Math.pow( index / length, alpha )
+  },
+
+  linear( length, index ) {
+    return index / length
+  }
+}
+
+},{}],77:[function(require,module,exports){
+'use strict'
+
+let gen  = require('./gen.js'),
+    floor= require('./floor.js'),
+    sub  = require('./sub.js'),
+    memo = require('./memo.js')
+
+let proto = {
+  basename:'wrap',
+
+  gen() {
+    let code,
+        inputs = gen.getInputs( this ),
+        signal = inputs[0], min = inputs[1], max = inputs[2],
+        out, diff
+
+    //out = `(((${inputs[0]} - ${this.min}) % ${diff}  + ${diff}) % ${diff} + ${this.min})`
+    //const long numWraps = long((v-lo)/range) - (v < lo);
+    //return v - range * double(numWraps);   
+    
+    if( this.min === 0 ) {
+      diff = max
+    }else if ( isNaN( max ) || isNaN( min ) ) {
+      diff = `${max} - ${min}`
+    }else{
+      diff = max - min
+    }
+
+    out =
+` var ${this.name} = ${inputs[0]}
+  if( ${this.name} < ${this.min} ) ${this.name} += ${diff}
+  else if( ${this.name} > ${this.max} ) ${this.name} -= ${diff}
+
+`
+
+    return [ this.name, ' ' + out ]
+  },
+}
+
+module.exports = ( in1, min=0, max=1 ) => {
+  let ugen = Object.create( proto )
+
+  Object.assign( ugen, { 
+    min, 
+    max,
+    uid:    gen.getUID(),
+    inputs: [ in1, min, max ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./floor.js":29,"./gen.js":32,"./memo.js":44,"./sub.js":69}],78:[function(require,module,exports){
+'use strict';
+
+var MemoryHelper = {
+  create: function create() {
+    var size = arguments.length <= 0 || arguments[0] === undefined ? 4096 : arguments[0];
+    var memtype = arguments.length <= 1 || arguments[1] === undefined ? Float32Array : arguments[1];
+
+    var helper = Object.create(this);
+
+    Object.assign(helper, {
+      heap: new memtype(size),
+      list: {},
+      freeList: {}
+    });
+
+    return helper;
+  },
+  alloc: function alloc(amount) {
+    var idx = -1;
+
+    if (amount > this.heap.length) {
+      throw Error('Allocation request is larger than heap size of ' + this.heap.length);
+    }
+
+    for (var key in this.freeList) {
+      var candidateSize = this.freeList[key];
+
+      if (candidateSize >= amount) {
+        idx = key;
+
+        this.list[idx] = amount;
+
+        if (candidateSize !== amount) {
+          var newIndex = idx + amount,
+              newFreeSize = void 0;
+
+          for (var _key in this.list) {
+            if (_key > newIndex) {
+              newFreeSize = _key - newIndex;
+              this.freeList[newIndex] = newFreeSize;
+            }
+          }
+        }
+        
+        break;
+      }
+    }
+    
+    if( idx !== -1 ) delete this.freeList[ idx ]
+
+    if (idx === -1) {
+      var keys = Object.keys(this.list),
+          lastIndex = void 0;
+
+      if (keys.length) {
+        // if not first allocation...
+        lastIndex = parseInt(keys[keys.length - 1]);
+
+        idx = lastIndex + this.list[lastIndex];
+      } else {
+        idx = 0;
+      }
+
+      this.list[idx] = amount;
+    }
+
+    if (idx + amount >= this.heap.length) {
+      throw Error('No available blocks remain sufficient for allocation request.');
+    }
+    return idx;
+  },
+  free: function free(index) {
+    if (typeof this.list[index] !== 'number') {
+      throw Error('Calling free() on non-existing block.');
+    }
+
+    this.list[index] = 0;
+
+    var size = 0;
+    for (var key in this.list) {
+      if (key > index) {
+        size = key - index;
+        break;
+      }
+    }
+
+    this.freeList[index] = size;
+  }
+};
+
+module.exports = MemoryHelper;
+
+},{}],79:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -53,7 +4649,7 @@ const Analysis = {
 
 module.exports = Analysis 
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js":[function(require,module,exports){
+},{"./ugen.js":111,"gibberish-dsp":164}],80:[function(require,module,exports){
 const Gibberish   = require( 'gibberish-dsp' )
 const Ugen        = require( './ugen.js' )
 const Instruments = require( './instruments.js' )
@@ -450,7 +5046,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{"./analysis.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/analysis.js","./binops.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js","./busses.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js","./clock.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js","./drums.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js","./effects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js","./ensemble.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js","./envelopes.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js","./external/audioworklet-polyfill.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/audioworklet-polyfill.js","./filters.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js","./freesound.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js","./gen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js","./instruments.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js","./make.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/make.js","./oscillators.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js","./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","./utility.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js","./waveObjects.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js","./wavePattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/binops.js":[function(require,module,exports){
+},{"./analysis.js":79,"./binops.js":81,"./busses.js":82,"./clock.js":83,"./drums.js":84,"./effects.js":85,"./ensemble.js":86,"./envelopes.js":87,"./external/audioworklet-polyfill.js":88,"./filters.js":91,"./freesound.js":92,"./gen.js":93,"./instruments.js":95,"./make.js":96,"./oscillators.js":97,"./presets.js":98,"./theory.js":110,"./ugen.js":111,"./utility.js":112,"./waveObjects.js":113,"./wavePattern.js":114,"gibberish-dsp":164}],81:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -490,7 +5086,7 @@ const Binops = {
 
 module.exports = Binops
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/busses.js":[function(require,module,exports){
+},{"./ugen.js":111,"gibberish-dsp":164}],82:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -542,7 +5138,7 @@ const Busses = {
 
 module.exports = Busses
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/clock.js":[function(require,module,exports){
+},{"./ugen.js":111,"gibberish-dsp":164}],83:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 
@@ -717,7 +5313,7 @@ const Clock = {
 
 module.exports = Clock
 
-},{"gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/drums.js":[function(require,module,exports){
+},{"gibberish-dsp":164,"serialize-javascript":126}],84:[function(require,module,exports){
 const Ugen = require( './ugen.js' )
 const Presets = require( './presets.js' )
 
@@ -907,7 +5503,7 @@ module.exports = function( __Audio ) {
   return { Drums, EDrums }
 }
 
-},{"./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/effects.js":[function(require,module,exports){
+},{"./presets.js":98,"./ugen.js":111}],85:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -944,7 +5540,7 @@ const Effects = {
 
 module.exports = Effects
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ensemble.js":[function(require,module,exports){
+},{"./ugen.js":111,"gibberish-dsp":164}],86:[function(require,module,exports){
 module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
   const Ensemble = function( props ) {
@@ -1025,7 +5621,7 @@ module.exports = function( Audio ) {
   return Ensemble
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/envelopes.js":[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -1058,146 +5654,9 @@ const Envelopes = {
 
 module.exports = Envelopes
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/external/audioworklet-polyfill.js":[function(require,module,exports){
-/**
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
-// originally from:
-// https://github.com/GoogleChromeLabs/audioworklet-polyfill
-// I am modifying it to accept variable buffer sizes
-// and to get rid of some strange global initialization that seems required to use it
-// with browserify. Also, I added changes to fix a bug in Safari for the AudioWorkletProcessor
-// property not having a prototype (see:https://github.com/GoogleChromeLabs/audioworklet-polyfill/pull/25)
-// TODO: Why is there an iframe involved? (realm.js)
-
-const Realm = require( './realm.js' )
-
-const AWPF = function( self = window, bufferSize = 4096 ) {
-  const PARAMS = []
-  let nextPort
-
-  if (typeof AudioWorkletNode !== 'function' || !("audioWorklet" in AudioContext.prototype)) {
-    self.AudioWorkletNode = function AudioWorkletNode (context, name, options) {
-      const processor = getProcessorsForContext(context)[name];
-      const outputChannels = options && options.outputChannelCount ? options.outputChannelCount[0] : 2;
-      const scriptProcessor = context.createScriptProcessor( bufferSize, 2, outputChannels);
-
-      scriptProcessor.parameters = new Map();
-      if (processor.properties) {
-        for (let i = 0; i < processor.properties.length; i++) {
-          const prop = processor.properties[i];
-          const node = context.createGain().gain;
-          node.value = prop.defaultValue;
-          // @TODO there's no good way to construct the proxy AudioParam here
-          scriptProcessor.parameters.set(prop.name, node);
-        }
-      }
-
-      const mc = new MessageChannel();
-      nextPort = mc.port2;
-      const inst = new processor.Processor(options || {});
-      nextPort = null;
-
-      scriptProcessor.port = mc.port1;
-      scriptProcessor.processor = processor;
-      scriptProcessor.instance = inst;
-      scriptProcessor.onaudioprocess = onAudioProcess;
-      return scriptProcessor;
-    };
-
-    Object.defineProperty((self.AudioContext || self.webkitAudioContext).prototype, 'audioWorklet', {
-      get () {
-        return this.$$audioWorklet || (this.$$audioWorklet = new self.AudioWorklet(this));
-      }
-    });
-
-    /* XXX - ADDED TO OVERCOME PROBLEM IN SAFARI WHERE AUDIOWORKLETPROCESSOR PROTOTYPE IS NOT AN OBJECT */
-    const AudioWorkletProcessor = function() {
-      this.port = nextPort
-    }
-    AudioWorkletProcessor.prototype = {}
-
-    self.AudioWorklet = class AudioWorklet {
-      constructor (audioContext) {
-        this.$$context = audioContext;
-      }
-
-      addModule (url, options) {
-        return fetch(url).then(r => {
-          if (!r.ok) throw Error(r.status);
-          return r.text();
-        }).then( code => {
-          const context = {
-            sampleRate: this.$$context.sampleRate,
-            currentTime: this.$$context.currentTime,
-            AudioWorkletProcessor,
-            registerProcessor: (name, Processor) => {
-              const processors = getProcessorsForContext(this.$$context);
-              processors[name] = {
-                realm,
-                context,
-                Processor,
-                properties: Processor.parameterDescriptors || []
-              };
-            }
-          };
-
-          context.self = context;
-          const realm = new Realm(context, document.documentElement);
-          realm.exec(((options && options.transpile) || String)(code));
-          return null;
-        });
-      }
-    };
-  }
-
-  function onAudioProcess (e) {
-    const parameters = {};
-    let index = -1;
-    this.parameters.forEach((value, key) => {
-      const arr = PARAMS[++index] || (PARAMS[index] = new Float32Array(this.bufferSize));
-      // @TODO proper values here if possible
-      arr.fill(value.value);
-      parameters[key] = arr;
-    });
-    this.processor.realm.exec(
-      'self.sampleRate=sampleRate=' + this.context.sampleRate + ';' +
-      'self.currentTime=currentTime=' + this.context.currentTime
-    );
-    const inputs = channelToArray(e.inputBuffer);
-    const outputs = channelToArray(e.outputBuffer);
-    this.instance.process([inputs], [outputs], parameters);
-  }
-
-  function channelToArray (ch) {
-    const out = [];
-    for (let i = 0; i < ch.numberOfChannels; i++) {
-      out[i] = ch.getChannelData(i);
-    }
-    return out;
-  }
-
-  function getProcessorsForContext (audioContext) {
-    return audioContext.$$processors || (audioContext.$$processors = {});
-  }
-}
-
-module.exports = AWPF
-
-},{"./realm.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/realm.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/external/realm.js":[function(require,module,exports){
+},{"./ugen.js":111,"gibberish-dsp":164}],88:[function(require,module,exports){
+arguments[4][27][0].apply(exports,arguments)
+},{"./realm.js":89,"dup":27}],89:[function(require,module,exports){
 
 
 /**
@@ -1244,7 +5703,7 @@ module.exports = function Realm (scope, parentElement) {
   this.exec = win.$hook.call(scope, scope, console);
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js":[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 
 // See all scales at: http://abbernie.github.io/tune/scales.html
 
@@ -1472,7 +5931,7 @@ Tune.prototype.root = function(newmidi, newfreq) {
 
 module.exports = Tune
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/filters.js":[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -1520,7 +5979,7 @@ const Filters = {
 
 module.exports = Filters
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/freesound.js":[function(require,module,exports){
+},{"./ugen.js":111,"gibberish-dsp":164}],92:[function(require,module,exports){
 module.exports = function( Audio ) {
   const token = '6a00f80ba02b2755a044cc4ef004febfc4ccd476'
 
@@ -1625,7 +6084,7 @@ module.exports = function( Audio ) {
   return Freesound
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/gen.js":[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = function( Audio ) {
   
 const binops = [ 
@@ -2211,7 +6670,7 @@ Gen.init()
 return Gen 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/index.js":[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 const Gibber = require( 'gibber.core.lib' )
 const Audio  = require( './audio.js' )
 
@@ -2235,7 +6694,7 @@ Gibber.init = function( audioOptions ) {
 
 module.exports = Gibber
 
-},{"./audio.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/audio.js","gibber.core.lib":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/instruments.js":[function(require,module,exports){
+},{"./audio.js":80,"gibber.core.lib":119}],95:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -2333,7 +6792,7 @@ const Instruments = {
 
 module.exports = Instruments
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/make.js":[function(require,module,exports){
+},{"./ugen.js":111,"gibberish-dsp":164}],96:[function(require,module,exports){
 module.exports = function( Gibber ) {
   const Gibberish = Gibber.Gibberish
 
@@ -2389,7 +6848,7 @@ sine.frequency.seq( [110,220,330], 1/8 )
 sine.connect()
 */
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/oscillators.js":[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -2422,7 +6881,7 @@ const Oscillators = {
 
 module.exports = Oscillators
 
-},{"./ugen.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js":[function(require,module,exports){
+},{"./ugen.js":111,"gibberish-dsp":164}],98:[function(require,module,exports){
 const Presets = {
   process( description, args, Audio ) {
     let output
@@ -2497,7 +6956,7 @@ Presets.instruments.PolyMono = Presets.instruments.Monosynth
 
 module.exports = Presets
 
-},{"./presets/bus2_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/bus2_presets.js","./presets/chorus_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/chorus_presets.js","./presets/distortion_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/distortion_presets.js","./presets/drums_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/drums_presets.js","./presets/edrums_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/edrums_presets.js","./presets/flanger_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/flanger_presets.js","./presets/fm_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/fm_presets.js","./presets/kick_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/kick_presets.js","./presets/monosynth_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/monosynth_presets.js","./presets/snare_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/snare_presets.js","./presets/synth_presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/synth_presets.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/bus2_presets.js":[function(require,module,exports){
+},{"./presets/bus2_presets.js":99,"./presets/chorus_presets.js":100,"./presets/distortion_presets.js":101,"./presets/drums_presets.js":102,"./presets/edrums_presets.js":103,"./presets/flanger_presets.js":104,"./presets/fm_presets.js":105,"./presets/kick_presets.js":106,"./presets/monosynth_presets.js":107,"./presets/snare_presets.js":108,"./presets/synth_presets.js":109}],99:[function(require,module,exports){
 module.exports = {
 
   'spaceverb': {
@@ -2558,7 +7017,7 @@ module.exports = {
   },
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/chorus_presets.js":[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 module.exports = {
 
   lush: {
@@ -2586,7 +7045,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/distortion_presets.js":[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 module.exports = {
 
   crunch: {
@@ -2614,7 +7073,7 @@ module.exports = {
   }
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/drums_presets.js":[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -2650,7 +7109,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/edrums_presets.js":[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -2717,7 +7176,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/flanger_presets.js":[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 module.exports = {
   moderate: {
     feedback: .25,
@@ -2733,7 +7192,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/fm_presets.js":[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 module.exports = {
 
   bass : {
@@ -2826,7 +7285,7 @@ module.exports = {
 	}
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/kick_presets.js":[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 module.exports = {
 
   deep: {
@@ -2854,7 +7313,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/monosynth_presets.js":[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = {
 
   'short.dry' : { 
@@ -2919,8 +7378,8 @@ module.exports = {
   },
 
   winsome : {
-    presetInit : function() { 
-      this.lfo = Gibber.oscillators.Sine({ frequency:2, gain:.075 })
+    presetInit : function( audio ) { 
+      this.lfo = audio.oscillators.Sine({ frequency:2, gain:.075 })
       this.lfo.connect( this.cutoff )
       this.lfo.connect( this.detune2 )
       this.lfo.connect( this.detune3 )
@@ -3025,8 +7484,8 @@ module.exports = {
   easyfx : {
     attack: audio=> audio.Clock.ms(1),
     decay:2,
-    presetInit: function() {
-      this.fx.add( Gibber.effects.Delay( Clock.time(1/6), .3) )
+    presetInit: function( audio ) {
+      this.fx.add( audio.effects.Delay( Clock.time(1/6), .3) )
     },
     cutoff:.125,
     glide:1000,
@@ -3039,8 +7498,8 @@ module.exports = {
   chords: {
     attack: audio=> audio.Clock.ms(1),
     decay:1/2,
-    presetInit: function() {
-      this.fx.add( Gibber.effects.Delay( Clock.time(1/6), .75) )
+    presetInit: function( audio ) {
+      this.fx.add( audio.effects.Delay( Clock.time(1/6), .75) )
     },
     amp:.3,
     octave2:0,
@@ -3055,8 +7514,8 @@ module.exports = {
   'chords.short': {
     attack: audio=> audio.Clock.ms(1),
     decay:1/8,
-    presetInit: function() {
-      this.delay = audio.effects.Delay({ delay:Clock.time(1/8), feedback:.5, wetdry:.25 }) 
+    presetInit: function( audio ) {
+      this.delay = audio.effects.Delay({ delay:audio.Clock.time(1/8), feedback:.5, wetdry:.25 }) 
       this.fx.push( this.delay )
     },
     amp:.3,
@@ -3134,12 +7593,12 @@ module.exports = {
     detune3:0,
     detune2:0,
     filterMult:0,
-    presetInit: function() { this.fx.add( Gibber.Audio.FX.Gain(.1), Gibber.Audio.FX.Delay(1/6,.75) ) }
+    presetInit: function( audio ) { this.fx.add( audio.effects.Gain(.1), audio.effects.Delay(1/6,.75) ) }
   },
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/snare_presets.js":[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 module.exports = {
 
   snappy: {
@@ -3156,7 +7615,7 @@ module.exports = {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/presets/synth_presets.js":[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = {
 
   acidBass: {
@@ -3314,7 +7773,7 @@ module.exports = {
   }
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js":[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 const Tune      = require( './external/tune-api-only.js' )
@@ -3681,7 +8140,7 @@ const Theory = {
 
 module.exports = Theory
 
-},{"./external/tune-api-only.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/external/tune-api-only.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js","serialize-javascript":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/ugen.js":[function(require,module,exports){
+},{"./external/tune-api-only.js":90,"gibberish-dsp":164,"serialize-javascript":126}],111:[function(require,module,exports){
 const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
@@ -4135,7 +8594,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
 module.exports = Ugen
 
-},{"./presets.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/presets.js","./theory.js":"/Users/charlie/Documents/code/gibber.audio.lib/js/theory.js","gibberish-dsp":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/js/utility.js":[function(require,module,exports){
+},{"./presets.js":98,"./theory.js":110,"gibberish-dsp":164}],112:[function(require,module,exports){
 const Utility = {
   rndf( min=0, max=1, number, canRepeat=true ) {
     let out = 0
@@ -4338,7 +8797,7 @@ const Utility = {
 
 module.exports = Utility
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/waveObjects.js":[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 module.exports = function( Gibber ) {
    const gen = Gibber.Gen.make  
 
@@ -4443,7 +8902,7 @@ module.exports = function( Gibber ) {
   return WavePatterns
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/js/wavePattern.js":[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const WavePattern = function( ugen ) {
@@ -4460,9 +8919,9 @@ module.exports = function( Gibber ) {
   return WavePattern
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js":[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4987,7 +9446,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/euclid.js":[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -5225,7 +9684,7 @@ Euclid.test = function( testKey ) {
 return Euclid
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/hex.js":[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -5308,7 +9767,7 @@ return Hex
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/index.js":[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 const Gibber = {
   initialized: false,
   exportTarget: null,
@@ -5485,7 +9944,7 @@ const Gibber = {
 
 module.exports = Gibber 
 
-},{"./euclid.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/euclid.js","./hex.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/hex.js","./pattern.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/pattern.js","./seq.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/seq.js","./steps.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/steps.js","./tidal.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/tidal.js","./triggers.js":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/triggers.js"}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/pattern.js":[function(require,module,exports){
+},{"./euclid.js":117,"./hex.js":118,"./pattern.js":120,"./seq.js":121,"./steps.js":122,"./tidal.js":123,"./triggers.js":124}],120:[function(require,module,exports){
 const patternWrapper = function( Gibber ) {
   "use strict"
 
@@ -6238,7 +10697,7 @@ patternWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = patternWrapper
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/seq.js":[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const Seq = function( props ) { 
@@ -6453,7 +10912,7 @@ module.exports = function( Gibber ) {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/steps.js":[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 module.exports = function( Gibber ) {
  
 const Steps = {
@@ -6672,7 +11131,7 @@ return Steps.create
 
 */
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/tidal.js":[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const Seq = function( props ) { 
@@ -6793,7 +11252,7 @@ module.exports = function( Gibber ) {
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/gibber.core.lib/js/triggers.js":[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -6835,7 +11294,7 @@ return Triggers
 
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js":[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -7021,7 +11480,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js":[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -7196,7 +11655,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -7221,14 +11680,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/util.js":[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7818,7 +12277,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/support/isBufferBrowser.js","_process":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/process/browser.js","inherits":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/node_modules/inherits/inherits_browser.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js":[function(require,module,exports){
+},{"./support/isBuffer":128,"_process":125,"inherits":127}],130:[function(require,module,exports){
 let ugen = require( '../ugen.js' )
 
 let analyzer = Object.create( ugen )
@@ -7830,7 +12289,7 @@ Object.assign( analyzer, {
 
 module.exports = analyzer
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/analyzers.js":[function(require,module,exports){
+},{"../ugen.js":198}],131:[function(require,module,exports){
 module.exports = function( Gibberish ) {
   const { In, Out, SSD } = require( './singlesampledelay.js'  )( Gibberish )
 
@@ -7855,7 +12314,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./follow.dsp.js":"/Users/charlie/Documents/code/gibberish/js/analysis/follow.dsp.js","./singlesampledelay.js":"/Users/charlie/Documents/code/gibberish/js/analysis/singlesampledelay.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/follow.dsp.js":[function(require,module,exports){
+},{"./follow.dsp.js":132,"./singlesampledelay.js":133}],132:[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       ugen = require( '../ugen.js' )
@@ -8043,7 +12502,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/analysis/singlesampledelay.js":[function(require,module,exports){
+},{"../ugen.js":198,"./analyzer.js":130,"genish.js":39}],133:[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       proxy    = require( '../workletProxy.js' ),
@@ -8160,7 +12619,7 @@ return { In, Out, SSD }
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","./analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/ad.js":[function(require,module,exports){
+},{"../ugen.js":198,"../workletProxy.js":200,"./analyzer.js":130,"genish.js":39}],134:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -8188,7 +12647,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/adsr.js":[function(require,module,exports){
+},{"../ugen.js":198,"genish.js":39}],135:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -8233,7 +12692,7 @@ module.exports = function( Gibberish ) {
   return ADSR
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/envelopes.js":[function(require,module,exports){
+},{"../ugen.js":198,"genish.js":39}],136:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -8269,7 +12728,7 @@ module.exports = function( Gibberish ) {
   return Envelopes
 }
 
-},{"./ad.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/ad.js","./adsr.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/adsr.js","./ramp.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/ramp.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/envelopes/ramp.js":[function(require,module,exports){
+},{"./ad.js":134,"./adsr.js":135,"./ramp.js":137,"genish.js":39}],137:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -8303,9 +12762,9 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/external/audioworklet-polyfill.js":[function(require,module,exports){
-arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/js/external/audioworklet-polyfill.js"][0].apply(exports,arguments)
-},{"./realm.js":"/Users/charlie/Documents/code/gibberish/js/external/realm.js"}],"/Users/charlie/Documents/code/gibberish/js/external/priorityqueue.js":[function(require,module,exports){
+},{"../ugen.js":198,"genish.js":39}],138:[function(require,module,exports){
+arguments[4][27][0].apply(exports,arguments)
+},{"./realm.js":140,"dup":27}],139:[function(require,module,exports){
 /*
  * https://github.com/antimatter15/heapqueue.js/blob/master/heapqueue.js
  *
@@ -8419,7 +12878,7 @@ HeapQueue.prototype.pop = function(){
 
 module.exports = HeapQueue
 
-},{}],"/Users/charlie/Documents/code/gibberish/js/external/realm.js":[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 
 /**
  * Copyright 2018 Google LLC
@@ -8465,7 +12924,7 @@ module.exports = function Realm (scope, parentElement) {
   this.exec = win.$hook.call(scope, scope, console);
 }
 
-},{}],"/Users/charlie/Documents/code/gibberish/js/factory.js":[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 const __proxy = require( './workletProxy.js' )
 const effectProto = require( './fx/effect.js' )
 
@@ -8626,7 +13085,7 @@ module.exports = function( Gibberish ) {
   return factory
 }
 
-},{"./fx/effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","./workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/allpass.js":[function(require,module,exports){
+},{"./fx/effect.js":156,"./workletProxy.js":200}],142:[function(require,module,exports){
 let g = require( 'genish.js' )
  
 // constructor for schroeder allpass filters
@@ -8643,7 +13102,7 @@ let allPass = function( _input, length=500, feedback=.5 ) {
 
 module.exports = allPass
 
-},{"genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/biquad.dsp.js":[function(require,module,exports){
+},{"genish.js":39}],143:[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -8807,7 +13266,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js":[function(require,module,exports){
+},{"./filter.js":146,"genish.js":39}],144:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 ) {
@@ -8826,7 +13285,7 @@ let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 
 
 module.exports = combFilter
 
-},{"genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/diodeFilterZDF.js":[function(require,module,exports){
+},{"genish.js":39}],145:[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -9036,7 +13495,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filter.js":[function(require,module,exports){
+},{"./filter.js":146,"genish.js":39}],146:[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let filter = Object.create( ugen )
@@ -9047,7 +13506,7 @@ Object.assign( filter, {
 
 module.exports = filter
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filter24.js":[function(require,module,exports){
+},{"../ugen.js":198}],147:[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -9117,7 +13576,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/filters.js":[function(require,module,exports){
+},{"./filter.js":146,"genish.js":39}],148:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const g = Gibberish.genish
@@ -9181,7 +13640,7 @@ return filters
 
 }
 
-},{"./allpass.js":"/Users/charlie/Documents/code/gibberish/js/filters/allpass.js","./biquad.dsp.js":"/Users/charlie/Documents/code/gibberish/js/filters/biquad.dsp.js","./combfilter.js":"/Users/charlie/Documents/code/gibberish/js/filters/combfilter.js","./diodeFilterZDF.js":"/Users/charlie/Documents/code/gibberish/js/filters/diodeFilterZDF.js","./filter24.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter24.js","./ladder.dsp.js":"/Users/charlie/Documents/code/gibberish/js/filters/ladder.dsp.js","./svf.js":"/Users/charlie/Documents/code/gibberish/js/filters/svf.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/ladder.dsp.js":[function(require,module,exports){
+},{"./allpass.js":142,"./biquad.dsp.js":143,"./combfilter.js":144,"./diodeFilterZDF.js":145,"./filter24.js":147,"./ladder.dsp.js":149,"./svf.js":150}],149:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       filterProto = require( './filter.js' )
 
@@ -9301,7 +13760,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/filters/svf.js":[function(require,module,exports){
+},{"./filter.js":146,"genish.js":39}],150:[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -9379,7 +13838,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":"/Users/charlie/Documents/code/gibberish/js/filters/filter.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/bitCrusher.js":[function(require,module,exports){
+},{"./filter.js":146,"genish.js":39}],151:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -9457,7 +13916,7 @@ return BitCrusher
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/bufferShuffler.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],152:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -9582,7 +14041,7 @@ module.exports = function( Gibberish ) {
   return Shuffler 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/chorus.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],153:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
   
@@ -9679,7 +14138,7 @@ return __Chorus
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/delay.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],154:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -9751,7 +14210,7 @@ return Delay
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/distortion.dsp.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],155:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -9838,7 +14297,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/effect.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],156:[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let effect = Object.create( ugen )
@@ -9850,7 +14309,7 @@ Object.assign( effect, {
 
 module.exports = effect
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/effects.js":[function(require,module,exports){
+},{"../ugen.js":198}],157:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const effects = {
@@ -9881,7 +14340,7 @@ return effects
 
 }
 
-},{"./bitCrusher.js":"/Users/charlie/Documents/code/gibberish/js/fx/bitCrusher.js","./bufferShuffler.js":"/Users/charlie/Documents/code/gibberish/js/fx/bufferShuffler.js","./chorus.js":"/Users/charlie/Documents/code/gibberish/js/fx/chorus.js","./delay.js":"/Users/charlie/Documents/code/gibberish/js/fx/delay.js","./distortion.dsp.js":"/Users/charlie/Documents/code/gibberish/js/fx/distortion.dsp.js","./flanger.js":"/Users/charlie/Documents/code/gibberish/js/fx/flanger.js","./freeverb.js":"/Users/charlie/Documents/code/gibberish/js/fx/freeverb.js","./ringMod.js":"/Users/charlie/Documents/code/gibberish/js/fx/ringMod.js","./tremolo.js":"/Users/charlie/Documents/code/gibberish/js/fx/tremolo.js","./vibrato.js":"/Users/charlie/Documents/code/gibberish/js/fx/vibrato.js","./wavefolder.dsp.js":"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.dsp.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/flanger.js":[function(require,module,exports){
+},{"./bitCrusher.js":151,"./bufferShuffler.js":152,"./chorus.js":153,"./delay.js":154,"./distortion.dsp.js":155,"./flanger.js":158,"./freeverb.js":159,"./ringMod.js":160,"./tremolo.js":161,"./vibrato.js":162,"./wavefolder.dsp.js":163}],158:[function(require,module,exports){
 let g = require( 'genish.js' ),
     proto = require( './effect.js' )
 
@@ -9972,7 +14431,7 @@ return Flanger
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/freeverb.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],159:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -10080,7 +14539,7 @@ return Freeverb
 }
 
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/ringMod.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],160:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -10145,7 +14604,7 @@ return RingMod
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/tremolo.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],161:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -10218,7 +14677,7 @@ return Tremolo
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/vibrato.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],162:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -10305,7 +14764,7 @@ return Vibrato
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.dsp.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],163:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -10455,7 +14914,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/index.js":[function(require,module,exports){
+},{"./effect.js":156,"genish.js":39}],164:[function(require,module,exports){
 let MemoryHelper = require( 'memory-helper' ),
     genish       = require( 'genish.js' )
     
@@ -10961,7 +15420,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzer.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzer.js","./analysis/analyzers.js":"/Users/charlie/Documents/code/gibberish/js/analysis/analyzers.js","./envelopes/envelopes.js":"/Users/charlie/Documents/code/gibberish/js/envelopes/envelopes.js","./factory.js":"/Users/charlie/Documents/code/gibberish/js/factory.js","./filters/filters.js":"/Users/charlie/Documents/code/gibberish/js/filters/filters.js","./fx/effect.js":"/Users/charlie/Documents/code/gibberish/js/fx/effect.js","./fx/effects.js":"/Users/charlie/Documents/code/gibberish/js/fx/effects.js","./instruments/instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","./instruments/instruments.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instruments.js","./instruments/polyMixin.js":"/Users/charlie/Documents/code/gibberish/js/instruments/polyMixin.js","./instruments/polytemplate.js":"/Users/charlie/Documents/code/gibberish/js/instruments/polytemplate.js","./misc/binops.js":"/Users/charlie/Documents/code/gibberish/js/misc/binops.js","./misc/bus.js":"/Users/charlie/Documents/code/gibberish/js/misc/bus.js","./misc/bus2.js":"/Users/charlie/Documents/code/gibberish/js/misc/bus2.js","./misc/monops.js":"/Users/charlie/Documents/code/gibberish/js/misc/monops.js","./misc/panner.js":"/Users/charlie/Documents/code/gibberish/js/misc/panner.js","./misc/time.js":"/Users/charlie/Documents/code/gibberish/js/misc/time.js","./oscillators/oscillators.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/oscillators.js","./scheduling/scheduler.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/scheduler.js","./scheduling/seq2.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/seq2.js","./scheduling/sequencer.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/sequencer.js","./scheduling/tidal.js":"/Users/charlie/Documents/code/gibberish/js/scheduling/tidal.js","./ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./utilities.js":"/Users/charlie/Documents/code/gibberish/js/utilities.js","./workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js","memory-helper":"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/clap.dsp.js":[function(require,module,exports){
+},{"./analysis/analyzer.js":130,"./analysis/analyzers.js":131,"./envelopes/envelopes.js":136,"./factory.js":141,"./filters/filters.js":148,"./fx/effect.js":156,"./fx/effects.js":157,"./instruments/instrument.js":171,"./instruments/instruments.js":172,"./instruments/polyMixin.js":176,"./instruments/polytemplate.js":177,"./misc/binops.js":182,"./misc/bus.js":183,"./misc/bus2.js":184,"./misc/monops.js":185,"./misc/panner.js":186,"./misc/time.js":187,"./oscillators/oscillators.js":190,"./scheduling/scheduler.js":194,"./scheduling/seq2.js":195,"./scheduling/sequencer.js":196,"./scheduling/tidal.js":197,"./ugen.js":198,"./utilities.js":199,"./workletProxy.js":200,"genish.js":39,"memory-helper":203}],165:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -11031,7 +15490,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/complex.dsp.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],166:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' ),
       __wavefold   = require( '../fx/wavefolder.dsp.js' )
@@ -11152,7 +15611,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../fx/wavefolder.dsp.js":"/Users/charlie/Documents/code/gibberish/js/fx/wavefolder.dsp.js","./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/conga.js":[function(require,module,exports){
+},{"../fx/wavefolder.dsp.js":163,"./instrument.js":171,"genish.js":39}],167:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -11193,7 +15652,7 @@ module.exports = function( Gibberish ) {
   return [ Conga, PolyConga ]
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/cowbell.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],168:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -11237,7 +15696,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/fm.dsp.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],169:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -11368,7 +15827,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/hat.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],170:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -11422,7 +15881,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],171:[function(require,module,exports){
 const ugen = require( '../ugen.js' )()
 
 const instrument = Object.create( ugen )
@@ -11463,7 +15922,7 @@ Object.assign( instrument, {
 
 module.exports = instrument
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/instruments.js":[function(require,module,exports){
+},{"../ugen.js":198}],172:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
 const instruments = {
@@ -11499,7 +15958,7 @@ return instruments
 
 }
 
-},{"./clap.dsp.js":"/Users/charlie/Documents/code/gibberish/js/instruments/clap.dsp.js","./complex.dsp.js":"/Users/charlie/Documents/code/gibberish/js/instruments/complex.dsp.js","./conga.js":"/Users/charlie/Documents/code/gibberish/js/instruments/conga.js","./cowbell.js":"/Users/charlie/Documents/code/gibberish/js/instruments/cowbell.js","./fm.dsp.js":"/Users/charlie/Documents/code/gibberish/js/instruments/fm.dsp.js","./hat.js":"/Users/charlie/Documents/code/gibberish/js/instruments/hat.js","./karplusstrong.js":"/Users/charlie/Documents/code/gibberish/js/instruments/karplusstrong.js","./kick.js":"/Users/charlie/Documents/code/gibberish/js/instruments/kick.js","./monosynth.dsp.js":"/Users/charlie/Documents/code/gibberish/js/instruments/monosynth.dsp.js","./sampler.js":"/Users/charlie/Documents/code/gibberish/js/instruments/sampler.js","./snare.js":"/Users/charlie/Documents/code/gibberish/js/instruments/snare.js","./synth.dsp.js":"/Users/charlie/Documents/code/gibberish/js/instruments/synth.dsp.js","./tom.js":"/Users/charlie/Documents/code/gibberish/js/instruments/tom.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/karplusstrong.js":[function(require,module,exports){
+},{"./clap.dsp.js":165,"./complex.dsp.js":166,"./conga.js":167,"./cowbell.js":168,"./fm.dsp.js":169,"./hat.js":170,"./karplusstrong.js":173,"./kick.js":174,"./monosynth.dsp.js":175,"./sampler.js":178,"./snare.js":179,"./synth.dsp.js":180,"./tom.js":181}],173:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -11591,7 +16050,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/kick.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],174:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -11642,7 +16101,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/monosynth.dsp.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],175:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' ),
       feedbackOsc = require( '../oscillators/fmfeedbackosc.js' )
@@ -11766,7 +16225,7 @@ module.exports = function( Gibberish ) {
   return [ Mono, PolyMono ]
 }
 
-},{"../oscillators/fmfeedbackosc.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js","./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/polyMixin.js":[function(require,module,exports){
+},{"../oscillators/fmfeedbackosc.js":189,"./instrument.js":171,"genish.js":39}],176:[function(require,module,exports){
 // XXX TOO MANY GLOBAL GIBBERISH VALUES
 
 const Gibberish = require( '../index.js' )
@@ -11854,7 +16313,7 @@ module.exports = {
   triggerNote:null
 }
 
-},{"../index.js":"/Users/charlie/Documents/code/gibberish/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/polytemplate.js":[function(require,module,exports){
+},{"../index.js":164}],177:[function(require,module,exports){
 /*
  * This files creates a factory generating polysynth constructors.
  */
@@ -11966,7 +16425,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/sampler.js":[function(require,module,exports){
+},{"../workletProxy.js":200,"genish.js":39}],178:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -12187,7 +16646,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/snare.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],179:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
   
@@ -12238,7 +16697,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/synth.dsp.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],180:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -12358,7 +16817,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/instruments/tom.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],181:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -12409,7 +16868,7 @@ module.exports = function( Gibberish ) {
   return Tom
 }
 
-},{"./instrument.js":"/Users/charlie/Documents/code/gibberish/js/instruments/instrument.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/binops.js":[function(require,module,exports){
+},{"./instrument.js":171,"genish.js":39}],182:[function(require,module,exports){
 const ugenproto = require( '../ugen.js' )(),
      __proxy     = require( '../workletProxy.js' ),
      g = require( 'genish.js' )
@@ -12524,7 +16983,7 @@ module.exports = function( Gibberish ) {
   return Binops
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/bus.js":[function(require,module,exports){
+},{"../ugen.js":198,"../workletProxy.js":200,"genish.js":39}],183:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )(),
     __proxy= require( '../workletProxy.js' )
@@ -12615,7 +17074,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/bus2.js":[function(require,module,exports){
+},{"../ugen.js":198,"../workletProxy.js":200,"genish.js":39}],184:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       __proxy = require( '../workletProxy.js' )
@@ -12754,7 +17213,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/monops.js":[function(require,module,exports){
+},{"../ugen.js":198,"../workletProxy.js":200,"genish.js":39}],185:[function(require,module,exports){
 const  g    = require( 'genish.js'  ),
        ugen = require( '../ugen.js' )()
 
@@ -12816,7 +17275,7 @@ module.exports = function( Gibberish ) {
   return Monops
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/panner.js":[function(require,module,exports){
+},{"../ugen.js":198,"genish.js":39}],186:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 const ugen = require( '../ugen.js' )()
@@ -12853,7 +17312,7 @@ return Panner
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/misc/time.js":[function(require,module,exports){
+},{"../ugen.js":198,"genish.js":39}],187:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const Time = {
@@ -12882,7 +17341,7 @@ module.exports = function( Gibberish ) {
   return Time
 }
 
-},{}],"/Users/charlie/Documents/code/gibberish/js/oscillators/brownnoise.dsp.js":[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       ssd = genish.history,
       noise = genish.noise
@@ -12903,7 +17362,7 @@ module.exports = function() {
   return out
 }
 
-},{"genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js":[function(require,module,exports){
+},{"genish.js":39}],189:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
@@ -12979,7 +17438,7 @@ let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
 
 module.exports = feedbackOsc
 
-},{"genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/oscillators.js":[function(require,module,exports){
+},{"genish.js":39}],190:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       feedbackOsc = require( './fmfeedbackosc.js' ),
@@ -13158,7 +17617,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","./brownnoise.dsp.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/brownnoise.dsp.js","./fmfeedbackosc.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/fmfeedbackosc.js","./pinknoise.dsp.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/pinknoise.dsp.js","./polyblep.dsp.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/polyblep.dsp.js","./wavetable.js":"/Users/charlie/Documents/code/gibberish/js/oscillators/wavetable.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/pinknoise.dsp.js":[function(require,module,exports){
+},{"../ugen.js":198,"./brownnoise.dsp.js":188,"./fmfeedbackosc.js":189,"./pinknoise.dsp.js":191,"./polyblep.dsp.js":192,"./wavetable.js":193,"genish.js":39}],191:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       ssd = genish.history,
       data = genish.data,
@@ -13185,7 +17644,7 @@ module.exports = function() {
 
 }
 
-},{"genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/polyblep.dsp.js":[function(require,module,exports){
+},{"genish.js":39}],192:[function(require,module,exports){
 const genish = require( 'genish.js' )
 const g = genish
 
@@ -13258,7 +17717,7 @@ const polyBlep = function( __frequency, argumentProps ) {
 
 module.exports = polyBlep 
 
-},{"genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/oscillators/wavetable.js":[function(require,module,exports){
+},{"genish.js":39}],193:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )()
 
@@ -13292,7 +17751,7 @@ module.exports = function( Gibberish ) {
   return Wavetable
 }
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/scheduler.js":[function(require,module,exports){
+},{"../ugen.js":198,"genish.js":39}],194:[function(require,module,exports){
 const Queue = require( '../external/priorityqueue.js' )
 
 let Gibberish = null
@@ -13344,6 +17803,8 @@ const Scheduler = {
 
       this.phase++
     }
+
+    return this.phase
   },
 
   advance( amt ) {
@@ -13368,7 +17829,7 @@ Object.defineProperty( Scheduler, 'shouldSync', {
 
 module.exports = Scheduler
 
-},{"../external/priorityqueue.js":"/Users/charlie/Documents/code/gibberish/js/external/priorityqueue.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/seq2.js":[function(require,module,exports){
+},{"../external/priorityqueue.js":139}],195:[function(require,module,exports){
 const g = require( 'genish.js' ),
       __proxy = require( '../workletProxy.js' ),
       ugen = require( '../ugen.js' )()
@@ -13582,7 +18043,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":"/Users/charlie/Documents/code/gibberish/js/ugen.js","../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/sequencer.js":[function(require,module,exports){
+},{"../ugen.js":198,"../workletProxy.js":200,"genish.js":39}],196:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 
 module.exports = function( Gibberish ) {
@@ -13745,7 +18206,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js"}],"/Users/charlie/Documents/code/gibberish/js/scheduling/tidal.js":[function(require,module,exports){
+},{"../workletProxy.js":200}],197:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 const Pattern = require( 'tidal.pegjs' )
 
@@ -13939,7 +18400,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":"/Users/charlie/Documents/code/gibberish/js/workletProxy.js","tidal.pegjs":"/Users/charlie/Documents/code/gibberish/node_modules/tidal.pegjs/src/pattern.js"}],"/Users/charlie/Documents/code/gibberish/js/ugen.js":[function(require,module,exports){
+},{"../workletProxy.js":200,"tidal.pegjs":214}],198:[function(require,module,exports){
 let Gibberish = null
 
 const __ugen = function( __Gibberish ) {
@@ -14086,7 +18547,7 @@ const __ugen = function( __Gibberish ) {
 
 module.exports = __ugen
 
-},{}],"/Users/charlie/Documents/code/gibberish/js/utilities.js":[function(require,module,exports){
+},{}],199:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       AWPF = require( './external/audioworklet-polyfill.js' )
 
@@ -14188,6 +18649,12 @@ const utilities = {
   },
 
   workletHandlers: {
+    phase( event ) {
+      Gibberish.phase = event.data.value
+      if( typeof Gibberish.onphaseupdate === 'function' ) {
+        Gibberish.onphaseupdate( Gibberish.phase )
+      }
+    },
     __sequencer( event ) {
       const message = event.data
       const id = message.id
@@ -14320,7 +18787,7 @@ return utilities
 
 }
 
-},{"./external/audioworklet-polyfill.js":"/Users/charlie/Documents/code/gibberish/js/external/audioworklet-polyfill.js","genish.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js"}],"/Users/charlie/Documents/code/gibberish/js/workletProxy.js":[function(require,module,exports){
+},{"./external/audioworklet-polyfill.js":138,"genish.js":39}],200:[function(require,module,exports){
 const serialize = require('serialize-javascript')
 
 module.exports = function( Gibberish ) {
@@ -14479,7 +18946,7 @@ return __proxy
 
 }
 
-},{"serialize-javascript":"/Users/charlie/Documents/code/gibberish/node_modules/serialize-javascript/index.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/bjork/index.js":[function(require,module,exports){
+},{"serialize-javascript":212}],201:[function(require,module,exports){
 function bjorklund(slots, pulses){
   var pattern = [],
       count = [],
@@ -14520,7 +18987,7 @@ module.exports = function(m, k){
   else return bjorklund(k, m);
 };
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/fraction.js/fraction.js":[function(require,module,exports){
+},{}],202:[function(require,module,exports){
 /**
  * @license Fraction.js v4.0.12 09/09/2015
  * http://www.xarg.org/2014/03/rational-numbers-in-javascript/
@@ -15356,4466 +19823,9 @@ module.exports = function(m, k){
 
 })(this);
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/abs.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'abs',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet ? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.abs' : Math.abs })
-
-      out = `${ref}abs( ${inputs[0]} )`
-
-    } else {
-      out = Math.abs( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let abs = Object.create( proto )
-
-  abs.inputs = [ x ]
-
-  return abs
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/accum.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'accum',
-
-  gen() {
-    let code,
-        inputs = gen.getInputs( this ),
-        genName = 'gen.' + this.name,
-        functionBody
-
-    gen.requestMemory( this.memory )
-
-    gen.memory.heap[ this.memory.value.idx ] = this.initialValue
-
-    functionBody = this.callback( genName, inputs[0], inputs[1], `memory[${this.memory.value.idx}]` )
-
-    //gen.closures.add({ [ this.name ]: this }) 
-
-    gen.memo[ this.name ] = this.name + '_value'
-    
-    return [ this.name + '_value', functionBody ]
-  },
-
-  callback( _name, _incr, _reset, valueRef ) {
-    let diff = this.max - this.min,
-        out = '',
-        wrap = ''
-    
-    /* three different methods of wrapping, third is most expensive:
-     *
-     * 1: range {0,1}: y = x - (x | 0)
-     * 2: log2(this.max) == integer: y = x & (this.max - 1)
-     * 3: all others: if( x >= this.max ) y = this.max -x
-     *
-     */
-
-    // must check for reset before storing value for output
-    if( !(typeof this.inputs[1] === 'number' && this.inputs[1] < 1) ) { 
-      if( this.resetValue !== this.min ) {
-
-        out += `  if( ${_reset} >=1 ) ${valueRef} = ${this.resetValue}\n\n`
-        //out += `  if( ${_reset} >=1 ) ${valueRef} = ${this.min}\n\n`
-      }else{
-        out += `  if( ${_reset} >=1 ) ${valueRef} = ${this.min}\n\n`
-        //out += `  if( ${_reset} >=1 ) ${valueRef} = ${this.initialValue}\n\n`
-      }
-    }
-
-    out += `  var ${this.name}_value = ${valueRef}\n`
-    
-    if( this.shouldWrap === false && this.shouldClamp === true ) {
-      out += `  if( ${valueRef} < ${this.max } ) ${valueRef} += ${_incr}\n`
-    }else{
-      out += `  ${valueRef} += ${_incr}\n` // store output value before accumulating  
-    }
-
-    if( this.max !== Infinity  && this.shouldWrapMax ) wrap += `  if( ${valueRef} >= ${this.max} ) ${valueRef} -= ${diff}\n`
-    if( this.min !== -Infinity && this.shouldWrapMin ) wrap += `  if( ${valueRef} < ${this.min} ) ${valueRef} += ${diff}\n`
-
-    //if( this.min === 0 && this.max === 1 ) { 
-    //  wrap =  `  ${valueRef} = ${valueRef} - (${valueRef} | 0)\n\n`
-    //} else if( this.min === 0 && ( Math.log2( this.max ) | 0 ) === Math.log2( this.max ) ) {
-    //  wrap =  `  ${valueRef} = ${valueRef} & (${this.max} - 1)\n\n`
-    //} else if( this.max !== Infinity ){
-    //  wrap = `  if( ${valueRef} >= ${this.max} ) ${valueRef} -= ${diff}\n\n`
-    //}
-
-    out = out + wrap + '\n'
-
-    return out
-  },
-
-  defaults : { min:0, max:1, resetValue:0, initialValue:0, shouldWrap:true, shouldWrapMax: true, shouldWrapMin:true, shouldClamp:false }
-}
-
-module.exports = ( incr, reset=0, properties ) => {
-  const ugen = Object.create( proto )
-      
-  Object.assign( ugen, 
-    { 
-      uid:    gen.getUID(),
-      inputs: [ incr, reset ],
-      memory: {
-        value: { length:1, idx:null }
-      }
-    },
-    proto.defaults,
-    properties 
-  )
-
-  if( properties !== undefined && properties.shouldWrapMax === undefined && properties.shouldWrapMin === undefined ) {
-    if( properties.shouldWrap !== undefined ) {
-      ugen.shouldWrapMin = ugen.shouldWrapMax = properties.shouldWrap
-    }
-  }
-
-  if( properties !== undefined && properties.resetValue === undefined ) {
-    ugen.resetValue = ugen.min
-  }
-
-  if( ugen.initialValue === undefined ) ugen.initialValue = ugen.min
-
-  Object.defineProperty( ugen, 'value', {
-    get()  { 
-      //console.log( 'gen:', gen, gen.memory )
-      return gen.memory.heap[ this.memory.value.idx ] 
-    },
-    set(v) { gen.memory.heap[ this.memory.value.idx ] = v }
-  })
-
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/acos.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'acos',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet ? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'acos': isWorklet ? 'Math.acos' :Math.acos })
-
-      out = `${ref}acos( ${inputs[0]} )` 
-
-    } else {
-      out = Math.acos( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let acos = Object.create( proto )
-
-  acos.inputs = [ x ]
-  acos.id = gen.getUID()
-  acos.name = `${acos.basename}{acos.id}`
-
-  return acos
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ad.js":[function(require,module,exports){
-'use strict'
-
-let gen      = require( './gen.js' ),
-    mul      = require( './mul.js' ),
-    sub      = require( './sub.js' ),
-    div      = require( './div.js' ),
-    data     = require( './data.js' ),
-    peek     = require( './peek.js' ),
-    accum    = require( './accum.js' ),
-    ifelse   = require( './ifelseif.js' ),
-    lt       = require( './lt.js' ),
-    bang     = require( './bang.js' ),
-    env      = require( './env.js' ),
-    add      = require( './add.js' ),
-    poke     = require( './poke.js' ),
-    neq      = require( './neq.js' ),
-    and      = require( './and.js' ),
-    gte      = require( './gte.js' ),
-    memo     = require( './memo.js' ),
-    utilities= require( './utilities.js' )
-
-module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
-  const props = Object.assign({}, { shape:'exponential', alpha:5, trigger:null }, _props )
-  const _bang = props.trigger !== null ? props.trigger : bang(),
-        phase = accum( 1, _bang, { min:0, max: Infinity, initialValue:-Infinity, shouldWrap:false })
-      
-  let bufferData, bufferDataReverse, decayData, out, buffer
-
-  //console.log( 'shape:', props.shape, 'attack time:', attackTime, 'decay time:', decayTime )
-  let completeFlag = data( [0] )
-  
-  // slightly more efficient to use existing phase accumulator for linear envelopes
-  if( props.shape === 'linear' ) {
-    out = ifelse( 
-      and( gte( phase, 0), lt( phase, attackTime )),
-      div( phase, attackTime ),
-
-      and( gte( phase, 0),  lt( phase, add( attackTime, decayTime ) ) ),
-      sub( 1, div( sub( phase, attackTime ), decayTime ) ),
-      
-      neq( phase, -Infinity),
-      poke( completeFlag, 1, 0, { inline:0 }),
-
-      0 
-    )
-  } else {
-    bufferData = env({ length:1024, type:props.shape, alpha:props.alpha })
-    bufferDataReverse = env({ length:1024, type:props.shape, alpha:props.alpha, reverse:true })
-
-    out = ifelse( 
-      and( gte( phase, 0), lt( phase, attackTime ) ), 
-      peek( bufferData, div( phase, attackTime ), { boundmode:'clamp' } ), 
-
-      and( gte(phase,0), lt( phase, add( attackTime, decayTime ) ) ), 
-      peek( bufferDataReverse, div( sub( phase, attackTime ), decayTime ), { boundmode:'clamp' }),
-
-      neq( phase, -Infinity ),
-      poke( completeFlag, 1, 0, { inline:0 }),
-
-      0
-    )
-  }
-
-  const usingWorklet = gen.mode === 'worklet'
-  if( usingWorklet === true ) {
-    out.node = null
-    utilities.register( out )
-  }
-
-  // needed for gibberish... getting this to work right with worklets
-  // via promises will probably be tricky
-  out.isComplete = ()=> {
-    if( usingWorklet === true && out.node !== null ) {
-      const p = new Promise( resolve => {
-        out.node.getMemoryValue( completeFlag.memory.values.idx, resolve )
-      })
-
-      return p
-    }else{
-      return gen.memory.heap[ completeFlag.memory.values.idx ]
-    }
-  }
-
-  out.trigger = ()=> {
-    if( usingWorklet === true && out.node !== null ) {
-      out.node.port.postMessage({ key:'set', idx:completeFlag.memory.values.idx, value:0 })
-    }else{
-      gen.memory.heap[ completeFlag.memory.values.idx ] = 0
-    }
-    _bang.trigger()
-  }
-
-  return out 
-}
-
-},{"./accum.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/accum.js","./add.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/add.js","./and.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/and.js","./bang.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/bang.js","./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./div.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/env.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./gte.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gte.js","./ifelseif.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ifelseif.js","./lt.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/lt.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/neq.js","./peek.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js","./utilities.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/utilities.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/add.js":[function(require,module,exports){
-'use strict'
-
-const gen = require('./gen.js')
-
-const proto = { 
-  basename:'add',
-  gen() {
-    let inputs = gen.getInputs( this ),
-        out='',
-        sum = 0, numCount = 0, adderAtEnd = false, alreadyFullSummed = true
-
-    if( inputs.length === 0 ) return 0
-
-    out = `  var ${this.name} = `
-
-    inputs.forEach( (v,i) => {
-      if( isNaN( v ) ) {
-        out += v
-        if( i < inputs.length -1 ) {
-          adderAtEnd = true
-          out += ' + '
-        }
-        alreadyFullSummed = false
-      }else{
-        sum += parseFloat( v )
-        numCount++
-      }
-    })
-
-    if( numCount > 0 ) {
-      out += adderAtEnd || alreadyFullSummed ? sum : ' + ' + sum
-    }
-
-    out += '\n'
-
-    gen.memo[ this.name ] = this.name
-
-    return [ this.name, out ]
-  }
-}
-
-module.exports = ( ...args ) => {
-  const add = Object.create( proto )
-  add.id = gen.getUID()
-  add.name = add.basename + add.id
-  add.inputs = args
-
-  return add
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/adsr.js":[function(require,module,exports){
-'use strict'
-
-let gen      = require( './gen.js' ),
-    mul      = require( './mul.js' ),
-    sub      = require( './sub.js' ),
-    div      = require( './div.js' ),
-    data     = require( './data.js' ),
-    peek     = require( './peek.js' ),
-    accum    = require( './accum.js' ),
-    ifelse   = require( './ifelseif.js' ),
-    lt       = require( './lt.js' ),
-    bang     = require( './bang.js' ),
-    env      = require( './env.js' ),
-    param    = require( './param.js' ),
-    add      = require( './add.js' ),
-    gtp      = require( './gtp.js' ),
-    not      = require( './not.js' ),
-    and      = require( './and.js' ),
-    neq      = require( './neq.js' ),
-    poke     = require( './poke.js' )
-
-module.exports = ( attackTime=44, decayTime=22050, sustainTime=44100, sustainLevel=.6, releaseTime=44100, _props ) => {
-  let envTrigger = bang(),
-      phase = accum( 1, envTrigger, { max: Infinity, shouldWrap:false, initialValue:Infinity }),
-      shouldSustain = param( 1 ),
-      defaults = {
-         shape: 'exponential',
-         alpha: 5,
-         triggerRelease: false,
-      },
-      props = Object.assign({}, defaults, _props ),
-      bufferData, decayData, out, buffer, sustainCondition, releaseAccum, releaseCondition
-
-
-  const completeFlag = data( [0] )
-
-  bufferData = env({ length:1024, alpha:props.alpha, shift:0, type:props.shape })
-
-  sustainCondition = props.triggerRelease 
-    ? shouldSustain
-    : lt( phase, add( attackTime, decayTime, sustainTime ) )
-
-  releaseAccum = props.triggerRelease
-    ? gtp( sub( sustainLevel, accum( div( sustainLevel, releaseTime ) , 0, { shouldWrap:false }) ), 0 )
-    : sub( sustainLevel, mul( div( sub( phase, add( attackTime, decayTime, sustainTime ) ), releaseTime ), sustainLevel ) ), 
-
-  releaseCondition = props.triggerRelease
-    ? not( shouldSustain )
-    : lt( phase, add( attackTime, decayTime, sustainTime, releaseTime ) )
-
-  out = ifelse(
-    // attack 
-    lt( phase,  attackTime ), 
-    peek( bufferData, div( phase, attackTime ), { boundmode:'clamp' } ), 
-
-    // decay
-    lt( phase, add( attackTime, decayTime ) ), 
-    peek( bufferData, sub( 1, mul( div( sub( phase,  attackTime ),  decayTime ), sub( 1,  sustainLevel ) ) ), { boundmode:'clamp' }),
-
-    // sustain
-    and( sustainCondition, neq( phase, Infinity ) ),
-    peek( bufferData,  sustainLevel ),
-
-    // release
-    releaseCondition, //lt( phase,  attackTime +  decayTime +  sustainTime +  releaseTime ),
-    peek( 
-      bufferData,
-      releaseAccum, 
-      //sub(  sustainLevel, mul( div( sub( phase,  attackTime +  decayTime +  sustainTime),  releaseTime ),  sustainLevel ) ), 
-      { boundmode:'clamp' }
-    ),
-
-    neq( phase, Infinity ),
-    poke( completeFlag, 1, 0, { inline:0 }),
-
-    0
-  )
-   
-  const usingWorklet = gen.mode === 'worklet'
-  if( usingWorklet === true ) {
-    out.node = null
-    utilities.register( out )
-  }
-
-  out.trigger = ()=> {
-    shouldSustain.value = 1
-    envTrigger.trigger()
-  }
- 
-  // needed for gibberish... getting this to work right with worklets
-  // via promises will probably be tricky
-  out.isComplete = ()=> {
-    if( usingWorklet === true && out.node !== null ) {
-      const p = new Promise( resolve => {
-        out.node.getMemoryValue( completeFlag.memory.values.idx, resolve )
-      })
-
-      return p
-    }else{
-      return gen.memory.heap[ completeFlag.memory.values.idx ]
-    }
-  }
-
-
-  out.release = ()=> {
-    shouldSustain.value = 0
-    // XXX pretty nasty... grabs accum inside of gtp and resets value manually
-    // unfortunately envTrigger won't work as it's back to 0 by the time the release block is triggered...
-    if( usingWorklet && out.node !== null ) {
-      out.node.port.postMessage({ key:'set', idx:releaseAccum.inputs[0].inputs[1].memory.value.idx, value:0 })
-    }else{
-      gen.memory.heap[ releaseAccum.inputs[0].inputs[1].memory.value.idx ] = 0
-    }
-  }
-
-  return out 
-}
-
-},{"./accum.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/accum.js","./add.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/add.js","./and.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/and.js","./bang.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/bang.js","./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./div.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/env.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./gtp.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gtp.js","./ifelseif.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ifelseif.js","./lt.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/lt.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/neq.js","./not.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/not.js","./param.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/param.js","./peek.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/and.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' )
-
-let proto = {
-  basename:'and',
-
-  gen() {
-    let inputs = gen.getInputs( this ), out
-
-    out = `  var ${this.name} = (${inputs[0]} !== 0 && ${inputs[1]} !== 0) | 0\n\n`
-
-    gen.memo[ this.name ] = `${this.name}`
-
-    return [ `${this.name}`, out ]
-  },
-
-}
-
-module.exports = ( in1, in2 ) => {
-  let ugen = Object.create( proto )
-  Object.assign( ugen, {
-    uid:     gen.getUID(),
-    inputs:  [ in1, in2 ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/asin.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'asin',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet ? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'asin': isWorklet ? 'Math.sin' : Math.asin })
-
-      out = `${ref}asin( ${inputs[0]} )` 
-
-    } else {
-      out = Math.asin( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let asin = Object.create( proto )
-
-  asin.inputs = [ x ]
-  asin.id = gen.getUID()
-  asin.name = `${asin.basename}{asin.id}`
-
-  return asin
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/atan.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'atan',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet ? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'atan': isWorklet ? 'Math.atan' : Math.atan })
-
-      out = `${ref}atan( ${inputs[0]} )` 
-
-    } else {
-      out = Math.atan( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let atan = Object.create( proto )
-
-  atan.inputs = [ x ]
-  atan.id = gen.getUID()
-  atan.name = `${atan.basename}{atan.id}`
-
-  return atan
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/attack.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen.js' ),
-    history = require( './history.js' ),
-    mul     = require( './mul.js' ),
-    sub     = require( './sub.js' )
-
-module.exports = ( decayTime = 44100 ) => {
-  let ssd = history ( 1 ),
-      t60 = Math.exp( -6.907755278921 / decayTime )
-
-  ssd.in( mul( ssd.out, t60 ) )
-
-  ssd.out.trigger = ()=> {
-    ssd.value = 1
-  }
-
-  return sub( 1, ssd.out )
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/bang.js":[function(require,module,exports){
-'use strict'
-
-let gen = require('./gen.js')
-
-let proto = {
-  gen() {
-    gen.requestMemory( this.memory )
-    
-    let out = 
-`  var ${this.name} = memory[${this.memory.value.idx}]
-  if( ${this.name} === 1 ) memory[${this.memory.value.idx}] = 0      
-      
-`
-    gen.memo[ this.name ] = this.name
-
-    return [ this.name, out ]
-  } 
-}
-
-module.exports = ( _props ) => {
-  let ugen = Object.create( proto ),
-      props = Object.assign({}, { min:0, max:1 }, _props )
-
-  ugen.name = 'bang' + gen.getUID()
-
-  ugen.min = props.min
-  ugen.max = props.max
-
-  const usingWorklet = gen.mode === 'worklet'
-  if( usingWorklet === true ) {
-    ugen.node = null
-    utilities.register( ugen )
-  }
-
-  ugen.trigger = () => {
-    if( usingWorklet === true && ugen.node !== null ) {
-      ugen.node.port.postMessage({ key:'set', idx:ugen.memory.value.idx, value:ugen.max })
-    }else{
-      gen.memory.heap[ ugen.memory.value.idx ] = ugen.max 
-    }
-  }
-
-  ugen.memory = {
-    value: { length:1, idx:null }
-  }
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/bool.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' )
-
-let proto = {
-  basename:'bool',
-
-  gen() {
-    let inputs = gen.getInputs( this ), out
-
-    out = `${inputs[0]} === 0 ? 0 : 1`
-    
-    //gen.memo[ this.name ] = `gen.data.${this.name}`
-
-    //return [ `gen.data.${this.name}`, ' ' +out ]
-    return out
-  }
-}
-
-module.exports = ( in1 ) => {
-  let ugen = Object.create( proto )
-
-  Object.assign( ugen, { 
-    uid:        gen.getUID(),
-    inputs:     [ in1 ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ceil.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'ceil',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet ? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.ceil' : Math.ceil })
-
-      out = `${ref}ceil( ${inputs[0]} )`
-
-    } else {
-      out = Math.ceil( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let ceil = Object.create( proto )
-
-  ceil.inputs = [ x ]
-
-  return ceil
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/clamp.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js'),
-    floor= require('./floor.js'),
-    sub  = require('./sub.js'),
-    memo = require('./memo.js')
-
-let proto = {
-  basename:'clip',
-
-  gen() {
-    let code,
-        inputs = gen.getInputs( this ),
-        out
-
-    out =
-
-` var ${this.name} = ${inputs[0]}
-  if( ${this.name} > ${inputs[2]} ) ${this.name} = ${inputs[2]}
-  else if( ${this.name} < ${inputs[1]} ) ${this.name} = ${inputs[1]}
-`
-    out = ' ' + out
-    
-    gen.memo[ this.name ] = this.name
-
-    return [ this.name, out ]
-  },
-}
-
-module.exports = ( in1, min=-1, max=1 ) => {
-  let ugen = Object.create( proto )
-
-  Object.assign( ugen, { 
-    min, 
-    max,
-    uid:    gen.getUID(),
-    inputs: [ in1, min, max ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./floor.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/floor.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/cos.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'cos',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    
-    const isWorklet = gen.mode === 'worklet'
-
-    const ref = isWorklet ? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'cos': isWorklet ? 'Math.cos' : Math.cos })
-
-      out = `${ref}cos( ${inputs[0]} )` 
-
-    } else {
-      out = Math.cos( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let cos = Object.create( proto )
-
-  cos.inputs = [ x ]
-  cos.id = gen.getUID()
-  cos.name = `${cos.basename}{cos.id}`
-
-  return cos
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/counter.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'counter',
-
-  gen() {
-    let code,
-        inputs = gen.getInputs( this ),
-        genName = 'gen.' + this.name,
-        functionBody
-       
-    if( this.memory.value.idx === null ) gen.requestMemory( this.memory )
-    gen.memory.heap[ this.memory.value.idx ] = this.initialValue
-    
-    functionBody  = this.callback( genName, inputs[0], inputs[1], inputs[2], inputs[3], inputs[4],  `memory[${this.memory.value.idx}]`, `memory[${this.memory.wrap.idx}]`  )
-
-    gen.memo[ this.name ] = this.name + '_value'
-   
-    if( gen.memo[ this.wrap.name ] === undefined ) this.wrap.gen()
-
-    return [ this.name + '_value', functionBody ]
-  },
-
-  callback( _name, _incr, _min, _max, _reset, loops, valueRef, wrapRef ) {
-    let diff = this.max - this.min,
-        out = '',
-        wrap = ''
-    // must check for reset before storing value for output
-    if( !(typeof this.inputs[3] === 'number' && this.inputs[3] < 1) ) { 
-      out += `  if( ${_reset} >= 1 ) ${valueRef} = ${_min}\n`
-    }
-
-    out += `  var ${this.name}_value = ${valueRef};\n  ${valueRef} += ${_incr}\n` // store output value before accumulating  
-    
-    if( typeof this.max === 'number' && this.max !== Infinity && typeof this.min !== 'number' ) {
-      wrap = 
-`  if( ${valueRef} >= ${this.max} &&  ${loops} > 0) {
-    ${valueRef} -= ${diff}
-    ${wrapRef} = 1
-  }else{
-    ${wrapRef} = 0
-  }\n`
-    }else if( this.max !== Infinity && this.min !== Infinity ) {
-      wrap = 
-`  if( ${valueRef} >= ${_max} &&  ${loops} > 0) {
-    ${valueRef} -= ${_max} - ${_min}
-    ${wrapRef} = 1
-  }else if( ${valueRef} < ${_min} &&  ${loops} > 0) {
-    ${valueRef} += ${_max} - ${_min}
-    ${wrapRef} = 1
-  }else{
-    ${wrapRef} = 0
-  }\n`
-    }else{
-      out += '\n'
-    }
-
-    out = out + wrap
-
-    return out
-  }
-}
-
-module.exports = ( incr=1, min=0, max=Infinity, reset=0, loops=1,  properties ) => {
-  let ugen = Object.create( proto ),
-      defaults = Object.assign( { initialValue: 0, shouldWrap:true }, properties )
-
-  Object.assign( ugen, { 
-    min:    min, 
-    max:    max,
-    initialValue: defaults.initialValue,
-    value:  defaults.initialValue,
-    uid:    gen.getUID(),
-    inputs: [ incr, min, max, reset, loops ],
-    memory: {
-      value: { length:1, idx: null },
-      wrap:  { length:1, idx: null } 
-    },
-    wrap : {
-      gen() { 
-        if( ugen.memory.wrap.idx === null ) {
-          gen.requestMemory( ugen.memory )
-        }
-        gen.getInputs( this )
-        gen.memo[ this.name ] = `memory[ ${ugen.memory.wrap.idx} ]`
-        return `memory[ ${ugen.memory.wrap.idx} ]` 
-      }
-    }
-  },
-  defaults )
- 
-  Object.defineProperty( ugen, 'value', {
-    get() {
-      if( this.memory.value.idx !== null ) {
-        return gen.memory.heap[ this.memory.value.idx ]
-      }
-    },
-    set( v ) {
-      if( this.memory.value.idx !== null ) {
-        gen.memory.heap[ this.memory.value.idx ] = v 
-      }
-    }
-  })
-  
-  ugen.wrap.inputs = [ ugen ]
-  ugen.name = `${ugen.basename}${ugen.uid}`
-  ugen.wrap.name = ugen.name + '_wrap'
-  return ugen
-} 
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/cycle.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require( './gen.js' ),
-    accum= require( './phasor.js' ),
-    data = require( './data.js' ),
-    peek = require( './peek.js' ),
-    mul  = require( './mul.js' ),
-    phasor=require( './phasor.js')
-
-let proto = {
-  basename:'cycle',
-
-  initTable() {    
-    let buffer = new Float32Array( 1024 )
-
-    for( let i = 0, l = buffer.length; i < l; i++ ) {
-      buffer[ i ] = Math.sin( ( i / l ) * ( Math.PI * 2 ) )
-    }
-
-    gen.globals.cycle = data( buffer, 1, { immutable:true } )
-  }
-
-}
-
-module.exports = ( frequency=1, reset=0, _props ) => {
-  if( typeof gen.globals.cycle === 'undefined' ) proto.initTable() 
-  const props = Object.assign({}, { min:0 }, _props )
-
-  const ugen = peek( gen.globals.cycle, phasor( frequency, reset, props ))
-  ugen.name = 'cycle' + gen.getUID()
-
-  return ugen
-}
-
-},{"./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./peek.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js","./phasor.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/phasor.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js":[function(require,module,exports){
-'use strict'
-
-const gen  = require('./gen.js'),
-      utilities = require( './utilities.js' ),
-      peek = require('./peek.js'),
-      poke = require('./poke.js')
-
-const proto = {
-  basename:'data',
-  globals: {},
-  memo:{},
-
-  gen() {
-    let idx
-    //console.log( 'data name:', this.name, proto.memo )
-    //debugger
-    if( gen.memo[ this.name ] === undefined ) {
-      let ugen = this
-      gen.requestMemory( this.memory, this.immutable ) 
-      idx = this.memory.values.idx
-      if( this.buffer !== undefined ) {
-        try {
-          gen.memory.heap.set( this.buffer, idx )
-        }catch( e ) {
-          console.log( e )
-          throw Error( 'error with request. asking for ' + this.buffer.length +'. current index: ' + gen.memoryIndex + ' of ' + gen.memory.heap.length )
-        }
-      }
-      //gen.data[ this.name ] = this
-      //return 'gen.memory' + this.name + '.buffer'
-      if( this.name.indexOf('data') === -1 ) {
-        proto.memo[ this.name ] = idx
-      }else{
-        gen.memo[ this.name ] = idx
-      }
-    }else{
-      //console.log( 'using gen data memo', proto.memo[ this.name ] )
-      idx = gen.memo[ this.name ]
-    }
-    return idx
-  },
-}
-
-module.exports = ( x, y=1, properties ) => {
-  let ugen, buffer, shouldLoad = false
-  
-  if( properties !== undefined && properties.global !== undefined ) {
-    if( gen.globals[ properties.global ] ) {
-      return gen.globals[ properties.global ]
-    }
-  }
-
-  if( typeof x === 'number' ) {
-    if( y !== 1 ) {
-      buffer = []
-      for( let i = 0; i < y; i++ ) {
-        buffer[ i ] = new Float32Array( x )
-      }
-    }else{
-      buffer = new Float32Array( x )
-    }
-  }else if( Array.isArray( x ) ) { //! (x instanceof Float32Array ) ) {
-    let size = x.length
-    buffer = new Float32Array( size )
-    for( let i = 0; i < x.length; i++ ) {
-      buffer[ i ] = x[ i ]
-    }
-  }else if( typeof x === 'string' ) {
-    //buffer = { length: y > 1 ? y : gen.samplerate * 60 } // XXX what???
-    //if( proto.memo[ x ] === undefined ) {
-      buffer = { length: y > 1 ? y : 1 } // XXX what???
-      shouldLoad = true
-    //}else{
-      //buffer = proto.memo[ x ]
-    //}
-  }else if( x instanceof Float32Array ) {
-    buffer = x
-  }
-  
-  ugen = Object.create( proto ) 
-
-  Object.assign( ugen, 
-  { 
-    buffer,
-    name: proto.basename + gen.getUID(),
-    dim:  buffer !== undefined ? buffer.length : 1, // XXX how do we dynamically allocate this?
-    channels : 1,
-    onload: null,
-    //then( fnc ) {
-    //  ugen.onload = fnc
-    //  return ugen
-    //},
-    immutable: properties !== undefined && properties.immutable === true ? true : false,
-    load( filename, __resolve ) {
-      let promise = utilities.loadSample( filename, ugen )
-      promise.then( _buffer => { 
-        proto.memo[ x ] = _buffer
-        ugen.name = filename
-        ugen.memory.values.length = ugen.dim = _buffer.length
-
-        gen.requestMemory( ugen.memory, ugen.immutable ) 
-        gen.memory.heap.set( _buffer, ugen.memory.values.idx )
-        if( typeof ugen.onload === 'function' ) ugen.onload( _buffer ) 
-        __resolve( ugen )
-      })
-    },
-    memory : {
-      values: { length:buffer !== undefined ? buffer.length : 1, idx:null }
-    }
-  },
-  properties
-  )
-
-  
-  if( properties !== undefined ) {
-    if( properties.global !== undefined ) {
-      gen.globals[ properties.global ] = ugen
-    }
-    if( properties.meta === true ) {
-      for( let i = 0, length = ugen.buffer.length; i < length; i++ ) {
-        Object.defineProperty( ugen, i, {
-          get () {
-            return peek( ugen, i, { mode:'simple', interp:'none' } )
-          },
-          set( v ) {
-            return poke( ugen, v, i )
-          }
-        })
-      }
-    }
-  }
-
-  let returnValue
-  if( shouldLoad === true ) {
-    returnValue = new Promise( (resolve,reject) => {
-      //ugen.load( x, resolve )
-      let promise = utilities.loadSample( x, ugen )
-      promise.then( _buffer => { 
-        proto.memo[ x ] = _buffer
-        ugen.memory.values.length = ugen.dim = _buffer.length
-
-        ugen.buffer = _buffer
-        //gen.once( 'memory init', ()=> {
-        //  console.log( "CALLED", ugen.memory )
-        //  gen.requestMemory( ugen.memory, ugen.immutable ) 
-        //  gen.memory.heap.set( _buffer, ugen.memory.values.idx )
-        //  if( typeof ugen.onload === 'function' ) ugen.onload( _buffer ) 
-        //})
-        
-        resolve( ugen )
-      })     
-    })
-  }else if( proto.memo[ x ] !== undefined ) {
-
-    gen.once( 'memory init', ()=> {
-      gen.requestMemory( ugen.memory, ugen.immutable ) 
-      gen.memory.heap.set( ugen.buffer, ugen.memory.values.idx )
-      if( typeof ugen.onload === 'function' ) ugen.onload( ugen.buffer ) 
-    })
-
-    returnValue = ugen
-  }else{
-    returnValue = ugen
-  }
-
-  return returnValue 
-}
-
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./peek.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/poke.js","./utilities.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/utilities.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/dcblock.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen.js' ),
-    history = require( './history.js' ),
-    sub     = require( './sub.js' ),
-    add     = require( './add.js' ),
-    mul     = require( './mul.js' ),
-    memo    = require( './memo.js' )
-
-module.exports = ( in1 ) => {
-  let x1 = history(),
-      y1 = history(),
-      filter
-
-  //History x1, y1; y = in1 - x1 + y1*0.9997; x1 = in1; y1 = y; out1 = y;
-  filter = memo( add( sub( in1, x1.out ), mul( y1.out, .9997 ) ) )
-  x1.in( in1 )
-  y1.in( filter )
-
-  return filter
-}
-
-},{"./add.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/add.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/decay.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen.js' ),
-    history = require( './history.js' ),
-    mul     = require( './mul.js' ),
-    t60     = require( './t60.js' )
-
-module.exports = ( decayTime = 44100, props ) => {
-  let properties = Object.assign({}, { initValue:1 }, props ),
-      ssd = history ( properties.initValue )
-
-  ssd.in( mul( ssd.out, t60( decayTime ) ) )
-
-  ssd.out.trigger = ()=> {
-    ssd.value = 1
-  }
-
-  return ssd.out 
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./t60.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/t60.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/delay.js":[function(require,module,exports){
-'use strict'
-
-const gen  = require( './gen.js'  ),
-      data = require( './data.js' ),
-      poke = require( './poke.js' ),
-      peek = require( './peek.js' ),
-      sub  = require( './sub.js'  ),
-      wrap = require( './wrap.js' ),
-      accum= require( './accum.js'),
-      memo = require( './memo.js' )
-
-const proto = {
-  basename:'delay',
-
-  gen() {
-    let inputs = gen.getInputs( this )
-    
-    gen.memo[ this.name ] = inputs[0]
-    
-    return inputs[0]
-  },
-}
-
-const defaults = { size: 512, interp:'none' }
-
-module.exports = ( in1, taps, properties ) => {
-  const ugen = Object.create( proto )
-  let writeIdx, readIdx, delaydata
-
-  if( Array.isArray( taps ) === false ) taps = [ taps ]
-  
-  const props = Object.assign( {}, defaults, properties )
-
-  const maxTapSize = Math.max( ...taps )
-  if( props.size < maxTapSize ) props.size = maxTapSize
-
-  delaydata = data( props.size )
-  
-  ugen.inputs = []
-
-  writeIdx = accum( 1, 0, { max:props.size, min:0 })
-  
-  for( let i = 0; i < taps.length; i++ ) {
-    ugen.inputs[ i ] = peek( delaydata, wrap( sub( writeIdx, taps[i] ), 0, props.size ),{ mode:'samples', interp:props.interp })
-  }
-  
-  ugen.outputs = ugen.inputs // XXX ugh, Ugh, UGH! but i guess it works.
-
-  poke( delaydata, in1, writeIdx )
-
-  ugen.name = `${ugen.basename}${gen.getUID()}`
-
-  return ugen
-}
-
-},{"./accum.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/accum.js","./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./peek.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js","./poke.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/poke.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js","./wrap.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/delta.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen.js' ),
-    history = require( './history.js' ),
-    sub     = require( './sub.js' )
-
-module.exports = ( in1 ) => {
-  let n1 = history()
-    
-  n1.in( in1 )
-
-  let ugen = sub( in1, n1.out )
-  ugen.name = 'delta'+gen.getUID()
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/div.js":[function(require,module,exports){
-'use strict'
-
-let gen = require('./gen.js')
-
-const proto = {
-  basename:'div',
-  gen() {
-    let inputs = gen.getInputs( this ),
-        out=`  var ${this.name} = `,
-        diff = 0, 
-        numCount = 0,
-        lastNumber = inputs[ 0 ],
-        lastNumberIsUgen = isNaN( lastNumber ), 
-        divAtEnd = false
-
-    inputs.forEach( (v,i) => {
-      if( i === 0 ) return
-
-      let isNumberUgen = isNaN( v ),
-        isFinalIdx   = i === inputs.length - 1
-
-      if( !lastNumberIsUgen && !isNumberUgen ) {
-        lastNumber = lastNumber / v
-        out += lastNumber
-      }else{
-        out += `${lastNumber} / ${v}`
-      }
-
-      if( !isFinalIdx ) out += ' / ' 
-    })
-
-    out += '\n'
-
-    gen.memo[ this.name ] = this.name
-
-    return [ this.name, out ]
-  }
-}
-
-module.exports = (...args) => {
-  const div = Object.create( proto )
-  
-  Object.assign( div, {
-    id:     gen.getUID(),
-    inputs: args,
-  })
-
-  div.name = div.basename + div.id
-  
-  return div
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/env.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen' ),
-    windows = require( './windows' ),
-    data    = require( './data' ),
-    peek    = require( './peek' ),
-    phasor  = require( './phasor' ),
-    defaults = {
-      type:'triangular', length:1024, alpha:.15, shift:0, reverse:false 
-    }
-
-module.exports = props => {
-  
-  let properties = Object.assign( {}, defaults, props )
-  let buffer = new Float32Array( properties.length )
-
-  let name = properties.type + '_' + properties.length + '_' + properties.shift + '_' + properties.reverse + '_' + properties.alpha
-  if( typeof gen.globals.windows[ name ] === 'undefined' ) { 
-
-    for( let i = 0; i < properties.length; i++ ) {
-      buffer[ i ] = windows[ properties.type ]( properties.length, i, properties.alpha, properties.shift )
-    }
-
-    if( properties.reverse === true ) { 
-      buffer.reverse()
-    }
-    gen.globals.windows[ name ] = data( buffer )
-  }
-
-  let ugen = gen.globals.windows[ name ] 
-  ugen.name = 'env' + gen.getUID()
-
-  return ugen
-}
-
-},{"./data":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./gen":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./peek":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js","./phasor":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/phasor.js","./windows":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/windows.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/eq.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' )
-
-let proto = {
-  basename:'eq',
-
-  gen() {
-    let inputs = gen.getInputs( this ), out
-
-    out = this.inputs[0] === this.inputs[1] ? 1 : `  var ${this.name} = (${inputs[0]} === ${inputs[1]}) | 0\n\n`
-
-    gen.memo[ this.name ] = `${this.name}`
-
-    return [ `${this.name}`, out ]
-  },
-
-}
-
-module.exports = ( in1, in2 ) => {
-  let ugen = Object.create( proto )
-  Object.assign( ugen, {
-    uid:     gen.getUID(),
-    inputs:  [ in1, in2 ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/exp.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'exp',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.exp' : Math.exp })
-
-      out = `${ref}exp( ${inputs[0]} )`
-
-    } else {
-      out = Math.exp( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let exp = Object.create( proto )
-
-  exp.inputs = [ x ]
-
-  return exp
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/external/audioworklet-polyfill.js":[function(require,module,exports){
-arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/js/external/audioworklet-polyfill.js"][0].apply(exports,arguments)
-},{"./realm.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/external/realm.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/external/realm.js":[function(require,module,exports){
-/**
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
-module.exports = function Realm (scope, parentElement) {
-  const frame = document.createElement('iframe');
-  frame.style.cssText = 'position:absolute;left:0;top:-999px;width:1px;height:1px;';
-  parentElement.appendChild(frame);
-  const win = frame.contentWindow;
-  const doc = win.document;
-  let vars = 'var window,$hook';
-  for (const i in win) {
-    if (!(i in scope) && i !== 'eval') {
-      vars += ',';
-      vars += i;
-    }
-  }
-  for (const i in scope) {
-    vars += ',';
-    vars += i;
-    vars += '=self.';
-    vars += i;
-  }
-  const script = doc.createElement('script');
-  script.appendChild(doc.createTextNode(
-    `function $hook(self,console) {"use strict";
-        ${vars};return function() {return eval(arguments[0])}}`
-  ));
-  doc.body.appendChild(script);
-  this.exec = win.$hook.call(scope, scope, console);
-}
-
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/floor.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'floor',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    if( isNaN( inputs[0] ) ) {
-      //gen.closures.add({ [ this.name ]: Math.floor })
-
-      out = `( ${inputs[0]} | 0 )`
-
-    } else {
-      out = inputs[0] | 0
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let floor = Object.create( proto )
-
-  floor.inputs = [ x ]
-
-  return floor
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/fold.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'fold',
-
-  gen() {
-    let code,
-        inputs = gen.getInputs( this ),
-        out
-
-    out = this.createCallback( inputs[0], this.min, this.max ) 
-
-    gen.memo[ this.name ] = this.name + '_value'
-
-    return [ this.name + '_value', out ]
-  },
-
-  createCallback( v, lo, hi ) {
-    let out =
-` var ${this.name}_value = ${v},
-      ${this.name}_range = ${hi} - ${lo},
-      ${this.name}_numWraps = 0
-
-  if(${this.name}_value >= ${hi}){
-    ${this.name}_value -= ${this.name}_range
-    if(${this.name}_value >= ${hi}){
-      ${this.name}_numWraps = ((${this.name}_value - ${lo}) / ${this.name}_range) | 0
-      ${this.name}_value -= ${this.name}_range * ${this.name}_numWraps
-    }
-    ${this.name}_numWraps++
-  } else if(${this.name}_value < ${lo}){
-    ${this.name}_value += ${this.name}_range
-    if(${this.name}_value < ${lo}){
-      ${this.name}_numWraps = ((${this.name}_value - ${lo}) / ${this.name}_range- 1) | 0
-      ${this.name}_value -= ${this.name}_range * ${this.name}_numWraps
-    }
-    ${this.name}_numWraps--
-  }
-  if(${this.name}_numWraps & 1) ${this.name}_value = ${hi} + ${lo} - ${this.name}_value
-`
-    return ' ' + out
-  }
-}
-
-module.exports = ( in1, min=0, max=1 ) => {
-  let ugen = Object.create( proto )
-
-  Object.assign( ugen, { 
-    min, 
-    max,
-    uid:    gen.getUID(),
-    inputs: [ in1 ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gate.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' )
-
-let proto = {
-  basename:'gate',
-  controlString:null, // insert into output codegen for determining indexing
-  gen() {
-    let inputs = gen.getInputs( this ), out
-    
-    gen.requestMemory( this.memory )
-    
-    let lastInputMemoryIdx = 'memory[ ' + this.memory.lastInput.idx + ' ]',
-        outputMemoryStartIdx = this.memory.lastInput.idx + 1,
-        inputSignal = inputs[0],
-        controlSignal = inputs[1]
-    
-    /* 
-     * we check to see if the current control inputs equals our last input
-     * if so, we store the signal input in the memory associated with the currently
-     * selected index. If not, we put 0 in the memory associated with the last selected index,
-     * change the selected index, and then store the signal in put in the memery assoicated
-     * with the newly selected index
-     */
-    
-    out =
-
-` if( ${controlSignal} !== ${lastInputMemoryIdx} ) {
-    memory[ ${lastInputMemoryIdx} + ${outputMemoryStartIdx}  ] = 0 
-    ${lastInputMemoryIdx} = ${controlSignal}
-  }
-  memory[ ${outputMemoryStartIdx} + ${controlSignal} ] = ${inputSignal}
-
-`
-    this.controlString = inputs[1]
-    this.initialized = true
-
-    gen.memo[ this.name ] = this.name
-
-    this.outputs.forEach( v => v.gen() )
-
-    return [ null, ' ' + out ]
-  },
-
-  childgen() {
-    if( this.parent.initialized === false ) {
-      gen.getInputs( this ) // parent gate is only input of a gate output, should only be gen'd once.
-    }
-
-    if( gen.memo[ this.name ] === undefined ) {
-      gen.requestMemory( this.memory )
-
-      gen.memo[ this.name ] = `memory[ ${this.memory.value.idx} ]`
-    }
-    
-    return  `memory[ ${this.memory.value.idx} ]`
-  }
-}
-
-module.exports = ( control, in1, properties ) => {
-  let ugen = Object.create( proto ),
-      defaults = { count: 2 }
-
-  if( typeof properties !== undefined ) Object.assign( defaults, properties )
-
-  Object.assign( ugen, {
-    outputs: [],
-    uid:     gen.getUID(),
-    inputs:  [ in1, control ],
-    memory: {
-      lastInput: { length:1, idx:null }
-    },
-    initialized:false
-  },
-  defaults )
-  
-  ugen.name = `${ugen.basename}${gen.getUID()}`
-
-  for( let i = 0; i < ugen.count; i++ ) {
-    ugen.outputs.push({
-      index:i,
-      gen: proto.childgen,
-      parent:ugen,
-      inputs: [ ugen ],
-      memory: {
-        value: { length:1, idx:null }
-      },
-      initialized:false,
-      name: `${ugen.name}_out${gen.getUID()}`
-    })
-  }
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js":[function(require,module,exports){
-'use strict'
-
-/* gen.js
- *
- * low-level code generation for unit generators
- *
- */
-const MemoryHelper = require( 'memory-helper' )
-const EE = require( 'events' ).EventEmitter
-
-const gen = {
-
-  accum:0,
-  getUID() { return this.accum++ },
-  debug:false,
-  samplerate: 44100, // change on audiocontext creation
-  shouldLocalize: false,
-  graph:null,
-  globals:{
-    windows: {},
-  },
-  mode:'worklet',
-  
-  /* closures
-   *
-   * Functions that are included as arguments to master callback. Examples: Math.abs, Math.random etc.
-   * XXX Should probably be renamed callbackProperties or something similar... closures are no longer used.
-   */
-
-  closures: new Set(),
-  params:   new Set(),
-  inputs:   new Set(),
-
-  parameters: new Set(),
-  endBlock: new Set(),
-  histories: new Map(),
-
-  memo: {},
-
-  //data: {},
-  
-  /* export
-   *
-   * place gen functions into another object for easier reference
-   */
-
-  export( obj ) {},
-
-  addToEndBlock( v ) {
-    this.endBlock.add( '  ' + v )
-  },
-  
-  requestMemory( memorySpec, immutable=false ) {
-    for( let key in memorySpec ) {
-      let request = memorySpec[ key ]
-
-      //console.log( 'requesting ' + key + ':' , JSON.stringify( request ) )
-
-      if( request.length === undefined ) {
-        console.log( 'undefined length for:', key )
-
-        continue
-      }
-
-      request.idx = gen.memory.alloc( request.length, immutable )
-    }
-  },
-
-  createMemory( amount=4096, type ) {
-    const mem = MemoryHelper.create( amount, type )
-    return mem
-  },
-
-  createCallback( ugen, mem, debug = false, shouldInlineMemory=false, memType = Float64Array ) {
-    let isStereo = Array.isArray( ugen ) && ugen.length > 1,
-        callback, 
-        channel1, channel2
-
-    if( typeof mem === 'number' || mem === undefined ) {
-      this.memory = this.createMemory( mem, memType )
-    }else{
-      this.memory = mem
-    }
-    
-    this.outputIdx = this.memory.alloc( 2, true )
-    this.emit( 'memory init' )
-
-    //console.log( 'cb memory:', mem )
-    this.graph = ugen
-    this.memo = {} 
-    this.endBlock.clear()
-    this.closures.clear()
-    this.inputs.clear()
-    this.params.clear()
-    this.globals = { windows:{} }
-    
-    this.parameters.clear()
-    
-    this.functionBody = "  'use strict'\n"
-    if( shouldInlineMemory===false ) {
-      this.functionBody += this.mode === 'worklet' ? 
-        "  var memory = this.memory\n\n" :
-        "  var memory = gen.memory\n\n"
-    }
-
-    // call .gen() on the head of the graph we are generating the callback for
-    //console.log( 'HEAD', ugen )
-    for( let i = 0; i < 1 + isStereo; i++ ) {
-      if( typeof ugen[i] === 'number' ) continue
-
-      //let channel = isStereo ? ugen[i].gen() : ugen.gen(),
-      let channel = isStereo ? this.getInput( ugen[i] ) : this.getInput( ugen ), 
-          body = ''
-
-      // if .gen() returns array, add ugen callback (graphOutput[1]) to our output functions body
-      // and then return name of ugen. If .gen() only generates a number (for really simple graphs)
-      // just return that number (graphOutput[0]).
-      body += Array.isArray( channel ) ? channel[1] + '\n' + channel[0] : channel
-
-      // split body to inject return keyword on last line
-      body = body.split('\n')
-     
-      //if( debug ) console.log( 'functionBody length', body )
-      
-      // next line is to accommodate memo as graph head
-      if( body[ body.length -1 ].trim().indexOf('let') > -1 ) { body.push( '\n' ) } 
-
-      // get index of last line
-      let lastidx = body.length - 1
-
-      // insert return keyword
-      body[ lastidx ] = '  memory[' + (this.outputIdx + i) + ']  = ' + body[ lastidx ] + '\n'
-
-      this.functionBody += body.join('\n')
-    }
-    
-    this.histories.forEach( value => {
-      if( value !== null )
-        value.gen()      
-    })
-
-    const returnStatement = isStereo ? `  return [ memory[${this.outputIdx}], memory[${this.outputIdx + 1}] ]` : `  return memory[${this.outputIdx}]`
-    
-    this.functionBody = this.functionBody.split('\n')
-
-    if( this.endBlock.size ) { 
-      this.functionBody = this.functionBody.concat( Array.from( this.endBlock ) )
-      this.functionBody.push( returnStatement )
-    }else{
-      this.functionBody.push( returnStatement )
-    }
-    // reassemble function body
-    this.functionBody = this.functionBody.join('\n')
-
-    // we can only dynamically create a named function by dynamically creating another function
-    // to construct the named function! sheesh...
-    //
-    if( shouldInlineMemory === true ) {
-      this.parameters.add( 'memory' )
-    }
-
-    let paramString = ''
-    if( this.mode === 'worklet' ) {
-      for( let name of this.parameters.values() ) {
-        paramString += name + ','
-      }
-      paramString = paramString.slice(0,-1)
-    }
-
-    const separator = this.parameters.size !== 0 && this.inputs.size > 0 ? ', ' : ''
-
-    let inputString = ''
-    if( this.mode === 'worklet' ) {
-      for( let ugen of this.inputs.values() ) {
-        inputString += ugen.name + ','
-      }
-      inputString = inputString.slice(0,-1)
-    }
-
-    let buildString = this.mode === 'worklet'
-      ? `return function( ${inputString} ${separator} ${paramString} ){ \n${ this.functionBody }\n}`
-      : `return function gen( ${ [...this.parameters].join(',') } ){ \n${ this.functionBody }\n}`
-    
-    if( this.debug || debug ) console.log( buildString ) 
-
-    callback = new Function( buildString )()
-
-    // assign properties to named function
-    for( let dict of this.closures.values() ) {
-      let name = Object.keys( dict )[0],
-          value = dict[ name ]
-
-      callback[ name ] = value
-    }
-
-    for( let dict of this.params.values() ) {
-      let name = Object.keys( dict )[0],
-          ugen = dict[ name ]
-      
-      Object.defineProperty( callback, name, {
-        configurable: true,
-        get() { return ugen.value },
-        set(v){ ugen.value = v }
-      })
-      //callback[ name ] = value
-    }
-
-    callback.members = this.closures
-    callback.data = this.data
-    callback.params = this.params
-    callback.inputs = this.inputs
-    callback.parameters = this.parameters//.slice( 0 )
-    callback.out = this.memory.heap.subarray( this.outputIdx, this.outputIdx + 2 )
-    callback.isStereo = isStereo
-
-    //if( MemoryHelper.isPrototypeOf( this.memory ) ) 
-    callback.memory = this.memory.heap
-
-    this.histories.clear()
-
-    return callback
-  },
-  
-  /* getInputs
-   *
-   * Called by each individual ugen when their .gen() method is called to resolve their various inputs.
-   * If an input is a number, return the number. If
-   * it is an ugen, call .gen() on the ugen, memoize the result and return the result. If the
-   * ugen has previously been memoized return the memoized value.
-   *
-   */
-  getInputs( ugen ) {
-    return ugen.inputs.map( gen.getInput ) 
-  },
-
-  getInput( input ) {
-    let isObject = typeof input === 'object',
-        processedInput
-
-    if( isObject ) { // if input is a ugen... 
-      //console.log( input.name, gen.memo[ input.name ] )
-      if( gen.memo[ input.name ] ) { // if it has been memoized...
-        processedInput = gen.memo[ input.name ]
-      }else if( Array.isArray( input ) ) {
-        gen.getInput( input[0] )
-        gen.getInput( input[1] )
-      }else{ // if not memoized generate code  
-        if( typeof input.gen !== 'function' ) {
-          console.log( 'no gen found:', input, input.gen )
-          input = input.graph
-        }
-        let code = input.gen()
-        //if( code.indexOf( 'Object' ) > -1 ) console.log( 'bad input:', input, code )
-        
-        if( Array.isArray( code ) ) {
-          if( !gen.shouldLocalize ) {
-            gen.functionBody += code[1]
-          }else{
-            gen.codeName = code[0]
-            gen.localizedCode.push( code[1] )
-          }
-          //console.log( 'after GEN' , this.functionBody )
-          processedInput = code[0]
-        }else{
-          processedInput = code
-        }
-      }
-    }else{ // it input is a number
-      processedInput = input
-    }
-
-    return processedInput
-  },
-
-  startLocalize() {
-    this.localizedCode = []
-    this.shouldLocalize = true
-  },
-  endLocalize() {
-    this.shouldLocalize = false
-
-    return [ this.codeName, this.localizedCode.slice(0) ]
-  },
-
-  free( graph ) {
-    if( Array.isArray( graph ) ) { // stereo ugen
-      for( let channel of graph ) {
-        this.free( channel )
-      }
-    } else {
-      if( typeof graph === 'object' ) {
-        if( graph.memory !== undefined ) {
-          for( let memoryKey in graph.memory ) {
-            this.memory.free( graph.memory[ memoryKey ].idx )
-          }
-        }
-        if( Array.isArray( graph.inputs ) ) {
-          for( let ugen of graph.inputs ) {
-            this.free( ugen )
-          }
-        }
-      }
-    }
-  }
-}
-
-gen.__proto__ = new EE()
-
-module.exports = gen
-
-},{"events":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browserify/node_modules/events/events.js","memory-helper":"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gt.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'gt',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    out = `  var ${this.name} = `  
-
-    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
-      out += `(( ${inputs[0]} > ${inputs[1]}) | 0 )`
-    } else {
-      out += inputs[0] > inputs[1] ? 1 : 0 
-    }
-    out += '\n\n'
-
-    gen.memo[ this.name ] = this.name
-
-    return [this.name, out]
-  }
-}
-
-module.exports = (x,y) => {
-  let gt = Object.create( proto )
-
-  gt.inputs = [ x,y ]
-  gt.name = gt.basename + gen.getUID()
-
-  return gt
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gte.js":[function(require,module,exports){
-'use strict'
-
-let gen = require('./gen.js')
-
-let proto = {
-  name:'gte',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    out = `  var ${this.name} = `  
-
-    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
-      out += `( ${inputs[0]} >= ${inputs[1]} | 0 )`
-    } else {
-      out += inputs[0] >= inputs[1] ? 1 : 0 
-    }
-    out += '\n\n'
-
-    gen.memo[ this.name ] = this.name
-
-    return [this.name, out]
-  }
-}
-
-module.exports = (x,y) => {
-  let gt = Object.create( proto )
-
-  gt.inputs = [ x,y ]
-  gt.name = 'gte' + gen.getUID()
-
-  return gt
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gtp.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'gtp',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
-      out = `(${inputs[ 0 ]} * ( ( ${inputs[0]} > ${inputs[1]} ) | 0 ) )` 
-    } else {
-      out = inputs[0] * ( ( inputs[0] > inputs[1] ) | 0 )
-    }
-    
-    return out
-  }
-}
-
-module.exports = (x,y) => {
-  let gtp = Object.create( proto )
-
-  gtp.inputs = [ x,y ]
-
-  return gtp
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-module.exports = ( in1=0 ) => {
-  let ugen = {
-    inputs: [ in1 ],
-    memory: { value: { length:1, idx: null } },
-    recorder: null,
-
-    in( v ) {
-      if( gen.histories.has( v ) ){
-        let memoHistory = gen.histories.get( v )
-        ugen.name = memoHistory.name
-        return memoHistory
-      }
-
-      let obj = {
-        gen() {
-          let inputs = gen.getInputs( ugen )
-
-          if( ugen.memory.value.idx === null ) {
-            gen.requestMemory( ugen.memory )
-            gen.memory.heap[ ugen.memory.value.idx ] = in1
-          }
-
-          let idx = ugen.memory.value.idx
-          
-          gen.addToEndBlock( 'memory[ ' + idx + ' ] = ' + inputs[ 0 ] )
-          
-          // return ugen that is being recorded instead of ssd.
-          // this effectively makes a call to ssd.record() transparent to the graph.
-          // recording is triggered by prior call to gen.addToEndBlock.
-          gen.histories.set( v, obj )
-
-          return inputs[ 0 ]
-        },
-        name: ugen.name + '_in'+gen.getUID(),
-        memory: ugen.memory
-      }
-
-      this.inputs[ 0 ] = v
-      
-      ugen.recorder = obj
-
-      return obj
-    },
-    
-    out: {
-            
-      gen() {
-        if( ugen.memory.value.idx === null ) {
-          if( gen.histories.get( ugen.inputs[0] ) === undefined ) {
-            gen.histories.set( ugen.inputs[0], ugen.recorder )
-          }
-          gen.requestMemory( ugen.memory )
-          gen.memory.heap[ ugen.memory.value.idx ] = parseFloat( in1 )
-        }
-        let idx = ugen.memory.value.idx
-         
-        return 'memory[ ' + idx + ' ] '
-      },
-    },
-
-    uid: gen.getUID(),
-  }
-  
-  ugen.out.memory = ugen.memory 
-
-  ugen.name = 'history' + ugen.uid
-  ugen.out.name = ugen.name + '_out'
-  ugen.in._name  = ugen.name = '_in'
-
-  Object.defineProperty( ugen, 'value', {
-    get() {
-      if( this.memory.value.idx !== null ) {
-        return gen.memory.heap[ this.memory.value.idx ]
-      }
-    },
-    set( v ) {
-      if( this.memory.value.idx !== null ) {
-        gen.memory.heap[ this.memory.value.idx ] = v 
-      }
-    }
-  })
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ifelseif.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' )
-
-let proto = {
-  basename:'ifelse',
-
-  gen() {
-    let conditionals = this.inputs[0],
-        defaultValue = gen.getInput( conditionals[ conditionals.length - 1] ),
-        out = `  var ${this.name}_out = ${defaultValue}\n` 
-
-    //console.log( 'conditionals:', this.name, conditionals )
-
-    //console.log( 'defaultValue:', defaultValue )
-
-    for( let i = 0; i < conditionals.length - 2; i+= 2 ) {
-      let isEndBlock = i === conditionals.length - 3,
-          cond  = gen.getInput( conditionals[ i ] ),
-          preblock = conditionals[ i+1 ],
-          block, blockName, output
-
-      //console.log( 'pb', preblock )
-
-      if( typeof preblock === 'number' ){
-        block = preblock
-        blockName = null
-      }else{
-        if( gen.memo[ preblock.name ] === undefined ) {
-          // used to place all code dependencies in appropriate blocks
-          gen.startLocalize()
-
-          gen.getInput( preblock )
-
-          block = gen.endLocalize()
-          blockName = block[0]
-          block = block[ 1 ].join('')
-          block = '  ' + block.replace( /\n/gi, '\n  ' )
-        }else{
-          block = ''
-          blockName = gen.memo[ preblock.name ]
-        }
-      }
-
-      output = blockName === null ? 
-        `  ${this.name}_out = ${block}` :
-        `${block}  ${this.name}_out = ${blockName}`
-      
-      if( i===0 ) out += ' '
-      out += 
-` if( ${cond} === 1 ) {
-${output}
-  }`
-
-      if( !isEndBlock ) {
-        out += ` else`
-      }else{
-        out += `\n`
-      }
-    }
-
-    gen.memo[ this.name ] = `${this.name}_out`
-
-    return [ `${this.name}_out`, out ]
-  }
-}
-
-module.exports = ( ...args  ) => {
-  let ugen = Object.create( proto ),
-      conditions = Array.isArray( args[0] ) ? args[0] : args
-
-  Object.assign( ugen, {
-    uid:     gen.getUID(),
-    inputs:  [ conditions ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/in.js":[function(require,module,exports){
-'use strict'
-
-let gen = require('./gen.js')
-
-let proto = {
-  basename:'in',
-
-  gen() {
-    const isWorklet = gen.mode === 'worklet'
-
-    if( isWorklet ) {
-      gen.inputs.add( this )
-    }else{
-      gen.parameters.add( this.name )
-    }
-
-    gen.memo[ this.name ] = isWorklet === true ? this.name + '[i]' : this.name
-
-    return gen.memo[ this.name ]
-  } 
-}
-
-module.exports = ( name, inputNumber=0, channelNumber=0, defaultValue=0, min=0, max=1 ) => {
-  let input = Object.create( proto )
-
-  input.id   = gen.getUID()
-  input.name = name !== undefined ? name : `${input.basename}${input.id}`
-  Object.assign( input, { defaultValue, min, max, inputNumber, channelNumber })
-
-  input[0] = {
-    gen() {
-      if( ! gen.parameters.has( input.name ) ) gen.parameters.add( input.name )
-      return input.name + '[0]'
-    }
-  }
-  input[1] = {
-    gen() {
-      if( ! gen.parameters.has( input.name ) ) gen.parameters.add( input.name )
-      return input.name + '[1]'
-    }
-  }
-
-
-  return input
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/index.js":[function(require,module,exports){
-'use strict'
-
-const library = {
-  export( destination ) {
-    if( destination === window ) {
-      destination.ssd = library.history    // history is window object property, so use ssd as alias
-      destination.input = library.in       // in is a keyword in javascript
-      destination.ternary = library.switch // switch is a keyword in javascript
-
-      delete library.history
-      delete library.in
-      delete library.switch
-    }
-
-    Object.assign( destination, library )
-
-    Object.defineProperty( library, 'samplerate', {
-      get() { return library.gen.samplerate },
-      set(v) {}
-    })
-
-    library.in = destination.input
-    library.history = destination.ssd
-    library.switch = destination.ternary
-
-    destination.clip = library.clamp
-  },
-
-  gen:      require( './gen.js' ),
-  
-  abs:      require( './abs.js' ),
-  round:    require( './round.js' ),
-  param:    require( './param.js' ),
-  add:      require( './add.js' ),
-  sub:      require( './sub.js' ),
-  mul:      require( './mul.js' ),
-  div:      require( './div.js' ),
-  accum:    require( './accum.js' ),
-  counter:  require( './counter.js' ),
-  sin:      require( './sin.js' ),
-  cos:      require( './cos.js' ),
-  tan:      require( './tan.js' ),
-  tanh:     require( './tanh.js' ),
-  asin:     require( './asin.js' ),
-  acos:     require( './acos.js' ),
-  atan:     require( './atan.js' ),  
-  phasor:   require( './phasor.js' ),
-  data:     require( './data.js' ),
-  peek:     require( './peek.js' ),
-  cycle:    require( './cycle.js' ),
-  history:  require( './history.js' ),
-  delta:    require( './delta.js' ),
-  floor:    require( './floor.js' ),
-  ceil:     require( './ceil.js' ),
-  min:      require( './min.js' ),
-  max:      require( './max.js' ),
-  sign:     require( './sign.js' ),
-  dcblock:  require( './dcblock.js' ),
-  memo:     require( './memo.js' ),
-  rate:     require( './rate.js' ),
-  wrap:     require( './wrap.js' ),
-  mix:      require( './mix.js' ),
-  clamp:    require( './clamp.js' ),
-  poke:     require( './poke.js' ),
-  delay:    require( './delay.js' ),
-  fold:     require( './fold.js' ),
-  mod :     require( './mod.js' ),
-  sah :     require( './sah.js' ),
-  noise:    require( './noise.js' ),
-  not:      require( './not.js' ),
-  gt:       require( './gt.js' ),
-  gte:      require( './gte.js' ),
-  lt:       require( './lt.js' ), 
-  lte:      require( './lte.js' ), 
-  bool:     require( './bool.js' ),
-  gate:     require( './gate.js' ),
-  train:    require( './train.js' ),
-  slide:    require( './slide.js' ),
-  in:       require( './in.js' ),
-  t60:      require( './t60.js'),
-  mtof:     require( './mtof.js'),
-  ltp:      require( './ltp.js'),        // TODO: test
-  gtp:      require( './gtp.js'),        // TODO: test
-  switch:   require( './switch.js' ),
-  mstosamps:require( './mstosamps.js' ), // TODO: needs test,
-  selector: require( './selector.js' ),
-  utilities:require( './utilities.js' ),
-  pow:      require( './pow.js' ),
-  attack:   require( './attack.js' ),
-  decay:    require( './decay.js' ),
-  windows:  require( './windows.js' ),
-  env:      require( './env.js' ),
-  ad:       require( './ad.js'  ),
-  adsr:     require( './adsr.js' ),
-  ifelse:   require( './ifelseif.js' ),
-  bang:     require( './bang.js' ),
-  and:      require( './and.js' ),
-  pan:      require( './pan.js' ),
-  eq:       require( './eq.js' ),
-  neq:      require( './neq.js' ),
-  exp:      require( './exp.js' ),
-  process:  require( './process.js' ),
-  seq:      require( './seq.js' )
-}
-
-library.gen.lib = library
-
-module.exports = library
-
-},{"./abs.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/abs.js","./accum.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/accum.js","./acos.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/acos.js","./ad.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ad.js","./add.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/add.js","./adsr.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/adsr.js","./and.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/and.js","./asin.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/asin.js","./atan.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/atan.js","./attack.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/attack.js","./bang.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/bang.js","./bool.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/bool.js","./ceil.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ceil.js","./clamp.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/clamp.js","./cos.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/cos.js","./counter.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/counter.js","./cycle.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/cycle.js","./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./dcblock.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/dcblock.js","./decay.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/decay.js","./delay.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/delay.js","./delta.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/delta.js","./div.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/div.js","./env.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/env.js","./eq.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/eq.js","./exp.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/exp.js","./floor.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/floor.js","./fold.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/fold.js","./gate.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gate.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./gt.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gt.js","./gte.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gte.js","./gtp.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gtp.js","./history.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js","./ifelseif.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ifelseif.js","./in.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/in.js","./lt.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/lt.js","./lte.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/lte.js","./ltp.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ltp.js","./max.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/max.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./min.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/min.js","./mix.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mix.js","./mod.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mod.js","./mstosamps.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mstosamps.js","./mtof.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mtof.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./neq.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/neq.js","./noise.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/noise.js","./not.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/not.js","./pan.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/pan.js","./param.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/param.js","./peek.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js","./phasor.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/phasor.js","./poke.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/poke.js","./pow.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/pow.js","./process.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/process.js","./rate.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/rate.js","./round.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/round.js","./sah.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sah.js","./selector.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/selector.js","./seq.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/seq.js","./sign.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sign.js","./sin.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sin.js","./slide.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/slide.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js","./switch.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/switch.js","./t60.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/t60.js","./tan.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/tan.js","./tanh.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/tanh.js","./train.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/train.js","./utilities.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/utilities.js","./windows.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/windows.js","./wrap.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/lt.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'lt',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    out = `  var ${this.name} = `  
-
-    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
-      out += `(( ${inputs[0]} < ${inputs[1]}) | 0  )`
-    } else {
-      out += inputs[0] < inputs[1] ? 1 : 0 
-    }
-    out += '\n'
-
-    gen.memo[ this.name ] = this.name
-
-    return [this.name, out]
-    
-    return out
-  }
-}
-
-module.exports = (x,y) => {
-  let lt = Object.create( proto )
-
-  lt.inputs = [ x,y ]
-  lt.name = lt.basename + gen.getUID()
-
-  return lt
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/lte.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'lte',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    out = `  var ${this.name} = `  
-
-    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
-      out += `( ${inputs[0]} <= ${inputs[1]} | 0  )`
-    } else {
-      out += inputs[0] <= inputs[1] ? 1 : 0 
-    }
-    out += '\n'
-
-    gen.memo[ this.name ] = this.name
-
-    return [this.name, out]
-    
-    return out
-  }
-}
-
-module.exports = (x,y) => {
-  let lt = Object.create( proto )
-
-  lt.inputs = [ x,y ]
-  lt.name = 'lte' + gen.getUID()
-
-  return lt
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/ltp.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'ltp',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    if( isNaN( this.inputs[0] ) || isNaN( this.inputs[1] ) ) {
-      out = `(${inputs[ 0 ]} * (( ${inputs[0]} < ${inputs[1]} ) | 0 ) )` 
-    } else {
-      out = inputs[0] * (( inputs[0] < inputs[1] ) | 0 )
-    }
-    
-    return out
-  }
-}
-
-module.exports = (x,y) => {
-  let ltp = Object.create( proto )
-
-  ltp.inputs = [ x,y ]
-
-  return ltp
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/max.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'max',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
-      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.max' : Math.max })
-
-      out = `${ref}max( ${inputs[0]}, ${inputs[1]} )`
-
-    } else {
-      out = Math.max( parseFloat( inputs[0] ), parseFloat( inputs[1] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = (x,y) => {
-  let max = Object.create( proto )
-
-  max.inputs = [ x,y ]
-
-  return max
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js":[function(require,module,exports){
-'use strict'
-
-let gen = require('./gen.js')
-
-let proto = {
-  basename:'memo',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    out = `  var ${this.name} = ${inputs[0]}\n`
-
-    gen.memo[ this.name ] = this.name
-
-    return [ this.name, out ]
-  } 
-}
-
-module.exports = (in1,memoName) => {
-  let memo = Object.create( proto )
-  
-  memo.inputs = [ in1 ]
-  memo.id   = gen.getUID()
-  memo.name = memoName !== undefined ? memoName + '_' + gen.getUID() : `${memo.basename}${memo.id}`
-
-  return memo
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/min.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'min',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
-      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.min' : Math.min })
-
-      out = `${ref}min( ${inputs[0]}, ${inputs[1]} )`
-
-    } else {
-      out = Math.min( parseFloat( inputs[0] ), parseFloat( inputs[1] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = (x,y) => {
-  let min = Object.create( proto )
-
-  min.inputs = [ x,y ]
-
-  return min
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mix.js":[function(require,module,exports){
-'use strict'
-
-let gen = require('./gen.js'),
-    add = require('./add.js'),
-    mul = require('./mul.js'),
-    sub = require('./sub.js'),
-    memo= require('./memo.js')
-
-module.exports = ( in1, in2, t=.5 ) => {
-  let ugen = memo( add( mul(in1, sub(1,t ) ), mul( in2, t ) ) )
-  ugen.name = 'mix' + gen.getUID()
-
-  return ugen
-}
-
-},{"./add.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/add.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mod.js":[function(require,module,exports){
-'use strict'
-
-let gen = require('./gen.js')
-
-module.exports = (...args) => {
-  let mod = {
-    id:     gen.getUID(),
-    inputs: args,
-
-    gen() {
-      let inputs = gen.getInputs( this ),
-          out='(',
-          diff = 0, 
-          numCount = 0,
-          lastNumber = inputs[ 0 ],
-          lastNumberIsUgen = isNaN( lastNumber ), 
-          modAtEnd = false
-
-      inputs.forEach( (v,i) => {
-        if( i === 0 ) return
-
-        let isNumberUgen = isNaN( v ),
-            isFinalIdx   = i === inputs.length - 1
-
-        if( !lastNumberIsUgen && !isNumberUgen ) {
-          lastNumber = lastNumber % v
-          out += lastNumber
-        }else{
-          out += `${lastNumber} % ${v}`
-        }
-
-        if( !isFinalIdx ) out += ' % ' 
-      })
-
-      out += ')'
-
-      return out
-    }
-  }
-  
-  return mod
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mstosamps.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'mstosamps',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this ),
-        returnValue
-
-    if( isNaN( inputs[0] ) ) {
-      out = `  var ${this.name } = ${gen.samplerate} / 1000 * ${inputs[0]} \n\n`
-     
-      gen.memo[ this.name ] = out
-      
-      returnValue = [ this.name, out ]
-    } else {
-      out = gen.samplerate / 1000 * this.inputs[0]
-
-      returnValue = out
-    }    
-
-    return returnValue
-  }
-}
-
-module.exports = x => {
-  let mstosamps = Object.create( proto )
-
-  mstosamps.inputs = [ x ]
-  mstosamps.name = proto.basename + gen.getUID()
-
-  return mstosamps
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mtof.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'mtof',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: Math.exp })
-
-      out = `( ${this.tuning} * gen.exp( .057762265 * (${inputs[0]} - 69) ) )`
-
-    } else {
-      out = this.tuning * Math.exp( .057762265 * ( inputs[0] - 69) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = ( x, props ) => {
-  let ugen = Object.create( proto ),
-      defaults = { tuning:440 }
-  
-  if( props !== undefined ) Object.assign( props.defaults )
-
-  Object.assign( ugen, defaults )
-  ugen.inputs = [ x ]
-  
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js":[function(require,module,exports){
-'use strict'
-
-const gen = require('./gen.js')
-
-const proto = {
-  basename: 'mul',
-
-  gen() {
-    let inputs = gen.getInputs( this ),
-        out = `  var ${this.name} = `,
-        sum = 1, numCount = 0, mulAtEnd = false, alreadyFullSummed = true
-
-    inputs.forEach( (v,i) => {
-      if( isNaN( v ) ) {
-        out += v
-        if( i < inputs.length -1 ) {
-          mulAtEnd = true
-          out += ' * '
-        }
-        alreadyFullSummed = false
-      }else{
-        if( i === 0 ) {
-          sum = v
-        }else{
-          sum *= parseFloat( v )
-        }
-        numCount++
-      }
-    })
-
-    if( numCount > 0 ) {
-      out += mulAtEnd || alreadyFullSummed ? sum : ' * ' + sum
-    }
-
-    out += '\n'
-
-    gen.memo[ this.name ] = this.name
-
-    return [ this.name, out ]
-  }
-}
-
-module.exports = ( ...args ) => {
-  const mul = Object.create( proto )
-  
-  Object.assign( mul, {
-      id:     gen.getUID(),
-      inputs: args,
-  })
-  
-  mul.name = mul.basename + mul.id
-
-  return mul
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/neq.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' )
-
-let proto = {
-  basename:'neq',
-
-  gen() {
-    let inputs = gen.getInputs( this ), out
-
-    out = /*this.inputs[0] !== this.inputs[1] ? 1 :*/ `  var ${this.name} = (${inputs[0]} !== ${inputs[1]}) | 0\n\n`
-
-    gen.memo[ this.name ] = this.name
-
-    return [ this.name, out ]
-  },
-
-}
-
-module.exports = ( in1, in2 ) => {
-  let ugen = Object.create( proto )
-  Object.assign( ugen, {
-    uid:     gen.getUID(),
-    inputs:  [ in1, in2 ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/noise.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'noise',
-
-  gen() {
-    let out
-
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    gen.closures.add({ 'noise' : isWorklet ? 'Math.random' : Math.random })
-
-    out = `  var ${this.name} = ${ref}noise()\n`
-    
-    gen.memo[ this.name ] = this.name
-
-    return [ this.name, out ]
-  }
-}
-
-module.exports = x => {
-  let noise = Object.create( proto )
-  noise.name = proto.name + gen.getUID()
-
-  return noise
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/not.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'not',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    if( isNaN( this.inputs[0] ) ) {
-      out = `( ${inputs[0]} === 0 ? 1 : 0 )`
-    } else {
-      out = !inputs[0] === 0 ? 1 : 0
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let not = Object.create( proto )
-
-  not.inputs = [ x ]
-
-  return not
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/pan.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' ),
-    data = require( './data.js' ),
-    peek = require( './peek.js' ),
-    mul  = require( './mul.js' )
-
-let proto = {
-  basename:'pan', 
-  initTable() {    
-    let bufferL = new Float32Array( 1024 ),
-        bufferR = new Float32Array( 1024 )
-
-    const angToRad = Math.PI / 180
-    for( let i = 0; i < 1024; i++ ) { 
-      let pan = i * ( 90 / 1024 )
-      bufferL[i] = Math.cos( pan * angToRad ) 
-      bufferR[i] = Math.sin( pan * angToRad )
-    }
-
-    gen.globals.panL = data( bufferL, 1, { immutable:true })
-    gen.globals.panR = data( bufferR, 1, { immutable:true })
-  }
-
-}
-
-module.exports = ( leftInput, rightInput, pan =.5, properties ) => {
-  if( gen.globals.panL === undefined ) proto.initTable()
-
-  let ugen = Object.create( proto )
-
-  Object.assign( ugen, {
-    uid:     gen.getUID(),
-    inputs:  [ leftInput, rightInput ],
-    left:    mul( leftInput, peek( gen.globals.panL, pan, { boundmode:'clamp' }) ),
-    right:   mul( rightInput, peek( gen.globals.panR, pan, { boundmode:'clamp' }) )
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./peek.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/param.js":[function(require,module,exports){
-'use strict'
-
-let gen = require('./gen.js')
-
-let proto = {
-  basename: 'param',
-
-  gen() {
-    gen.requestMemory( this.memory )
-    
-    gen.params.add( this )
-
-    const isWorklet = gen.mode === 'worklet'
-
-    if( isWorklet ) gen.parameters.add( this.name )
-
-    this.value = this.initialValue
-
-    gen.memo[ this.name ] = isWorklet ? this.name : `memory[${this.memory.value.idx}]`
-
-    return gen.memo[ this.name ]
-  } 
-}
-
-module.exports = ( propName=0, value=0, min=0, max=1 ) => {
-  let ugen = Object.create( proto )
-  
-  if( typeof propName !== 'string' ) {
-    ugen.name = ugen.basename + gen.getUID()
-    ugen.initialValue = propName
-  }else{
-    ugen.name = propName
-    ugen.initialValue = value
-  }
-
-  ugen.min = min
-  ugen.max = max
-  ugen.defaultValue = ugen.initialValue
-
-  // for storing worklet nodes once they're instantiated
-  ugen.waapi = null
-
-  ugen.isWorklet = gen.mode === 'worklet'
-
-  Object.defineProperty( ugen, 'value', {
-    get() {
-      if( this.memory.value.idx !== null ) {
-        return gen.memory.heap[ this.memory.value.idx ]
-      }else{
-        return this.initialValue
-      }
-    },
-    set( v ) {
-      if( this.memory.value.idx !== null ) {
-        if( this.isWorklet && this.waapi !== null ) {
-          this.waapi.value = v
-        }else{
-          gen.memory.heap[ this.memory.value.idx ] = v
-        } 
-      }
-    }
-  })
-
-  ugen.memory = {
-    value: { length:1, idx:null }
-  }
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js":[function(require,module,exports){
-
-const gen  = require('./gen.js'),
-      dataUgen = require('./data.js')
-
-let proto = {
-  basename:'peek',
-
-  gen() {
-    let genName = 'gen.' + this.name,
-        inputs = gen.getInputs( this ),
-        out, functionBody, next, lengthIsLog2, idx
-    
-    idx = inputs[1]
-    lengthIsLog2 = (Math.log2( this.data.buffer.length ) | 0)  === Math.log2( this.data.buffer.length )
-
-    if( this.mode !== 'simple' ) {
-
-    functionBody = `  var ${this.name}_dataIdx  = ${idx}, 
-      ${this.name}_phase = ${this.mode === 'samples' ? inputs[0] : inputs[0] + ' * ' + (this.data.buffer.length) }, 
-      ${this.name}_index = ${this.name}_phase | 0,\n`
-
-    if( this.boundmode === 'wrap' ) {
-      next = lengthIsLog2 ?
-      `( ${this.name}_index + 1 ) & (${this.data.buffer.length} - 1)` :
-      `${this.name}_index + 1 >= ${this.data.buffer.length} ? ${this.name}_index + 1 - ${this.data.buffer.length} : ${this.name}_index + 1`
-    }else if( this.boundmode === 'clamp' ) {
-      next = 
-        `${this.name}_index + 1 >= ${this.data.buffer.length - 1} ? ${this.data.buffer.length - 1} : ${this.name}_index + 1`
-    } else if( this.boundmode === 'fold' || this.boundmode === 'mirror' ) {
-      next = 
-        `${this.name}_index + 1 >= ${this.data.buffer.length - 1} ? ${this.name}_index - ${this.data.buffer.length - 1} : ${this.name}_index + 1`
-    }else{
-       next = 
-      `${this.name}_index + 1`     
-    }
-
-    if( this.interp === 'linear' ) {      
-    functionBody += `      ${this.name}_frac  = ${this.name}_phase - ${this.name}_index,
-      ${this.name}_base  = memory[ ${this.name}_dataIdx +  ${this.name}_index ],
-      ${this.name}_next  = ${next},`
-      
-      if( this.boundmode === 'ignore' ) {
-        functionBody += `
-      ${this.name}_out   = ${this.name}_index >= ${this.data.buffer.length - 1} || ${this.name}_index < 0 ? 0 : ${this.name}_base + ${this.name}_frac * ( memory[ ${this.name}_dataIdx + ${this.name}_next ] - ${this.name}_base )\n\n`
-      }else{
-        functionBody += `
-      ${this.name}_out   = ${this.name}_base + ${this.name}_frac * ( memory[ ${this.name}_dataIdx + ${this.name}_next ] - ${this.name}_base )\n\n`
-      }
-    }else{
-      functionBody += `      ${this.name}_out = memory[ ${this.name}_dataIdx + ${this.name}_index ]\n\n`
-    }
-
-    } else { // mode is simple
-      functionBody = `memory[ ${idx} + ${ inputs[0] } ]`
-      
-      return functionBody
-    }
-
-    gen.memo[ this.name ] = this.name + '_out'
-
-    return [ this.name+'_out', functionBody ]
-  },
-
-  defaults : { channels:1, mode:'phase', interp:'linear', boundmode:'wrap' }
-}
-
-module.exports = ( input_data, index=0, properties ) => {
-  let ugen = Object.create( proto )
-
-  //console.log( dataUgen, gen.data )
-
-  // XXX why is dataUgen not the actual function? some type of browserify nonsense...
-  const finalData = typeof input_data.basename === 'undefined' ? gen.lib.data( input_data ) : input_data
-
-  Object.assign( ugen, 
-    { 
-      'data':     finalData,
-      dataName:   finalData.name,
-      uid:        gen.getUID(),
-      inputs:     [ index, finalData ],
-    },
-    proto.defaults,
-    properties 
-  )
-  
-  ugen.name = ugen.basename + ugen.uid
-
-  return ugen
-}
-
-
-},{"./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/phasor.js":[function(require,module,exports){
-'use strict'
-
-let gen   = require( './gen.js' ),
-    accum = require( './accum.js' ),
-    mul   = require( './mul.js' ),
-    proto = { basename:'phasor' },
-    div   = require( './div.js' )
-
-const defaults = { min: -1, max: 1 }
-
-module.exports = ( frequency = 1, reset = 0, _props ) => {
-  const props = Object.assign( {}, defaults, _props )
-
-  const range = props.max - props.min
-
-  const ugen = typeof frequency === 'number' 
-    ? accum( (frequency * range) / gen.samplerate, reset, props ) 
-    : accum( 
-        div( 
-          mul( frequency, range ),
-          gen.samplerate
-        ), 
-        reset, props 
-    )
-
-  ugen.name = proto.basename + gen.getUID()
-
-  return ugen
-}
-
-},{"./accum.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/accum.js","./div.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/poke.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js'),
-    mul  = require('./mul.js'),
-    wrap = require('./wrap.js')
-
-let proto = {
-  basename:'poke',
-
-  gen() {
-    let dataName = 'memory',
-        inputs = gen.getInputs( this ),
-        idx, out, wrapped
-    
-    idx = this.data.gen()
-
-    //gen.requestMemory( this.memory )
-    //wrapped = wrap( this.inputs[1], 0, this.dataLength ).gen()
-    //idx = wrapped[0]
-    //gen.functionBody += wrapped[1]
-    let outputStr = this.inputs[1] === 0 ?
-      `  ${dataName}[ ${idx} ] = ${inputs[0]}\n` :
-      `  ${dataName}[ ${idx} + ${inputs[1]} ] = ${inputs[0]}\n`
-
-    if( this.inline === undefined ) {
-      gen.functionBody += outputStr
-    }else{
-      return [ this.inline, outputStr ]
-    }
-  }
-}
-module.exports = ( data, value, index, properties ) => {
-  let ugen = Object.create( proto ),
-      defaults = { channels:1 } 
-
-  if( properties !== undefined ) Object.assign( defaults, properties )
-
-  Object.assign( ugen, { 
-    data,
-    dataName:   data.name,
-    dataLength: data.buffer.length,
-    uid:        gen.getUID(),
-    inputs:     [ value, index ],
-  },
-  defaults )
-
-
-  ugen.name = ugen.basename + ugen.uid
-  
-  gen.histories.set( ugen.name, ugen )
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./wrap.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/pow.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'pow',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) || isNaN( inputs[1] ) ) {
-      gen.closures.add({ 'pow': isWorklet ? 'Math.pow' : Math.pow })
-
-      out = `${ref}pow( ${inputs[0]}, ${inputs[1]} )` 
-
-    } else {
-      if( typeof inputs[0] === 'string' && inputs[0][0] === '(' ) {
-        inputs[0] = inputs[0].slice(1,-1)
-      }
-      if( typeof inputs[1] === 'string' && inputs[1][0] === '(' ) {
-        inputs[1] = inputs[1].slice(1,-1)
-      }
-
-      out = Math.pow( parseFloat( inputs[0] ), parseFloat( inputs[1]) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = (x,y) => {
-  let pow = Object.create( proto )
-
-  pow.inputs = [ x,y ]
-  pow.id = gen.getUID()
-  pow.name = `${pow.basename}{pow.id}`
-
-  return pow
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/process.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-const proto = {
-  basename:'process',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    gen.closures.add({ [''+this.funcname] : this.func })
-
-    out = `  var ${this.name} = gen['${this.funcname}'](`
-
-    inputs.forEach( (v,i,arr ) => {
-      out += arr[ i ]
-      if( i < arr.length - 1 ) out += ','
-    })
-
-    out += ')\n'
-
-    gen.memo[ this.name ] = this.name
-
-    return [this.name, out]
-    
-    return out
-  }
-}
-
-module.exports = (...args) => {
-  const process = {}// Object.create( proto )
-  const id = gen.getUID()
-  process.name = 'process' + id 
-
-  process.func = new Function( ...args )
-
-  //gen.globals[ process.name ] = process.func
-
-  process.call = function( ...args  ) {
-    const output = Object.create( proto )
-    output.funcname = process.name
-    output.func = process.func
-    output.name = 'process_out_' + id
-    output.process = process
-
-    output.inputs = args
-
-    return output
-  }
-
-  return process 
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/rate.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen.js' ),
-    history = require( './history.js' ),
-    sub     = require( './sub.js' ),
-    add     = require( './add.js' ),
-    mul     = require( './mul.js' ),
-    memo    = require( './memo.js' ),
-    delta   = require( './delta.js' ),
-    wrap    = require( './wrap.js' )
-
-let proto = {
-  basename:'rate',
-
-  gen() {
-    let inputs = gen.getInputs( this ),
-        phase  = history(),
-        inMinus1 = history(),
-        genName = 'gen.' + this.name,
-        filter, sum, out
-
-    gen.closures.add({ [ this.name ]: this }) 
-
-    out = 
-` var ${this.name}_diff = ${inputs[0]} - ${genName}.lastSample
-  if( ${this.name}_diff < -.5 ) ${this.name}_diff += 1
-  ${genName}.phase += ${this.name}_diff * ${inputs[1]}
-  if( ${genName}.phase > 1 ) ${genName}.phase -= 1
-  ${genName}.lastSample = ${inputs[0]}
-`
-    out = ' ' + out
-
-    return [ genName + '.phase', out ]
-  }
-}
-
-module.exports = ( in1, rate ) => {
-  let ugen = Object.create( proto )
-
-  Object.assign( ugen, { 
-    phase:      0,
-    lastSample: 0,
-    uid:        gen.getUID(),
-    inputs:     [ in1, rate ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./add.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/add.js","./delta.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/delta.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js","./wrap.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/wrap.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/round.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'round',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.round' : Math.round })
-
-      out = `${ref}round( ${inputs[0]} )`
-
-    } else {
-      out = Math.round( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let round = Object.create( proto )
-
-  round.inputs = [ x ]
-
-  return round
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sah.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen.js' )
-
-let proto = {
-  basename:'sah',
-
-  gen() {
-    let inputs = gen.getInputs( this ), out
-
-    //gen.data[ this.name ] = 0
-    //gen.data[ this.name + '_control' ] = 0
-
-    gen.requestMemory( this.memory )
-
-
-    out = 
-` var ${this.name}_control = memory[${this.memory.control.idx}],
-      ${this.name}_trigger = ${inputs[1]} > ${inputs[2]} ? 1 : 0
-
-  if( ${this.name}_trigger !== ${this.name}_control  ) {
-    if( ${this.name}_trigger === 1 ) 
-      memory[${this.memory.value.idx}] = ${inputs[0]}
-    
-    memory[${this.memory.control.idx}] = ${this.name}_trigger
-  }
-`
-    
-    gen.memo[ this.name ] = `memory[${this.memory.value.idx}]`//`gen.data.${this.name}`
-
-    return [ `memory[${this.memory.value.idx}]`, ' ' +out ]
-  }
-}
-
-module.exports = ( in1, control, threshold=0, properties ) => {
-  let ugen = Object.create( proto ),
-      defaults = { init:0 }
-
-  if( properties !== undefined ) Object.assign( defaults, properties )
-
-  Object.assign( ugen, { 
-    lastSample: 0,
-    uid:        gen.getUID(),
-    inputs:     [ in1, control,threshold ],
-    memory: {
-      control: { idx:null, length:1 },
-      value:   { idx:null, length:1 },
-    }
-  },
-  defaults )
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/selector.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' )
-
-let proto = {
-  basename:'selector',
-
-  gen() {
-    let inputs = gen.getInputs( this ), out, returnValue = 0
-    
-    switch( inputs.length ) {
-      case 2 :
-        returnValue = inputs[1]
-        break;
-      case 3 :
-        out = `  var ${this.name}_out = ${inputs[0]} === 1 ? ${inputs[1]} : ${inputs[2]}\n\n`;
-        returnValue = [ this.name + '_out', out ]
-        break;  
-      default:
-        out = 
-` var ${this.name}_out = 0
-  switch( ${inputs[0]} + 1 ) {\n`
-
-        for( let i = 1; i < inputs.length; i++ ){
-          out +=`    case ${i}: ${this.name}_out = ${inputs[i]}; break;\n` 
-        }
-
-        out += '  }\n\n'
-        
-        returnValue = [ this.name + '_out', ' ' + out ]
-    }
-
-    gen.memo[ this.name ] = this.name + '_out'
-
-    return returnValue
-  },
-}
-
-module.exports = ( ...inputs ) => {
-  let ugen = Object.create( proto )
-  
-  Object.assign( ugen, {
-    uid:     gen.getUID(),
-    inputs
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/seq.js":[function(require,module,exports){
-'use strict'
-
-let gen   = require( './gen.js' ),
-    accum = require( './accum.js' ),
-    counter= require( './counter.js' ),
-    peek  = require( './peek.js' ),
-    ssd   = require( './history.js' ),
-    data  = require( './data.js' ),
-    proto = { basename:'seq' }
-
-module.exports = ( durations = 11025, values = [0,1], phaseIncrement = 1) => {
-  let clock
-  
-  if( Array.isArray( durations ) ) {
-    // we want a counter that is using our current
-    // rate value, but we want the rate value to be derived from
-    // the counter. must insert a single-sample dealy to avoid
-    // infinite loop.
-    const clock2 = counter( 0, 0, durations.length )
-    const __durations = peek( data( durations ), clock2, { mode:'simple' }) 
-    clock = counter( phaseIncrement, 0, __durations )
-    
-    // add one sample delay to avoid codegen loop
-    const s = ssd()
-    s.in( clock.wrap )
-    clock2.inputs[0] = s.out
-  }else{
-    // if the rate argument is a single value we don't need to
-    // do anything tricky.
-    clock = counter( phaseIncrement, 0, durations )
-  }
-  
-  const stepper = accum( clock.wrap, 0, { min:0, max:values.length })
-   
-  const ugen = peek( data( values ), stepper, { mode:'simple' })
-
-  ugen.name = proto.basename + gen.getUID()
-  ugen.trigger = clock.wrap
-
-  return ugen
-}
-
-},{"./accum.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/accum.js","./counter.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/counter.js","./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./history.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js","./peek.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/peek.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sign.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  name:'sign',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ this.name ]: isWorklet ? 'Math.sign' : Math.sign })
-
-      out = `${ref}sign( ${inputs[0]} )`
-
-    } else {
-      out = Math.sign( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let sign = Object.create( proto )
-
-  sign.inputs = [ x ]
-
-  return sign
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sin.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'sin',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'sin': isWorklet ? 'Math.sin' : Math.sin })
-
-      out = `${ref}sin( ${inputs[0]} )` 
-
-    } else {
-      out = Math.sin( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let sin = Object.create( proto )
-
-  sin.inputs = [ x ]
-  sin.id = gen.getUID()
-  sin.name = `${sin.basename}{sin.id}`
-
-  return sin
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/slide.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen.js' ),
-    history = require( './history.js' ),
-    sub     = require( './sub.js' ),
-    add     = require( './add.js' ),
-    mul     = require( './mul.js' ),
-    memo    = require( './memo.js' ),
-    gt      = require( './gt.js' ),
-    div     = require( './div.js' ),
-    _switch = require( './switch.js' )
-
-module.exports = ( in1, slideUp = 1, slideDown = 1 ) => {
-  let y1 = history(0),
-      filter, slideAmount
-
-  //y (n) = y (n-1) + ((x (n) - y (n-1))/slide) 
-  slideAmount = _switch( gt(in1,y1.out), slideUp, slideDown )
-
-  filter = memo( add( y1.out, div( sub( in1, y1.out ), slideAmount ) ) )
-
-  y1.in( filter )
-
-  return filter
-}
-
-},{"./add.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/add.js","./div.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./gt.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gt.js","./history.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/history.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./mul.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/mul.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js","./switch.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/switch.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js":[function(require,module,exports){
-'use strict'
-
-const gen = require('./gen.js')
-
-const proto = {
-  basename:'sub',
-  gen() {
-    let inputs = gen.getInputs( this ),
-        out=0,
-        diff = 0,
-        needsParens = false, 
-        numCount = 0,
-        lastNumber = inputs[ 0 ],
-        lastNumberIsUgen = isNaN( lastNumber ), 
-        subAtEnd = false,
-        hasUgens = false,
-        returnValue = 0
-
-    this.inputs.forEach( value => { if( isNaN( value ) ) hasUgens = true })
-
-    out = '  var ' + this.name + ' = '
-
-    inputs.forEach( (v,i) => {
-      if( i === 0 ) return
-
-      let isNumberUgen = isNaN( v ),
-          isFinalIdx   = i === inputs.length - 1
-
-      if( !lastNumberIsUgen && !isNumberUgen ) {
-        lastNumber = lastNumber - v
-        out += lastNumber
-        return
-      }else{
-        needsParens = true
-        out += `${lastNumber} - ${v}`
-      }
-
-      if( !isFinalIdx ) out += ' - ' 
-    })
-
-    out += '\n'
-
-    returnValue = [ this.name, out ]
-
-    gen.memo[ this.name ] = this.name
-
-    return returnValue
-  }
-
-}
-
-module.exports = ( ...args ) => {
-  let sub = Object.create( proto )
-
-  Object.assign( sub, {
-    id:     gen.getUID(),
-    inputs: args
-  })
-       
-  sub.name = 'sub' + sub.id
-
-  return sub
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/switch.js":[function(require,module,exports){
-'use strict'
-
-let gen = require( './gen.js' )
-
-let proto = {
-  basename:'switch',
-
-  gen() {
-    let inputs = gen.getInputs( this ), out
-
-    if( inputs[1] === inputs[2] ) return inputs[1] // if both potential outputs are the same just return one of them
-    
-    out = `  var ${this.name}_out = ${inputs[0]} === 1 ? ${inputs[1]} : ${inputs[2]}\n`
-
-    gen.memo[ this.name ] = `${this.name}_out`
-
-    return [ `${this.name}_out`, out ]
-  },
-
-}
-
-module.exports = ( control, in1 = 1, in2 = 0 ) => {
-  let ugen = Object.create( proto )
-  Object.assign( ugen, {
-    uid:     gen.getUID(),
-    inputs:  [ control, in1, in2 ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/t60.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'t60',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this ),
-        returnValue
-
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ [ 'exp' ]: isWorklet ? 'Math.exp' : Math.exp })
-
-      out = `  var ${this.name} = ${ref}exp( -6.907755278921 / ${inputs[0]} )\n\n`
-     
-      gen.memo[ this.name ] = out
-      
-      returnValue = [ this.name, out ]
-    } else {
-      out = Math.exp( -6.907755278921 / inputs[0] )
-
-      returnValue = out
-    }    
-
-    return returnValue
-  }
-}
-
-module.exports = x => {
-  let t60 = Object.create( proto )
-
-  t60.inputs = [ x ]
-  t60.name = proto.basename + gen.getUID()
-
-  return t60
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/tan.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'tan',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'tan': isWorklet ? 'Math.tan' : Math.tan })
-
-      out = `${ref}tan( ${inputs[0]} )` 
-
-    } else {
-      out = Math.tan( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let tan = Object.create( proto )
-
-  tan.inputs = [ x ]
-  tan.id = gen.getUID()
-  tan.name = `${tan.basename}{tan.id}`
-
-  return tan
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/tanh.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js')
-
-let proto = {
-  basename:'tanh',
-
-  gen() {
-    let out,
-        inputs = gen.getInputs( this )
-    
-    
-    const isWorklet = gen.mode === 'worklet'
-    const ref = isWorklet? '' : 'gen.'
-
-    if( isNaN( inputs[0] ) ) {
-      gen.closures.add({ 'tanh': isWorklet ? 'Math.tan' : Math.tanh })
-
-      out = `${ref}tanh( ${inputs[0]} )` 
-
-    } else {
-      out = Math.tanh( parseFloat( inputs[0] ) )
-    }
-    
-    return out
-  }
-}
-
-module.exports = x => {
-  let tanh = Object.create( proto )
-
-  tanh.inputs = [ x ]
-  tanh.id = gen.getUID()
-  tanh.name = `${tanh.basename}{tanh.id}`
-
-  return tanh
-}
-
-},{"./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/train.js":[function(require,module,exports){
-'use strict'
-
-let gen     = require( './gen.js' ),
-    lt      = require( './lt.js' ),
-    accum   = require( './accum.js' ),
-    div     = require( './div.js' )
-
-module.exports = ( frequency=440, pulsewidth=.5 ) => {
-  let graph = lt( accum( div( frequency, 44100 ) ), pulsewidth )
-
-  graph.name = `train${gen.getUID()}`
-
-  return graph
-}
-
-
-},{"./accum.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/accum.js","./div.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/div.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./lt.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/lt.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/utilities.js":[function(require,module,exports){
-'use strict'
-
-const AWPF = require( './external/audioworklet-polyfill.js' ),
-      gen  = require( './gen.js' ),
-      data = require( './data.js' )
-
-let isStereo = false
-
-const utilities = {
-  ctx: null,
-  buffers: {},
-  isStereo:false,
-
-  clear() {
-    if( this.workletNode !== undefined ) {
-      this.workletNode.disconnect()
-    }else{
-      this.callback = () => 0
-    }
-    this.clear.callbacks.forEach( v => v() )
-    this.clear.callbacks.length = 0
-
-    this.isStereo = false
-
-    if( gen.graph !== null ) gen.free( gen.graph )
-  },
-
-  createContext( bufferSize = 2048 ) {
-    const AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
-    
-    // tell polyfill global object and buffersize
-    AWPF( window, bufferSize )
-
-    const start = () => {
-      if( typeof AC !== 'undefined' ) {
-        this.ctx = new AC({ latencyHint:.0125 })
-
-        gen.samplerate = this.ctx.sampleRate
-
-        if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
-          window.removeEventListener( 'touchstart', start )
-        }else{
-          window.removeEventListener( 'mousedown', start )
-          window.removeEventListener( 'keydown', start )
-        }
-
-        const mySource = utilities.ctx.createBufferSource()
-        mySource.connect( utilities.ctx.destination )
-        mySource.start()
-      }
-    }
-
-    if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
-      window.addEventListener( 'touchstart', start )
-    }else{
-      window.addEventListener( 'mousedown', start )
-      window.addEventListener( 'keydown', start )
-    }
-
-    return this
-  },
-
-  createScriptProcessor() {
-    this.node = this.ctx.createScriptProcessor( 1024, 0, 2 )
-    this.clearFunction = function() { return 0 }
-    if( typeof this.callback === 'undefined' ) this.callback = this.clearFunction
-
-    this.node.onaudioprocess = function( audioProcessingEvent ) {
-      var outputBuffer = audioProcessingEvent.outputBuffer;
-
-      var left = outputBuffer.getChannelData( 0 ),
-          right= outputBuffer.getChannelData( 1 ),
-          isStereo = utilities.isStereo
-
-     for( var sample = 0; sample < left.length; sample++ ) {
-        var out = utilities.callback()
-
-        if( isStereo === false ) {
-          left[ sample ] = right[ sample ] = out 
-        }else{
-          left[ sample  ] = out[0]
-          right[ sample ] = out[1]
-        }
-      }
-    }
-
-    this.node.connect( this.ctx.destination )
-
-    return this
-  },
-
-  // remove starting stuff and add tabs
-  prettyPrintCallback( cb ) {
-    // get rid of "function gen" and start with parenthesis
-    // const shortendCB = cb.toString().slice(9)
-    const cbSplit = cb.toString().split('\n')
-    const cbTrim = cbSplit.slice( 3, -2 )
-    const cbTabbed = cbTrim.map( v => '      ' + v ) 
-    
-    return cbTabbed.join('\n')
-  },
-
-  createParameterDescriptors( cb ) {
-    // [{name: 'amplitude', defaultValue: 0.25, minValue: 0, maxValue: 1}];
-    let paramStr = ''
-
-    //for( let ugen of cb.params.values() ) {
-    //  paramStr += `{ name:'${ugen.name}', defaultValue:${ugen.value}, minValue:${ugen.min}, maxValue:${ugen.max} },\n      `
-    //}
-    for( let ugen of cb.params.values() ) {
-      paramStr += `{ name:'${ugen.name}', automationRate:'k-rate', defaultValue:${ugen.defaultValue}, minValue:${ugen.min}, maxValue:${ugen.max} },\n      `
-    }
-    return paramStr
-  },
-
-  createParameterDereferences( cb ) {
-    let str = cb.params.size > 0 ? '\n      ' : ''
-    for( let ugen of cb.params.values() ) {
-      str += `const ${ugen.name} = parameters.${ugen.name}[0]\n      `
-    }
-
-    return str
-  },
-
-  createParameterArguments( cb ) {
-    let  paramList = ''
-    for( let ugen of cb.params.values() ) {
-      paramList += ugen.name + '[i],'
-    }
-    paramList = paramList.slice( 0, -1 )
-
-    return paramList
-  },
-
-  createInputDereferences( cb ) {
-    let str = cb.inputs.size > 0 ? '\n' : ''
-    for( let input of  cb.inputs.values() ) {
-      str += `const ${input.name} = inputs[ ${input.inputNumber} ][ ${input.channelNumber} ]\n      `
-    }
-
-    return str
-  },
-
-
-  createInputArguments( cb ) {
-    let  paramList = ''
-    for( let input of cb.inputs.values() ) {
-      paramList += input.name + '[i],'
-    }
-    paramList = paramList.slice( 0, -1 )
-
-    return paramList
-  },
-      
-  createFunctionDereferences( cb ) {
-    let memberString = cb.members.size > 0 ? '\n' : ''
-    let memo = {}
-    for( let dict of cb.members.values() ) {
-      const name = Object.keys( dict )[0],
-            value = dict[ name ]
-
-      if( memo[ name ] !== undefined ) continue
-      memo[ name ] = true
-
-      memberString += `      const ${name} = ${value}\n`
-    }
-
-    return memberString
-  },
-
-  createWorkletProcessor( graph, name, debug, mem=44100*10 ) {
-    //const mem = MemoryHelper.create( 4096, Float64Array )
-    const cb = gen.createCallback( graph, mem, debug )
-    const inputs = cb.inputs
-
-    // get all inputs and create appropriate audioparam initializers
-    const parameterDescriptors = this.createParameterDescriptors( cb )
-    const parameterDereferences = this.createParameterDereferences( cb )
-    const paramList = this.createParameterArguments( cb )
-    const inputDereferences = this.createInputDereferences( cb )
-    const inputList = this.createInputArguments( cb )   
-    const memberString = this.createFunctionDereferences( cb )
-
-    // change output based on number of channels.
-    const genishOutputLine = cb.isStereo === false
-      ? `left[ i ] = memory[0]`
-      : `left[ i ] = memory[0];\n\t\tright[ i ] = memory[1]\n`
-
-    const prettyCallback = this.prettyPrintCallback( cb )
-
-    /***** begin callback code ****/
-    // note that we have to check to see that memory has been passed
-    // to the worker before running the callback function, otherwise
-    // it can be passed too slowly and fail on occassion
-
-    const workletCode = `
-class ${name}Processor extends AudioWorkletProcessor {
-
-  static get parameterDescriptors() {
-    const params = [
-      ${ parameterDescriptors }      
-    ]
-    return params
-  }
- 
-  constructor( options ) {
-    super( options )
-    this.port.onmessage = this.handleMessage.bind( this )
-    this.initialized = false
-  }
-
-  handleMessage( event ) {
-    if( event.data.key === 'init' ) {
-      this.memory = event.data.memory
-      this.initialized = true
-    }else if( event.data.key === 'set' ) {
-      this.memory[ event.data.idx ] = event.data.value
-    }else if( event.data.key === 'get' ) {
-      this.port.postMessage({ key:'return', idx:event.data.idx, value:this.memory[event.data.idx] })     
-    }
-  }
-
-  process( inputs, outputs, parameters ) {
-    if( this.initialized === true ) {
-      const output = outputs[0]
-      const left   = output[ 0 ]
-      const right  = output[ 1 ]
-      const len    = left.length
-      const memory = this.memory ${parameterDereferences}${inputDereferences}${memberString}
-
-      for( let i = 0; i < len; ++i ) {
-        ${prettyCallback}
-        ${genishOutputLine}
-      }
-    }
-    return true
-  }
-}
-    
-registerProcessor( '${name}', ${name}Processor)`
-
-    
-    /***** end callback code *****/
-
-
-    if( debug === true ) console.log( workletCode )
-
-    const url = window.URL.createObjectURL(
-      new Blob(
-        [ workletCode ], 
-        { type: 'text/javascript' }
-      )
-    )
-
-    return [ url, workletCode, inputs, cb.params, cb.isStereo ] 
-  },
-
-  registeredForNodeAssignment: [],
-  register( ugen ) {
-    if( this.registeredForNodeAssignment.indexOf( ugen ) === -1 ) {
-      this.registeredForNodeAssignment.push( ugen )
-    }
-  },
-
-  playWorklet( graph, name, debug=false, mem=44100 * 60 ) {
-    utilities.clear()
-
-    const [ url, codeString, inputs, params, isStereo ] = utilities.createWorkletProcessor( graph, name, debug, mem )
-
-    const nodePromise = new Promise( (resolve,reject) => {
-   
-      utilities.ctx.audioWorklet.addModule( url ).then( ()=> {
-        const workletNode = new AudioWorkletNode( utilities.ctx, name, { outputChannelCount:[ isStereo ? 2 : 1 ] })
-
-        workletNode.callbacks = {}
-        workletNode.onmessage = function( event ) {
-          if( event.data.message === 'return' ) {
-            workletNode.callbacks[ event.data.idx ]( event.data.value )
-            delete workletNode.callbacks[ event.data.idx ]
-          }
-        }
-
-        workletNode.getMemoryValue = function( idx, cb ) {
-          this.workletCallbacks[ idx ] = cb
-          this.workletNode.port.postMessage({ key:'get', idx: idx })
-        }
-        
-        workletNode.port.postMessage({ key:'init', memory:gen.memory.heap })
-        utilities.workletNode = workletNode
-
-        utilities.registeredForNodeAssignment.forEach( ugen => ugen.node = workletNode )
-        utilities.registeredForNodeAssignment.length = 0
-
-        // assign all params as properties of node for easier reference 
-        for( let dict of inputs.values() ) {
-          const name = Object.keys( dict )[0]
-          const param = workletNode.parameters.get( name )
-      
-          Object.defineProperty( workletNode, name, {
-            set( v ) {
-              param.value = v
-            },
-            get() {
-              return param.value
-            }
-          })
-        }
-
-        for( let ugen of params.values() ) {
-          const name = ugen.name
-          const param = workletNode.parameters.get( name )
-          ugen.waapi = param 
-          // initialize?
-          param.value = ugen.defaultValue
-
-          Object.defineProperty( workletNode, name, {
-            set( v ) {
-              param.value = v
-            },
-            get() {
-              return param.value
-            }
-          })
-        }
-
-        if( utilities.console ) utilities.console.setValue( codeString )
-
-        workletNode.connect( utilities.ctx.destination )
-
-        resolve( workletNode )
-      })
-
-    })
-
-    return nodePromise
-  },
-  
-  playGraph( graph, debug, mem=44100*10, memType=Float32Array ) {
-    utilities.clear()
-    if( debug === undefined ) debug = false
-          
-    this.isStereo = Array.isArray( graph )
-
-    utilities.callback = gen.createCallback( graph, mem, debug, false, memType )
-    
-    if( utilities.console ) utilities.console.setValue( utilities.callback.toString() )
-
-    return utilities.callback
-  },
-
-  loadSample( soundFilePath, data ) {
-    const isLoaded = utilities.buffers[ soundFilePath ] !== undefined
-
-    let req = new XMLHttpRequest()
-    req.open( 'GET', soundFilePath, true )
-    req.responseType = 'arraybuffer' 
-    
-    let promise = new Promise( (resolve,reject) => {
-      if( !isLoaded ) {
-        req.onload = function() {
-          var audioData = req.response
-
-          utilities.ctx.decodeAudioData( audioData, (buffer) => {
-            data.buffer = buffer.getChannelData(0)
-            utilities.buffers[ soundFilePath ] = data.buffer
-            resolve( data.buffer )
-          })
-        }
-      }else{
-        setTimeout( ()=> resolve( utilities.buffers[ soundFilePath ] ), 0 )
-      }
-    })
-
-    if( !isLoaded ) req.send()
-
-    return promise
-  }
-
-}
-
-utilities.clear.callbacks = []
-
-module.exports = utilities
-
-},{"./data.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/data.js","./external/audioworklet-polyfill.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/external/audioworklet-polyfill.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/windows.js":[function(require,module,exports){
-'use strict'
-
-/*
- * many windows here adapted from https://github.com/corbanbrook/dsp.js/blob/master/dsp.js
- * starting at line 1427
- * taken 8/15/16
-*/ 
-
-const windows = module.exports = { 
-  bartlett( length, index ) {
-    return 2 / (length - 1) * ((length - 1) / 2 - Math.abs(index - (length - 1) / 2)) 
-  },
-
-  bartlettHann( length, index ) {
-    return 0.62 - 0.48 * Math.abs(index / (length - 1) - 0.5) - 0.38 * Math.cos( 2 * Math.PI * index / (length - 1))
-  },
-
-  blackman( length, index, alpha ) {
-    let a0 = (1 - alpha) / 2,
-        a1 = 0.5,
-        a2 = alpha / 2
-
-    return a0 - a1 * Math.cos(2 * Math.PI * index / (length - 1)) + a2 * Math.cos(4 * Math.PI * index / (length - 1))
-  },
-
-  cosine( length, index ) {
-    return Math.cos(Math.PI * index / (length - 1) - Math.PI / 2)
-  },
-
-  gauss( length, index, alpha ) {
-    return Math.pow(Math.E, -0.5 * Math.pow((index - (length - 1) / 2) / (alpha * (length - 1) / 2), 2))
-  },
-
-  hamming( length, index ) {
-    return 0.54 - 0.46 * Math.cos( Math.PI * 2 * index / (length - 1))
-  },
-
-  hann( length, index ) {
-    return 0.5 * (1 - Math.cos( Math.PI * 2 * index / (length - 1)) )
-  },
-
-  lanczos( length, index ) {
-    let x = 2 * index / (length - 1) - 1;
-    return Math.sin(Math.PI * x) / (Math.PI * x)
-  },
-
-  rectangular( length, index ) {
-    return 1
-  },
-
-  triangular( length, index ) {
-    return 2 / length * (length / 2 - Math.abs(index - (length - 1) / 2))
-  },
-
-  // parabola
-  welch( length, _index, ignore, shift=0 ) {
-    //w[n] = 1 - Math.pow( ( n - ( (N-1) / 2 ) ) / (( N-1 ) / 2 ), 2 )
-    const index = shift === 0 ? _index : (_index + Math.floor( shift * length )) % length
-    const n_1_over2 = (length - 1) / 2 
-
-    return 1 - Math.pow( ( index - n_1_over2 ) / n_1_over2, 2 )
-  },
-  inversewelch( length, _index, ignore, shift=0 ) {
-    //w[n] = 1 - Math.pow( ( n - ( (N-1) / 2 ) ) / (( N-1 ) / 2 ), 2 )
-    let index = shift === 0 ? _index : (_index + Math.floor( shift * length )) % length
-    const n_1_over2 = (length - 1) / 2
-
-    return Math.pow( ( index - n_1_over2 ) / n_1_over2, 2 )
-  },
-
-  parabola( length, index ) {
-    if( index <= length / 2 ) {
-      return windows.inversewelch( length / 2, index ) - 1
-    }else{
-      return 1 - windows.inversewelch( length / 2, index - length / 2 )
-    }
-  },
-
-  exponential( length, index, alpha ) {
-    return Math.pow( index / length, alpha )
-  },
-
-  linear( length, index ) {
-    return index / length
-  }
-}
-
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/wrap.js":[function(require,module,exports){
-'use strict'
-
-let gen  = require('./gen.js'),
-    floor= require('./floor.js'),
-    sub  = require('./sub.js'),
-    memo = require('./memo.js')
-
-let proto = {
-  basename:'wrap',
-
-  gen() {
-    let code,
-        inputs = gen.getInputs( this ),
-        signal = inputs[0], min = inputs[1], max = inputs[2],
-        out, diff
-
-    //out = `(((${inputs[0]} - ${this.min}) % ${diff}  + ${diff}) % ${diff} + ${this.min})`
-    //const long numWraps = long((v-lo)/range) - (v < lo);
-    //return v - range * double(numWraps);   
-    
-    if( this.min === 0 ) {
-      diff = max
-    }else if ( isNaN( max ) || isNaN( min ) ) {
-      diff = `${max} - ${min}`
-    }else{
-      diff = max - min
-    }
-
-    out =
-` var ${this.name} = ${inputs[0]}
-  if( ${this.name} < ${this.min} ) ${this.name} += ${diff}
-  else if( ${this.name} > ${this.max} ) ${this.name} -= ${diff}
-
-`
-
-    return [ this.name, ' ' + out ]
-  },
-}
-
-module.exports = ( in1, min=0, max=1 ) => {
-  let ugen = Object.create( proto )
-
-  Object.assign( ugen, { 
-    min, 
-    max,
-    uid:    gen.getUID(),
-    inputs: [ in1, min, max ],
-  })
-  
-  ugen.name = `${ugen.basename}${ugen.uid}`
-
-  return ugen
-}
-
-},{"./floor.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/floor.js","./gen.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/gen.js","./memo.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/memo.js","./sub.js":"/Users/charlie/Documents/code/gibberish/node_modules/genish.js/js/sub.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/memory-helper/index.transpiled.js":[function(require,module,exports){
-'use strict';
-
-var MemoryHelper = {
-  create: function create() {
-    var size = arguments.length <= 0 || arguments[0] === undefined ? 4096 : arguments[0];
-    var memtype = arguments.length <= 1 || arguments[1] === undefined ? Float32Array : arguments[1];
-
-    var helper = Object.create(this);
-
-    Object.assign(helper, {
-      heap: new memtype(size),
-      list: {},
-      freeList: {}
-    });
-
-    return helper;
-  },
-  alloc: function alloc(amount) {
-    var idx = -1;
-
-    if (amount > this.heap.length) {
-      throw Error('Allocation request is larger than heap size of ' + this.heap.length);
-    }
-
-    for (var key in this.freeList) {
-      var candidateSize = this.freeList[key];
-
-      if (candidateSize >= amount) {
-        idx = key;
-
-        this.list[idx] = amount;
-
-        if (candidateSize !== amount) {
-          var newIndex = idx + amount,
-              newFreeSize = void 0;
-
-          for (var _key in this.list) {
-            if (_key > newIndex) {
-              newFreeSize = _key - newIndex;
-              this.freeList[newIndex] = newFreeSize;
-            }
-          }
-        }
-        
-        break;
-      }
-    }
-    
-    if( idx !== -1 ) delete this.freeList[ idx ]
-
-    if (idx === -1) {
-      var keys = Object.keys(this.list),
-          lastIndex = void 0;
-
-      if (keys.length) {
-        // if not first allocation...
-        lastIndex = parseInt(keys[keys.length - 1]);
-
-        idx = lastIndex + this.list[lastIndex];
-      } else {
-        idx = 0;
-      }
-
-      this.list[idx] = amount;
-    }
-
-    if (idx + amount >= this.heap.length) {
-      throw Error('No available blocks remain sufficient for allocation request.');
-    }
-    return idx;
-  },
-  free: function free(index) {
-    if (typeof this.list[index] !== 'number') {
-      throw Error('Calling free() on non-existing block.');
-    }
-
-    this.list[index] = 0;
-
-    var size = 0;
-    for (var key in this.list) {
-      if (key > index) {
-        size = key - index;
-        break;
-      }
-    }
-
-    this.freeList[index] = size;
-  }
-};
-
-module.exports = MemoryHelper;
-
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/index.js":[function(require,module,exports){
+},{}],203:[function(require,module,exports){
+arguments[4][78][0].apply(exports,arguments)
+},{"dup":78}],204:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -19877,7 +19887,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/alea.js","./lib/tychei":"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/tychei.js","./lib/xor128":"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/xor128.js","./lib/xor4096":"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/xor4096.js","./lib/xorshift7":"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/xorshift7.js","./lib/xorwow":"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/xorwow.js","./seedrandom":"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/seedrandom.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/alea.js":[function(require,module,exports){
+},{"./lib/alea":205,"./lib/tychei":206,"./lib/xor128":207,"./lib/xor4096":208,"./lib/xorshift7":209,"./lib/xorwow":210,"./seedrandom":211}],205:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -19993,7 +20003,7 @@ if (module && module.exports) {
 
 
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/tychei.js":[function(require,module,exports){
+},{}],206:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -20098,7 +20108,7 @@ if (module && module.exports) {
 
 
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/xor128.js":[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -20181,7 +20191,7 @@ if (module && module.exports) {
 
 
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/xor4096.js":[function(require,module,exports){
+},{}],208:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -20329,7 +20339,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/xorshift7.js":[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -20428,7 +20438,7 @@ if (module && module.exports) {
 );
 
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/lib/xorwow.js":[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -20516,7 +20526,7 @@ if (module && module.exports) {
 
 
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/seedrandom.js":[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 /*
 Copyright 2019 David Bau.
 
@@ -20771,9 +20781,9 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/browser-resolve/empty.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/serialize-javascript/index.js":[function(require,module,exports){
-arguments[4]["/Users/charlie/Documents/code/gibber.audio.lib/node_modules/serialize-javascript/index.js"][0].apply(exports,arguments)
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/tidal.pegjs/dist/tidal.js":[function(require,module,exports){
+},{"crypto":115}],212:[function(require,module,exports){
+arguments[4][126][0].apply(exports,arguments)
+},{"dup":126}],213:[function(require,module,exports){
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -23152,7 +23162,7 @@ module.exports = {
   parse:       peg$parse
 };
 
-},{}],"/Users/charlie/Documents/code/gibberish/node_modules/tidal.pegjs/src/pattern.js":[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 const parse = require('../dist/tidal.js').parse
 const query = require('./queryArc.js' ).queryArc
 const Fraction = require( 'fraction.js' )
@@ -23212,7 +23222,7 @@ const Pattern = ( patternString, opts ) => {
 
 module.exports = Pattern
 
-},{"../dist/tidal.js":"/Users/charlie/Documents/code/gibberish/node_modules/tidal.pegjs/dist/tidal.js","./queryArc.js":"/Users/charlie/Documents/code/gibberish/node_modules/tidal.pegjs/src/queryArc.js","fraction.js":"/Users/charlie/Documents/code/gibberish/node_modules/fraction.js/fraction.js"}],"/Users/charlie/Documents/code/gibberish/node_modules/tidal.pegjs/src/queryArc.js":[function(require,module,exports){
+},{"../dist/tidal.js":213,"./queryArc.js":215,"fraction.js":202}],215:[function(require,module,exports){
 const Fraction = require( 'fraction.js' )
 const util     = require( 'util' )
 const bjork    = require( 'bjork' ) 
@@ -23800,5 +23810,5 @@ const handlers = {
 
 module.exports.queryArc = queryArc
 
-},{"bjork":"/Users/charlie/Documents/code/gibberish/node_modules/bjork/index.js","fraction.js":"/Users/charlie/Documents/code/gibberish/node_modules/fraction.js/fraction.js","seedrandom":"/Users/charlie/Documents/code/gibberish/node_modules/seedrandom/index.js","util":"/Users/charlie/Documents/code/gibber.audio.lib/node_modules/util/util.js"}]},{},["/Users/charlie/Documents/code/gibber.audio.lib/js/index.js"])("/Users/charlie/Documents/code/gibber.audio.lib/js/index.js")
+},{"bjork":201,"fraction.js":202,"seedrandom":204,"util":129}]},{},[94])(94)
 });
