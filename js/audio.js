@@ -72,11 +72,12 @@ const Audio = {
   __defaults : {
     workletPath: '../dist/gibberish_worklet.js',
     ctx:         null,
-    bufferSize:  2048
+    bufferSize:  2048,
+    latencyHint: .05
   },
 
   init( options, Gibber  ) {
-    let { workletPath, ctx, bufferSize } = Object.assign( {}, this.__defaults, options ) 
+    let { workletPath, ctx, bufferSize, latencyHint } = Object.assign( {}, this.__defaults, options ) 
     this.Gibber = Gibber
     this.Core = Gibber
 
@@ -96,7 +97,7 @@ const Audio = {
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AC({ latencyHint:.05 })
+        ctx = new AC({ latencyHint })
         //ctx = new AudioContext()
       }
 
@@ -144,10 +145,11 @@ const Audio = {
 
         // XXX this forces the gibberish scheduler to start
         // running, but it's about as hacky as it can get...
-        const __start = Audio.instruments.Synth().connect()
-        __start.disconnect()
+        //const __start = Audio.instruments.Synth().connect()
+        //__start.disconnect()
 
-        Audio.Gibberish.genish.gen.histories.clear()
+        //Audio.Gibberish.genish.gen.histories.clear()
+        Audio.clear()
 
         resolve( [Audio,'Audio'] )
       })
@@ -304,7 +306,7 @@ const Audio = {
       }else if( typeof v === 'object' && v !== null && v.type === 'gen' ) {
         // gen objects can be referred to without the graphics/audio abstraction,
         // in which case they will have no .render() function, and don't need to be rendered
-        const gen = v.render !== undefined ? v.render() : from
+        const gen = v.render !== undefined ? v.render() : v 
 
         obj['__'+ name ].value = gen
         value = { id: gen.id }
@@ -312,7 +314,7 @@ const Audio = {
         obj[ '__'+name].value = v
         value = v !== null ? { id:v.id } : v
       }
-        //Audio.createMapping( v, obj, name, obj.__wrapped__ )
+      //Audio.createMapping( v, obj, name, obj.__wrapped__ )
 
       if( Gibberish.mode === 'worklet' && shouldSend === true ) {
         Gibberish.worklet.port.postMessage({
@@ -334,7 +336,7 @@ const Audio = {
     if( from === null ) from = obj[ name ].value
     if( to === null ) to = obj[ name ].value
 
-    time = Gibber.Clock.time( time )
+    time = Audio.Clock.time( time )
 
     // XXX only covers condition where ramps from fades are assigned...
     // does this need to be more generic?
@@ -345,7 +347,7 @@ const Audio = {
       to = to.to.value
     }
 
-    let ramp = Gibber.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
+    let ramp = Audio.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
     // this is a key to not use an envelope follower for mapping
     ramp.__useMapping = false
 
