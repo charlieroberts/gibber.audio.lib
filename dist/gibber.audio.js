@@ -4724,11 +4724,12 @@ const Audio = {
   __defaults : {
     workletPath: '../dist/gibberish_worklet.js',
     ctx:         null,
-    bufferSize:  2048
+    bufferSize:  2048,
+    latencyHint: .05
   },
 
   init( options, Gibber  ) {
-    let { workletPath, ctx, bufferSize } = Object.assign( {}, this.__defaults, options ) 
+    let { workletPath, ctx, bufferSize, latencyHint } = Object.assign( {}, this.__defaults, options ) 
     this.Gibber = Gibber
     this.Core = Gibber
 
@@ -4748,7 +4749,7 @@ const Audio = {
 
     const p = new Promise( (resolve, reject) => {
       if( ctx === null ) {
-        ctx = new AC({ latencyHint:.05 })
+        ctx = new AC({ latencyHint })
         //ctx = new AudioContext()
       }
 
@@ -4956,7 +4957,7 @@ const Audio = {
       }else if( typeof v === 'object' && v !== null && v.type === 'gen' ) {
         // gen objects can be referred to without the graphics/audio abstraction,
         // in which case they will have no .render() function, and don't need to be rendered
-        const gen = v.render !== undefined ? v.render() : from
+        const gen = v.render !== undefined ? v.render() : v 
 
         obj['__'+ name ].value = gen
         value = { id: gen.id }
@@ -4986,7 +4987,7 @@ const Audio = {
     if( from === null ) from = obj[ name ].value
     if( to === null ) to = obj[ name ].value
 
-    time = Gibber.Clock.time( time )
+    time = Audio.Clock.time( time )
 
     // XXX only covers condition where ramps from fades are assigned...
     // does this need to be more generic?
@@ -4997,7 +4998,7 @@ const Audio = {
       to = to.to.value
     }
 
-    let ramp = Gibber.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
+    let ramp = Audio.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
     // this is a key to not use an envelope follower for mapping
     ramp.__useMapping = false
 
@@ -5338,7 +5339,7 @@ const addMethod = ( obj, name, __value = 1, propOverrideName ) => {
       }
 
       // XXX you have to add a method that does all this shit on the worklet. crap.
-      obj['__'+name].sequencers[ number ] = obj['__'+name][ number ] = Audio.Seq({ 
+      obj['__'+name].sequencers[ number ] = obj['__'+name][ number ] = Audio.Core.Seq({ 
         values, 
         timings, 
         target:obj.__wrapped__, 
@@ -8315,12 +8316,15 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           ? v => typeof v === 'number' ? Audio.Clock.time( v ) : v 
           : null
 
-        Audio.createProperty( obj, propertyName, __wrappedObject[ propertyName ], null, 0, transform )//, timeProps, Audio )
-        //Audio.createProperty( __wrappedObject, propertyName, __wrappedObject[ propertyName ], null, 0, transform )//, timeProps, Audio )
+        const value = __wrappedObject[ propertyName ] === undefined 
+          ? __wrappedObject.__properties__[ propertyName ]
+          : __wrappedObject[ propertyName ]
+
+        Audio.createProperty( obj, propertyName, value, null, 0, transform )
 
         // create per-voice version of property... what properties should be excluded?
         if( description.name.indexOf('Poly') > -1 ) {
-          Audio.createProperty( obj, propertyName+'V', __wrappedObject[ propertyName], null, 0, transform, true )//, timeProps, Audio, true )
+          Audio.createProperty( obj, propertyName+'V', value, null, 0, transform, true )//, timeProps, Audio, true )
 
           //createProperty( obj, propertyName, __wrappedObject, timeProps, Audio, true )
           // we don't have a way to add properties to objects in the processor thread
@@ -8517,13 +8521,13 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           dest.mods.push( obj )
 
           const sum = dest.mods.concat( dest.preModValue )
-          const add = Gibber.binops.Add( ...sum ) 
+          const add = Audio.binops.Add( ...sum ) 
           // below works for oscillators, above works for instruments...
           //const add = Gibber.Gibberish.binops.Add( ...sum ) 
           add.__useMapping = false
-          dest.ugen[ dest.name ] = add
+          dest.__owner[ dest.name ] = add
 
-          obj.__wrapped__.connected.push( [ dest.ugen[ dest.name ], obj ] )
+          obj.__wrapped__.connected.push( [ dest.__owner[ dest.name ], obj ] )
         }else{
           // if no fx chain, connect directly to output
           if( obj.fx.length === 0 ) {
@@ -15512,7 +15516,8 @@ module.exports = function( Gibberish ) {
           sustain = g.in( 'sustain' ), sustainLevel = g.in( 'sustainLevel' ),
           release = g.in( 'release' ),
           pregain = g.in( 'pregain' ),
-          postgain= g.in( 'postgain' )
+          postgain= g.in( 'postgain' ),
+          bias    = g.in( 'bias' )
 
     const props = Object.assign( {}, Complex.defaults, inputProps )
     Object.assign( syn, props )
@@ -15539,7 +15544,7 @@ module.exports = function( Gibberish ) {
         let oscWithEnv = osc * env * loudness * triggerLoudness,
             panner
 
-        let foldedOsc = wavefold( wavefold( wavefold( wavefold( oscWithEnv * (pregain * env) * .333 ) ) ) )
+        let foldedOsc = wavefold( wavefold( wavefold( wavefold( bias + oscWithEnv * (pregain * env) * .333 ) ) ) )
         foldedOsc = g.tanh( foldedOsc * .6 ) * postgain
  
         // 16 is an unfortunate empirically derived magic number...
@@ -15600,11 +15605,12 @@ module.exports = function( Gibberish ) {
     filterMode:0,
     isStereo:false,
     pregain:4,
-    postgain:1
+    postgain:1,
+    bias:0
   }
 
   // do not include velocity, which shoudl always be per voice
-  let PolyComplex = Gibberish.PolyTemplate( Complex, ['frequency','attack','decay','pulsewidth','pan','gain','glide', 'saturation', 'filterMult', 'Q', 'cutoff', 'resonance', 'antialias', 'filterType', 'waveform', 'filterMode', '__triggerLoudness', 'loudness', 'pregain', 'postgain'] ) 
+  let PolyComplex = Gibberish.PolyTemplate( Complex, ['frequency','attack','decay','pulsewidth','pan','gain','glide', 'saturation', 'filterMult', 'Q', 'cutoff', 'resonance', 'antialias', 'filterType', 'waveform', 'filterMode', '__triggerLoudness', 'loudness', 'pregain', 'postgain', 'bias'] ) 
   PolyComplex.defaults = Complex.defaults
 
   return [ Complex, PolyComplex ]
