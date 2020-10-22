@@ -24,7 +24,20 @@ const Gen  = {
   isGen:true,
   debug:false,
 
+  wavetable( frequency, props ) {
+    const g = Audio.Gibberish.genish 
+    let dataProps = { immutable:true }
+
+    // use global references if applicable
+    if( props.name !== undefined ) dataProps.global = props.name
+
+    const buffer = Gen.ugens.data( props.buffer, 1, dataProps )
+
+    return Gen.ugens.peek( buffer, Gen.ugens.phasor( frequency, 0, { min:0 } ) )
+  },
+
   init() {
+    Gen.ugens.wavetable = Gen.__wavetable
     Gen.createBinopFunctions()
     Gen.createMonopFunctions()
 
@@ -35,6 +48,10 @@ const Gen  = {
     //Gen.names.push( ...Object.keys( Gen.composites ) )
     Gen.names.push( 'gen' )
     Gen.names.push( 'lfo' )
+    Gen.names.push( 'sine' )
+    Gen.names.push( 'square' )
+    Gen.names.push( 'tri' )
+    Gen.names.push( 'saw' )
 
     //Gibber.subscribe( 'clear', ()=> Gen.lastConnected.length = 0 )
   },
@@ -178,6 +195,7 @@ const Gen  = {
     clamp:  { properties: ['0', '1', '2'], str:'clamp' },
     ternary:{ properties: ['0', '1', '2'], str:'switch' },
     selector:{ properties: ['0', '1', '2'], str:'selector' },
+    peek:   { properties:['0','1'], str:'peek' } 
   },
 
   _count: 0,
@@ -293,9 +311,21 @@ const Gen  = {
   },
 
   composites: { 
+    sine( frequency=2, amp=4, center=0 ) {
+      return Gen.composites.lfo( 'sine', frequency, amp, center )
+    },
+    square( frequency=2, amp=4, center=0 ) {
+      return Gen.composites.lfo( 'square', frequency, amp, center )
+    },
+    saw( frequency=2, amp=4, center=0 ) {
+      return Gen.composites.lfo( 'saw', frequency, amp, center )
+    },
+    tri( frequency=2, amp=4, center=0 ) {
+      return Gen.composites.lfo( 'tri', frequency, amp, center )
+    },
     lfo( type = 'sine', frequency = 2, amp = .5, center = .5 ) {
       const g = Gen.ugens 
-      const gibberish= Gibber.Gibberish
+      const gibberish= Audio.Gibberish
       let osc
 
       switch( type ) {
@@ -305,13 +335,13 @@ const Gen  = {
         case 'square':
           osc = g.gt( g.phasor( frequency ), 0 ) 
           break;
-        //case 'triangle':
-        //  // 1 - 4 * Math.abs(( (i / 1024) + 0.25) % 1 - 0.5)
-        //  osc = g.sub( 1, g.mul( 4, g.abs( g.sub( g.mod( g.add( g.abs(g.phasor( frequency )), .25 ), 1 ), .5 ) ) ) )
-        //  break;
         case 'noise':
           osc = g.noise()
           break;
+        //case 'triangle':
+        //case 'tri':
+        //  osc = Gen.wavetable( frequency, { buffer:gibberish.oscillators.Triangle.buffer, name:'triangle' } )
+        //  break;
         case 'sine':
         default:
           osc = g.cycle( frequency )
@@ -320,36 +350,29 @@ const Gen  = {
 
       const _mul   = g.mul( osc, amp ),
             _add   = g.add( center, _mul ) 
-       
-      _add.frequency = (v) => {
-        if( v === undefined ) {
-          return osc[ 0 ]()
-        }else{
-          osc[0]( v )
+
+      const lfo = Gen.make( _add )
+
+      Object.defineProperties( lfo, {
+        frequency: {
+          set(v) { lfo.p1 = v },
+          get()  { return lfo.p1 }
+        },
+        gain: {
+          set(v) { lfo.p2 = v },
+          get()  { return lfo.p2 }
+        },
+        bias: {
+          set(v) { lfo.p0 = v },
+          get()  { return lfo.p0 }
         }
+      })
+
+      lfo.copy = function() {
+        return Gen.composites.lfo( type, this.frequency.value, this.gain.value, this.bias.value )
       }
 
-      _add.amp = (v) => {
-        if( v === undefined ) {
-          return _mul[ 1 ]()
-        }else{
-          _mul[1]( v )
-        }
-      }
-
-      _add.center = (v) => {
-        if( v === undefined ) {
-          return _add[ 0 ]()
-        }else{
-          _add[0]( v )
-        }
-      }
-
-      //Gibber.addSequencing( _add, 'frequency' )
-      //Gibber.addSequencing( _add, 'amp' )
-      //Gibber.addSequencing( _add, 'center' )
-
-      return Gen.make( _add, ['center', 'frequency', 'gain'] )
+      return lfo
     },
 
     fade( time = 1, from = 1, to = 0 ) {
@@ -407,16 +430,20 @@ const Gen  = {
     this.ugens.in = __in
   },
 
+
   // defer creating genish object until we know whether
   // this will be used by an audio or visual object
   make( graph, propertyNames ) {
     const defer = { 
       graph, 
+      __graph:graph,
       propertyNames,
       type:'gen',
       id: Audio.Gibberish.utilities.getUID(),
       rendered:null,
-
+      copy() {
+        return Gen.make( this.__graph )
+      },
       render( samplerate=44100, type='audio' ) {
         if( type === 'audio' ) {
           if( this.rendered === null ) { 
@@ -432,6 +459,7 @@ const Gen  = {
               })
             } 
             this.rendered.widget = this.widget
+            this.rendered.__graph = graph
           }
 
           return this.rendered
