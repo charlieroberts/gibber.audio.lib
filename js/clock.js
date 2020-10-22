@@ -36,13 +36,12 @@ const Clock = {
     this.seq = null
 
     const clockFunc = ()=> {
-      //Gibberish.processor.port.postMessage({
-      //  address:'clock'
-      //})
-      
-      this.beatCount++
+      Gibberish.worklet.port.postMessage({
+        address: 'beat',
+        value: this.beatCount
+      }) 
 
-      if( this.beatCount % 4 === 0 ) {
+      if( this.beatCount++ % 4 === 0 ) {
         Gibberish.processor.playQueue()//.forEach( f => { f() } )
       }
     }
