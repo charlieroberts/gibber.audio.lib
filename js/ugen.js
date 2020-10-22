@@ -155,6 +155,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         const children = this.__wrapped__.voices
         const incr = 1/(children.length-1) * amt
         children.forEach( (c,i) => c.pan = (.5 - amt/2) + i * incr )
+
+        return obj
       }
       obj.voices = obj.__wrapped__.voices
     }
@@ -172,12 +174,15 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           ? v => typeof v === 'number' ? Audio.Clock.time( v ) : v 
           : null
 
-        Audio.createProperty( obj, propertyName, __wrappedObject[ propertyName ], null, 0, transform )//, timeProps, Audio )
-        //Audio.createProperty( __wrappedObject, propertyName, __wrappedObject[ propertyName ], null, 0, transform )//, timeProps, Audio )
+        const value = __wrappedObject[ propertyName ] === undefined 
+          ? __wrappedObject.__properties__[ propertyName ]
+          : __wrappedObject[ propertyName ]
+
+        Audio.createProperty( obj, propertyName, value, null, 0, transform )
 
         // create per-voice version of property... what properties should be excluded?
         if( description.name.indexOf('Poly') > -1 ) {
-          Audio.createProperty( obj, propertyName+'V', __wrappedObject[ propertyName], null, 0, transform, true )//, timeProps, Audio, true )
+          Audio.createProperty( obj, propertyName+'V', value, null, 0, transform, true )//, timeProps, Audio, true )
 
           //createProperty( obj, propertyName, __wrappedObject, timeProps, Audio, true )
           // we don't have a way to add properties to objects in the processor thread
@@ -196,14 +201,55 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     if( description.methods !== null ) {
       for( let methodName of description.methods ) {
         if( methodName !== 'note' || description.name.indexOf('Sampler') > -1 || description.name.indexOf('Freesound') > -1  ) {
-          obj[ methodName ] = __wrappedObject[ methodName ].bind( __wrappedObject )
+          //obj[ methodName ] = __wrappedObject[ methodName ].bind( __wrappedObject )
+          obj[ methodName ] = function( ...args ) {
+            if( args.length === 0 ) {
+              __wrappedObject[ methodName ]()
+            }else if( args.length === 1 ) {
+              if( Array.isArray( args[0] ) ) {
+                obj[ methodName ].seq( args[0], 1/args[0].length )
+              }else if( typeof args[0] === 'string' ) {
+                obj[ methodName ].tidal( args[0] )
+              }else{
+                __wrappedObject[ methodName ]( args[0] )
+              }
+            }else{
+              // could be a .tidal or a seq 
+              if( typeof args[0] === 'string' ) { // must be tidal with tidal id #
+                obj[ methodName ].tidal( ...args )
+              }else{
+                obj[ methodName ].seq( ...args )  // must be sequence
+              }
+            }
+            return obj
+          }
         }else{
           // in this block we are monkey patching the note method of Gibberish synths so that
           // they use Gibber's harmonic system inside the AudioWorkletProcessor.
 
           obj[ methodName ] = function( ...args ) {
+            let shouldSendNoteNow = false
+            if( args.length === 0 ) {
+               shouldSendNoteNow = true
+            }else if( args.length === 1 ) {
+              if( Array.isArray( args[0] ) ) {
+                obj[ methodName ].seq( args[0], 1/args[0].length )
+              }else if( typeof args[0] === 'string' ) {
+                obj[ methodName ].tidal( args[0] )
+              }else{
+                shouldSendNoteNow = true
+              }
+            }else{
+              // could be a .tidal or a seq 
+              if( typeof args[0] === 'string' ) { // must be tidal with tidal id #
+                obj[ methodName ].tidal( ...args )
+              }else{
+                obj[ methodName ].seq( ...args )  // must be sequence
+              }
+            }
+
             // this should only be for direct calls from the IDE
-            if( Gibberish.mode === 'worklet' ) {
+            if( shouldSendNoteNow && Gibberish.mode === 'worklet' ) {
               Gibberish.worklet.port.postMessage({
                 address:'method',
                 object:__wrappedObject.id,
@@ -211,6 +257,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
                 args
               })
             }
+
+            return obj
           }
 
           // when a message is received at the address 'monkeyPatch',
@@ -374,13 +422,13 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           dest.mods.push( obj )
 
           const sum = dest.mods.concat( dest.preModValue )
-          const add = Gibber.binops.Add( ...sum ) 
+          const add = Audio.binops.Add( ...sum ) 
           // below works for oscillators, above works for instruments...
           //const add = Gibber.Gibberish.binops.Add( ...sum ) 
           add.__useMapping = false
-          dest.ugen[ dest.name ] = add
+          dest.__owner[ dest.name ] = add
 
-          obj.__wrapped__.connected.push( [ dest.ugen[ dest.name ], obj ] )
+          obj.__wrapped__.connected.push( [ dest.__owner[ dest.name ], obj ] )
         }else{
           // if no fx chain, connect directly to output
           if( obj.fx.length === 0 ) {
