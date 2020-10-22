@@ -22,7 +22,7 @@ const addMethod = ( obj, name, __value = 1, propOverrideName ) => {
       }
 
       // XXX you have to add a method that does all this shit on the worklet. crap.
-      obj['__'+name].sequencers[ number ] = obj['__'+name][ number ] = Audio.Seq({ 
+      obj['__'+name].sequencers[ number ] = obj['__'+name][ number ] = Audio.Core.Seq({ 
         values, 
         timings, 
         target:obj.__wrapped__, 
