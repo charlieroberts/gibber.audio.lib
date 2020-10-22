@@ -6,7 +6,8 @@ let Gibber = null
 
 const Theory = {
   // needed to force library to be serialized for transport to 
-  // worklet processor
+  // worklet processor, must use key:function() {} format
+  // for methods for serialize to work
   __Tune:Tune,
 
   Tune:null,
@@ -255,12 +256,22 @@ const Theory = {
         post:'store'
       })
 
+      Gibber.subscribe( 'clear', () => this.reset() )
       this.initProperties()
     }
+
     this.__initDegrees()
   },
 
-  freeze: function() {
+  reset:function() {
+    Theory.root = 440
+    Theory.mode = 'aeolian'
+    Theory.tuning = 'et'
+    Theory.degree = 'i'
+    Theory.offset = 0
+  },
+
+  freeze:function() {
     if( Gibberish.mode === 'worklet' ) {
       Gibber.Theory.degree.sequencers.forEach( s => s.stop() )  
       Gibber.Theory.offset.sequencers.forEach( s => s.stop() )  
@@ -269,7 +280,7 @@ const Theory = {
     }
   },
 
-  thaw: function() {
+  thaw:function() {
     if( Gibberish.mode === 'worklet' ) {
       this.degree.sequencers.forEach( s => s.start() )  
       this.offset.sequencers.forEach( s => s.start() )  
