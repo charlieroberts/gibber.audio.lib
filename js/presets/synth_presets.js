@@ -24,6 +24,18 @@ module.exports = {
     glide:100
   },
 
+  'bass.hollow': {
+    Q:.2,
+    filterType:2,
+    filterMult:4,
+    cutoff:1.25,
+    saturation:20,
+    attack:1/8192,
+    decay:1/4,
+    octave:-3,
+    glide:1000
+  },
+
   'bleep.dry': { 
     attack:1/256, decay:1/32, 
     waveform:'sine' 

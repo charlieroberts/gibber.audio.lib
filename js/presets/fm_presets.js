@@ -17,6 +17,14 @@ module.exports = {
     shape:'exponential'
   },
 
+  perc:{
+    attack : 1/4096,
+    index : .5,
+    cmRatio : 4/3,
+    decay : 1/8,
+    shape:'exponential'
+  },
+
   'bass.electro' : {
     cmRatio:1,
     index:3,
