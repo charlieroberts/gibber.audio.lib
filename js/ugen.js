@@ -105,7 +105,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }
         return this
       },
-      start( time=null ) {
+      play( time=null ) {
         if( time === null ) {
           for( let seq of this.__sequencers ) seq.start()
           for( let seq of this.__tidals ) seq.start()
@@ -432,7 +432,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }else{
           // if no fx chain, connect directly to output
           if( obj.fx.length === 0 ) {
-            __wrappedObject.connect( dest,level )
+            __wrappedObject.connect( dest, level )
           }else{
             // otherwise, connect last effect in chain to output
             obj.fx[ obj.fx.length - 1 ].__wrapped__.connect( dest, level )
