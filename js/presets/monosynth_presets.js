@@ -183,7 +183,7 @@ module.exports = {
     attack: audio=> audio.Clock.ms(1),
     decay:1/2,
     presetInit: function( audio ) {
-      this.fx.add( audio.effects.Delay( Clock.time(1/6), .75) )
+      this.fx.add( audio.effects.Delay( Clock.time(1/6), .5) )
     },
     amp:.3,
     octave2:0,
@@ -193,6 +193,20 @@ module.exports = {
     filterType:1,
     filterMult:3,
     Q:.75,
+  },
+
+  wander: {
+    attack: 1/2,
+    decay:  2,
+    presetInit: function( audio ) {},
+    amp:.2,
+    detune2:.501,
+    detune3:-.501,
+    cutoff:.2,
+    glide:5000,
+    filterType:1,
+    filterMult:1.5,
+    Q:.25,
   },
 
   'chords.short': {
@@ -258,7 +272,20 @@ module.exports = {
     panVoices:true,
     filterMult:.5
   },
-
+  'bass.stab': {
+    Q:.35,
+    detune2:1.5,
+    detune3:.5,
+    cutoff:.5,
+    useADSR:true,
+    shape:'exponential',
+    decay:1/10,
+    sustain:1/4,
+    release:1/1024,
+    octave:-3,
+    filterMult:1.85,
+    gain:.75
+  },
   short: { 
     attack:1/4096,
     decay:1/16, 

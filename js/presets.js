@@ -43,15 +43,18 @@ const Presets = {
   },
 
   instruments: {
+    Complex: require( './presets/complex_presets.js' ),
     Synth: require( './presets/synth_presets.js' ),
     FM:    require( './presets/fm_presets.js' ),
     Monosynth: require( './presets/monosynth_presets.js' ),
     PolyMono: require( './presets/monosynth_presets.js' ),
     Snare: require( './presets/snare_presets.js' ),
     Kick: require( './presets/kick_presets.js' ),
+    Hat: require( './presets/hat_presets.js' ),
 
     EDrums: require( './presets/edrums_presets.js' ),
-    Drums:  require( './presets/drums_presets.js' )
+    Drums:  require( './presets/drums_presets.js' ),
+    Multisampler: require( './presets/multisampler.js' )
   },
 
   effects: {

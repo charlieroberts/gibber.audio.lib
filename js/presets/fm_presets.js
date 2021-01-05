@@ -7,7 +7,14 @@ module.exports = {
     decay:1/16,
     octave:-2
   },
-
+  deepbass : {
+    cmRatio:1,
+    index:3,
+    attack:1/256,
+    decay:1/2,
+    octave:-3,
+    feedback:.005
+  },
   kick:{
     attack : 1/4096,
     index : 5,
@@ -22,7 +29,12 @@ module.exports = {
     index : .5,
     cmRatio : 4/3,
     decay : 1/8,
-    shape:'exponential'
+    shape:'exponential',
+    presetInit: function( audio ) {
+      if( this.voices && this.voices.length > 1 ) {
+        this.spread( .99 )
+      }
+    }
   },
 
   'bass.electro' : {
@@ -95,5 +107,22 @@ module.exports = {
 		index	: 1.5,
 		attack: audio => audio.Clock.ms( 50 ), 
 		decay:  audio => audio.Clock.ms( 200 )
-	}
+  },
+
+  fun : {
+    decay:1/2,
+    feedback: .0015,
+    gain:.1
+  },
+
+  chirp: {
+		attack: audio => audio.Clock.ms( 1 ), 
+    index : 1.15,
+    glide : 1,
+    feedback : .5,
+    cmRatio : 1.5,
+    decay : 1/4,
+    octave : 1,
+    shape:'exponential'
+  }
 }

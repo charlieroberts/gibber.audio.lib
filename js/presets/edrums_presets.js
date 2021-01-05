@@ -51,6 +51,7 @@ module.exports = {
       this.snare.decay = .05
       this.closedHat.decay = .05
       this.openHat.decay = .2
+      this.cowbell.decay = .1
     }
   },
   long: {
