@@ -59,6 +59,7 @@ const Audio = {
       obj.Clock = this.Clock
       obj.WavePattern = this.WavePattern
       obj.Gen = this.Gen
+      obj.stop = this.stop
 
       obj.Out = this.Out
       obj.Make = this.Make
@@ -101,7 +102,7 @@ const Audio = {
         //ctx = new AudioContext()
       }
 
-      Gibberish.init( 44100*60*10, ctx ).then( processorNode => {
+      Gibberish.init( 44100*60*60, ctx ).then( processorNode => {
         // XXX remove once gibber.core.lib has been properly integrated 
         Audio.Core.Audio = Audio.Core.audio = Audio
 
@@ -187,6 +188,13 @@ const Audio = {
     Audio.publish('clear')
   },
 
+  stop() {
+    Gibber.Seq.sequencers.forEach( s => s.stop() )
+  },
+
+  start() {
+    Gibber.Seq.sequencers.forEach( s => s.start() )
+  },
   onload() {},
 
   createUgens() {
@@ -332,7 +340,7 @@ const Audio = {
     return setter
   },
 
-  createFade( from=null, to=null, time=1, obj, name ) {
+  createFade( from=null, to=null, time=1, obj, name, delay=0 ) {
     if( from === null ) from = obj[ name ].value
     if( to === null ) to = obj[ name ].value
 
@@ -351,7 +359,13 @@ const Audio = {
     // this is a key to not use an envelope follower for mapping
     ramp.__useMapping = false
 
-    obj[ name ] = ramp
+    if( delay === 0 ) {
+      obj[ name ] = ramp
+    } else {
+      future( (obj,name,ramp) => { 
+        obj[ name ] = ramp 
+      }, delay, { obj, name, ramp:ramp.__wrapped__ } )
+    }
 
     if( ramp.__wrapped__ === undefined ) ramp.__wrapped__ = {}
     ramp.__wrapped__.values = []
