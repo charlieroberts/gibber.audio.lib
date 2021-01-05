@@ -56,6 +56,9 @@ const Instruments = {
     Sampler:{
       methods:[ 'note','trigger', 'loadFile', 'loadBuffer' ],
     },
+    Multisampler:{
+      methods:[ 'note','trigger', 'pick', 'pickFile'], 
+    },
     Snare:{
       methods:[ 'note','trigger' ],
     },
