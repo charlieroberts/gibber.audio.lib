@@ -67,6 +67,11 @@ const Theory = {
     this.initProperties()
   },
 
+  setup( tuning='et', mode='aeolian' ) {
+    this.tuning = tuning
+    this.mode = mode
+  }, 
+
   // adapted from https://gist.github.com/stuartmemo/3766449
   __noteToFreq( note ) {
     note = note.toUpperCase() 
