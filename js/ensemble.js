@@ -16,8 +16,16 @@ module.exports = function( Audio ) {
         },
         target:target.id,
         method,
-        args
+        args,
+        name:dict.name
       }
+
+      //Object.defineProperty( cp[ key ], 'loudness', {
+      //  set(v) {
+      //    console.log( 'loudness:', v, Gibberish.worklet.ugens.get( this.target ))
+      //    Gibberish.worklet.ugens.get( this.target ).loudness = v
+      //  }
+      //})
       cp[ dict.name ] = target
     }
 
