@@ -44,6 +44,28 @@ module.exports = [{
       returns: "this",
       doc: "The note function triggers a new note using an argument scale index, which is converted into Hz and stored in the instrument's .frequency property."
     },
+    notef: {
+      isa: "method(sequencable)",
+      args: [{
+        name: "frequency",
+        type: "float",
+        doc: "The direct frequency to be played, bypassing gibber's theory / tuning systems.",
+        required
+      }, ],
+      returns: "this",
+      doc: "The note function triggers a new note using an argument frequency which is then stored in the instrument's .frequency property."
+    },
+    notec: {
+      isa: "method(sequencable)",
+      args: [{
+        name: "scaleIndex",
+        type: "float",
+        doc: "The arguent scale index is converted to Hz according to the currently selected tuning and mode. Unlike note(), in notec() floating point scale indices are supported and will be linearly interpolated between pitches",
+        required
+      }, ],
+      returns: "this",
+      doc: "note (continuous). With the regular note() method, the scaleIndex value is rounded. With notec(), the value is linearly interpolated to the next scale position. For example, a value of 1.5 would yield whatever the frequency of scale index number 1 is, plus 50% of the frquency difference is between scale index 1 and scale index 2. Note that this doesn't always correspond to a half-step... for example, in a minor scale going from 1 > 2 is already a half-step, so a value of 1.5 will result in a quarter step."
+    },
     trigger: {
       isa: "method(sequencable)",
       args: [{
