@@ -1,6 +1,10 @@
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
+const filterNames = [
+  "none", "Filter24Moog", "Filter24TB303", "Filter12SVF", "Filter12Biquad", "Filter24Classic"
+]
+
 const Filters = {
   create( Audio ) {
     const filters = {}
@@ -23,6 +27,17 @@ const Filters = {
     }
 
     filters.LPF = filters.Filter24Moog
+
+    filters.Filter = function( props ) {
+      if( props === undefined ) props = { model: 1 }
+      if( props.model === undefined ) props.model = 1
+
+      const name = filterNames[ props.model ]
+
+      delete props.model
+
+      return filters[ name ]( props ) 
+    }
 
     const description = { 
       properties: Object.assign( {}, Gibberish.filters[ 'Filter12Biquad' ].defaults, { mode:1 } ),
