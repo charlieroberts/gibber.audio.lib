@@ -29,7 +29,8 @@ module.exports = function( Audio ) {
       cp[ dict.name ] = target
     }
 
-    cp.play = function( key ) {
+    cp.play = function( __key ) {
+      const key = isNaN(__key) ? __key : parseInt( __key ) 
       if( Gibberish.mode === 'processor' ) {
         Gibberish.worklet.ugens.get( this[ key ].target )[ this[ key ].method ]( ...this[ key ].args )
       }else{
@@ -56,13 +57,18 @@ module.exports = function( Audio ) {
     }
 
     ens.tidal = (pattern,num=0) => {
-      if( ens.tidals[ num ] !== undefined ) ens.tidals[ num ].stop()
-
-      ens.tidals[ num ] = Audio.Gibber.Tidal({
+      const t =  Audio.Gibber.Tidal({
         target:ens,
         key:'play',
         pattern
-      }).start()
+      })
+
+      if( t !== null ) {
+        if( ens.tidals[ num ] !== undefined ) ens.tidals[ num ].stop()
+
+        ens.tidals[ num ] = t
+        t.start()
+      }
 
       return ens
     }
