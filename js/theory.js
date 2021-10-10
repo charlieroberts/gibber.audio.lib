@@ -94,6 +94,28 @@ const Theory = {
 
     return 440 * Math.pow(2, (keyNumber- 49) / 12)
   },
+
+  deleteProperties: function() {
+    if( Gibberish.mode === 'worklet' ) {
+      delete this.__root
+      delete this.__tuning
+      delete this.__mode
+      delete this.__offset
+      delete this.__degree
+
+      Theory.markup = {
+        textMarkers : {},
+        cssClasses: {}
+      }
+
+      this.__root = 440
+      this.__tuning = 'et'
+      this.__offset = 0
+      this.__degree = 'i'
+      this.__mode = 'aeolian'
+    }
+  },
+
   initProperties: function() {
     if( Gibberish.mode === 'worklet' ) {
       Gibber.createProperty( 
@@ -114,9 +136,9 @@ const Theory = {
         1
       )
 
-      Gibber.createProperty( this, 'mode', 'aeolian', null, 5 )
-      Gibber.createProperty( this, 'offset', 0, null, 5 )
-      Gibber.createProperty( this, 'degree', 'i', null, 5 )
+      Gibber.createProperty( this, 'mode', 'aeolian', null, 0 )
+      Gibber.createProperty( this, 'offset', 0, null, 0 )
+      Gibber.createProperty( this, 'degree', 'i', null, 0 )
 
       //setTimeout( ()=> Theory.tuning = 'et', 250 )
       this.tuning = 'et'
@@ -127,6 +149,9 @@ const Theory = {
       Object.defineProperty( this, 'root', {
         get() { return this.__root },
         set(v) {
+          if( typeof v=== 'string' ) {
+            v = this.__noteToFreq( v )
+          } 
           this.__root = v
           this.Tune.tonicize( this.__root )
         }
@@ -143,7 +168,11 @@ const Theory = {
       Object.defineProperty( this, 'mode', {
         get()  { return this.__mode },
         set(v) { 
-          this.__mode = v 
+          if( this.modes[ v ] !== undefined || v === null ) {
+            this.__mode = v 
+          }else{
+            console.error( `The mode "${v}" is not valid. Valid modes include ${Object.keys(this.modes).toString()}, and null. No change to Theory.mode was applied.` )
+          }
         }
       })
 
@@ -312,8 +341,14 @@ const Theory = {
 
       const path = this.__loadingPrefix + name + '.js' 
       fetch( path )
-        .catch( err => console.error( err ) )
-        .then( data => data.json() )
+        .catch( console.err )
+        .then( data => {
+          if( data.ok ) {
+            return data.json()
+          }else{
+            console.error( `The tuning ${name} wasn't found. Please visit http://abbernie.github.io/tune/scales.html to find the names of valid tunings.`) 
+          } 
+        })
         .then( json => {
           this.__tuning.value = name
           Gibberish.worklet.port.postMessage({
@@ -342,39 +377,69 @@ const Theory = {
   // REMEMBER THAT THE .note METHOD IS ALSO MONKEY-PATCHED
   // IN ugen.js, THIS IS WHERE MOST OF THE AWPROCESSOR NOTE
   // METHOD IS IMPLEMENTED.
-  note: function( idx, octave=0 ) {
-    let finalIdx, mode = null
+  note: function( __idx, octave=0, round=true ) {
+    let finalIdx, mode = null, __float = __idx % 1, baseOctave, nextOctave
 
-    if( idx % 1 !== 0 ) {
-      idx = Math.round( idx )
+    let isInt = __float === 0
+    if( !isInt && round===true ) {
+      __idx = Math.round( __idx )
+      isInt = true
     }
+    
+    let baseIndex = __idx < 0 ? Math.ceil( __idx ) : Math.floor( __idx ),
+        nextIndex = __idx >= 0 ? baseIndex + 1 : baseIndex - 1
 
-    idx += Gibberish.Theory.__offset
+    baseIndex += Gibberish.Theory.__offset
+    nextIndex += Gibberish.Theory.__offset
 
     if( Gibberish.Theory.mode !== 'chromatic' && Gibberish.Theory.mode !== null ) {
       mode = Gibberish.Theory.modes[ Gibberish.Theory.mode ]
-      octave = Math.floor( idx / mode.length )
-
+      baseOctave = Math.floor( baseIndex / mode.length )
+      nextOctave = Math.floor( nextIndex / mode.length )
+      
       // XXX this looks crazy ugly but works with negative note numbers...
-      finalIdx = idx < 0 
-        ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
-        : mode[ Math.abs( idx ) % mode.length ]
+      baseIndex = baseIndex < 0 
+        ? mode[ (mode.length - (Math.abs( baseIndex ) % mode.length)) % mode.length ] 
+        : mode[ Math.abs( baseIndex ) % mode.length ]
 
+      if( !isInt ) {
+        nextIndex = nextIndex < 0 
+          ? mode[ (mode.length - (Math.abs( nextIndex ) % mode.length)) % mode.length ] 
+          : mode[ Math.abs( nextIndex ) % mode.length ]
+      }
     }else{
       // null mode also means to use 'chromatic' mode
       mode = Gibberish.Theory.modes[ 'chromatic' ]
       const l = Gibberish.Theory.Tune.scale.length 
-      octave = Math.floor( idx / l )
-      finalIdx = idx < 0 
-        ? mode[ (l - (Math.abs(idx) % l)) % l ] 
-        : mode[ Math.abs( idx ) % l ]
+      baseOctave = Math.floor( baseIndex / l )
+      nextOctave = Math.floor( baseIndex / l )
+
+      baseIndex = baseIndex < 0 
+        ? mode[ (l - (Math.abs( baseIndex ) % l)) % l ] 
+        : mode[ Math.abs( baseIndex ) % l ]
+
+      if( !isInt ) {
+        nextIndex = nextIndex < 0 
+          ? mode[ (l - (Math.abs( nextIndex ) % l)) % l ] 
+          : mode[ Math.abs( nextIndex ) % l ]
+      }
     }
 
-    finalIdx += this.__degree.offset
+    baseIndex += this.__degree.offset
+    nextIndex += this.__degree.offset
 
-    const freq = Gibberish.Theory.Tune.note( finalIdx, octave )
+    let outputFreq = 0
+    if( !isInt ) {
+      const freq0 = Gibberish.Theory.Tune.note( baseIndex, baseOctave )
+      const freq1 = Gibberish.Theory.Tune.note( nextIndex, nextOctave )
+      let   diff  = freq1 - freq0
+      if( __idx < 0 ) diff *= -1
+      outputFreq = freq0 + (diff*__float)
+    }else{
+      outputFreq = Gibberish.Theory.Tune.note( baseIndex, baseOctave )
+    }
 
-    return freq
+    return outputFreq 
   },
 }
 
