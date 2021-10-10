@@ -43,7 +43,7 @@ module.exports = {
     attack:1/256,
     decay:1/16,
     octave:-2,
-    filterType:2,
+    filterModel:2,
     saturation:200,
     Q:.25,
     cutoff:.6835
