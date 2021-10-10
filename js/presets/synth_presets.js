@@ -2,19 +2,20 @@ module.exports = {
 
   acidBass: {
     Q:.9,
-    filterType:2,
+    filterModel:2,
     filterMult:4,
     cutoff:1.25,
     saturation:3.5,
     attack:1/8192,
     decay:1/10,
     octave:-3,
-    glide:2000
+    glide:2000,
+    description:`A sawtooth feeding a TB303-style lowpass filter, with high Q settings and a short envelope.`
   },
 
   acidBass2: {
     Q:.7,
-    filterType:2,
+    filterModel:2,
     filterMult:3.5,
     cutoff:.5,
     saturation:10,
@@ -26,7 +27,7 @@ module.exports = {
 
   'bass.hollow': {
     Q:.2,
-    filterType:2,
+    filterModel:2,
     filterMult:4,
     cutoff:1.25,
     saturation:20,
@@ -57,7 +58,7 @@ module.exports = {
   shimmer: {
     attack:1/128, decay:2,
     waveform:'pwm',
-    filterType:1,
+    filterModel:1,
     cutoff:1,
     filterMult:1,
     Q:.6,
@@ -83,11 +84,11 @@ module.exports = {
     attack:1/2, decay:1.5, gain:.045,
     panVoices:true,
     presetInit: function( audio ) {
-      this.chorus = audio.effects.Chorus('lush')
+      this.chorus = audio.effects.Chorus('lush', { isStereo:true })
       this.fx.add( this.chorus  )
-      this.bitCrusher = audio.effects.BitCrusher({ bitDepth:.5 })
+      this.bitCrusher = audio.effects.BitCrusher({ bitDepth:.5, isStereo:true })
       this.fx.add( this.bitCrusher )
-      // gen( .5 + cycle( btof(16) ) * .35
+      //// gen( .5 + cycle( btof(16) ) * .35
       this.srmod = audio.Gen.make( audio.Gen.ugens.add( .5, audio.Gen.ugens.mul( audio.Gen.ugens.cycle(.125/2), .35 ) ) )
       this.bitCrusher.sampleRate = this.srmod
       this.delay = audio.effects.Delay({ time:1/6, feedback:.75 })
@@ -97,7 +98,7 @@ module.exports = {
 
   brass: {
     attack:1/6, decay:1.5, gain:.05,
-    filterType:1, Q:.5575, cutoff:2,
+    filterModel:1, Q:.5575, cutoff:2,
     presetInit: function( audio ) {
       this.fx.add( audio.effects.Chorus('lush') )
       this.chorus = this.fx[0]
@@ -106,7 +107,7 @@ module.exports = {
 
   'brass.short':{
     gain:.75,
-    filterType:1,
+    filterModel:1,
     antialias:true,
     attack:1/32,
     decay:1/16,
@@ -122,7 +123,7 @@ module.exports = {
     Q:.8,
     cutoff:.65,
     saturation:5,
-    filterType:2,
+    filterModel:2,
     glide:500
   },
 
@@ -133,13 +134,13 @@ module.exports = {
     waveform:'pwm'
   },
 
-  chirp: { filterType:2, cutoff:.325, decay:1/16 }, 
+  chirp: { filterModel:2, cutoff:.325, decay:1/16 }, 
 
   'square.perc': { 
     waveform:'square', 
     shape:'exponential', 
     antialias:true, 
-    filterType:2, 
+    filterModel:2, 
     cutoff:.25, 
     decay:1/8,
     panVoices:true
@@ -149,7 +150,7 @@ module.exports = {
     waveform:'square', 
     shape:'exponential', 
     antialias:true, 
-    filterType:2, 
+    filterModel:2, 
     cutoff:.25, 
     decay:2,
     panVoices:true
@@ -164,5 +165,11 @@ module.exports = {
     decay:4,
     gain:.125,
     shape:'exponential'
+  },
+
+  blank: {
+    filterModel:0,
+    waveform:'sine',
+    antialias:false
   }
 }

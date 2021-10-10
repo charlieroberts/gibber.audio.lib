@@ -4,7 +4,7 @@ module.exports = {
     attack: audio => audio.Clock.ms(.25), 
     decay: 1/12,
     cutoff:.3,
-    filterType:1,
+    filterModel:1,
     filterMult:3
   },
 
@@ -16,7 +16,7 @@ module.exports = {
     cutoff:.15,
     filterMult:1,
     Q:.3,
-    filterType:1,
+    filterModel:1,
     filterMode:1
   },
 
@@ -28,7 +28,7 @@ module.exports = {
     cutoff:1,
     filterMult:2.5,
     Q:.975,
-    filterType:1,
+    filterModel:1,
     filterMode:1
   },
   // not as bright / loud
@@ -41,13 +41,13 @@ module.exports = {
     filterMult:2.5,
     Q:.8,
     gain:.175,
-    filterType:1,
+    filterModel:1,
     filterMode:1
   },
 
   dirty: { 
     gain:.325,
-    filterType:2,
+    filterModel:2,
     attack:1/2048, 
     decay:1/4, 
     cutoff:1.5, 
@@ -81,7 +81,7 @@ module.exports = {
     cutoff:.15,
     filterMult:1,
     Q:.5,
-    filterType:1,
+    filterModel:1,
     filterMode:1,
     panVoices:true
   },
@@ -175,7 +175,7 @@ module.exports = {
     glide:1000,
     detune2:.001,
     detune3:-.001,
-    filterType:1,
+    filterModel:1,
     filterMult:4,
     Q:.5,
   },
@@ -190,7 +190,7 @@ module.exports = {
     octave3:0,
     cutoff:.5,
     glide:.9995,
-    filterType:1,
+    filterModel:1,
     filterMult:3,
     Q:.75,
   },
@@ -204,7 +204,7 @@ module.exports = {
     detune3:-.501,
     cutoff:.2,
     glide:5000,
-    filterType:1,
+    filterModel:1,
     filterMult:1.5,
     Q:.25,
   },
@@ -221,7 +221,7 @@ module.exports = {
     octave3:0,
     cutoff:.35,
     glide:1,
-    filterType:1,
+    filterModel:1,
     filterMult:3,
     Q:.5,
   },
@@ -297,10 +297,9 @@ module.exports = {
   },
 
   noise: {
-    resonance:20,
     decay:1/2,
     cutoff:.3,
-    glide:.99995,
+    glide:10000,
     detune3:0,
     detune2:0,
     filterMult:0,
