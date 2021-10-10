@@ -118,6 +118,7 @@ module.exports = function( __Audio ) {
       if( props.__presetInit__ !== undefined ) props.__presetInit__.call( drums, Audio )
     }
 
+    drums.name = 'Drums'
     return drums
   }
 
@@ -181,6 +182,7 @@ module.exports = function( __Audio ) {
     //  return drums
     //}
 
+    drums.name = 'EDrums'
     return drums
   }
 
