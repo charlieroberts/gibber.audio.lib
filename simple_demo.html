@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang='en'>
+
+<head>
+  <script src='./dist/gibber.audio.js'></script>
+  <style> body{ background:black; color:white } </style>
+</head>
+
+<body>
+  <p>click to start</p>
+</body>
+
+<script>
+  // gibber will automatically register a callback that will wait until the page
+  // is clicked / a keyboard press occurs to start up audio, as required by
+  // the web audio api.
+  Gibber
+    .init({ workletPath:'https://unpkg.com/gibberish-dsp@3.3.0/dist/gibberish_worklet.js' })
+    .then( ()=> {
+      k = Kick().trigger.seq( .5, 1/4 )
+      b = Monosynth('bassPad', { decay:8 })
+      b.note.seq( 0, 4 )
+    })
+</script>
+
+</html>

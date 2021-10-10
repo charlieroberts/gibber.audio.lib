@@ -68,3 +68,5 @@ node_modules
 In this instance, we would need to both change the `src` attribute of our `<script>` and also pass the location of the worklet *relative to the location of the `index.html` file*. Our call to `Gibber.init` would be:
 
 `Gibber.init({ workletPath:'node_modules/gibber.audio.lib/dist/gibberish_worklet.js' })`
+
+The [simple demo](./simple_demo.html) uses a CDN to fetch the worklet, which might be the easiest option.
