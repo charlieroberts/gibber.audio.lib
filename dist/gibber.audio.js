@@ -34,7 +34,7 @@ module.exports = x => {
   return abs
 }
 
-},{"./gen.js":32}],2:[function(require,module,exports){
+},{"./gen.js":33}],2:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -153,7 +153,7 @@ module.exports = ( incr, reset=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":32}],3:[function(require,module,exports){
+},{"./gen.js":33}],3:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -192,7 +192,7 @@ module.exports = x => {
   return acos
 }
 
-},{"./gen.js":32}],4:[function(require,module,exports){
+},{"./gen.js":33}],4:[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -289,7 +289,7 @@ module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":32,"./gte.js":34,"./ifelseif.js":37,"./lt.js":40,"./memo.js":44,"./mul.js":50,"./neq.js":51,"./peek.js":56,"./poke.js":59,"./sub.js":70,"./utilities.js":76}],5:[function(require,module,exports){
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":19,"./div.js":24,"./env.js":25,"./gen.js":33,"./gte.js":35,"./ifelseif.js":38,"./lt.js":41,"./memo.js":45,"./mul.js":51,"./neq.js":52,"./peek.js":57,"./poke.js":61,"./sub.js":72,"./utilities.js":78}],5:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -340,7 +340,7 @@ module.exports = ( ...args ) => {
   return add
 }
 
-},{"./gen.js":32}],6:[function(require,module,exports){
+},{"./gen.js":33}],6:[function(require,module,exports){
 'use strict'
 
 let gen      = require( './gen.js' ),
@@ -459,7 +459,7 @@ module.exports = ( attackTime=44, decayTime=22050, sustainTime=44100, sustainLev
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":18,"./div.js":23,"./env.js":24,"./gen.js":32,"./gtp.js":35,"./ifelseif.js":37,"./lt.js":40,"./mul.js":50,"./neq.js":51,"./not.js":53,"./param.js":55,"./peek.js":56,"./poke.js":59,"./sub.js":70}],7:[function(require,module,exports){
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":19,"./div.js":24,"./env.js":25,"./gen.js":33,"./gtp.js":36,"./ifelseif.js":38,"./lt.js":41,"./mul.js":51,"./neq.js":52,"./not.js":54,"./param.js":56,"./peek.js":57,"./poke.js":61,"./sub.js":72}],7:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -491,7 +491,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":32}],8:[function(require,module,exports){
+},{"./gen.js":33}],8:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -529,7 +529,7 @@ module.exports = x => {
   return asin
 }
 
-},{"./gen.js":32}],9:[function(require,module,exports){
+},{"./gen.js":33}],9:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -567,7 +567,7 @@ module.exports = x => {
   return atan
 }
 
-},{"./gen.js":32}],10:[function(require,module,exports){
+},{"./gen.js":33}],10:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -588,7 +588,7 @@ module.exports = ( decayTime = 44100 ) => {
   return sub( 1, ssd.out )
 }
 
-},{"./gen.js":32,"./history.js":36,"./mul.js":50,"./sub.js":70}],11:[function(require,module,exports){
+},{"./gen.js":33,"./history.js":37,"./mul.js":51,"./sub.js":72}],11:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -638,7 +638,7 @@ module.exports = ( _props ) => {
   return ugen
 }
 
-},{"./gen.js":32}],12:[function(require,module,exports){
+},{"./gen.js":33}],12:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -672,7 +672,7 @@ module.exports = ( in1 ) => {
 }
 
 
-},{"./gen.js":32}],13:[function(require,module,exports){
+},{"./gen.js":33}],13:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -709,7 +709,7 @@ module.exports = x => {
   return ceil
 }
 
-},{"./gen.js":32}],14:[function(require,module,exports){
+},{"./gen.js":33}],14:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -754,7 +754,7 @@ module.exports = ( in1, min=-1, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":29,"./gen.js":32,"./memo.js":44,"./sub.js":70}],15:[function(require,module,exports){
+},{"./floor.js":30,"./gen.js":33,"./memo.js":45,"./sub.js":72}],15:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -794,7 +794,7 @@ module.exports = x => {
   return cos
 }
 
-},{"./gen.js":32}],16:[function(require,module,exports){
+},{"./gen.js":33}],16:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -907,7 +907,7 @@ module.exports = ( incr=1, min=0, max=Infinity, reset=0, loops=1,  properties ) 
   return ugen
 } 
 
-},{"./gen.js":32}],17:[function(require,module,exports){
+},{"./gen.js":33}],17:[function(require,module,exports){
 'use strict'
 
 let gen  = require( './gen.js' ),
@@ -942,7 +942,43 @@ module.exports = ( frequency=1, reset=0, _props ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":32,"./mul.js":50,"./peek.js":56,"./phasor.js":58}],18:[function(require,module,exports){
+},{"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":57,"./phasor.js":59}],18:[function(require,module,exports){
+'use strict'
+
+const gen  = require( './gen.js' ),
+      accum= require( './phasor.js' ),
+      data = require( './data.js' ),
+      peek = require( './peek.js' ),
+      mul  = require( './mul.js' ),
+      add  = require( './add.js' ),
+      phasor=require( './phasor.js')
+
+const proto = {
+  basename:'cycleN',
+
+  initTable() {    
+    let buffer = new Float32Array( 1024 )
+
+    for( let i = 0, l = buffer.length; i < l; i++ ) {
+      buffer[ i ] = Math.sin( ( i / l ) * ( Math.PI * 2 ) )
+    }
+
+    gen.globals.cycle = data( buffer, 1, { immutable:true } )
+  }
+
+}
+
+module.exports = ( frequency=1, reset=0, _props ) => {
+  if( typeof gen.globals.cycle === 'undefined' ) proto.initTable() 
+  const props = Object.assign({}, { min:0 }, _props )
+
+  const ugen = mul( add( 1, peek( gen.globals.cycle, phasor( frequency, reset, props )) ), .5 )
+  ugen.name = 'cycle' + gen.getUID()
+
+  return ugen
+}
+
+},{"./add.js":5,"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":57,"./phasor.js":59}],19:[function(require,module,exports){
 'use strict'
 
 const gen  = require('./gen.js'),
@@ -1112,7 +1148,7 @@ module.exports = ( x, y=1, properties ) => {
 }
 
 
-},{"./gen.js":32,"./peek.js":56,"./poke.js":59,"./utilities.js":76}],19:[function(require,module,exports){
+},{"./gen.js":33,"./peek.js":57,"./poke.js":61,"./utilities.js":78}],20:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1135,7 +1171,7 @@ module.exports = ( in1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./gen.js":32,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":70}],20:[function(require,module,exports){
+},{"./add.js":5,"./gen.js":33,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":72}],21:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1156,7 +1192,7 @@ module.exports = ( decayTime = 44100, props ) => {
   return ssd.out 
 }
 
-},{"./gen.js":32,"./history.js":36,"./mul.js":50,"./t60.js":72}],21:[function(require,module,exports){
+},{"./gen.js":33,"./history.js":37,"./mul.js":51,"./t60.js":74}],22:[function(require,module,exports){
 'use strict'
 
 const gen  = require( './gen.js'  ),
@@ -1212,7 +1248,7 @@ module.exports = ( in1, taps, properties ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./data.js":18,"./gen.js":32,"./memo.js":44,"./peek.js":56,"./poke.js":59,"./sub.js":70,"./wrap.js":78}],22:[function(require,module,exports){
+},{"./accum.js":2,"./data.js":19,"./gen.js":33,"./memo.js":45,"./peek.js":57,"./poke.js":61,"./sub.js":72,"./wrap.js":80}],23:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1230,7 +1266,7 @@ module.exports = ( in1 ) => {
   return ugen
 }
 
-},{"./gen.js":32,"./history.js":36,"./sub.js":70}],23:[function(require,module,exports){
+},{"./gen.js":33,"./history.js":37,"./sub.js":72}],24:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1283,7 +1319,7 @@ module.exports = (...args) => {
   return div
 }
 
-},{"./gen.js":32}],24:[function(require,module,exports){
+},{"./gen.js":33}],25:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen' ),
@@ -1319,7 +1355,7 @@ module.exports = props => {
   return ugen
 }
 
-},{"./data":18,"./gen":32,"./peek":56,"./phasor":58,"./windows":77}],25:[function(require,module,exports){
+},{"./data":19,"./gen":33,"./peek":57,"./phasor":59,"./windows":79}],26:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1351,7 +1387,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":32}],26:[function(require,module,exports){
+},{"./gen.js":33}],27:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1388,7 +1424,7 @@ module.exports = x => {
   return exp
 }
 
-},{"./gen.js":32}],27:[function(require,module,exports){
+},{"./gen.js":33}],28:[function(require,module,exports){
 /**
  * Copyright 2018 Google LLC
  *
@@ -1527,7 +1563,7 @@ const AWPF = function( self = window, bufferSize = 4096 ) {
 
 module.exports = AWPF
 
-},{"./realm.js":28}],28:[function(require,module,exports){
+},{"./realm.js":29}],29:[function(require,module,exports){
 /**
  * Copyright 2018 Google LLC
  *
@@ -1572,7 +1608,7 @@ module.exports = function Realm (scope, parentElement) {
   this.exec = win.$hook.call(scope, scope, console);
 }
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1605,7 +1641,7 @@ module.exports = x => {
   return floor
 }
 
-},{"./gen.js":32}],30:[function(require,module,exports){
+},{"./gen.js":33}],31:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -1667,7 +1703,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./gen.js":32}],31:[function(require,module,exports){
+},{"./gen.js":33}],32:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -1763,7 +1799,7 @@ module.exports = ( control, in1, properties ) => {
   return ugen
 }
 
-},{"./gen.js":32}],32:[function(require,module,exports){
+},{"./gen.js":33}],33:[function(require,module,exports){
 'use strict'
 
 /* gen.js
@@ -1782,6 +1818,7 @@ const gen = {
   samplerate: 44100, // change on audiocontext creation
   shouldLocalize: false,
   graph:null,
+  alwaysReturnArrays: false,
   globals:{
     windows: {},
   },
@@ -1834,11 +1871,11 @@ const gen = {
 
   createMemory( amount=4096, type ) {
     const mem = MemoryHelper.create( amount, type )
-    mem.alloc( 2, true )
     return mem
   },
 
   createCallback( ugen, mem, debug = false, shouldInlineMemory=false, memType = Float64Array ) {
+    const numChannels = Array.isArray( ugen ) ? ugen.length : 1
     let isStereo = Array.isArray( ugen ) && ugen.length > 1,
         callback, 
         channel1, channel2
@@ -1849,7 +1886,7 @@ const gen = {
       this.memory = mem
     }
     
-    this.outputIdx = 0//this.memory.alloc( 2, true )
+    this.outputIdx = this.memory.alloc( numChannels, true )
     this.emit( 'memory init' )
 
     //console.log( 'cb memory:', mem )
@@ -1872,17 +1909,23 @@ const gen = {
 
     // call .gen() on the head of the graph we are generating the callback for
     //console.log( 'HEAD', ugen )
-    for( let i = 0; i < 1 + isStereo; i++ ) {
+    for( let i = 0; i < numChannels; i++ ) {
       if( typeof ugen[i] === 'number' ) continue
 
       //let channel = isStereo ? ugen[i].gen() : ugen.gen(),
-      let channel = isStereo ? this.getInput( ugen[i] ) : this.getInput( ugen ), 
+      let channel = numChannels > 1 ? this.getInput( ugen[i] ) : this.getInput( ugen ), 
           body = ''
 
       // if .gen() returns array, add ugen callback (graphOutput[1]) to our output functions body
       // and then return name of ugen. If .gen() only generates a number (for really simple graphs)
       // just return that number (graphOutput[0]).
-      body += Array.isArray( channel ) ? channel[1] + '\n' + channel[0] : channel
+      if( Array.isArray( channel ) ) {
+        for( let j = 0; j < channel.length; j++ ) {
+          body += channel[ j ] + '\n'
+        }
+      }else{
+        body += channel
+      }
 
       // split body to inject return keyword on last line
       body = body.split('\n')
@@ -1906,7 +1949,21 @@ const gen = {
         value.gen()      
     })
 
-    const returnStatement = isStereo ? `  return [ memory[${this.outputIdx}], memory[${this.outputIdx + 1}] ]` : `  return memory[${this.outputIdx}]`
+    let returnStatement =  `  return ` 
+
+    // if we are returning an array of values, add starting bracket
+    if( numChannels !== 1 || this.alwaysReturnArray === true ) {
+      returnStatement += '[ '
+    }
+
+    returnStatement += `memory[ ${this.outputIdx} ]`
+    if( numChannels > 1 || this.alwaysReturnArray === true ) {
+      for( let i = 1; i < numChannels; i++ ) {
+        returnStatement += `, memory[ ${this.outputIdx + i} ]`
+      }
+      returnStatement += ' ] '
+    }
+     // memory[${this.outputIdx + 1}] ]` : `  return memory[${this.outputIdx}]`
     
     this.functionBody = this.functionBody.split('\n')
 
@@ -1977,7 +2034,7 @@ const gen = {
     callback.params = this.params
     callback.inputs = this.inputs
     callback.parameters = this.parameters//.slice( 0 )
-    callback.out = this.memory.heap.subarray( this.outputIdx, this.outputIdx + 2 )
+    callback.out = this.memory.heap.subarray( this.outputIdx, this.outputIdx + numChannels )
     callback.isStereo = isStereo
 
     //if( MemoryHelper.isPrototypeOf( this.memory ) ) 
@@ -2075,7 +2132,7 @@ gen.__proto__ = new EE()
 
 module.exports = gen
 
-},{"events":120,"memory-helper":79}],33:[function(require,module,exports){
+},{"events":123,"memory-helper":223}],34:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2111,7 +2168,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":32}],34:[function(require,module,exports){
+},{"./gen.js":33}],35:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2147,7 +2204,7 @@ module.exports = (x,y) => {
   return gt
 }
 
-},{"./gen.js":32}],35:[function(require,module,exports){
+},{"./gen.js":33}],36:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2177,7 +2234,7 @@ module.exports = (x,y) => {
   return gtp
 }
 
-},{"./gen.js":32}],36:[function(require,module,exports){
+},{"./gen.js":33}],37:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2267,7 +2324,7 @@ module.exports = ( in1=0 ) => {
   return ugen
 }
 
-},{"./gen.js":32}],37:[function(require,module,exports){
+},{"./gen.js":33}],38:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2349,7 +2406,7 @@ module.exports = ( ...args  ) => {
   return ugen
 }
 
-},{"./gen.js":32}],38:[function(require,module,exports){
+},{"./gen.js":33}],39:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2396,7 +2453,7 @@ module.exports = ( name, inputNumber=0, channelNumber=0, defaultValue=0, min=0, 
   return input
 }
 
-},{"./gen.js":32}],39:[function(require,module,exports){
+},{"./gen.js":33}],40:[function(require,module,exports){
 'use strict'
 
 const library = {
@@ -2444,10 +2501,12 @@ const library = {
   acos:     require( './acos.js' ),
   atan:     require( './atan.js' ),  
   phasor:   require( './phasor.js' ),
+  phasorN:  require( './phasorN.js' ),
   data:     require( './data.js' ),
   peek:     require( './peek.js' ),
   peekDyn:  require( './peekDyn.js' ),
   cycle:    require( './cycle.js' ),
+  cycleN:   require( './cycleN.js' ),
   history:  require( './history.js' ),
   delta:    require( './delta.js' ),
   floor:    require( './floor.js' ),
@@ -2507,7 +2566,7 @@ library.gen.lib = library
 
 module.exports = library
 
-},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./data.js":18,"./dcblock.js":19,"./decay.js":20,"./delay.js":21,"./delta.js":22,"./div.js":23,"./env.js":24,"./eq.js":25,"./exp.js":26,"./floor.js":29,"./fold.js":30,"./gate.js":31,"./gen.js":32,"./gt.js":33,"./gte.js":34,"./gtp.js":35,"./history.js":36,"./ifelseif.js":37,"./in.js":38,"./lt.js":40,"./lte.js":41,"./ltp.js":42,"./max.js":43,"./memo.js":44,"./min.js":45,"./mix.js":46,"./mod.js":47,"./mstosamps.js":48,"./mtof.js":49,"./mul.js":50,"./neq.js":51,"./noise.js":52,"./not.js":53,"./pan.js":54,"./param.js":55,"./peek.js":56,"./peekDyn.js":57,"./phasor.js":58,"./poke.js":59,"./pow.js":60,"./process.js":61,"./rate.js":62,"./round.js":63,"./sah.js":64,"./selector.js":65,"./seq.js":66,"./sign.js":67,"./sin.js":68,"./slide.js":69,"./sub.js":70,"./switch.js":71,"./t60.js":72,"./tan.js":73,"./tanh.js":74,"./train.js":75,"./utilities.js":76,"./windows.js":77,"./wrap.js":78}],40:[function(require,module,exports){
+},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./cycleN.js":18,"./data.js":19,"./dcblock.js":20,"./decay.js":21,"./delay.js":22,"./delta.js":23,"./div.js":24,"./env.js":25,"./eq.js":26,"./exp.js":27,"./floor.js":30,"./fold.js":31,"./gate.js":32,"./gen.js":33,"./gt.js":34,"./gte.js":35,"./gtp.js":36,"./history.js":37,"./ifelseif.js":38,"./in.js":39,"./lt.js":41,"./lte.js":42,"./ltp.js":43,"./max.js":44,"./memo.js":45,"./min.js":46,"./mix.js":47,"./mod.js":48,"./mstosamps.js":49,"./mtof.js":50,"./mul.js":51,"./neq.js":52,"./noise.js":53,"./not.js":54,"./pan.js":55,"./param.js":56,"./peek.js":57,"./peekDyn.js":58,"./phasor.js":59,"./phasorN.js":60,"./poke.js":61,"./pow.js":62,"./process.js":63,"./rate.js":64,"./round.js":65,"./sah.js":66,"./selector.js":67,"./seq.js":68,"./sign.js":69,"./sin.js":70,"./slide.js":71,"./sub.js":72,"./switch.js":73,"./t60.js":74,"./tan.js":75,"./tanh.js":76,"./train.js":77,"./utilities.js":78,"./windows.js":79,"./wrap.js":80}],41:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2545,7 +2604,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":32}],41:[function(require,module,exports){
+},{"./gen.js":33}],42:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2583,7 +2642,7 @@ module.exports = (x,y) => {
   return lt
 }
 
-},{"./gen.js":32}],42:[function(require,module,exports){
+},{"./gen.js":33}],43:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2613,7 +2672,7 @@ module.exports = (x,y) => {
   return ltp
 }
 
-},{"./gen.js":32}],43:[function(require,module,exports){
+},{"./gen.js":33}],44:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2650,7 +2709,7 @@ module.exports = (x,y) => {
   return max
 }
 
-},{"./gen.js":32}],44:[function(require,module,exports){
+},{"./gen.js":33}],45:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2680,7 +2739,7 @@ module.exports = (in1,memoName) => {
   return memo
 }
 
-},{"./gen.js":32}],45:[function(require,module,exports){
+},{"./gen.js":33}],46:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2717,7 +2776,7 @@ module.exports = (x,y) => {
   return min
 }
 
-},{"./gen.js":32}],46:[function(require,module,exports){
+},{"./gen.js":33}],47:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js'),
@@ -2733,7 +2792,7 @@ module.exports = ( in1, in2, t=.5 ) => {
   return ugen
 }
 
-},{"./add.js":5,"./gen.js":32,"./memo.js":44,"./mul.js":50,"./sub.js":70}],47:[function(require,module,exports){
+},{"./add.js":5,"./gen.js":33,"./memo.js":45,"./mul.js":51,"./sub.js":72}],48:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -2777,7 +2836,7 @@ module.exports = (...args) => {
   return mod
 }
 
-},{"./gen.js":32}],48:[function(require,module,exports){
+},{"./gen.js":33}],49:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2815,7 +2874,7 @@ module.exports = x => {
   return mstosamps
 }
 
-},{"./gen.js":32}],49:[function(require,module,exports){
+},{"./gen.js":33}],50:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2853,7 +2912,7 @@ module.exports = ( x, props ) => {
   return ugen
 }
 
-},{"./gen.js":32}],50:[function(require,module,exports){
+},{"./gen.js":33}],51:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -2909,7 +2968,7 @@ module.exports = ( ...args ) => {
   return mul
 }
 
-},{"./gen.js":32}],51:[function(require,module,exports){
+},{"./gen.js":33}],52:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2941,7 +3000,7 @@ module.exports = ( in1, in2 ) => {
   return ugen
 }
 
-},{"./gen.js":32}],52:[function(require,module,exports){
+},{"./gen.js":33}],53:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2972,7 +3031,7 @@ module.exports = x => {
   return noise
 }
 
-},{"./gen.js":32}],53:[function(require,module,exports){
+},{"./gen.js":33}],54:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3002,7 +3061,7 @@ module.exports = x => {
   return not
 }
 
-},{"./gen.js":32}],54:[function(require,module,exports){
+},{"./gen.js":33}],55:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' ),
@@ -3046,7 +3105,7 @@ module.exports = ( leftInput, rightInput, pan =.5, properties ) => {
   return ugen
 }
 
-},{"./data.js":18,"./gen.js":32,"./mul.js":50,"./peek.js":56}],55:[function(require,module,exports){
+},{"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":57}],56:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -3077,13 +3136,15 @@ module.exports = ( propName=0, value=0, min=0, max=1 ) => {
   if( typeof propName !== 'string' ) {
     ugen.name = ugen.basename + gen.getUID()
     ugen.initialValue = propName
+    ugen.min = value
+    ugen.max = min
   }else{
     ugen.name = propName
+    ugen.min = min
+    ugen.max = max
     ugen.initialValue = value
   }
 
-  ugen.min = min
-  ugen.max = max
   ugen.defaultValue = ugen.initialValue
 
   // for storing worklet nodes once they're instantiated
@@ -3102,7 +3163,7 @@ module.exports = ( propName=0, value=0, min=0, max=1 ) => {
     set( v ) {
       if( this.memory.value.idx !== null ) {
         if( this.isWorklet && this.waapi !== null ) {
-          this.waapi.value = v
+          this.waapi[ propName ].value = v
         }else{
           gen.memory.heap[ this.memory.value.idx ] = v
         } 
@@ -3117,7 +3178,7 @@ module.exports = ( propName=0, value=0, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./gen.js":32}],56:[function(require,module,exports){
+},{"./gen.js":33}],57:[function(require,module,exports){
 
 const gen  = require('./gen.js'),
       dataUgen = require('./data.js')
@@ -3209,7 +3270,7 @@ module.exports = ( input_data, index=0, properties ) => {
 }
 
 
-},{"./data.js":18,"./gen.js":32}],57:[function(require,module,exports){
+},{"./data.js":19,"./gen.js":33}],58:[function(require,module,exports){
 const gen  = require('./gen.js'),
       dataUgen = require('./data.js')
 
@@ -3300,14 +3361,14 @@ module.exports = ( input_data, length, index=0, properties ) => {
 }
 
 
-},{"./data.js":18,"./gen.js":32}],58:[function(require,module,exports){
+},{"./data.js":19,"./gen.js":33}],59:[function(require,module,exports){
 'use strict'
 
-let gen   = require( './gen.js' ),
-    accum = require( './accum.js' ),
-    mul   = require( './mul.js' ),
-    proto = { basename:'phasor' },
-    div   = require( './div.js' )
+const gen   = require( './gen.js' ),
+      accum = require( './accum.js' ),
+      mul   = require( './mul.js' ),
+      proto = { basename:'phasor' },
+      div   = require( './div.js' )
 
 const defaults = { min: -1, max: 1 }
 
@@ -3331,7 +3392,38 @@ module.exports = ( frequency = 1, reset = 0, _props ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./div.js":23,"./gen.js":32,"./mul.js":50}],59:[function(require,module,exports){
+},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./mul.js":51}],60:[function(require,module,exports){
+'use strict'
+
+const gen   = require( './gen.js' ),
+      accum = require( './accum.js' ),
+      mul   = require( './mul.js' ),
+      proto = { basename:'phasorN' },
+      div   = require( './div.js' )
+
+const defaults = { min: 0, max: 1 }
+
+module.exports = ( frequency = 1, reset = 0, _props ) => {
+  const props = Object.assign( {}, defaults, _props )
+
+  const range = props.max - props.min
+
+  const ugen = typeof frequency === 'number' 
+    ? accum( (frequency * range) / gen.samplerate, reset, props ) 
+    : accum( 
+        div( 
+          mul( frequency, range ),
+          gen.samplerate
+        ), 
+        reset, props 
+    )
+
+  ugen.name = proto.basename + gen.getUID()
+
+  return ugen
+}
+
+},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./mul.js":51}],61:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -3386,7 +3478,7 @@ module.exports = ( data, value, index, properties ) => {
   return ugen
 }
 
-},{"./gen.js":32,"./mul.js":50,"./wrap.js":78}],60:[function(require,module,exports){
+},{"./gen.js":33,"./mul.js":51,"./wrap.js":80}],62:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3432,7 +3524,7 @@ module.exports = (x,y) => {
   return pow
 }
 
-},{"./gen.js":32}],61:[function(require,module,exports){
+},{"./gen.js":33}],63:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3486,7 +3578,7 @@ module.exports = (...args) => {
   return process 
 }
 
-},{"./gen.js":32}],62:[function(require,module,exports){
+},{"./gen.js":33}],64:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3538,7 +3630,7 @@ module.exports = ( in1, rate ) => {
   return ugen
 }
 
-},{"./add.js":5,"./delta.js":22,"./gen.js":32,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":70,"./wrap.js":78}],63:[function(require,module,exports){
+},{"./add.js":5,"./delta.js":23,"./gen.js":33,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":72,"./wrap.js":80}],65:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3575,7 +3667,7 @@ module.exports = x => {
   return round
 }
 
-},{"./gen.js":32}],64:[function(require,module,exports){
+},{"./gen.js":33}],66:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' )
@@ -3632,7 +3724,7 @@ module.exports = ( in1, control, threshold=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":32}],65:[function(require,module,exports){
+},{"./gen.js":33}],67:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3684,7 +3776,7 @@ module.exports = ( ...inputs ) => {
   return ugen
 }
 
-},{"./gen.js":32}],66:[function(require,module,exports){
+},{"./gen.js":33}],68:[function(require,module,exports){
 'use strict'
 
 let gen   = require( './gen.js' ),
@@ -3727,7 +3819,7 @@ module.exports = ( durations = 11025, values = [0,1], phaseIncrement = 1) => {
   return ugen
 }
 
-},{"./accum.js":2,"./counter.js":16,"./data.js":18,"./gen.js":32,"./history.js":36,"./peek.js":56}],67:[function(require,module,exports){
+},{"./accum.js":2,"./counter.js":16,"./data.js":19,"./gen.js":33,"./history.js":37,"./peek.js":57}],69:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3764,7 +3856,7 @@ module.exports = x => {
   return sign
 }
 
-},{"./gen.js":32}],68:[function(require,module,exports){
+},{"./gen.js":33}],70:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3803,7 +3895,7 @@ module.exports = x => {
   return sin
 }
 
-},{"./gen.js":32}],69:[function(require,module,exports){
+},{"./gen.js":33}],71:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3830,7 +3922,7 @@ module.exports = ( in1, slideUp = 1, slideDown = 1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./div.js":23,"./gen.js":32,"./gt.js":33,"./history.js":36,"./memo.js":44,"./mul.js":50,"./sub.js":70,"./switch.js":71}],70:[function(require,module,exports){
+},{"./add.js":5,"./div.js":24,"./gen.js":33,"./gt.js":34,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":72,"./switch.js":73}],72:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -3895,7 +3987,7 @@ module.exports = ( ...args ) => {
   return sub
 }
 
-},{"./gen.js":32}],71:[function(require,module,exports){
+},{"./gen.js":33}],73:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3929,7 +4021,7 @@ module.exports = ( control, in1 = 1, in2 = 0 ) => {
   return ugen
 }
 
-},{"./gen.js":32}],72:[function(require,module,exports){
+},{"./gen.js":33}],74:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3972,7 +4064,7 @@ module.exports = x => {
   return t60
 }
 
-},{"./gen.js":32}],73:[function(require,module,exports){
+},{"./gen.js":33}],75:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -4011,7 +4103,7 @@ module.exports = x => {
   return tan
 }
 
-},{"./gen.js":32}],74:[function(require,module,exports){
+},{"./gen.js":33}],76:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -4050,7 +4142,7 @@ module.exports = x => {
   return tanh
 }
 
-},{"./gen.js":32}],75:[function(require,module,exports){
+},{"./gen.js":33}],77:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -4067,7 +4159,7 @@ module.exports = ( frequency=440, pulsewidth=.5 ) => {
 }
 
 
-},{"./accum.js":2,"./div.js":23,"./gen.js":32,"./lt.js":40}],76:[function(require,module,exports){
+},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./lt.js":41}],78:[function(require,module,exports){
 'use strict'
 
 const AWPF = require( './external/audioworklet-polyfill.js' ),
@@ -4136,11 +4228,11 @@ const utilities = {
     if( typeof this.callback === 'undefined' ) this.callback = this.clearFunction
 
     this.node.onaudioprocess = function( audioProcessingEvent ) {
-      var outputBuffer = audioProcessingEvent.outputBuffer;
+      const outputBuffer = audioProcessingEvent.outputBuffer
 
-      var left = outputBuffer.getChannelData( 0 ),
-          right= outputBuffer.getChannelData( 1 ),
-          isStereo = utilities.isStereo
+      const left = outputBuffer.getChannelData( 0 ),
+            right= outputBuffer.getChannelData( 1 ),
+            isStereo = utilities.isStereo
 
      for( var sample = 0; sample < left.length; sample++ ) {
         var out = utilities.callback()
@@ -4238,7 +4330,8 @@ const utilities = {
     return memberString
   },
 
-  createWorkletProcessor( graph, name, debug, mem=44100*10 ) {
+  createWorkletProcessor( graph, name, debug, mem=44100*10, __eval=false, kernel=false ) {
+    const numChannels = Array.isArray( graph ) ? graph.length : 1
     //const mem = MemoryHelper.create( 4096, Float64Array )
     const cb = gen.createCallback( graph, mem, debug )
     const inputs = cb.inputs
@@ -4251,13 +4344,32 @@ const utilities = {
     const inputList = this.createInputArguments( cb )   
     const memberString = this.createFunctionDereferences( cb )
 
+    let inputsString = ''
+    let genishOutputLine = ''
+    for( let i = 0; i < numChannels; i++ ) {
+      inputsString += `const channel${i} = output[ ${i} ]\n\t\t`
+      genishOutputLine += `channel${i}[ i ] = memory[ ${i} ]\n\t\t`
+    }
+
     // change output based on number of channels.
-    const genishOutputLine = cb.isStereo === false
-      ? `left[ i ] = memory[0]`
-      : `left[ i ] = memory[0];\n\t\tright[ i ] = memory[1]\n`
+    //const genishOutputLine = cb.isStereo === false
+    //  ? `left[ i ] = memory[0]`
+    //  : `left[ i ] = memory[0];\n\t\tright[ i ] = memory[1]\n`
+    
 
     const prettyCallback = this.prettyPrintCallback( cb )
 
+    // if __eval, provide the ability of eval code in worklet
+    const evalString = __eval
+      ? ` else if( event.data.key === 'eval' ) {
+        eval( event.data.code )
+      }
+`
+      : ''
+
+    const kernelFncString = `this.kernel = function( memory ) {
+      ${prettyCallback}
+    }`
     /***** begin callback code ****/
     // note that we have to check to see that memory has been passed
     // to the worker before running the callback function, otherwise
@@ -4277,6 +4389,7 @@ class ${name}Processor extends AudioWorkletProcessor {
     super( options )
     this.port.onmessage = this.handleMessage.bind( this )
     this.initialized = false
+    ${ kernel ? kernelFncString : '' }
   }
 
   handleMessage( event ) {
@@ -4287,19 +4400,19 @@ class ${name}Processor extends AudioWorkletProcessor {
       this.memory[ event.data.idx ] = event.data.value
     }else if( event.data.key === 'get' ) {
       this.port.postMessage({ key:'return', idx:event.data.idx, value:this.memory[event.data.idx] })     
-    }
+    }${ evalString }
   }
 
   process( inputs, outputs, parameters ) {
     if( this.initialized === true ) {
       const output = outputs[0]
-      const left   = output[ 0 ]
-      const right  = output[ 1 ]
-      const len    = left.length
+      ${inputsString}
+      const len    = channel0.length
       const memory = this.memory ${parameterDereferences}${inputDereferences}${memberString}
+      ${kernel ? 'const kernel = this.kernel' : '' }
 
       for( let i = 0; i < len; ++i ) {
-        ${prettyCallback}
+        ${kernel ? 'kernel( memory )\n' : prettyCallback}
         ${genishOutputLine}
       }
     }
@@ -4322,7 +4435,7 @@ registerProcessor( '${name}', ${name}Processor)`
       )
     )
 
-    return [ url, workletCode, inputs, cb.params, cb.isStereo ] 
+    return [ url, workletCode, inputs, cb.params, numChannels ] 
   },
 
   registeredForNodeAssignment: [],
@@ -4332,15 +4445,16 @@ registerProcessor( '${name}', ${name}Processor)`
     }
   },
 
-  playWorklet( graph, name, debug=false, mem=44100 * 60 ) {
+  playWorklet( graph, name, debug=false, mem=44100 * 60, __eval=false, kernel=false ) {
     utilities.clear()
 
-    const [ url, codeString, inputs, params, isStereo ] = utilities.createWorkletProcessor( graph, name, debug, mem )
+    const [ url, codeString, inputs, params, numChannels ] = utilities.createWorkletProcessor( graph, name, debug, mem, __eval, kernel )
+    console.log( 'numChannels:', numChannels )
 
     const nodePromise = new Promise( (resolve,reject) => {
    
       utilities.ctx.audioWorklet.addModule( url ).then( ()=> {
-        const workletNode = new AudioWorkletNode( utilities.ctx, name, { outputChannelCount:[ isStereo ? 2 : 1 ] })
+        const workletNode = new AudioWorkletNode( utilities.ctx, name, { channelInterpretation:'discrete', channelCount: numChannels, outputChannelCount:[ numChannels ] })
 
         workletNode.callbacks = {}
         workletNode.onmessage = function( event ) {
@@ -4452,7 +4566,7 @@ utilities.clear.callbacks = []
 
 module.exports = utilities
 
-},{"./data.js":18,"./external/audioworklet-polyfill.js":27,"./gen.js":32}],77:[function(require,module,exports){
+},{"./data.js":19,"./external/audioworklet-polyfill.js":28,"./gen.js":33}],79:[function(require,module,exports){
 'use strict'
 
 /*
@@ -4540,7 +4654,7 @@ const windows = module.exports = {
   }
 }
 
-},{}],78:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -4595,102 +4709,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":29,"./gen.js":32,"./memo.js":44,"./sub.js":70}],79:[function(require,module,exports){
-'use strict';
-
-var MemoryHelper = {
-  create: function create() {
-    var size = arguments.length <= 0 || arguments[0] === undefined ? 4096 : arguments[0];
-    var memtype = arguments.length <= 1 || arguments[1] === undefined ? Float32Array : arguments[1];
-
-    var helper = Object.create(this);
-
-    Object.assign(helper, {
-      heap: new memtype(size),
-      list: {},
-      freeList: {}
-    });
-
-    return helper;
-  },
-  alloc: function alloc(amount) {
-    var idx = -1;
-
-    if (amount > this.heap.length) {
-      throw Error('Allocation request is larger than heap size of ' + this.heap.length);
-    }
-
-    for (var key in this.freeList) {
-      var candidateSize = this.freeList[key];
-
-      if (candidateSize >= amount) {
-        idx = key;
-
-        this.list[idx] = amount;
-
-        if (candidateSize !== amount) {
-          var newIndex = idx + amount,
-              newFreeSize = void 0;
-
-          for (var _key in this.list) {
-            if (_key > newIndex) {
-              newFreeSize = _key - newIndex;
-              this.freeList[newIndex] = newFreeSize;
-            }
-          }
-        }
-        
-        break;
-      }
-    }
-    
-    if( idx !== -1 ) delete this.freeList[ idx ]
-
-    if (idx === -1) {
-      var keys = Object.keys(this.list),
-          lastIndex = void 0;
-
-      if (keys.length) {
-        // if not first allocation...
-        lastIndex = parseInt(keys[keys.length - 1]);
-
-        idx = lastIndex + this.list[lastIndex];
-      } else {
-        idx = 0;
-      }
-
-      this.list[idx] = amount;
-    }
-
-    if (idx + amount >= this.heap.length) {
-      throw Error('No available blocks remain sufficient for allocation request.');
-    }
-    return idx;
-  },
-  free: function free(index) {
-    if (typeof this.list[index] !== 'number') {
-      //throw Error('Calling free() on non-existing block.');
-      console.warn('calling free() on non-existing block:', index, this.list )
-      return
-    }
-
-    this.list[index] = 0;
-
-    var size = 0;
-    for (var key in this.list) {
-      if (key > index) {
-        size = key - index;
-        break;
-      }
-    }
-
-    this.freeList[index] = size;
-  }
-};
-
-module.exports = MemoryHelper;
-
-},{}],80:[function(require,module,exports){
+},{"./floor.js":30,"./gen.js":33,"./memo.js":45,"./sub.js":72}],81:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4745,7 +4764,7 @@ const Analysis = {
 
 module.exports = Analysis 
 
-},{"./ugen.js":115,"gibberish-dsp":168}],81:[function(require,module,exports){
+},{"./ugen.js":118,"gibberish-dsp":171}],82:[function(require,module,exports){
 const Gibberish   = require( 'gibberish-dsp' )
 const Ugen        = require( './ugen.js' )
 const Instruments = require( './instruments.js' )
@@ -4770,7 +4789,7 @@ const Audio = {
   Clock: require( './clock.js' ),
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
-  Make: require( './make.js' ),
+  __Make: require( './make.js' ),
   initialized:false,
   autoConnect:true,
   shouldDelay:false,
@@ -4805,6 +4824,7 @@ const Audio = {
       obj.Theory = this.Theory
       obj.Freesound = this.Freesound
       obj.Clock = this.Clock
+      obj.Clock.export( obj )
       obj.WavePattern = this.WavePattern
       obj.Gen = this.Gen
       obj.stop = this.stop
@@ -4850,7 +4870,7 @@ const Audio = {
         //ctx = new AudioContext()
       }
 
-      Gibberish.init( 44100*60*60, ctx ).then( processorNode => {
+      Gibberish.init( 44100*60*20, ctx ).then( processorNode => {
         // XXX remove once gibber.core.lib has been properly integrated 
         Audio.Core.Audio = Audio.Core.audio = Audio
 
@@ -4858,7 +4878,6 @@ const Audio = {
         Audio.node = processorNode
         Audio.Gen = Gen( Audio )
         Audio.Gen.init()
-        //Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
         Audio.Theory.init( window.Gibber )
         Audio.Ugen = Ugen
@@ -4897,7 +4916,7 @@ const Audio = {
         //const __start = Audio.instruments.Synth().connect()
         //__start.disconnect()
 
-        //Audio.Gibberish.genish.gen.histories.clear()
+        //Audio.Gibberish.genishi.gen.histories.clear()
         Audio.clear()
 
         resolve( [Audio,'Audio'] )
@@ -4905,6 +4924,58 @@ const Audio = {
     })
     
     return p
+  },
+
+  restart() {
+    Gibber.clear()
+    Gibberish.worklet.port.close()
+    window.w = Gibberish.worklet
+    Gibberish.worklet.disconnect()
+
+    Gibberish.init( 44100*60*20, undefined, 'worklet', true ).then( processorNode => {
+      Audio.out = Gibberish.output
+      Audio.node = processorNode
+
+      Audio.Theory.deleteProperties()
+      Audio.Theory.init( window.Gibber )
+
+      Audio.initialized = true
+      Audio.node = processorNode
+      Audio.Out = Gibberish.output
+
+      Audio.Gen = Gen( Audio )
+      Audio.Gen.init()
+      Audio.Gen.export( Audio.Gen.ugens )
+
+      Audio.WavePattern = WavePattern( Audio )
+      Audio.createUgens()
+        
+      Audio.Clock.init( Audio.Gen, Audio )
+
+      Gibberish.worklet.port.__postMessage = Gibberish.worklet.port.postMessage
+      Gibberish.worklet.port.postMessage = function( dict ) {
+        if( Audio.shouldDelay === true ) dict.delay = true
+
+        Gibberish.worklet.port.__postMessage( dict )
+      }
+
+      Audio.export( window )
+      Gibber.export( window )
+
+      const memIdx = Object.keys( Gibberish.memory.list ).reverse()[0]
+      this.__memoryEnd = parseInt( memIdx ) + Gibberish.memory.list[ memIdx ]
+
+      // XXX this forces the gibberish scheduler to start
+      // running, but it's about as hacky as it can get...
+      const __start = Audio.instruments.Synth().connect()
+      __start.disconnect()
+
+      //Audio.Gibberish.genishi.gen.histories.clear()
+
+      //Audio.clear()
+      console.log( 'audio engine successfully restarted.' )
+      Audio.publish( 'restart' )
+    })
   },
 
   // XXX stop clock from being cleared.
@@ -4963,7 +5034,7 @@ const Audio = {
     const Pattern = this.Core.__Pattern
     Pattern.transfer( this, Pattern.toString() )
 
-    this.Make = this.Make( this )
+    this.Make = this.__Make( this )
     
     const drums = require( './drums.js' )( this )
     Object.assign( this, drums )
@@ -5024,6 +5095,8 @@ const Audio = {
       })
 
       wrappedTo[ name ] = f
+      //to[ '__'+name].value = f
+
     }else if( from.type === 'gen' ) {
       // gen objects can be referred to without the graphics/audio abstraction,
       // in which case they will have no .render() function, and don't need to be rendered
@@ -5039,7 +5112,7 @@ const Audio = {
     const setter = v => {
       let value, shouldSend = true
 
-      if( typeof v === 'number' || typeof v === 'string' ) {
+      if( typeof v === 'number' || typeof v === 'string' || v === null ) {
         value = transform !== null ? transform( v ) : v
 
         if( isPoly === true ) {
@@ -5062,15 +5135,42 @@ const Audio = {
       }else if( typeof v === 'object' && v !== null && v.type === 'gen' ) {
         // gen objects can be referred to without the graphics/audio abstraction,
         // in which case they will have no .render() function, and don't need to be rendered
+
+        v = transform !== null ? transform( v ) : v       
         const gen = v.render !== undefined ? v.render() : v 
 
-        obj['__'+ name ].value = gen
+        obj['__'+ name ].value = gen 
         value = { id: gen.id }
-      }else{
-        obj[ '__'+name].value = v
-        value = v !== null ? { id:v.id } : v
+      }else if( typeof v === 'object' ) { //&& typeof v !== null ) {
+        //if( obj.__useMapping === false || name === 'input' ) {
+        //  obj[ '__'+name].value = v
+        //  value = v !== null ? { id:v.id } : v
+        //}else{
+        //  //Audio.createMapping( v, obj, name, obj.__wrapped__ )
+        //  const f = obj[ '__' + name ].follow = Follow({ input: v })
+
+        //  let m = f.multiplier
+        //  Object.defineProperty( obj[ name ], 'multiplier', {
+        //    get() { return m },
+        //    set(v) { m = v; f.multiplier = m }
+        //  })
+
+        //  let o = f.offset
+        //  Object.defineProperty( obj[ name ], 'offset', {
+        //    get() { return o },
+        //    set(v) { o = v; f.offset = o }
+        //  })
+
+          //wrappedTo[ name ] = f
+          //obj[ '__'+name ].value = f.__wrapped__
+          //value = { id:f.id }
+          obj[ '__'+name ].value = v.__wrapped__
+          value = { id:v.id }
+        //}
+               //
+        //obj[ '__'+name].value = v
+        //value = v !== null ? { id:v.id } : v
       }
-      //Audio.createMapping( v, obj, name, obj.__wrapped__ )
 
       if( Gibberish.mode === 'worklet' && shouldSend === true ) {
         Gibberish.worklet.port.postMessage({
@@ -5083,6 +5183,7 @@ const Audio = {
       if( post !== null ) {
         post.call( obj )
       }     
+      if( Gibberish.mode === 'worklet' ) Audio.publish( `property.set:${obj.id}`, obj, v )
     }
 
     return setter
@@ -5158,7 +5259,7 @@ const Audio = {
 
 module.exports = Audio
 
-},{"./analysis.js":80,"./binops.js":82,"./busses.js":83,"./clock.js":84,"./drums.js":85,"./effects.js":86,"./ensemble.js":87,"./envelopes.js":88,"./external/audioworklet-polyfill.js":89,"./filters.js":92,"./freesound.js":93,"./gen.js":94,"./instruments.js":96,"./make.js":97,"./oscillators.js":98,"./presets.js":99,"./theory.js":114,"./ugen.js":115,"./utility.js":116,"./waveObjects.js":117,"./wavePattern.js":118,"gibberish-dsp":168}],82:[function(require,module,exports){
+},{"./analysis.js":81,"./binops.js":83,"./busses.js":84,"./clock.js":85,"./drums.js":86,"./effects.js":87,"./ensemble.js":88,"./envelopes.js":89,"./external/audioworklet-polyfill.js":90,"./filters.js":93,"./freesound.js":94,"./gen.js":95,"./instruments.js":97,"./make.js":98,"./oscillators.js":99,"./presets.js":100,"./theory.js":117,"./ugen.js":118,"./utility.js":119,"./waveObjects.js":120,"./wavePattern.js":121,"gibberish-dsp":171}],83:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5198,7 +5299,7 @@ const Binops = {
 
 module.exports = Binops
 
-},{"./ugen.js":115,"gibberish-dsp":168}],83:[function(require,module,exports){
+},{"./ugen.js":118,"gibberish-dsp":171}],84:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5250,16 +5351,24 @@ const Busses = {
 
 module.exports = Busses
 
-},{"./ugen.js":115,"gibberish-dsp":168}],84:[function(require,module,exports){
+},{"./ugen.js":118,"gibberish-dsp":171}],85:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 
+// XXX must use form key:function() {} due to serialization
 const Clock = {
   __beatCount:0,
   id:null,
   nogibberish:true,
   bpm:140,
+  __lastBPM:140,
   seq:null,
+
+  export:function( obj ) {
+    obj.btos = Clock.btos.bind( Clock )
+    obj.btoms = Clock.btoms.bind( Clock )
+    obj.stob = Clock.stob.bind( Clock )
+  },
 
   store:function() { 
     Gibberish.Clock = this
@@ -5311,12 +5420,13 @@ const Clock = {
         post: 'store'    
       })
       
-      let bpm = 140
+      let bpm = this.__lastBPM
       Object.defineProperty( this, 'bpm', {
         get() { return bpm },
         set(v){ 
           bpm = v
           if( Gibberish.mode === 'worklet' ) {
+            this.__lastBPM = v
             if( Audio.Gibber.Tidal !== undefined ) Audio.Gibber.Tidal.cps = bpm/120/2
             Gibberish.worklet.port.postMessage({
               address:'set',
@@ -5346,7 +5456,7 @@ const Clock = {
       //  name:'audioClock'
       //})
 
-      this.bpm = 140
+      this.bpm = this.__lastBPM
     }
 
     if( Gibberish.mode === 'processor' )
@@ -5424,7 +5534,7 @@ const Clock = {
 
 module.exports = Clock
 
-},{"gibberish-dsp":168,"serialize-javascript":130}],85:[function(require,module,exports){
+},{"gibberish-dsp":171,"serialize-javascript":133}],86:[function(require,module,exports){
 const Ugen = require( './ugen.js' )
 const Presets = require( './presets.js' )
 
@@ -5545,6 +5655,7 @@ module.exports = function( __Audio ) {
       if( props.__presetInit__ !== undefined ) props.__presetInit__.call( drums, Audio )
     }
 
+    drums.name = 'Drums'
     return drums
   }
 
@@ -5608,13 +5719,14 @@ module.exports = function( __Audio ) {
     //  return drums
     //}
 
+    drums.name = 'EDrums'
     return drums
   }
 
   return { Drums, EDrums }
 }
 
-},{"./presets.js":99,"./ugen.js":115}],86:[function(require,module,exports){
+},{"./presets.js":100,"./ugen.js":118}],87:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5628,10 +5740,13 @@ const Effects = {
       const gibberishConstructor = Gibberish.effects[ effectName ]
 
       const methods = Effects.descriptions[ effectName ] === undefined ? null : Effects.descriptions[ effectName ].methods
+
+      // XXX how do we make this more generic for any model of reverb / any type of distortion etc.
+      const replaceName = effectName === 'Freeverb' ? 'Reverb' : effectName 
       const description = { 
         properties:gibberishConstructor.defaults || {}, 
         methods:methods,
-        name:effectName,
+        name:replaceName,
         category:'effects'
       }
       description.properties.type = 'fx'
@@ -5639,7 +5754,37 @@ const Effects = {
       const shouldUsePool = poolEffects.indexOf( effectName ) > -1 
 
       effects[ effectName ] = Ugen( gibberishConstructor, description, Audio, shouldUsePool )
+      
+      effects[ effectName ].presets = Audio.Presets.effects[ effectName ] 
+      if( effects[ effectName ].presets !== undefined ) {
+        effects[ effectName ].presets.inspect = function() {
+          console.table( this )
+        }
+      }else{
+        effects[ effectName ].presets = { inspect() { console.log( `${effectName} has no presets.` ) } }
+      }
     }
+
+    effects.Reverb = function( ...args ) {
+      let argprops = null
+      if( args.length === 1 ) {
+        if( typeof args[0] === 'object' ) argprops = args[0]
+      }else if( args.length === 2 ) {
+        argprops = args[1]
+      }
+      const props = Object.assign( {}, { model:0 }, argprops )
+
+      let ugen = null
+      switch( props.model ) {
+        case 0:
+        default:
+          ugen = effects.Freeverb(...args )
+          break;
+      }
+
+      return ugen
+    }
+
     return effects
   },
 
@@ -5651,7 +5796,7 @@ const Effects = {
 
 module.exports = Effects
 
-},{"./ugen.js":115,"gibberish-dsp":168}],87:[function(require,module,exports){
+},{"./ugen.js":118,"gibberish-dsp":171}],88:[function(require,module,exports){
 module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
   const Ensemble = function( props ) {
@@ -5683,7 +5828,8 @@ module.exports = function( Audio ) {
       cp[ dict.name ] = target
     }
 
-    cp.play = function( key ) {
+    cp.play = function( __key ) {
+      const key = isNaN(__key) ? __key : parseInt( __key ) 
       if( Gibberish.mode === 'processor' ) {
         Gibberish.worklet.ugens.get( this[ key ].target )[ this[ key ].method ]( ...this[ key ].args )
       }else{
@@ -5710,13 +5856,18 @@ module.exports = function( Audio ) {
     }
 
     ens.tidal = (pattern,num=0) => {
-      if( ens.tidals[ num ] !== undefined ) ens.tidals[ num ].stop()
-
-      ens.tidals[ num ] = Audio.Gibber.Tidal({
+      const t =  Audio.Gibber.Tidal({
         target:ens,
         key:'play',
         pattern
-      }).start()
+      })
+
+      if( t !== null ) {
+        if( ens.tidals[ num ] !== undefined ) ens.tidals[ num ].stop()
+
+        ens.tidals[ num ] = t
+        t.start()
+      }
 
       return ens
     }
@@ -5740,7 +5891,7 @@ module.exports = function( Audio ) {
   return Ensemble
 }
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5773,9 +5924,9 @@ const Envelopes = {
 
 module.exports = Envelopes
 
-},{"./ugen.js":115,"gibberish-dsp":168}],89:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"./realm.js":90,"dup":27}],90:[function(require,module,exports){
+},{"./ugen.js":118,"gibberish-dsp":171}],90:[function(require,module,exports){
+arguments[4][28][0].apply(exports,arguments)
+},{"./realm.js":91,"dup":28}],91:[function(require,module,exports){
 
 
 /**
@@ -5822,7 +5973,7 @@ module.exports = function Realm (scope, parentElement) {
   this.exec = win.$hook.call(scope, scope, console);
 }
 
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 
 // See all scales at: http://abbernie.github.io/tune/scales.html
 
@@ -6050,9 +6201,13 @@ Tune.prototype.root = function(newmidi, newfreq) {
 
 module.exports = Tune
 
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
+
+const filterNames = [
+  "none", "Filter24Moog", "Filter24TB303", "Filter12SVF", "Filter12Biquad", "Filter24Classic"
+]
 
 const Filters = {
   create( Audio ) {
@@ -6077,6 +6232,17 @@ const Filters = {
 
     filters.LPF = filters.Filter24Moog
 
+    filters.Filter = function( props ) {
+      if( props === undefined ) props = { model: 1 }
+      if( props.model === undefined ) props.model = 1
+
+      const name = filterNames[ props.model ]
+
+      delete props.model
+
+      return filters[ name ]( props ) 
+    }
+
     const description = { 
       properties: Object.assign( {}, Gibberish.filters[ 'Filter12Biquad' ].defaults, { mode:1 } ),
       methods:null,
@@ -6098,112 +6264,151 @@ const Filters = {
 
 module.exports = Filters
 
-},{"./ugen.js":115,"gibberish-dsp":168}],93:[function(require,module,exports){
+},{"./ugen.js":118,"gibberish-dsp":171}],94:[function(require,module,exports){
 module.exports = function( Audio ) {
   const token = '6a00f80ba02b2755a044cc4ef004febfc4ccd476'
 
-  const Freesound = function( query ) {
-    const sampler = Audio.instruments.Sampler({ panVoices:true })
-    queries[ typeof query ]( query, sampler )
+  const Freesound = function( query, options ) {
+    const props = Object.assign( { count:1, maxVoices:1, panVoices:true }, typeof query === 'object' ? query : options )
+    const sampler = Audio.instruments.Multisampler( props )
+    setTimeout( ()=>queries[ typeof query ]( query, sampler, props.count ), 0 )
+ 
     return sampler
   }
 
-  Freesound.loaded = {};
+  Freesound.loaded = {}
+  Freesound.queries = {}
+
+  Freesound.defaults = {
+    sort: 'downloads',
+    single:true,
+    filename:false,
+    min: 0,
+    max: .5,
+    reverse:false,
+    count:15
+  }
+
+  // add Freesound[5] notation...
+  for( let i = 0; i < 20; i++ ) {
+    Freesound[ i ] = function( ...args ) {
+      if( args.length > 0 ) {
+        if( typeof args[0] === 'string' ) {
+          if( args.length > 1 ) {
+            if( typeof args[1] === 'object' ) {
+              args[1].maxVoices = i || 1
+            } 
+          }else{
+            args[1] = { maxVoices:i || 1 }
+          }
+        }else if( typeof args[0] === 'object' ) {
+          args[0].maxVoices = i || 1
+        }
+      }else{
+        args[0] = { maxVoices:i || 1 }
+      } 
+
+      return Freesound( ...args ) 
+    }
+  }
 
   const queries = {
-    number( id, sampler ) {
+    number( id, sampler, num=0 ) {
       if (typeof Freesound.loaded[ id ] === 'undefined') {
         fetch( `https://freesound.org/apiv2/sounds/${id}/?&format=json&token=${token}` )
           .then( response => response.json() )
           .then( json => {
             const path = json.previews[ 'preview-hq-mp3' ]
-
-            sampler.path = path
-
-            Audio.Gibberish.proxyEnabled = false
-
-            sampler.__wrapped__.loadFile( path )
-
-            sampler.__wrapped__.onload = buffer => {
-              // XXX uncomment next line to reinstate memoization of audio buffers (with errors)
-              //Freesound.loaded[ filename ] = buffer
-              console.log( `freesound file #${id} loaded.` )
-            }
-
-            Audio.Gibberish.proxyEnabled = true
+            
+            sampler.loadSample( path )
+            //console.log( 'loading:', path )
           }) 
       }else{
         if( Audio.Gibberish.mode === 'worklet' ) {
-          sampler.loadBuffer( Freesound.loaded[ id ] )
+          sampler.samplers[ num ].loadBuffer( Freesound.loaded[ id ] )
         }
       }
     },
 
     // search for text query, and then use returned id to 
     // fetch by number 
-    string( query, sampler ) {
-      console.log( 'Searching freesound for ' + query )
-      fetch( `https://freesound.org/apiv2/search/text/?query=${query}&token=${token}` )
+    string( query, sampler, count, originalQuery ) {
+      sampler.length = count
+      let queryString ='https://freesound.org/apiv2/search/text/?'
+
+      console.group('Querying Freesound for: ' + originalQuery || query )
+      if( query.indexOf( 'query' ) > -1 ) {
+        queryString += query
+        queryString += `&token=${token}&fields=name,id,previews,username,license&page_size=${count} `
+      }else{
+        queryString += `query=${query}&token=${token}&fields=name,id,previews,username,license&filter=original_filename:${query.split(' ')[0]} ac_single_event:true&sort=downloads_desc&page_size=${count}`
+
+      }
+
+      fetch( queryString )
         .then( data => data.json() )
         .then( sounds => {
-          const filename = sounds.results[0].name
-          const id = sounds.results[0].id
-
-          if( Freesound.loaded[ filename ] === undefined ) {
-            console.log( `loading freesound file: ${filename}` )
-            queries.number( id, sampler )
+          if( sounds.results.length > 0 ) {
+            if( sounds.results.length > count ) sounds.results = sounds.results.slice(0,count)
+            console.log(`%c${sounds.results.length} sounds found. Starting downloads:`, `background:black;color:white`)
           }else{
-            // XXX memoing the files causes an error
-            if( Audio.Gibberish.mode === 'worklet' ) {
-              sampler.loadBuffer( Freesound.loaded[ filename ] )
+            console.log(`%cNo sounds were found for this query!`, `background:red;color:white`)
+          }
+          sampler.length = count < sounds.results.length ? count : sounds.results.length
+          console.table( sounds.results.map( r=>({file:r.name,author:r.username,license:'CC/'+r.license.split('/').slice(4).join('/')}) ) )
+          for( let i = 0; i < sampler.length; i++ ) {
+            const result = sounds.results[i]
+            if( result !== undefined ) {
+              const filename = result.name,
+                    id = result.id,
+                    url = result.previews[ 'preview-hq-mp3' ] 
+
+              if( Freesound.loaded[ url ] === undefined ) {
+                //console.log( `%c${filename}`, `color:white;background:#333333;` )
+
+                sampler.loadSample( url, (__sampler,buffer) => {
+                  Freesound.loaded[ url ] = buffer.data.buffer
+                })
+
+              }else{
+                // XXX memoing the files causes an error
+                if( Gibberish.mode === 'worklet' ) {
+                  //console.log( 'reusing freesound file:', filename )
+                  sampler.loadSample( url, null, Freesound.loaded[ url ] )
+                }
+              }
             }
           }
-      })
+          console.groupEnd()
+        })
     },
 
-    // search by text query with filters/sorting,
-    // pick first hit or random according to query,
-    // fetch by associated id number 
-    object( query, sampler ) {
-      var key = query,
-          query = key.query,
-          filter = key.filter || null,
-          sort = key.sort || 'rating_desc',
-          page = key.page || 1;
-      
-      pick = key.pick
+    object( queryObj, sampler ) {
+      const q = Object.assign( {}, Freesound.defaults, queryObj )
+ 
+      let query = `query=${q.query}&format=json`
+  
+      query += `&filter=duration:[${q.min} TO ${q.max}]`
+      if( q.single ) query += ` ac_single_event:true`
+      if( q.filename ) query += ` original_filename:${q.query}`
 
-      let path = `https://freesound.org/apiv2/search/text/?&query=${query}&format=json`
+      let sort = q.sort
 
-      if( filter !== null ) path += `&filter=${filter}`
-      path += `&sort=${sort}`
-      path += `&page=${page}`
-      path += `&token=${token}`
+      // user error check
+      if( sort === 'ratings' ) sort = 'rating'
 
-      if( typeof Freesound.loaded[ query ] === 'undefined') {
-        fetch( encodeURI( path ) )
-          .then( data => data.json() )
-          .then( json => {
-            const idx = pick === 'random'
-              ? Math.floor( Math.random() * json.results.length )
-              : 0
+      sort += q.reverse ? '_asc' : '_desc'
 
-            console.log( 'loading:', json.results[ idx ].name )
-            queries.number( json.results[ idx ].id, sampler )
-          })
-      }else{
-        // XXX memoing the files causes an error
-        if( Audio.Gibberish.mode === 'worklet' ) {
-          sampler.loadBuffer( Freesound.loaded[ query ] )
-        }
-      }
+      query += `&sort=${sort}`
+
+      queries.string( query, sampler, q.count, q.query )
     }
   }
 
   return Freesound
 }
 
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 module.exports = function( Audio ) {
   
 const binops = [ 
@@ -6215,7 +6420,7 @@ const binops = [
 const monops = [
   'abs','acos','acosh','asin','asinh','atan','atan2','atanh','cos','cosh',
   'sin','sinh','tan','tanh', 'floor',
-  'ceil', 'round', 'sign', 'trunc', 'fract', 'param', 'in'
+  'ceil', 'round', 'sign', 'trunc', 'fract', 'param', 'in',
 ]
 
 const noops = [
@@ -6391,6 +6596,8 @@ const Gen  = {
   functions: {
     phasor: { properties:[ '0','1' ],  str:'phasor' },
     cycle:  { properties:[ '0' ],  str:'cycle' },
+    phasorN:{ properties:[ '0','1' ],  str:'phasorN' },
+    cycleN: { properties:[ '0' ],  str:'cycleN' },
     train:  { properties:[ '0','1' ],  str:'train' },
     rate:   { properties:[ '0' ], str:'rate' },
     noise:  { properties:[], str:'noise' },
@@ -6401,7 +6608,8 @@ const Gen  = {
     clamp:  { properties: ['0', '1', '2'], str:'clamp' },
     ternary:{ properties: ['0', '1', '2'], str:'switch' },
     selector:{ properties: ['0', '1', '2'], str:'selector' },
-    peek:   { properties:['0','1'], str:'peek' } 
+    peek:   { properties:['0','1'], str:'peek' },
+    data:   { properties:[], str:'data' }
   },
 
   _count: 0,
@@ -6517,8 +6725,11 @@ const Gen  = {
   },
 
   composites: { 
-    sine( frequency=2, amp=4, center=0 ) {
-      return Gen.composites.lfo( 'sine', frequency, amp, center )
+    sine( frequency=2, amp=4, center=0, shouldRound=false ) {
+      return Gen.composites.lfo( 'sine', frequency, amp, center, shouldRound )
+    },
+    siner( frequency=2, amp=4, center=0 ) {
+      return Gen.composites.lfo( 'sine', frequency, amp, center, true )
     },
     square( frequency=2, amp=4, center=0 ) {
       return Gen.composites.lfo( 'square', frequency, amp, center )
@@ -6529,7 +6740,7 @@ const Gen  = {
     tri( frequency=2, amp=4, center=0 ) {
       return Gen.composites.lfo( 'tri', frequency, amp, center )
     },
-    lfo( type = 'sine', frequency = 2, amp = .5, center = .5 ) {
+    lfo( type = 'sine', frequency = 2, amp = .5, center = .5, shouldRound = false ) {
       const g = Gen.ugens 
       const gibberish= Audio.Gibberish
       let osc
@@ -6537,27 +6748,40 @@ const Gen  = {
       switch( type ) {
         case 'saw':
           osc = g.phasor( frequency )
-          break;
+          break
         case 'square':
-          osc = g.gt( g.phasor( frequency ), 0 ) 
-          break;
+          osc = g.add( g.mul( g.gt( g.phasor( frequency ), 0 ), 2 ), -1 )
+          break
         case 'noise':
-          osc = g.noise()
-          break;
-        //case 'triangle':
-        //case 'tri':
-        //  osc = Gen.wavetable( frequency, { buffer:gibberish.oscillators.Triangle.buffer, name:'triangle' } )
-        //  break;
+          osc = g.sub( g.mul( g.noise(), 2 ), 1 )
+          break
+        case 'triangle':
+        case 'tri':
+          const p = g.phasor( frequency )
+          osc = g.sub(
+            1, 
+            g.mul( 
+              4, 
+              g.abs(
+                g.sub( 
+                  g.round( p ),
+                  p
+                )
+              )
+            )
+          )
+            
+          break
         case 'sine':
         default:
           osc = g.cycle( frequency )
-          break;
+          break
       }
 
       const _mul   = g.mul( osc, amp ),
             _add   = g.add( center, _mul ) 
 
-      const lfo = Gen.make( _add )
+      const lfo = shouldRound ? Gen.make( g.round( _add ) ) : Gen.make( _add )
 
       Object.defineProperties( lfo, {
         frequency: {
@@ -6818,7 +7042,7 @@ Gen.init()
 return Gen 
 }
 
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 const Gibber = require( 'gibber.core.lib' )
 const Audio  = require( './audio.js' )
 
@@ -6842,7 +7066,7 @@ Gibber.init = function( audioOptions ) {
 
 module.exports = Gibber
 
-},{"./audio.js":81,"gibber.core.lib":123}],96:[function(require,module,exports){
+},{"./audio.js":82,"gibber.core.lib":126}],97:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -6863,8 +7087,50 @@ const Instruments = {
       }
 
       //const shouldPool = pooledInstruments.indexOf( instrumentName ) > -1
-      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false )
+      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false ) 
 
+      // for poly notation like Synth[3]()
+      // create or extend dictionary with maxVoices property
+      for( let i = 0; i < 20; i++ ) {
+        instruments[ instrumentName ][i] = function( ...args ) {
+          if( args.length > 0 ) {
+            if( typeof args[0] === 'string' ) {
+              if( args.length > 1 ) {
+                if( typeof args[1] === 'object' ) {
+                  args[1].maxVoices = i || 1
+                } 
+              }else{
+                args[1] = { maxVoices:i || 1 }
+              }
+            }else if( typeof args[0] === 'object' ) {
+              args[0].maxVoices = i || 1
+            }
+          }else{
+            args[0] = { maxVoices:i || 1 }
+          } 
+
+          // use monophonic version if voice count is 1 or less
+          let name
+          if( i > 1 ) {
+            name = instrumentName === 'Sampler' ? 'Multisampler' : 'Poly'+instrumentName
+            if( name === 'PolyMonosynth' ) name = 'PolyMono' 
+          }else{
+            name = instrumentName
+          }
+
+          return instruments[ name ]( ...args )
+        }
+      }
+
+
+      instruments[ instrumentName ].presets = Audio.Presets.instruments[ instrumentName ] 
+      if( instruments[ instrumentName ].presets !== undefined ) {
+        instruments[ instrumentName ].presets.inspect = function() {
+          console.table( this )
+        }
+      }else{
+        instruments[ instrumentName ].presets = { inspect() { console.log( `${instrumentName} has no presets.` ) } }
+      }
     }
     instruments.Pluck = instruments.Karplus
     return instruments
@@ -6899,10 +7165,10 @@ const Instruments = {
       methods:[ 'note','trigger' ],
     },
     Sampler:{
-      methods:[ 'note','trigger', 'loadFile', 'loadBuffer' ],
+      methods:[ 'note', 'trigger', 'loadFile', 'loadBuffer' ],
     },
     Multisampler:{
-      methods:[ 'note','trigger', 'pick', 'pickFile'], 
+      methods:[ 'note', 'trigger', 'pick', 'pickFile', 'pickplay', 'loadSample', 'setpan', 'setrate' ], 
     },
     Snare:{
       methods:[ 'note','trigger' ],
@@ -6943,7 +7209,7 @@ const Instruments = {
 
 module.exports = Instruments
 
-},{"./ugen.js":115,"gibberish-dsp":168}],97:[function(require,module,exports){
+},{"./ugen.js":118,"gibberish-dsp":171}],98:[function(require,module,exports){
 module.exports = function( Gibber ) {
   const Gibberish = Gibber.Gibberish
 
@@ -6999,7 +7265,7 @@ sine.frequency.seq( [110,220,330], 1/8 )
 sine.connect()
 */
 
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7032,7 +7298,7 @@ const Oscillators = {
 
 module.exports = Oscillators
 
-},{"./ugen.js":115,"gibberish-dsp":168}],99:[function(require,module,exports){
+},{"./ugen.js":118,"gibberish-dsp":171}],100:[function(require,module,exports){
 const Presets = {
   process( description, args, Audio ) {
     let output
@@ -7041,6 +7307,7 @@ const Presets = {
     if( typeof args[0] === 'object' ) {
       output = args[ 0 ]  
     }else if( typeof args[0] === 'string' ){
+      if( args[0] === 'inspect' ) return null
       output = {}
       const preset = Presets[ description.category ][ description.name ][ args[0] ]
 
@@ -7059,7 +7326,7 @@ const Presets = {
           output.__presetInit__ = preset.presetInit 
         } 
       }else{
-        console.warn( `The preset ${args[0]} for the ${description.name} does not exist.` )
+        console.warn( `The preset ${args[0]} for the ${description.category.slice(0,-1)} ${description.name} does not exist.` )
       }
       // if there is an extra argument to modify the preset...
       if( args.length > 1 ) {
@@ -7096,6 +7363,8 @@ const Presets = {
     Chorus: require( './presets/chorus_presets.js' ),
     Distortion: require( './presets/distortion_presets.js' ),
     Flanger: require( './presets/flanger_presets.js' ),
+    Reverb: require( './presets/reverb.js' ),
+    Delay: require( './presets/delay_presets.js' ),
   },
 
   misc: {
@@ -7104,13 +7373,14 @@ const Presets = {
 
 }
 
+Presets.instruments.Sampler   = Presets.instruments.Multisampler
 Presets.instruments.PolySynth = Presets.instruments.Synth
 Presets.instruments.PolyFM = Presets.instruments.FM
 Presets.instruments.PolyMono = Presets.instruments.Monosynth
 
 module.exports = Presets
 
-},{"./presets/bus2_presets.js":100,"./presets/chorus_presets.js":101,"./presets/complex_presets.js":102,"./presets/distortion_presets.js":103,"./presets/drums_presets.js":104,"./presets/edrums_presets.js":105,"./presets/flanger_presets.js":106,"./presets/fm_presets.js":107,"./presets/hat_presets.js":108,"./presets/kick_presets.js":109,"./presets/monosynth_presets.js":110,"./presets/multisampler.js":111,"./presets/snare_presets.js":112,"./presets/synth_presets.js":113}],100:[function(require,module,exports){
+},{"./presets/bus2_presets.js":101,"./presets/chorus_presets.js":102,"./presets/complex_presets.js":103,"./presets/delay_presets.js":104,"./presets/distortion_presets.js":105,"./presets/drums_presets.js":106,"./presets/edrums_presets.js":107,"./presets/flanger_presets.js":108,"./presets/fm_presets.js":109,"./presets/hat_presets.js":110,"./presets/kick_presets.js":111,"./presets/monosynth_presets.js":112,"./presets/multisampler.js":113,"./presets/reverb.js":114,"./presets/snare_presets.js":115,"./presets/synth_presets.js":116}],101:[function(require,module,exports){
 module.exports = {
 
   'spaceverb': {
@@ -7192,7 +7462,7 @@ module.exports = {
   },
 }
 
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports = {
 
   lush: {
@@ -7201,14 +7471,16 @@ module.exports = {
     slowGain:3.5,
     slowFrequency:1,
     presetInit: function( audio ) {
+      const gen = audio.Gen.ugens
       this.mod1 = audio.Gen.make( audio.Gen.ugens.cycle(.1) ).connect( this.fastFrequency )
+      //this.fastGain =  audio.Gen.make( gen.add( .425, gen.cycle(.1) ) )
       this.mod2 = audio.Gen.make( audio.Gen.ugens.cycle(.05) ).connect( this.slowGain )
+      //this.slowGain = audio.Gen.make( gen.add( 4.5, gen.cycle(.05) ) )
     }
   },
 
   warbly: {
     fastFrequency:4,
-    fastGain:.425,
     slowGain:3,
     slowFrequency:1,
     fastGain:1.5,
@@ -7220,13 +7492,14 @@ module.exports = {
 
 }
 
-},{}],102:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 module.exports = {
   'plucked': {
     bias:.35,
     gain:1,
     decay:1/5,
-    pregain:4
+    pregain:4,
+    description:'a short, clean sounding preset with a minimum of distortion/wavefolding.'
   },
   
   'perc': {
@@ -7234,11 +7507,39 @@ module.exports = {
     gain:1,
     decay:1/5,
     pregain:5,
+    description:'a short, clean sounding preset with a minimum of distortion/wavefolding.'
+  },
+
+  stab: {
+    waveform:'saw', 
+    decay:1/4, 
+    bias:.1, 
+    filterMult:0, 
+    cutoff:.8, 
+    Q:.15, 
+    pregain:10, 
+    postgain:.25, 
+    filterModel:2, 
+    saturation:50,
+    presetInit( audio ) {
+      this.fx.push( audio.effects.Distortion('earshred') )
+    },
+    description:'a short, heavily distorted and filtered sound. in addition to the standard Complex wavefolding, this preset also adds an additional Distortion effect (preset earsred).'
   }
 
 }
 
-},{}],103:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
+module.exports = {
+  '1/3' : {
+    time:1/3, feedback:.35, wetdry:1 
+  },
+  '1/6' : {
+    time:1/6, feedback:.35, wetdry:1
+  }
+}
+
+},{}],105:[function(require,module,exports){
 module.exports = {
 
   crunch: {
@@ -7266,7 +7567,7 @@ module.exports = {
   }
 }
 
-},{}],104:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -7302,7 +7603,7 @@ module.exports = {
 
 }
 
-},{}],105:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -7370,7 +7671,7 @@ module.exports = {
 
 }
 
-},{}],106:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 module.exports = {
   moderate: {
     feedback: .25,
@@ -7386,7 +7687,7 @@ module.exports = {
 
 }
 
-},{}],107:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = {
 
   bass : {
@@ -7432,7 +7733,7 @@ module.exports = {
     attack:1/256,
     decay:1/16,
     octave:-2,
-    filterType:2,
+    filterModel:2,
     saturation:200,
     Q:.25,
     cutoff:.6835
@@ -7516,14 +7817,14 @@ module.exports = {
   }
 }
 
-},{}],108:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = {
   short: {
     decay:.01
   }
 }
 
-},{}],109:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 module.exports = {
 
   deep: {
@@ -7551,14 +7852,14 @@ module.exports = {
 
 }
 
-},{}],110:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 module.exports = {
 
   'short.dry' : { 
     attack: audio => audio.Clock.ms(.25), 
     decay: 1/12,
     cutoff:.3,
-    filterType:1,
+    filterModel:1,
     filterMult:3
   },
 
@@ -7570,7 +7871,7 @@ module.exports = {
     cutoff:.15,
     filterMult:1,
     Q:.3,
-    filterType:1,
+    filterModel:1,
     filterMode:1
   },
 
@@ -7582,7 +7883,7 @@ module.exports = {
     cutoff:1,
     filterMult:2.5,
     Q:.975,
-    filterType:1,
+    filterModel:1,
     filterMode:1
   },
   // not as bright / loud
@@ -7595,13 +7896,13 @@ module.exports = {
     filterMult:2.5,
     Q:.8,
     gain:.175,
-    filterType:1,
+    filterModel:1,
     filterMode:1
   },
 
   dirty: { 
     gain:.325,
-    filterType:2,
+    filterModel:2,
     attack:1/2048, 
     decay:1/4, 
     cutoff:1.5, 
@@ -7635,7 +7936,7 @@ module.exports = {
     cutoff:.15,
     filterMult:1,
     Q:.5,
-    filterType:1,
+    filterModel:1,
     filterMode:1,
     panVoices:true
   },
@@ -7729,7 +8030,7 @@ module.exports = {
     glide:1000,
     detune2:.001,
     detune3:-.001,
-    filterType:1,
+    filterModel:1,
     filterMult:4,
     Q:.5,
   },
@@ -7744,7 +8045,7 @@ module.exports = {
     octave3:0,
     cutoff:.5,
     glide:.9995,
-    filterType:1,
+    filterModel:1,
     filterMult:3,
     Q:.75,
   },
@@ -7758,7 +8059,7 @@ module.exports = {
     detune3:-.501,
     cutoff:.2,
     glide:5000,
-    filterType:1,
+    filterModel:1,
     filterMult:1.5,
     Q:.25,
   },
@@ -7775,7 +8076,7 @@ module.exports = {
     octave3:0,
     cutoff:.35,
     glide:1,
-    filterType:1,
+    filterModel:1,
     filterMult:3,
     Q:.5,
   },
@@ -7851,10 +8152,9 @@ module.exports = {
   },
 
   noise: {
-    resonance:20,
     decay:1/2,
     cutoff:.3,
-    glide:.99995,
+    glide:10000,
     detune3:0,
     detune2:0,
     filterMult:0,
@@ -7863,7 +8163,7 @@ module.exports = {
 
 }
 
-},{}],111:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 module.exports = {
 
   drums: { 
@@ -8001,53 +8301,62 @@ module.exports = {
       'resources/audiofiles/kicks/249248__netr-si__kick-14-1.wav',
       'resources/audiofiles/kicks/249249__netr-si__kick-13.wav',
       'resources/audiofiles/kicks/249250__netr-si__kick-17.wav',
-      //'resources/audiofiles/kicks/249251__netr-si__kick-16.wav',
-      //'resources/audiofiles/kicks/249252__netr-si__kick-67.wav',
-      //'resources/audiofiles/kicks/249253__netr-si__kick-68.wav',
-      //'resources/audiofiles/kicks/249254__netr-si__kick-65.wav',
-      //'resources/audiofiles/kicks/249255__netr-si__kick-66.wav',
-      //'resources/audiofiles/kicks/249256__netr-si__kick-63.wav',
-      //'resources/audiofiles/kicks/249257__netr-si__kick-64.wav',
-      //'resources/audiofiles/kicks/249258__netr-si__kick-61.wav',
-      //'resources/audiofiles/kicks/249259__netr-si__kick-62s.wav',
-      //'resources/audiofiles/kicks/249260__netr-si__kick-69.wav',
-      //'resources/audiofiles/kicks/249261__netr-si__kick-7.wav',
-      //'resources/audiofiles/kicks/249262__netr-si__kick-75.wav',
-      //'resources/audiofiles/kicks/249263__netr-si__kick-74.wav',
-      //'resources/audiofiles/kicks/249264__netr-si__kick-77.wav',
-      //'resources/audiofiles/kicks/249265__netr-si__kick-76.wav',
-      //'resources/audiofiles/kicks/249266__netr-si__kick-71.wav',
-      //'resources/audiofiles/kicks/249267__netr-si__kick-70.wav',
-      //'resources/audiofiles/kicks/249268__netr-si__kick-73.wav',
-      //'resources/audiofiles/kicks/249269__netr-si__kick-72.wav',
-      //'resources/audiofiles/kicks/249270__netr-si__kick-79.wav',
-      //'resources/audiofiles/kicks/249271__netr-si__kick-78.wav',
-      //'resources/audiofiles/kicks/249272__netr-si__kick-43.wav',
-      //'resources/audiofiles/kicks/249273__netr-si__kick-44.wav',
-      //'resources/audiofiles/kicks/249274__netr-si__kick-45.wav',
-      //'resources/audiofiles/kicks/249275__netr-si__kick-46.wav',
-      //'resources/audiofiles/kicks/249276__netr-si__kick-47.wav',
-      //'resources/audiofiles/kicks/249277__netr-si__kick-48.wav',
-      //'resources/audiofiles/kicks/249278__netr-si__kick-49.wav',
-      //'resources/audiofiles/kicks/249279__netr-si__kick-5.wav',
-      //'resources/audiofiles/kicks/249280__netr-si__kick-50.wav',
-      //'resources/audiofiles/kicks/249281__netr-si__kick-51.wav',
-      //'resources/audiofiles/kicks/249282__netr-si__kick-60.wav',
-      //'resources/audiofiles/kicks/249283__netr-si__kick-6.wav',
-      //'resources/audiofiles/kicks/249284__netr-si__kick-59.wav',
-      //'resources/audiofiles/kicks/249285__netr-si__kick-58.wav',
-      //'resources/audiofiles/kicks/249286__netr-si__kick-57.wav',
-      //'resources/audiofiles/kicks/249287__netr-si__kick-56.wav',
-      //'resources/audiofiles/kicks/249288__netr-si__kick-55.wav',
-      //'resources/audiofiles/kicks/249289__netr-si__kick-54.wav',
-      //'resources/audiofiles/kicks/249290__netr-si__kick-53.wav',
-      //'resources/audiofiles/kicks/249291__netr-si__kick-52.wav',
+      'resources/audiofiles/kicks/249251__netr-si__kick-16.wav',
+      'resources/audiofiles/kicks/249252__netr-si__kick-67.wav',
+      'resources/audiofiles/kicks/249253__netr-si__kick-68.wav',
+      'resources/audiofiles/kicks/249254__netr-si__kick-65.wav',
+      'resources/audiofiles/kicks/249255__netr-si__kick-66.wav',
+      'resources/audiofiles/kicks/249256__netr-si__kick-63.wav',
+      'resources/audiofiles/kicks/249257__netr-si__kick-64.wav',
+      'resources/audiofiles/kicks/249258__netr-si__kick-61.wav',
+      'resources/audiofiles/kicks/249259__netr-si__kick-62s.wav',
+      'resources/audiofiles/kicks/249260__netr-si__kick-69.wav',
+      'resources/audiofiles/kicks/249261__netr-si__kick-7.wav',
+      'resources/audiofiles/kicks/249262__netr-si__kick-75.wav',
+      'resources/audiofiles/kicks/249263__netr-si__kick-74.wav',
+      'resources/audiofiles/kicks/249264__netr-si__kick-77.wav',
+      'resources/audiofiles/kicks/249265__netr-si__kick-76.wav',
+      'resources/audiofiles/kicks/249266__netr-si__kick-71.wav',
+      'resources/audiofiles/kicks/249267__netr-si__kick-70.wav',
+      'resources/audiofiles/kicks/249268__netr-si__kick-73.wav',
+      'resources/audiofiles/kicks/249269__netr-si__kick-72.wav',
+      'resources/audiofiles/kicks/249270__netr-si__kick-79.wav',
+      'resources/audiofiles/kicks/249271__netr-si__kick-78.wav',
+      'resources/audiofiles/kicks/249272__netr-si__kick-43.wav',
+      'resources/audiofiles/kicks/249273__netr-si__kick-44.wav',
+      'resources/audiofiles/kicks/249274__netr-si__kick-45.wav',
+      'resources/audiofiles/kicks/249275__netr-si__kick-46.wav',
+      'resources/audiofiles/kicks/249276__netr-si__kick-47.wav',
+      'resources/audiofiles/kicks/249277__netr-si__kick-48.wav',
+      'resources/audiofiles/kicks/249278__netr-si__kick-49.wav',
+      'resources/audiofiles/kicks/249279__netr-si__kick-5.wav',
+      'resources/audiofiles/kicks/249280__netr-si__kick-50.wav',
+      'resources/audiofiles/kicks/249281__netr-si__kick-51.wav',
+      'resources/audiofiles/kicks/249282__netr-si__kick-60.wav',
+      'resources/audiofiles/kicks/249283__netr-si__kick-6.wav',
+      'resources/audiofiles/kicks/249284__netr-si__kick-59.wav',
+      'resources/audiofiles/kicks/249285__netr-si__kick-58.wav',
+      'resources/audiofiles/kicks/249286__netr-si__kick-57.wav',
+      'resources/audiofiles/kicks/249287__netr-si__kick-56.wav',
+      'resources/audiofiles/kicks/249288__netr-si__kick-55.wav',
+      'resources/audiofiles/kicks/249289__netr-si__kick-54.wav',
+      'resources/audiofiles/kicks/249290__netr-si__kick-53.wav',
+      'resources/audiofiles/kicks/249291__netr-si__kick-52.wav',
     ],
-    presetInit() { this.length = 48 }
+    presetInit() { this.length = 90 }
   }
 }
 
-},{}],112:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
+module.exports = {
+
+  'space': {
+    roomSize:.985, 
+    dry:1 
+  }
+}
+
+},{}],115:[function(require,module,exports){
 module.exports = {
 
   snappy: {
@@ -8064,24 +8373,25 @@ module.exports = {
 
 }
 
-},{}],113:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = {
 
   acidBass: {
     Q:.9,
-    filterType:2,
+    filterModel:2,
     filterMult:4,
     cutoff:1.25,
     saturation:3.5,
     attack:1/8192,
     decay:1/10,
     octave:-3,
-    glide:2000
+    glide:2000,
+    description:`A sawtooth feeding a TB303-style lowpass filter, with high Q settings and a short envelope.`
   },
 
   acidBass2: {
     Q:.7,
-    filterType:2,
+    filterModel:2,
     filterMult:3.5,
     cutoff:.5,
     saturation:10,
@@ -8093,7 +8403,7 @@ module.exports = {
 
   'bass.hollow': {
     Q:.2,
-    filterType:2,
+    filterModel:2,
     filterMult:4,
     cutoff:1.25,
     saturation:20,
@@ -8124,7 +8434,7 @@ module.exports = {
   shimmer: {
     attack:1/128, decay:2,
     waveform:'pwm',
-    filterType:1,
+    filterModel:1,
     cutoff:1,
     filterMult:1,
     Q:.6,
@@ -8150,11 +8460,11 @@ module.exports = {
     attack:1/2, decay:1.5, gain:.045,
     panVoices:true,
     presetInit: function( audio ) {
-      this.chorus = audio.effects.Chorus('lush')
-      this.fx.add( this.chorus  )
-      this.bitCrusher = audio.effects.BitCrusher({ bitDepth:.5 })
+      //this.chorus = audio.effects.Chorus('lush', { isStereo:true })
+      //this.fx.add( this.chorus  )
+      this.bitCrusher = audio.effects.BitCrusher({ bitDepth:.5, isStereo:true })
       this.fx.add( this.bitCrusher )
-      // gen( .5 + cycle( btof(16) ) * .35
+      //// gen( .5 + cycle( btof(16) ) * .35
       this.srmod = audio.Gen.make( audio.Gen.ugens.add( .5, audio.Gen.ugens.mul( audio.Gen.ugens.cycle(.125/2), .35 ) ) )
       this.bitCrusher.sampleRate = this.srmod
       this.delay = audio.effects.Delay({ time:1/6, feedback:.75 })
@@ -8164,7 +8474,7 @@ module.exports = {
 
   brass: {
     attack:1/6, decay:1.5, gain:.05,
-    filterType:1, Q:.5575, cutoff:2,
+    filterModel:1, Q:.5575, cutoff:2,
     presetInit: function( audio ) {
       this.fx.add( audio.effects.Chorus('lush') )
       this.chorus = this.fx[0]
@@ -8173,7 +8483,7 @@ module.exports = {
 
   'brass.short':{
     gain:.75,
-    filterType:1,
+    filterModel:1,
     antialias:true,
     attack:1/32,
     decay:1/16,
@@ -8189,7 +8499,7 @@ module.exports = {
     Q:.8,
     cutoff:.65,
     saturation:5,
-    filterType:2,
+    filterModel:2,
     glide:500
   },
 
@@ -8200,13 +8510,13 @@ module.exports = {
     waveform:'pwm'
   },
 
-  chirp: { filterType:2, cutoff:.325, decay:1/16 }, 
+  chirp: { filterModel:2, cutoff:.325, decay:1/16 }, 
 
   'square.perc': { 
     waveform:'square', 
     shape:'exponential', 
     antialias:true, 
-    filterType:2, 
+    filterModel:2, 
     cutoff:.25, 
     decay:1/8,
     panVoices:true
@@ -8216,7 +8526,7 @@ module.exports = {
     waveform:'square', 
     shape:'exponential', 
     antialias:true, 
-    filterType:2, 
+    filterModel:2, 
     cutoff:.25, 
     decay:2,
     panVoices:true
@@ -8231,10 +8541,16 @@ module.exports = {
     decay:4,
     gain:.125,
     shape:'exponential'
+  },
+
+  blank: {
+    filterModel:0,
+    waveform:'sine',
+    antialias:false
   }
 }
 
-},{}],114:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 const Tune      = require( './external/tune-api-only.js' )
@@ -8331,6 +8647,28 @@ const Theory = {
 
     return 440 * Math.pow(2, (keyNumber- 49) / 12)
   },
+
+  deleteProperties: function() {
+    if( Gibberish.mode === 'worklet' ) {
+      delete this.__root
+      delete this.__tuning
+      delete this.__mode
+      delete this.__offset
+      delete this.__degree
+
+      Theory.markup = {
+        textMarkers : {},
+        cssClasses: {}
+      }
+
+      this.__root = 440
+      this.__tuning = 'et'
+      this.__offset = 0
+      this.__degree = 'i'
+      this.__mode = 'aeolian'
+    }
+  },
+
   initProperties: function() {
     if( Gibberish.mode === 'worklet' ) {
       Gibber.createProperty( 
@@ -8351,9 +8689,9 @@ const Theory = {
         1
       )
 
-      Gibber.createProperty( this, 'mode', 'aeolian', null, 5 )
-      Gibber.createProperty( this, 'offset', 0, null, 5 )
-      Gibber.createProperty( this, 'degree', 'i', null, 5 )
+      Gibber.createProperty( this, 'mode', 'aeolian', null, 0 )
+      Gibber.createProperty( this, 'offset', 0, null, 0 )
+      Gibber.createProperty( this, 'degree', 'i', null, 0 )
 
       //setTimeout( ()=> Theory.tuning = 'et', 250 )
       this.tuning = 'et'
@@ -8364,6 +8702,9 @@ const Theory = {
       Object.defineProperty( this, 'root', {
         get() { return this.__root },
         set(v) {
+          if( typeof v=== 'string' ) {
+            v = this.__noteToFreq( v )
+          } 
           this.__root = v
           this.Tune.tonicize( this.__root )
         }
@@ -8380,7 +8721,11 @@ const Theory = {
       Object.defineProperty( this, 'mode', {
         get()  { return this.__mode },
         set(v) { 
-          this.__mode = v 
+          if( this.modes[ v ] !== undefined || v === null ) {
+            this.__mode = v 
+          }else{
+            console.error( `The mode "${v}" is not valid. Valid modes include ${Object.keys(this.modes).toString()}, and null. No change to Theory.mode was applied.` )
+          }
         }
       })
 
@@ -8549,8 +8894,14 @@ const Theory = {
 
       const path = this.__loadingPrefix + name + '.js' 
       fetch( path )
-        .catch( err => console.error( err ) )
-        .then( data => data.json() )
+        .catch( console.err )
+        .then( data => {
+          if( data.ok ) {
+            return data.json()
+          }else{
+            console.error( `The tuning ${name} wasn't found. Please visit http://abbernie.github.io/tune/scales.html to find the names of valid tunings.`) 
+          } 
+        })
         .then( json => {
           this.__tuning.value = name
           Gibberish.worklet.port.postMessage({
@@ -8579,45 +8930,75 @@ const Theory = {
   // REMEMBER THAT THE .note METHOD IS ALSO MONKEY-PATCHED
   // IN ugen.js, THIS IS WHERE MOST OF THE AWPROCESSOR NOTE
   // METHOD IS IMPLEMENTED.
-  note: function( idx, octave=0 ) {
-    let finalIdx, mode = null
+  note: function( __idx, octave=0, round=true ) {
+    let finalIdx, mode = null, __float = __idx % 1, baseOctave, nextOctave
 
-    if( idx % 1 !== 0 ) {
-      idx = Math.round( idx )
+    let isInt = __float === 0
+    if( !isInt && round===true ) {
+      __idx = Math.round( __idx )
+      isInt = true
     }
+    
+    let baseIndex = __idx < 0 ? Math.ceil( __idx ) : Math.floor( __idx ),
+        nextIndex = __idx >= 0 ? baseIndex + 1 : baseIndex - 1
 
-    idx += Gibberish.Theory.__offset
+    baseIndex += Gibberish.Theory.__offset
+    nextIndex += Gibberish.Theory.__offset
 
     if( Gibberish.Theory.mode !== 'chromatic' && Gibberish.Theory.mode !== null ) {
       mode = Gibberish.Theory.modes[ Gibberish.Theory.mode ]
-      octave = Math.floor( idx / mode.length )
-
+      baseOctave = Math.floor( baseIndex / mode.length )
+      nextOctave = Math.floor( nextIndex / mode.length )
+      
       // XXX this looks crazy ugly but works with negative note numbers...
-      finalIdx = idx < 0 
-        ? mode[ (mode.length - (Math.abs(idx) % mode.length)) % mode.length ] 
-        : mode[ Math.abs( idx ) % mode.length ]
+      baseIndex = baseIndex < 0 
+        ? mode[ (mode.length - (Math.abs( baseIndex ) % mode.length)) % mode.length ] 
+        : mode[ Math.abs( baseIndex ) % mode.length ]
 
+      if( !isInt ) {
+        nextIndex = nextIndex < 0 
+          ? mode[ (mode.length - (Math.abs( nextIndex ) % mode.length)) % mode.length ] 
+          : mode[ Math.abs( nextIndex ) % mode.length ]
+      }
     }else{
       // null mode also means to use 'chromatic' mode
       mode = Gibberish.Theory.modes[ 'chromatic' ]
       const l = Gibberish.Theory.Tune.scale.length 
-      octave = Math.floor( idx / l )
-      finalIdx = idx < 0 
-        ? mode[ (l - (Math.abs(idx) % l)) % l ] 
-        : mode[ Math.abs( idx ) % l ]
+      baseOctave = Math.floor( baseIndex / l )
+      nextOctave = Math.floor( baseIndex / l )
+
+      baseIndex = baseIndex < 0 
+        ? mode[ (l - (Math.abs( baseIndex ) % l)) % l ] 
+        : mode[ Math.abs( baseIndex ) % l ]
+
+      if( !isInt ) {
+        nextIndex = nextIndex < 0 
+          ? mode[ (l - (Math.abs( nextIndex ) % l)) % l ] 
+          : mode[ Math.abs( nextIndex ) % l ]
+      }
     }
 
-    finalIdx += this.__degree.offset
+    baseIndex += this.__degree.offset
+    nextIndex += this.__degree.offset
 
-    const freq = Gibberish.Theory.Tune.note( finalIdx, octave )
+    let outputFreq = 0
+    if( !isInt ) {
+      const freq0 = Gibberish.Theory.Tune.note( baseIndex, baseOctave )
+      const freq1 = Gibberish.Theory.Tune.note( nextIndex, nextOctave )
+      let   diff  = freq1 - freq0
+      if( __idx < 0 ) diff *= -1
+      outputFreq = freq0 + (diff*__float)
+    }else{
+      outputFreq = Gibberish.Theory.Tune.note( baseIndex, baseOctave )
+    }
 
-    return freq
+    return outputFreq 
   },
 }
 
 module.exports = Theory
 
-},{"./external/tune-api-only.js":91,"gibberish-dsp":168,"serialize-javascript":130}],115:[function(require,module,exports){
+},{"./external/tune-api-only.js":92,"gibberish-dsp":171,"serialize-javascript":133}],118:[function(require,module,exports){
 const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
@@ -8766,23 +9147,60 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     }
 
     // add poly methods
-    if( description.name.indexOf('Poly') > -1 ) {
+    if( description.name.indexOf('Poly') > -1 || description.name.indexOf('Multi') > -1 ) {
+      let useProp = description.name.indexOf('Poly') > -1
       obj.spread = function( amt=1 ) {
         if( amt === 0 ) {
-          children.forEach( c => c.pan = .5 )
-          return
+          children.forEach( (c,i) => { 
+            if( useProp ) 
+              c.pan = .5 
+            else 
+              if( obj.maxVoices.value > 1 ) obj.setpan(i,.5) 
+          })
+          return obj
         }
         const children = this.__wrapped__.voices
         const incr = 1/(children.length-1) * amt
-        children.forEach( (c,i) => c.pan = (.5 - amt/2) + i * incr )
+        children.forEach( (c,i) => {
+          if( useProp ) 
+            c.pan = (.5 - amt/2) + i * incr
+          else
+            if( obj.maxVoices.value > 1 ) obj.setpan( i, (.5-amt/2) + i * incr )
+        })
 
         return obj
       }
       obj.voices = obj.__wrapped__.voices
+      obj.inspect = function() {
+        console.group( 'Inspecting ' + description.name )
+        console.table( Object.assign({}, obj.voices[0].__wrapped__.__properties__, obj.__wrapped__.__properties__ ) )
+        console.groupEnd()
+      }
+      for( let i = 0; i < 20; i++ ) {
+        Object.defineProperty( obj, i, { get() { return obj.voices[i] } })
+      }
+    }
+//btos: function( beats ) {
+//    const samplesPerBeat = Gibberish.ctx.sampleRate / (this.bpm / 60 )
+//    return samplesPerBeat * beats 
+//  }
+    // transform beat values to samples
+    // in the case of a gen graph convert to a new gen object
+    const timetransform = function( v ) {
+      const out = typeof v === 'number' 
+        ? Audio.Clock.time( v ) 
+        : v.type === 'gen' 
+          ? Gen.make( 
+              genish.mul( 
+                genish.div( 44100, genish.div( Clock.bpm, 60 ) ),
+                v.graph
+              ) 
+            )
+          : v
+
+      return out
     }
 
-    // createProperty = function( obj, propertyName, __wrappedObject, timeProps, Audio, isPoly=false ) {
-    // createProperty( obj, name, value, post=null, priority=0 ) {
     // wrap properties and add sequencing to them
     for( let propertyName in description.properties ) {
       if( __wrappedObject.__requiredRecompilation && __wrappedObject.__requiresRecompilation.indexOf( propertyName ) > -1 ) continue
@@ -8791,8 +9209,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       // want .id to be sequencable!
       if( propertyName !== 'id' && propertyName !== 'type' ){
         const transform = timeProps.indexOf( propertyName ) > -1 
-          ? v => typeof v === 'number' ? Audio.Clock.time( v ) : v 
-          : null
+          ? timetransform
+          : null 
 
         const value = __wrappedObject[ propertyName ] === undefined 
           ? __wrappedObject.__properties__[ propertyName ]
@@ -8801,7 +9219,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         Audio.createProperty( obj, propertyName, value, null, 0, transform )
 
         // create per-voice version of property... what properties should be excluded?
-        if( description.name.indexOf('Poly') > -1 ) {
+        if( description.name.indexOf('Poly') > -1 || description.name.indexOf('Multi') > -1 ) {
           Audio.createProperty( obj, propertyName+'V', value, null, 0, transform, true )//, timeProps, Audio, true )
 
           //createProperty( obj, propertyName, __wrappedObject, timeProps, Audio, true )
@@ -8817,30 +9235,35 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       }
     }
 
+    if( description.methods !== null && description.methods.indexOf( 'note' ) > -1 ) { 
+      description.methods.push( 'notef' )
+      description.methods.push( 'notec' )
+    }
+
     // wrap methods and add sequencing to them
     if( description.methods !== null ) {
       for( let methodName of description.methods ) {
-        if( methodName !== 'note' || description.name.indexOf('Sampler') > -1 || description.name.indexOf('Freesound') > -1  ) {
+        if( methodName !== 'note' || description.name.indexOf('Sampler') > -1 || description.name.indexOf('Multisampler') > -1  ) {
           //obj[ methodName ] = __wrappedObject[ methodName ].bind( __wrappedObject )
           obj[ methodName ] = function( ...args ) {
             if( args.length === 0 ) {
               __wrappedObject[ methodName ]()
-            }else if( args.length === 1 ) {
-              if( Array.isArray( args[0] ) ) {
-                obj[ methodName ].seq( args[0], 1/args[0].length )
-              }else if( typeof args[0] === 'string' ) {
-                obj[ methodName ].tidal( args[0] )
-              }else{
-                __wrappedObject[ methodName ]( args[0] )
-              }
-            }else{
+            }else{ //if( args.length === 1 ) {
+              //if( Array.isArray( args[0] ) ) {
+              //  obj[ methodName ].seq( args[0], 1/args[0].length )
+              //}else if( typeof args[0] === 'string' ) {
+              //  obj[ methodName ].tidal( args[0] )
+              //}else{
+                __wrappedObject[ methodName ]( ...args )
+              //}
+            }/*else{
               // could be a .tidal or a seq 
               if( typeof args[0] === 'string' ) { // must be tidal with tidal id #
                 obj[ methodName ].tidal( ...args )
               }else{
                 obj[ methodName ].seq( ...args )  // must be sequence
               }
-            }
+            }*/
             return obj
           }
         }else{
@@ -8860,12 +9283,14 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
                 shouldSendNoteNow = true
               }
             }else{
+              /*
               // could be a .tidal or a seq 
               if( typeof args[0] === 'string' ) { // must be tidal with tidal id #
                 obj[ methodName ].tidal( ...args )
               }else{
                 obj[ methodName ].seq( ...args )  // must be sequence
               }
+              */
             }
 
             // this should only be for direct calls from the IDE
@@ -8881,6 +9306,24 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             return obj
           }
 
+          Gibberish.worklet.port.postMessage({
+            address:'addMethod',
+            id:__wrappedObject.id,
+            key:'notef',
+            function:`function( note, __loudness=null ){
+              const loudness = __loudness = null ? this.__triggerLoudness : __loudness
+              this.___note( note, loudness ) 
+            }`
+          })
+          Gibberish.worklet.port.postMessage({
+            address:'addMethod',
+            id:__wrappedObject.id,
+            key:'notec',
+            function:`function( note, __loudness=null ){
+              const loudness = __loudness = null ? this.__triggerLoudness : __loudness
+              this.note( note, loudness, false ) 
+            }`
+          })
           // when a message is received at the address 'monkeyPatch',
           // Gibberish will create a copy of the method identified by
           // the 'key' field, and then assign it back to the object prefaced
@@ -8891,7 +9334,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             address:'monkeyPatch',
             id:__wrappedObject.id,
             key:'note',
-            function:`function( note ){ 
+            function:`function( note, __loudness, round=true ){ 
               const octave = this.octave || 0
               let notesInOctave = 7
               const mode = Gibberish.Theory.mode
@@ -8903,18 +9346,41 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
               }
 
               const offset = octave * notesInOctave
-              let __note = Gibberish.Theory.note( note + offset );
+              let __note = Gibberish.Theory.note( note + offset, 0, round )
 
-              this.___note( __note, this.__triggerLoudness ) 
+              const loudness = __loudness = null ? this.__triggerLoudness : __loudness
+              this.___note( __note, loudness ) 
             }`
           })
           
         }
 
+        if( methodName === 'notef' ) {
+          obj.notef = function( ...args ) {
+            __wrappedObject.frequency = args[0]
+            __wrappedObject.trigger( __wrappedObject.__triggerLoudness )
+
+            return obj
+          }
+        }
+
+        if( methodName === 'notec' ) {
+          obj.notec = function( ...args ) {
+            //__wrappedObject.frequency = args[0]
+            //__wrappedObject.trigger( __wrappedObject.__triggerLoudness )
+            Gibberish.worklet.port.postMessage({
+              address:'method',
+              object:__wrappedObject.id,
+              name:'notec',
+              args
+            })
+            return obj
+          }
+        }
         obj[ methodName ].sequencers = []
         obj[ methodName ].tidals = []
 
-        obj[ methodName ].seq = function( values, timings, number=0, delay=0, priority=0 ) {
+        obj[ methodName ].seq = function( values, timings, number=0, delay=0, priority=10000 ) {
           let prevSeq = obj[ methodName ].sequencers[ number ] 
           if( prevSeq !== undefined ) { 
             const idx = obj.__sequencers.indexOf( prevSeq )
@@ -8926,7 +9392,11 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
           let s = Audio.Core.Seq({ values, timings, target:__wrappedObject, key:methodName, priority })
           
-          s.start( Audio.Clock.time( delay ) )
+          if( typeof delay !== 'function' ) {
+            s.start( Audio.Clock.time( delay ) )
+          }else{
+            delay.seqs.push( s )
+          }
           obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
           obj.__sequencers.push( s )
 
@@ -8935,27 +9405,30 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }
         obj[ methodName ].tidal= function( pattern, number=0, delay=0 ) {
           let prevSeq = obj[ methodName ].tidals[ number ] 
-          if( prevSeq !== undefined ) { 
-            const idx = obj.__tidals.indexOf( prevSeq )
-            obj.__tidals.splice( idx, 1 )
-            prevSeq.stop()
-            prevSeq.clear()
-            // removeSeq( obj, prevSeq )
-          }
-
           let s = Audio.Core.Tidal({ pattern, target:__wrappedObject, key:methodName })
-          
-          s.start( Audio.Clock.time( delay ) )
-          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
-          obj.__tidals.push( s )
+          if( s !== null ) {
+            if( prevSeq !== undefined ) { 
+              const idx = obj.__tidals.indexOf( prevSeq )
+              obj.__tidals.splice( idx, 1 )
+              prevSeq.stop()
+              prevSeq.clear()
+              // removeSeq( obj, prevSeq )
+            }
 
-          // XXX need to clean this up! this is solely here for annotations, and to 
-          // match what I did for ensembles... 
-          obj[ methodName ].__tidal = s
+            s.start( Audio.Clock.time( delay ) )
+            obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
+            obj.__tidals.push( s )
+
+            // XXX need to clean this up! this is solely here for annotations, and to 
+            // match what I did for ensembles... 
+            obj[ methodName ].__tidal = s
+          }
 
           // return object for method chaining
           return obj
         }
+
+        
       }
     }
 
@@ -8971,6 +9444,74 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     })
     obj.id = __wrappedObject.id
 
+    obj.__follow = null
+
+    const followcheck = ()=> {
+
+    }
+
+    Object.defineProperty( obj, '__out', {
+      configurable:false,
+      get() {
+        if( obj.__follow === null ) {
+          obj.__follow = Audio.analysis.Follow({ input:obj }) 
+        }
+
+        const output = obj.__follow.output
+         
+        // will take a few buffers to initialize...
+        if( output === undefined ) return 0
+
+        return output[1] === undefined ? output[0] : output[0] + output[1] 
+      },
+      set(v) {}
+    })
+
+    obj.inspect = ()=> {
+      console.group( 'Inspecting ' + description.name )
+      const keys = Object.keys( obj.__wrapped__.__properties__ )
+      const props = {}
+      keys.forEach( key => {
+        if( key[0] !== '_' ) {
+          if( obj[ key ] !== null && obj[ key ] !== undefined ) {
+            props[ key ] = obj[ key ].value
+          }
+        }
+      })
+      console.table( props ) 
+      //console.table( obj.__wrapped__.__properties__ )
+      console.groupEnd()
+    }
+
+    obj.out = function( scale=1, offset=0, bufferSize=null ) {
+      // if the buffer size changes...
+      if( bufferSize !== null ) {
+        if( obj.__follow !== null ) {
+          if( bufferSize !== obj.__follow.__wrapped__.bufferSize ) {
+            //console.log( 'prev follow', bufferSize, obj.__follow.__wrapped__.bufferSize, obj.__follow )
+            
+            const tmp = obj.__follow
+            // XXX need to remove the previous follow from the graph...
+            obj.__follow = Audio.analysis.Follow({ input:Audio.Gibberish.worklet.ugens.get( obj.__follow.__wrapped__.input.id ), bufferSize })
+
+            Audio.Gibberish.worklet.port.postMessage({
+              address:'eval',
+              code:`const idx = Gibberish.analyzers.findIndex( ugen => ugen.id === ${tmp.id} )
+                    if( idx > -1 ) {
+                      Gibberish.analyzers.splice(idx,1)
+                      Gibberish.dirty( Gibberish.analyzers )
+                    }`
+            })
+          }
+        }
+      }
+
+      if( Ugen.OUTPUT === Ugen.OUTPUT_FUNCTION )
+        return ()=> obj.__out * scale + offset
+      else
+        return Math.abs( obj.__out * scale ) + offset 
+    }
+
     // XXX where does shouldAddToUgen come from? Not from presets.js...
     if( properties !== undefined && properties.shouldAddToUgen ) Object.assign( obj, properties )
 
@@ -8981,10 +9522,38 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     const __fx = []
     __fx.__push = __fx.push.bind( __fx )
     __fx.add = function( ...args ) {
-      args.forEach( fx => obj.fx.push( fx ) )
+      args.forEach( fx => obj.__fx.push( fx ) )
+      console.log( `added ${args.length} effect(s) to ${obj.name}` )
       return obj
     }
-    obj.fx = new Proxy( __fx, {
+    __fx.inspect = function() {
+      if( __fx.length > 0 )
+        console.table( __fx.map( fx=>fx.name ) )
+      else
+        console.log( `there are no effects on ${obj.name} to inspect.` )
+    }
+    __fx.remove = function( effect=null ) {
+      if( effect === null ) {
+        obj.__fx.length = 0
+        console.log( `all effects from ${obj.name} were removed.` )
+      }else if( typeof effect === 'number' ) {
+        // XXX broken for indices that !== 0
+        const del = obj.__fx.splice( effect, 1 )
+        console.log( `${del[0].name} at fx slot ${effect} was removed from ${obj.name}.` ) 
+      }else if( typeof effect === 'string' ) {
+        const indexesToErase = []
+        __fx.forEach( (__effect,i) => { if( effect === __effect.name ) indexesToErase.push( i ) })
+        console.log( `${indexesToErase.length} effect(s) were removed from ${obj.name}.` ) 
+        for( let i = __fx.length - 1; i >= 0; i-- ) {
+          if( indexesToErase.includes( i ) ) __fx.splice( i, 1 )
+        }   
+      } else if( typeof effect === 'object' ) {
+        const idx = __fx.indexOf( effect )
+        __fx.splice( idx, 1 )
+        console.log( `effect ${effect.name} was removed from ${obj.name}.` ) 
+      }
+    }
+    obj.__fx = new Proxy( __fx, {
       set( target, property, value, receiver ) {
 
         const lengthCheck = target.length
@@ -9030,6 +9599,31 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       }
     })
 
+    Object.defineProperty( obj, 'fx', {
+      get() { return obj.__fx },
+      set(v) {
+        const tmpLength = obj.__fx.length
+        obj.__fx.length = 0
+        if( Array.isArray( v ) ) {
+          v.forEach( effect => obj.__fx.push( effect ) ) 
+        }else{
+          obj.__fx.push( v ) 
+        }
+
+        if( tmpLength > 0 ) {
+
+            console.log( `${tmpLength} effect(s) were replaced with ${obj.__fx.length} effect(s) on ${obj.name}` )
+        }else{
+
+          if( Array.isArray( v ) ) {
+            console.log( `${v.length} effect(s) were added to the fx chain of ${obj.name}` )
+          }else{
+            console.log( `a ${v.name} was added to the fx chain  of ${obj.name}` )
+          }
+        }
+      }
+    })
+
     obj.connect = (dest,level=1) => {
       if( typeof dest !== 'number' ) {
         if( dest !== undefined && dest.isProperty === true ) {
@@ -9059,7 +9653,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           }
         }
       }else{
-        console.warn( 'You cannot connect to a number; perhaps you meant this to be the level for your connection?' )
+        console.log( '%cYou cannot connect to a number; perhaps you meant this to be the level for your connection?', 'color:white;background:#900' )
       }
 
       return obj 
@@ -9096,7 +9690,58 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           if( obj.fx.length === 0 ) obj.connect( Audio.Master )
         }
       }
+
+    }else if( obj.__wrapped__.type === 'effect' ) {
+      obj.bus = function() {
+        const b = Audio.busses.Bus2()
+        b.fx.add( obj )
+
+        const p = new Proxy( b, {
+          set( target, property, value, receiver ) {
+            //console.log( 'set:', target, property, value, receiver )
+            if( b[ property ] === undefined && property !== 'input' ) {
+              obj[ property ] = value
+            }else{
+              b[ property ] = value
+            }
+          },
+          get( target, property, value, receiver ) {
+            if( b[ property ] === undefined && property !== 'input' ) {
+              return obj[ property ]
+            }else{
+              return b[ property ]
+            }
+          }
+        })
+
+        p.inspect = function() {
+          console.group( 'Inspecting ' + description.name + ' ' + 'Bus' )
+
+          const objKeys = Object.keys( obj.__wrapped__.__properties__ )
+          const __obj = {}
+          objKeys.forEach( key => {
+            if( key[0] !== '_' && key !== 'bypass' ) {
+              __obj[ key ] = obj[ key ].value !== undefined
+                ? obj[ key ].value
+                : obj.__wrapped__.__properties__[ key ].value
+            }
+          })
+          console.group( description.name.toLowerCase() )
+          console.table( __obj )
+          console.groupEnd()
+
+          console.group('bus')
+          console.table( b.__wrapped__.__properties__ )
+          console.groupEnd()
+
+          console.groupEnd()
+        }
+
+        return b
+      }
     }
+    //console.log( `%c${description.name} created.`, 'color:white;background:#009' )
+    Audio.publish( 'new ugen', description.name + ' created'  )
 
     return obj
   }
@@ -9117,9 +9762,14 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
   return constructor
 }
 
+Ugen.OUTPUT_FUNCTION = 0
+Ugen.OUTPUT_SCALAR = 1
+Ugen.OUTPUT = 1
+
+
 module.exports = Ugen
 
-},{"./presets.js":99,"./theory.js":114,"gibberish-dsp":168}],116:[function(require,module,exports){
+},{"./presets.js":100,"./theory.js":117,"gibberish-dsp":171}],119:[function(require,module,exports){
 const Utility = {
   rndf( min=0, max=1, number, canRepeat=true ) {
     let out = 0
@@ -9322,7 +9972,7 @@ const Utility = {
 
 module.exports = Utility
 
-},{}],117:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 module.exports = function( Gibber ) {
    const gen = Gibber.Gen.make  
 
@@ -9427,7 +10077,7 @@ module.exports = function( Gibber ) {
   return WavePatterns
 }
 
-},{}],118:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const WavePattern = function( ugen ) {
@@ -9444,9 +10094,9 @@ module.exports = function( Gibber ) {
   return WavePattern
 }
 
-},{}],119:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 
-},{}],120:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -9971,7 +10621,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],121:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -10209,7 +10859,7 @@ Euclid.test = function( testKey ) {
 return Euclid
 }
 
-},{}],122:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -10292,7 +10942,7 @@ return Hex
 
 }
 
-},{}],123:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 const Gibber = {
   initialized: false,
   exportTarget: null,
@@ -10469,7 +11119,7 @@ const Gibber = {
 
 module.exports = Gibber 
 
-},{"./euclid.js":121,"./hex.js":122,"./pattern.js":124,"./seq.js":125,"./steps.js":126,"./tidal.js":127,"./triggers.js":128}],124:[function(require,module,exports){
+},{"./euclid.js":124,"./hex.js":125,"./pattern.js":127,"./seq.js":128,"./steps.js":129,"./tidal.js":130,"./triggers.js":131}],127:[function(require,module,exports){
 const patternWrapper = function( Gibber ) {
   "use strict"
 
@@ -11222,7 +11872,7 @@ patternWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = patternWrapper
 
-},{}],125:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const Seq = function( props ) { 
@@ -11437,7 +12087,7 @@ module.exports = function( Gibber ) {
 
 }
 
-},{}],126:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 module.exports = function( Gibber ) {
  
 const Steps = {
@@ -11656,7 +12306,7 @@ return Steps.create
 
 */
 
-},{}],127:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const Seq = function( props ) { 
@@ -11777,7 +12427,7 @@ module.exports = function( Gibber ) {
 
 }
 
-},{}],128:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -11819,7 +12469,7 @@ return Triggers
 
 }
 
-},{}],129:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -12005,7 +12655,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],130:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -12180,7 +12830,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],131:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -12205,14 +12855,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],132:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],133:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -12802,7 +13452,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":132,"_process":129,"inherits":131}],134:[function(require,module,exports){
+},{"./support/isBuffer":135,"_process":132,"inherits":134}],137:[function(require,module,exports){
 let ugen = require( '../ugen.js' )
 
 let analyzer = Object.create( ugen )
@@ -12814,7 +13464,7 @@ Object.assign( analyzer, {
 
 module.exports = analyzer
 
-},{"../ugen.js":203}],135:[function(require,module,exports){
+},{"../ugen.js":206}],138:[function(require,module,exports){
 module.exports = function( Gibberish ) {
   const { In, Out, SSD } = require( './singlesampledelay.js'  )( Gibberish )
 
@@ -12839,7 +13489,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./follow.dsp.js":136,"./singlesampledelay.js":137}],136:[function(require,module,exports){
+},{"./follow.dsp.js":139,"./singlesampledelay.js":140}],139:[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       ugen = require( '../ugen.js' )
@@ -13055,7 +13705,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":203,"./analyzer.js":134,"genish.js":39}],137:[function(require,module,exports){
+},{"../ugen.js":206,"./analyzer.js":137,"genish.js":40}],140:[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       proxy    = require( '../workletProxy.js' ),
@@ -13172,7 +13822,7 @@ return { In, Out, SSD }
 
 }
 
-},{"../ugen.js":203,"../workletProxy.js":205,"./analyzer.js":134,"genish.js":39}],138:[function(require,module,exports){
+},{"../ugen.js":206,"../workletProxy.js":208,"./analyzer.js":137,"genish.js":40}],141:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -13200,7 +13850,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":203,"genish.js":39}],139:[function(require,module,exports){
+},{"../ugen.js":206,"genish.js":40}],142:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -13245,7 +13895,7 @@ module.exports = function( Gibberish ) {
   return ADSR
 }
 
-},{"../ugen.js":203,"genish.js":39}],140:[function(require,module,exports){
+},{"../ugen.js":206,"genish.js":40}],143:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -13281,7 +13931,7 @@ module.exports = function( Gibberish ) {
   return Envelopes
 }
 
-},{"./ad.js":138,"./adsr.js":139,"./ramp.js":141,"genish.js":39}],141:[function(require,module,exports){
+},{"./ad.js":141,"./adsr.js":142,"./ramp.js":144,"genish.js":40}],144:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -13315,9 +13965,9 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":203,"genish.js":39}],142:[function(require,module,exports){
-arguments[4][27][0].apply(exports,arguments)
-},{"./realm.js":144,"dup":27}],143:[function(require,module,exports){
+},{"../ugen.js":206,"genish.js":40}],145:[function(require,module,exports){
+arguments[4][28][0].apply(exports,arguments)
+},{"./realm.js":147,"dup":28}],146:[function(require,module,exports){
 /*
  * https://github.com/antimatter15/heapqueue.js/blob/master/heapqueue.js
  *
@@ -13431,7 +14081,7 @@ HeapQueue.prototype.pop = function(){
 
 module.exports = HeapQueue
 
-},{}],144:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 
 /**
  * Copyright 2018 Google LLC
@@ -13477,7 +14127,7 @@ module.exports = function Realm (scope, parentElement) {
   this.exec = win.$hook.call(scope, scope, console);
 }
 
-},{}],145:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 const __proxy = require( './workletProxy.js' )
 const effectProto = require( './fx/effect.js' )
 
@@ -13638,7 +14288,7 @@ module.exports = function( Gibberish ) {
   return factory
 }
 
-},{"./fx/effect.js":160,"./workletProxy.js":205}],146:[function(require,module,exports){
+},{"./fx/effect.js":163,"./workletProxy.js":208}],149:[function(require,module,exports){
 let g = require( 'genish.js' )
  
 // constructor for schroeder allpass filters
@@ -13655,7 +14305,7 @@ let allPass = function( _input, length=500, feedback=.5 ) {
 
 module.exports = allPass
 
-},{"genish.js":39}],147:[function(require,module,exports){
+},{"genish.js":40}],150:[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -13819,7 +14469,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":150,"genish.js":39}],148:[function(require,module,exports){
+},{"./filter.js":153,"genish.js":40}],151:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 ) {
@@ -13838,7 +14488,7 @@ let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 
 
 module.exports = combFilter
 
-},{"genish.js":39}],149:[function(require,module,exports){
+},{"genish.js":40}],152:[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -14048,7 +14698,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./filter.js":150,"genish.js":39}],150:[function(require,module,exports){
+},{"./filter.js":153,"genish.js":40}],153:[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let filter = Object.create( ugen )
@@ -14059,7 +14709,7 @@ Object.assign( filter, {
 
 module.exports = filter
 
-},{"../ugen.js":203}],151:[function(require,module,exports){
+},{"../ugen.js":206}],154:[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -14129,7 +14779,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":150,"genish.js":39}],152:[function(require,module,exports){
+},{"./filter.js":153,"genish.js":40}],155:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const g = Gibberish.genish
@@ -14193,7 +14843,7 @@ return filters
 
 }
 
-},{"./allpass.js":146,"./biquad.dsp.js":147,"./combfilter.js":148,"./diodeFilterZDF.js":149,"./filter24.js":151,"./ladder.dsp.js":153,"./svf.js":154}],153:[function(require,module,exports){
+},{"./allpass.js":149,"./biquad.dsp.js":150,"./combfilter.js":151,"./diodeFilterZDF.js":152,"./filter24.js":154,"./ladder.dsp.js":156,"./svf.js":157}],156:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       filterProto = require( './filter.js' )
 
@@ -14313,7 +14963,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":150,"genish.js":39}],154:[function(require,module,exports){
+},{"./filter.js":153,"genish.js":40}],157:[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -14391,7 +15041,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":150,"genish.js":39}],155:[function(require,module,exports){
+},{"./filter.js":153,"genish.js":40}],158:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -14469,7 +15119,7 @@ return BitCrusher
 
 }
 
-},{"./effect.js":160,"genish.js":39}],156:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],159:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -14594,7 +15244,7 @@ module.exports = function( Gibberish ) {
   return Shuffler 
 }
 
-},{"./effect.js":160,"genish.js":39}],157:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],160:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
   
@@ -14691,7 +15341,7 @@ return __Chorus
 
 }
 
-},{"./effect.js":160,"genish.js":39}],158:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],161:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -14763,7 +15413,7 @@ return Delay
 
 }
 
-},{"./effect.js":160,"genish.js":39}],159:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],162:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -14850,7 +15500,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./effect.js":160,"genish.js":39}],160:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],163:[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let effect = Object.create( ugen )
@@ -14862,7 +15512,7 @@ Object.assign( effect, {
 
 module.exports = effect
 
-},{"../ugen.js":203}],161:[function(require,module,exports){
+},{"../ugen.js":206}],164:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const effects = {
@@ -14893,7 +15543,7 @@ return effects
 
 }
 
-},{"./bitCrusher.js":155,"./bufferShuffler.js":156,"./chorus.js":157,"./delay.js":158,"./distortion.dsp.js":159,"./flanger.js":162,"./freeverb.js":163,"./ringMod.js":164,"./tremolo.js":165,"./vibrato.js":166,"./wavefolder.dsp.js":167}],162:[function(require,module,exports){
+},{"./bitCrusher.js":158,"./bufferShuffler.js":159,"./chorus.js":160,"./delay.js":161,"./distortion.dsp.js":162,"./flanger.js":165,"./freeverb.js":166,"./ringMod.js":167,"./tremolo.js":168,"./vibrato.js":169,"./wavefolder.dsp.js":170}],165:[function(require,module,exports){
 let g = require( 'genish.js' ),
     proto = require( './effect.js' )
 
@@ -14984,7 +15634,7 @@ return Flanger
 
 }
 
-},{"./effect.js":160,"genish.js":39}],163:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],166:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -15092,7 +15742,7 @@ return Freeverb
 }
 
 
-},{"./effect.js":160,"genish.js":39}],164:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],167:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -15157,7 +15807,7 @@ return RingMod
 
 }
 
-},{"./effect.js":160,"genish.js":39}],165:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],168:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -15230,7 +15880,7 @@ return Tremolo
 
 }
 
-},{"./effect.js":160,"genish.js":39}],166:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],169:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -15317,7 +15967,7 @@ return Vibrato
 
 }
 
-},{"./effect.js":160,"genish.js":39}],167:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],170:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -15467,7 +16117,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./effect.js":160,"genish.js":39}],168:[function(require,module,exports){
+},{"./effect.js":163,"genish.js":40}],171:[function(require,module,exports){
 let MemoryHelper = require( 'memory-helper' ),
     genish       = require( 'genish.js' )
     
@@ -15973,7 +16623,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzer.js":134,"./analysis/analyzers.js":135,"./envelopes/envelopes.js":140,"./factory.js":145,"./filters/filters.js":152,"./fx/effect.js":160,"./fx/effects.js":161,"./instruments/instrument.js":175,"./instruments/instruments.js":176,"./instruments/polyMixin.js":181,"./instruments/polytemplate.js":182,"./misc/binops.js":187,"./misc/bus.js":188,"./misc/bus2.js":189,"./misc/monops.js":190,"./misc/panner.js":191,"./misc/time.js":192,"./oscillators/oscillators.js":195,"./scheduling/scheduler.js":199,"./scheduling/seq2.js":200,"./scheduling/sequencer.js":201,"./scheduling/tidal.js":202,"./ugen.js":203,"./utilities.js":204,"./workletProxy.js":205,"genish.js":39,"memory-helper":208}],169:[function(require,module,exports){
+},{"./analysis/analyzer.js":137,"./analysis/analyzers.js":138,"./envelopes/envelopes.js":143,"./factory.js":148,"./filters/filters.js":155,"./fx/effect.js":163,"./fx/effects.js":164,"./instruments/instrument.js":178,"./instruments/instruments.js":179,"./instruments/polyMixin.js":184,"./instruments/polytemplate.js":185,"./misc/binops.js":190,"./misc/bus.js":191,"./misc/bus2.js":192,"./misc/monops.js":193,"./misc/panner.js":194,"./misc/time.js":195,"./oscillators/oscillators.js":198,"./scheduling/scheduler.js":202,"./scheduling/seq2.js":203,"./scheduling/sequencer.js":204,"./scheduling/tidal.js":205,"./ugen.js":206,"./utilities.js":207,"./workletProxy.js":208,"genish.js":40,"memory-helper":223}],172:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -16043,7 +16693,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":175,"genish.js":39}],170:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],173:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' ),
       __wavefold   = require( '../fx/wavefolder.dsp.js' )
@@ -16059,7 +16709,7 @@ module.exports = function( Gibberish ) {
     const frequency = g.in( 'frequency' ),
           loudness  = g.in( 'loudness' ), 
           triggerLoudness = g.in( '__triggerLoudness' ),
-          glide   = g.in( 'glide' ),
+          glide   = g.max( 1, g.in( 'glide' ) ),
           slidingFreq = g.slide( frequency, glide, glide ),
           attack  = g.in( 'attack' ), 
           decay   = g.in( 'decay' ),
@@ -16105,7 +16755,7 @@ module.exports = function( Gibberish ) {
 
         let complexWithGain = filteredOsc * g.in( 'gain' )
         // XXX ugly, ugly hack
-        if(  props.filterType !== 2 ) complexWithGain = complexWithGain * saturation
+        if(  props.filterModel !== 2 ) complexWithGain = complexWithGain * saturation
     
         if( syn.panVoices === true ) { 
           panner = g.pan( complexWithGain, complexWithGain, g.in( 'pan' ) ) 
@@ -16121,7 +16771,7 @@ module.exports = function( Gibberish ) {
 
     }
     
-    syn.__requiresRecompilation = [ 'waveform', 'antialias', 'filterType','filterMode', 'useADSR', 'shape' ]
+    syn.__requiresRecompilation = [ 'waveform', 'antialias', 'filterModel','filterMode', 'useADSR', 'shape' ]
     syn.__createGraph()
 
     const out = Gibberish.factory( syn, syn.graph, ['instruments', 'complex'], props  )
@@ -16152,7 +16802,8 @@ module.exports = function( Gibberish ) {
     filterMult:2,
     Q:.25,
     cutoff:.5,
-    filterType:1,
+    //filterType:1,
+    filterModel:1,
     filterMode:0,
     isStereo:false,
     pregain:4,
@@ -16161,14 +16812,14 @@ module.exports = function( Gibberish ) {
   }
 
   // do not include velocity, which shoudl always be per voice
-  let PolyComplex = Gibberish.PolyTemplate( Complex, ['frequency','attack','decay','pulsewidth','pan','gain','glide', 'saturation', 'filterMult', 'Q', 'cutoff', 'resonance', 'antialias', 'filterType', 'waveform', 'filterMode', '__triggerLoudness', 'loudness', 'pregain', 'postgain', 'bias'] ) 
+  let PolyComplex = Gibberish.PolyTemplate( Complex, ['frequency','attack','decay','pulsewidth','pan','gain','glide', 'saturation', 'filterMult', 'Q', 'cutoff', 'resonance', 'antialias', 'filterModel', 'waveform', 'filterMode', '__triggerLoudness', 'loudness', 'pregain', 'postgain', 'bias'] ) 
   PolyComplex.defaults = Complex.defaults
 
   return [ Complex, PolyComplex ]
 
 }
 
-},{"../fx/wavefolder.dsp.js":167,"./instrument.js":175,"genish.js":39}],171:[function(require,module,exports){
+},{"../fx/wavefolder.dsp.js":170,"./instrument.js":178,"genish.js":40}],174:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -16209,7 +16860,7 @@ module.exports = function( Gibberish ) {
   return [ Conga, PolyConga ]
 }
 
-},{"./instrument.js":175,"genish.js":39}],172:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],175:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -16253,7 +16904,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":175,"genish.js":39}],173:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],176:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -16265,7 +16916,7 @@ module.exports = function( Gibberish ) {
     let syn = Object.create( instrument )
 
     let frequency = g.in( 'frequency' ),
-        glide = g.in( 'glide' ),
+        glide = g.max( 1, g.in( 'glide' ) ),
         slidingFreq = g.slide( frequency, glide, glide ),
         cmRatio = g.in( 'cmRatio' ),
         index = g.in( 'index' ),
@@ -16313,7 +16964,7 @@ module.exports = function( Gibberish ) {
         const carrierOsc = Gibberish.oscillators.factory( syn.carrierWaveform, g.add( slidingFreq, modOscWithEnvAvg ), syn.antialias )
 
         // XXX horrible hack below to "use" saturation even when not using a diode filter 
-        const carrierOscWithEnv = props.filterType === 2 ? carrierOsc * env : g.mul(carrierOsc, g.mul(env,saturation) )
+        const carrierOscWithEnv = props.filterModel === 2 ? carrierOsc * env : g.mul(carrierOsc, g.mul(env,saturation) )
 
         const baseCutoffFreq = g.in( 'cutoff' ) * ( frequency /  ( g.gen.samplerate / 16 ) ) 
         const cutoff = g.min( baseCutoffFreq * g.pow( 2, g.in('filterMult') * Loudness ) * env, .995 ) 
@@ -16336,7 +16987,7 @@ module.exports = function( Gibberish ) {
       return env
     }
     
-    syn.__requiresRecompilation = [ 'carrierWaveform', 'modulatorWaveform', 'antialias', 'filterType', 'filterMode' ]
+    syn.__requiresRecompilation = [ 'carrierWaveform', 'modulatorWaveform', 'antialias', 'filterModel', 'filterMode' ]
     const env = syn.__createGraph()
 
     const out = Gibberish.factory( syn, syn.graph , ['instruments','FM'], props )
@@ -16370,21 +17021,21 @@ module.exports = function( Gibberish ) {
     filterMult:1.5,
     Q:.25,
     cutoff:.35,
-    filterType:0,
+    filterModel:0,
     filterMode:0,
     loudness: 1,
     __triggerLoudness:1
 
   }
 
-  const PolyFM = Gibberish.PolyTemplate( FM, ['glide','frequency','attack','decay','pulsewidth','pan','gain','cmRatio','index', 'saturation', 'filterMult', 'Q', 'cutoff', 'antialias', 'filterType', 'carrierWaveform', 'modulatorWaveform','filterMode', 'feedback', 'useADSR', 'sustain', 'release', 'sustainLevel', '__triggerLoudness','loudness' ] ) 
+  const PolyFM = Gibberish.PolyTemplate( FM, ['glide','frequency','attack','decay','pulsewidth','pan','gain','cmRatio','index', 'saturation', 'filterMult', 'Q', 'cutoff', 'antialias', 'filterModel', 'carrierWaveform', 'modulatorWaveform','filterMode', 'feedback', 'useADSR', 'sustain', 'release', 'sustainLevel', '__triggerLoudness','loudness' ] ) 
   PolyFM.defaults = FM.defaults
 
   return [ FM, PolyFM ]
 
 }
 
-},{"./instrument.js":175,"genish.js":39}],174:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],177:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -16438,7 +17089,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":175,"genish.js":39}],175:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],178:[function(require,module,exports){
 const ugen = require( '../ugen.js' )()
 
 const instrument = Object.create( ugen )
@@ -16479,7 +17130,7 @@ Object.assign( instrument, {
 
 module.exports = instrument
 
-},{"../ugen.js":203}],176:[function(require,module,exports){
+},{"../ugen.js":206}],179:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
 const instruments = {
@@ -16516,7 +17167,7 @@ return instruments
 
 }
 
-},{"./clap.dsp.js":169,"./complex.dsp.js":170,"./conga.js":171,"./cowbell.js":172,"./fm.dsp.js":173,"./hat.js":174,"./karplusstrong.js":177,"./kick.js":178,"./monosynth.dsp.js":179,"./multisampler.dsp.js":180,"./sampler.js":183,"./snare.js":184,"./synth.dsp.js":185,"./tom.js":186}],177:[function(require,module,exports){
+},{"./clap.dsp.js":172,"./complex.dsp.js":173,"./conga.js":174,"./cowbell.js":175,"./fm.dsp.js":176,"./hat.js":177,"./karplusstrong.js":180,"./kick.js":181,"./monosynth.dsp.js":182,"./multisampler.dsp.js":183,"./sampler.js":186,"./snare.js":187,"./synth.dsp.js":188,"./tom.js":189}],180:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -16536,7 +17187,7 @@ module.exports = function( Gibberish ) {
           impulse = g.mul( g.noise(), env ),
           feedback = g.history(),
           frequency = g.in('frequency'),
-          glide = g.in( 'glide' ),
+          glide = g.max( 1, g.in( 'glide' ) ),
           slidingFrequency = g.slide( frequency, glide, glide ),
           delay = g.delay( g.add( impulse, feedback.out ), g.div( sampleRate, slidingFrequency )),
           decayed = g.mul( delay, g.t60( g.mul( g.in('decay'), slidingFrequency ) ) ),
@@ -16608,7 +17259,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":175,"genish.js":39}],178:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],181:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -16659,7 +17310,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":175,"genish.js":39}],179:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],182:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' ),
       feedbackOsc = require( '../oscillators/fmfeedbackosc.js' )
@@ -16670,7 +17321,7 @@ module.exports = function( Gibberish ) {
     const syn = Object.create( instrument ),
           oscs = [], 
           frequency = g.in( 'frequency' ),
-          glide = g.in( 'glide' ),
+          glide = g.max( 1, g.in( 'glide' ) ),
           slidingFreq = g.memo( g.slide( frequency, glide, glide ) ),
           attack = g.in( 'attack' ), decay = g.in( 'decay' ),
           sustain = g.in( 'sustain' ), sustainLevel = g.in( 'sustainLevel' ),
@@ -16717,7 +17368,7 @@ module.exports = function( Gibberish ) {
       //const cutoff = baseCutoffFreq * g.pow( 2, g.in('filterMult') * loudness ) * env 
       const oscSum = g.add( ...oscs ),
             // XXX horrible hack below to "use" saturation even when not using a diode filter 
-            oscWithEnv = props.filterType === 2 ? g.mul( oscSum, env ) : g.sub( g.add( g.mul( oscSum, env), saturation ), saturation ),
+            oscWithEnv = props.filterModel=== 2 ? g.mul( oscSum, env ) : g.sub( g.add( g.mul( oscSum, env), saturation ), saturation ),
             baseCutoffFreq = g.mul( g.in('cutoff'), g.div( frequency, g.gen.samplerate / 16 ) ),
             cutoff = g.mul( g.mul( baseCutoffFreq, g.pow( 2, g.mul( g.in('filterMult'), Loudness ) )), env ),
             filteredOsc = Gibberish.filters.factory( oscWithEnv, cutoff, g.in('saturation'), syn )
@@ -16734,7 +17385,7 @@ module.exports = function( Gibberish ) {
       syn.env = env
     }
 
-    syn.__requiresRecompilation = [ 'waveform', 'antialias', 'filterType', 'filterMode' ]
+    syn.__requiresRecompilation = [ 'waveform', 'antialias', 'filterModel', 'filterMode' ]
     syn.__createGraph()
 
     const out = Gibberish.factory( syn, syn.graph, ['instruments','Monosynth'], props )
@@ -16763,11 +17414,11 @@ module.exports = function( Gibberish ) {
     panVoices:false,
     glide: 1,
     antialias:false,
-    filterType: 1,
+    //filterType: 1,
+    filterModel: 1,
     filterMode: 0, // 0 = LP, 1 = HP, 2 = BP, 3 = Notch
     saturation:.5,
     filterMult: 2,
-    isLowPass:true,
     loudness:1,
     __triggerLoudness:1
   }
@@ -16776,14 +17427,14 @@ module.exports = function( Gibberish ) {
     [ 'frequency','attack','decay','cutoff','Q',
       'detune2','detune3','pulsewidth','pan','gain', 
       'glide', 'saturation', 'filterMult',  'antialias', 
-      'filterType', 'waveform', 'filterMode', 'loudness', '__triggerLoudness' ]
+      'filterModel', 'waveform', 'filterMode', 'loudness', '__triggerLoudness' ]
   ) 
   PolyMono.defaults = Mono.defaults
 
   return [ Mono, PolyMono ]
 }
 
-},{"../oscillators/fmfeedbackosc.js":194,"./instrument.js":175,"genish.js":39}],180:[function(require,module,exports){
+},{"../oscillators/fmfeedbackosc.js":197,"./instrument.js":178,"genish.js":40}],183:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -16797,8 +17448,8 @@ module.exports = function( Gibberish ) {
     pickFile( sample ) {
       this.currentSample = sample
     },
-    pick( idx ) {
-      idx = Math.floor( idx )
+    pick( __idx ) {
+      const idx = Math.floor( __idx )
       const keys = Object.keys( this.samplers )
       const key = keys[ idx ]
       this.currentSample = key
@@ -16815,29 +17466,27 @@ module.exports = function( Gibberish ) {
       if( volume !== undefined ) this.__triggerLoudness = volume
 
       if( Gibberish.mode === 'processor' ) {
-        // if we're playing the sample forwards...
-        /*if( Gibberish.memory.heap[ this.__rateStorage__.memory.values.idx ] > 0 ) {
-          this.__trigger()
-        }else{
-          this.__phase__.value = this.end * (this.data.buffer.length - 1)
-          }*/
-        this.samplers[ this.currentSample ].trigger()
+        const sampler = this.samplers[ this.currentSample ]
+        const voice = this.__getVoice__()
+
+        // set voice buffer length
+        g.gen.memory.heap.set( [ sampler.dataLength ], voice.bufferLength.memory.values.idx )
+
+        // set voice data index
+        g.gen.memory.heap.set( [ sampler.dataIdx ], voice.bufferLoc.memory.values.idx )
+
+        voice.trigger()
       }
-         //this.samplers[ '../resources/snare.wav' ].trigger()
-      //}else{
-      //  const keys = Object.keys( this.samplers )
-      //  const idx = phase++
-      //  const key = keys[ idx ]
-      //  if( phase > 1 ) phase = 0
-      //  this.samplers[ key ].trigger()
-      //}
+    },
+    __getVoice__() {
+      return this.voices[ this.voiceCount++ % this.voices.length ]
     },
   })
 
   const Sampler = inputProps => {
     const syn = Object.create( proto )
 
-    const props = Object.assign( { onload:null }, Sampler.defaults, inputProps )
+    const props = Object.assign( { onload:null, voiceCount:0, files:[] }, Sampler.defaults, inputProps )
 
     syn.isStereo = props.isStereo !== undefined ? props.isStereo : false
 
@@ -16864,35 +17513,66 @@ module.exports = function( Gibberish ) {
       Gibberish.worklet.port.postMessage( syn.__meta__ )
     }
 
-    const samplers = {}
-    for( let filename of props.files ) {
+    // create all our vocecs
+    const voices = []
+    for( let i = 0; i < syn.maxVoices; i++ ) {
       'use jsdsp'
 
-      const sampler = samplers[ filename ] = {
+      const voice = {
         bufferLength: g.data( [1], 1, { meta:true }),
         bufferLoc:    g.data( [1], 1, { meta:true }),
         bang: g.bang(),
-        filename
       }
 
-      sampler.phase = g.counter( 
+      voice.phase = g.counter( 
         rate, 
-        start * sampler.bufferLength[0],
-        end * sampler.bufferLength[0], 
-        sampler.bang, 
+        start * voice.bufferLength[0],
+        end * voice.bufferLength[0], 
+        voice.bang, 
         shouldLoop, 
         { shouldWrap:false, initialValue:9999999 }
       )
 
-      sampler.trigger = sampler.bang.trigger
+      voice.trigger = voice.bang.trigger
+
+      voice.graph = g.ifelse(
+          // if phase is greater than start and less than end... 
+          g.and( 
+          g.gte( voice.phase, start * voice.bufferLength[0] ), 
+          g.lt(  voice.phase, end   * voice.bufferLength[0] ) 
+        ),
+        // ...read data
+        voice.peek = g.peekDyn( 
+          voice.bufferLoc[0], 
+          voice.bufferLength[0],
+          voice.phase,
+          { mode:'samples' }
+        ),
+        // ...else return 0
+        0
+      ) 
+      * loudness 
+      * triggerLoudness 
+
+      voices.push( voice )
+    }
+
+    // load in sample data
+    const samplers = {}
+    //for( let filename of props.files ) {
+    syn.loadSample = function( filename ) {
+      'use jsdsp'
+
+      const sampler = samplers[ filename ] = {
+        dataLength: null,
+        dataIdx: null,
+        buffer: null,
+        filename
+      }
 
       // main thread: when sample is loaded, copy it over message port
       // processor thread: onload is called via messageport handler, and
       // passed in the new buffer to be copied.
-
-      // XXX buffer isn't copied to main memory until __redoGraph() is called.
-      // can we do this using requestMemory and gen.heap.set instead??? that
-      // should really speed tthings up...
       const onload = obj => {
         if( Gibberish.mode === 'worklet' ) {
           const memIdx = Gibberish.memory.alloc( sampler.data.buffer.length, true )
@@ -16900,7 +17580,6 @@ module.exports = function( Gibberish ) {
           Gibberish.worklet.port.postMessage({
             address:'copy_multi',
             id:     syn.id,
-            idx:    memIdx,
             buffer: sampler.data.buffer,
             filename
           })
@@ -16909,26 +17588,16 @@ module.exports = function( Gibberish ) {
           sampler.data.buffer = obj
 
           // set data memory spec before issuing memory request
-          sampler.data.memory.values.length = sampler.data.dim = sampler.data.buffer.length
-
-          // sett the length of the buffer (works)
-          g.gen.memory.heap.set( [sampler.data.buffer.length], sampler.bufferLength.memory.values.idx )
+          sampler.dataLength = sampler.data.memory.values.length = sampler.data.dim = sampler.data.buffer.length
 
           // request memory to copy the bufer over
           g.gen.requestMemory( sampler.data.memory, false )
           g.gen.memory.heap.set( sampler.data.buffer, sampler.data.memory.values.idx )
 
           // set location of buffer (does not work)
-          g.gen.memory.heap.set( [sampler.data.memory.values.idx], sampler.bufferLoc.memory.values.idx )
+          sampler.dataIdx = sampler.data.memory.values.idx
 
           syn.currentSample = sampler.filename
-        }
-
-        //if( typeof syn.onload === 'function' ){  
-        //  syn.onload( buffer || syn.data.buffer )
-        //}
-        if( sampler.bufferLength[0] === -999999999 && sampler.data.buffer !== undefined ) {
-          sampler.bufferLength[0] = syn.data.buffer.length - 1
         }
       }
 
@@ -16958,36 +17627,15 @@ module.exports = function( Gibberish ) {
         sampler.data = g.data( new Float32Array(), 1, { onload, filename })
         sampler.data.onload = onload
       } 
-
-      {
-        'use jsdsp'
-        sampler.graph = g.ifelse(
-          // if phase is greater than start and less than end... 
-          g.and( 
-            g.gte( sampler.phase, start * sampler.bufferLength[0] ), 
-            g.lt(  sampler.phase, end   * sampler.bufferLength[0] ) 
-          ),
-          // ...read data
-          sampler.peek = g.peekDyn( 
-            sampler.bufferLoc[0], 
-            sampler.bufferLength[0],
-            sampler.phase,
-            { mode:'samples' }
-          ),
-          // ...else return 0
-          0
-        ) 
-        * loudness 
-        * triggerLoudness 
-        * g.in('gain')
-      }
     }
+
+    props.files.forEach( filename => syn.loadSample( filename ) )
 
     syn.__createGraph = function() {
       'use jsdsp'
       
-      const graphs = props.files.map( name => samplers[ name ].graph )
-      syn.graph = g.add( ...graphs )
+      const graphs = voices.map( voice => voice.graph )
+      syn.graph = g.add( ...graphs ) * g.in( 'gain' )
 
       if( syn.panVoices === true ) { 
         const panner = g.pan( syn.graph, syn.graph, g.in( 'pan' ) ) 
@@ -17003,7 +17651,6 @@ module.exports = function( Gibberish ) {
       }
     }
 
-    syn.samplers = samplers
     syn.__createGraph()
 
     const out = Gibberish.factory( 
@@ -17012,6 +17659,13 @@ module.exports = function( Gibberish ) {
       ['instruments','multisampler'], 
       props 
     ) 
+
+    Gibberish.preventProxy = true
+    Gibberish.proxyEnabled = false
+    out.voices = voices
+    out.samplers = samplers
+    Gibberish.proxyEnabled = true
+    Gibberish.preventProxy = false
 
     return out
   }
@@ -17026,31 +17680,15 @@ module.exports = function( Gibberish ) {
     end:1,
     bufferLength:-999999999,
     loudness:1,
+    maxVoices:5, 
     __triggerLoudness:1
   }
 
-  //const envCheckFactory = function( voice, _poly ) {
-  //  const envCheck = () => {
-  //    const phase = Gibberish.memory.heap[ voice.__phase__.memory.value.idx ]
-  //    if( ( voice.rate > 0 && phase > voice.end ) || ( voice.rate < 0 && phase < 0 ) ) {
-  //      _poly.disconnectUgen.call( _poly, voice )
-  //      voice.isConnected = false
-  //    }else{
-  //      Gibberish.blockCallbacks.push( envCheck )
-  //    }
-  //  }
-
-  //  return envCheck
-  //}
-
-  //const PolySampler = Gibberish.PolyTemplate( Sampler, ['rate','pan','gain','start','end','loops','bufferLength','__triggerLoudness','loudness'], envCheckFactory ) 
-
-  //return [ Sampler, PolySampler ]
   return Sampler
 }
    
 
-},{"./instrument.js":175,"genish.js":39}],181:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],184:[function(require,module,exports){
 // XXX TOO MANY GLOBAL GIBBERISH VALUES
 
 const Gibberish = require( '../index.js' )
@@ -17138,7 +17776,7 @@ module.exports = {
   triggerNote:null
 }
 
-},{"../index.js":168}],182:[function(require,module,exports){
+},{"../index.js":171}],185:[function(require,module,exports){
 /*
  * This files creates a factory generating polysynth constructors.
  */
@@ -17250,7 +17888,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../workletProxy.js":205,"genish.js":39}],183:[function(require,module,exports){
+},{"../workletProxy.js":208,"genish.js":40}],186:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -17468,7 +18106,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./instrument.js":175,"genish.js":39}],184:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],187:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
   
@@ -17519,7 +18157,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":175,"genish.js":39}],185:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],188:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -17533,7 +18171,7 @@ module.exports = function( Gibberish ) {
     const frequency = g.in( 'frequency' ),
           loudness  = g.in( 'loudness' ), 
           triggerLoudness = g.in( '__triggerLoudness' ),
-          glide = g.in( 'glide' ),
+          glide = g.max( 1, g.in( 'glide' ) ),
           slidingFreq = g.slide( frequency, glide, glide ),
           attack = g.in( 'attack' ), decay = g.in( 'decay' ),
           sustain = g.in( 'sustain' ), sustainLevel = g.in( 'sustainLevel' ),
@@ -17574,7 +18212,7 @@ module.exports = function( Gibberish ) {
         
         // XXX This line has to be here for correct code generation to work when
         // saturation is not being used... obviously this should cancel out. 
-        if( syn.filterType !== 2 ) synthWithGain = synthWithGain + saturation - saturation
+        if( syn.filterModel !== 2 ) synthWithGain = synthWithGain + saturation - saturation
     
         if( syn.panVoices === true ) { 
           panner = g.pan( synthWithGain, synthWithGain, g.in( 'pan' ) ) 
@@ -17594,7 +18232,7 @@ module.exports = function( Gibberish ) {
 
     }
     
-    syn.__requiresRecompilation = [ 'waveform', 'antialias', 'filterType','filterMode', 'useADSR', 'shape' ]
+    syn.__requiresRecompilation = [ 'waveform', 'antialias', 'filterModel','filterMode', 'useADSR', 'shape' ]
     const env = syn.__createGraph()
 
     const out = Gibberish.factory( syn, syn.graph, ['instruments', 'synth'], props, null, true, ['saturation']  )
@@ -17627,19 +18265,19 @@ module.exports = function( Gibberish ) {
     filterMult:2,
     Q:.25,
     cutoff:.5,
-    filterType:1,
+    filterModel:1,
     filterMode:0
   }
 
   // do not include velocity, which shoudl always be per voice
-  let PolySynth = Gibberish.PolyTemplate( Synth, ['frequency','attack','decay','pulsewidth','pan','gain','glide', 'saturation', 'filterMult', 'Q', 'cutoff', 'resonance', 'antialias', 'filterType', 'waveform', 'filterMode', '__triggerLoudness', 'loudness'] ) 
+  let PolySynth = Gibberish.PolyTemplate( Synth, ['frequency','attack','decay','pulsewidth','pan','gain','glide', 'saturation', 'filterMult', 'Q', 'cutoff', 'resonance', 'antialias', 'filterModel', 'waveform', 'filterMode', '__triggerLoudness', 'loudness'] ) 
   PolySynth.defaults = Synth.defaults
 
   return [ Synth, PolySynth ]
 
 }
 
-},{"./instrument.js":175,"genish.js":39}],186:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],189:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -17690,7 +18328,7 @@ module.exports = function( Gibberish ) {
   return Tom
 }
 
-},{"./instrument.js":175,"genish.js":39}],187:[function(require,module,exports){
+},{"./instrument.js":178,"genish.js":40}],190:[function(require,module,exports){
 const ugenproto = require( '../ugen.js' )(),
      __proxy     = require( '../workletProxy.js' ),
      g = require( 'genish.js' )
@@ -17805,7 +18443,7 @@ module.exports = function( Gibberish ) {
   return Binops
 }
 
-},{"../ugen.js":203,"../workletProxy.js":205,"genish.js":39}],188:[function(require,module,exports){
+},{"../ugen.js":206,"../workletProxy.js":208,"genish.js":40}],191:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )(),
     __proxy= require( '../workletProxy.js' )
@@ -17896,7 +18534,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":203,"../workletProxy.js":205,"genish.js":39}],189:[function(require,module,exports){
+},{"../ugen.js":206,"../workletProxy.js":208,"genish.js":40}],192:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       __proxy = require( '../workletProxy.js' )
@@ -18035,7 +18673,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":203,"../workletProxy.js":205,"genish.js":39}],190:[function(require,module,exports){
+},{"../ugen.js":206,"../workletProxy.js":208,"genish.js":40}],193:[function(require,module,exports){
 const  g    = require( 'genish.js'  ),
        ugen = require( '../ugen.js' )()
 
@@ -18097,7 +18735,7 @@ module.exports = function( Gibberish ) {
   return Monops
 }
 
-},{"../ugen.js":203,"genish.js":39}],191:[function(require,module,exports){
+},{"../ugen.js":206,"genish.js":40}],194:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 const ugen = require( '../ugen.js' )()
@@ -18134,7 +18772,7 @@ return Panner
 
 }
 
-},{"../ugen.js":203,"genish.js":39}],192:[function(require,module,exports){
+},{"../ugen.js":206,"genish.js":40}],195:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const Time = {
@@ -18163,7 +18801,7 @@ module.exports = function( Gibberish ) {
   return Time
 }
 
-},{}],193:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       ssd = genish.history,
       noise = genish.noise
@@ -18184,7 +18822,7 @@ module.exports = function() {
   return out
 }
 
-},{"genish.js":39}],194:[function(require,module,exports){
+},{"genish.js":40}],197:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
@@ -18260,7 +18898,7 @@ let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
 
 module.exports = feedbackOsc
 
-},{"genish.js":39}],195:[function(require,module,exports){
+},{"genish.js":40}],198:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       feedbackOsc = require( './fmfeedbackosc.js' ),
@@ -18396,7 +19034,7 @@ module.exports = function( Gibberish ) {
           osc = g.cycle( frequency )
           break;
         case 'square':
-          if( antialias === true ) {
+          if( antialias == true ) {
             //osc = feedbackOsc( frequency, 1, .5, { type:1 })
             osc = polyBlep( frequency, { type })
           }else{
@@ -18439,7 +19077,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":203,"./brownnoise.dsp.js":193,"./fmfeedbackosc.js":194,"./pinknoise.dsp.js":196,"./polyblep.dsp.js":197,"./wavetable.js":198,"genish.js":39}],196:[function(require,module,exports){
+},{"../ugen.js":206,"./brownnoise.dsp.js":196,"./fmfeedbackosc.js":197,"./pinknoise.dsp.js":199,"./polyblep.dsp.js":200,"./wavetable.js":201,"genish.js":40}],199:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       ssd = genish.history,
       data = genish.data,
@@ -18466,7 +19104,7 @@ module.exports = function() {
 
 }
 
-},{"genish.js":39}],197:[function(require,module,exports){
+},{"genish.js":40}],200:[function(require,module,exports){
 const genish = require( 'genish.js' )
 const g = genish
 
@@ -18539,7 +19177,7 @@ const polyBlep = function( __frequency, argumentProps ) {
 
 module.exports = polyBlep 
 
-},{"genish.js":39}],198:[function(require,module,exports){
+},{"genish.js":40}],201:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )()
 
@@ -18573,7 +19211,7 @@ module.exports = function( Gibberish ) {
   return Wavetable
 }
 
-},{"../ugen.js":203,"genish.js":39}],199:[function(require,module,exports){
+},{"../ugen.js":206,"genish.js":40}],202:[function(require,module,exports){
 const Queue = require( '../external/priorityqueue.js' )
 
 let Gibberish = null
@@ -18652,7 +19290,7 @@ Object.defineProperty( Scheduler, 'shouldSync', {
 
 module.exports = Scheduler
 
-},{"../external/priorityqueue.js":143}],200:[function(require,module,exports){
+},{"../external/priorityqueue.js":146}],203:[function(require,module,exports){
 const g = require( 'genish.js' ),
       __proxy = require( '../workletProxy.js' ),
       ugen = require( '../ugen.js' )()
@@ -18866,7 +19504,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":203,"../workletProxy.js":205,"genish.js":39}],201:[function(require,module,exports){
+},{"../ugen.js":206,"../workletProxy.js":208,"genish.js":40}],204:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 
 module.exports = function( Gibberish ) {
@@ -19063,7 +19701,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":205}],202:[function(require,module,exports){
+},{"../workletProxy.js":208}],205:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' )
 const Pattern = require( 'tidal.pegjs' )
 
@@ -19200,6 +19838,11 @@ const Sequencer = props => {
     stop() {
       seq.__isRunning = false
       return __seq
+    },
+
+    set( patternString ) {
+      seq.__pattern = Pattern( patternString, { addLocations:true, addUID:true, enclose:true })
+
     }
   }
 
@@ -19225,6 +19868,8 @@ let __uid = 0
 Sequencer.getUID = ()=> {
   return __uid++
 }
+
+Sequencer.Pattern = Pattern
 
 Sequencer.clock = { cps: 1 }
 
@@ -19257,7 +19902,7 @@ return Sequencer
 
 }
 
-},{"../workletProxy.js":205,"tidal.pegjs":219}],203:[function(require,module,exports){
+},{"../workletProxy.js":208,"tidal.pegjs":221}],206:[function(require,module,exports){
 let Gibberish = null
 
 const __ugen = function( __Gibberish ) {
@@ -19404,7 +20049,7 @@ const __ugen = function( __Gibberish ) {
 
 module.exports = __ugen
 
-},{}],204:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       AWPF = require( './external/audioworklet-polyfill.js' )
 
@@ -19654,7 +20299,7 @@ return utilities
 
 }
 
-},{"./external/audioworklet-polyfill.js":142,"genish.js":39}],205:[function(require,module,exports){
+},{"./external/audioworklet-polyfill.js":145,"genish.js":40}],208:[function(require,module,exports){
 const serialize = require('serialize-javascript')
 
 module.exports = function( Gibberish ) {
@@ -19813,7 +20458,7 @@ return __proxy
 
 }
 
-},{"serialize-javascript":217}],206:[function(require,module,exports){
+},{"serialize-javascript":219}],209:[function(require,module,exports){
 function bjorklund(slots, pulses){
   var pattern = [],
       count = [],
@@ -19854,7 +20499,7 @@ module.exports = function(m, k){
   else return bjorklund(k, m);
 };
 
-},{}],207:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 /**
  * @license Fraction.js v4.0.12 09/09/2015
  * http://www.xarg.org/2014/03/rational-numbers-in-javascript/
@@ -20690,100 +21335,7 @@ module.exports = function(m, k){
 
 })(this);
 
-},{}],208:[function(require,module,exports){
-'use strict';
-
-var MemoryHelper = {
-  create: function create() {
-    var size = arguments.length <= 0 || arguments[0] === undefined ? 4096 : arguments[0];
-    var memtype = arguments.length <= 1 || arguments[1] === undefined ? Float32Array : arguments[1];
-
-    var helper = Object.create(this);
-
-    Object.assign(helper, {
-      heap: new memtype(size),
-      list: {},
-      freeList: {}
-    });
-
-    return helper;
-  },
-  alloc: function alloc(amount) {
-    var idx = -1;
-
-    if (amount > this.heap.length) {
-      throw Error('Allocation request is larger than heap size of ' + this.heap.length);
-    }
-
-    for (var key in this.freeList) {
-      var candidateSize = this.freeList[key];
-
-      if (candidateSize >= amount) {
-        idx = key;
-
-        this.list[idx] = amount;
-
-        if (candidateSize !== amount) {
-          var newIndex = idx + amount,
-              newFreeSize = void 0;
-
-          for (var _key in this.list) {
-            if (_key > newIndex) {
-              newFreeSize = _key - newIndex;
-              this.freeList[newIndex] = newFreeSize;
-            }
-          }
-        }
-        
-        break;
-      }
-    }
-    
-    if( idx !== -1 ) delete this.freeList[ idx ]
-
-    if (idx === -1) {
-      var keys = Object.keys(this.list),
-          lastIndex = void 0;
-
-      if (keys.length) {
-        // if not first allocation...
-        lastIndex = parseInt(keys[keys.length - 1]);
-
-        idx = lastIndex + this.list[lastIndex];
-      } else {
-        idx = 0;
-      }
-
-      this.list[idx] = amount;
-    }
-
-    if (idx + amount >= this.heap.length) {
-      throw Error('No available blocks remain sufficient for allocation request.');
-    }
-    return idx;
-  },
-  free: function free(index) {
-    if (typeof this.list[index] !== 'number') {
-      throw Error('Calling free() on non-existing block.');
-    }
-
-    this.list[index] = 0;
-
-    var size = 0;
-    for (var key in this.list) {
-      if (key > index) {
-        size = key - index;
-        break;
-      }
-    }
-
-    this.freeList[index] = size;
-  }
-};
-
-module.exports = MemoryHelper;
-
-},{}],209:[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -20845,7 +21397,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":210,"./lib/tychei":211,"./lib/xor128":212,"./lib/xor4096":213,"./lib/xorshift7":214,"./lib/xorwow":215,"./seedrandom":216}],210:[function(require,module,exports){
+},{"./lib/alea":212,"./lib/tychei":213,"./lib/xor128":214,"./lib/xor4096":215,"./lib/xorshift7":216,"./lib/xorwow":217,"./seedrandom":218}],212:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -20961,7 +21513,7 @@ if (module && module.exports) {
 
 
 
-},{}],211:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -21066,7 +21618,7 @@ if (module && module.exports) {
 
 
 
-},{}],212:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -21149,7 +21701,7 @@ if (module && module.exports) {
 
 
 
-},{}],213:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -21297,7 +21849,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],214:[function(require,module,exports){
+},{}],216:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -21396,7 +21948,7 @@ if (module && module.exports) {
 );
 
 
-},{}],215:[function(require,module,exports){
+},{}],217:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -21484,7 +22036,7 @@ if (module && module.exports) {
 
 
 
-},{}],216:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 /*
 Copyright 2019 David Bau.
 
@@ -21739,9 +22291,9 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":119}],217:[function(require,module,exports){
-arguments[4][130][0].apply(exports,arguments)
-},{"dup":130}],218:[function(require,module,exports){
+},{"crypto":122}],219:[function(require,module,exports){
+arguments[4][133][0].apply(exports,arguments)
+},{"dup":133}],220:[function(require,module,exports){
 /*
  * Generated by PEG.js 0.10.0.
  *
@@ -24120,7 +24672,7 @@ module.exports = {
   parse:       peg$parse
 };
 
-},{}],219:[function(require,module,exports){
+},{}],221:[function(require,module,exports){
 const parse = require('../dist/tidal.js').parse
 const query = require('./queryArc.js' ).queryArc
 const Fraction = require( 'fraction.js' )
@@ -24180,7 +24732,7 @@ const Pattern = ( patternString, opts ) => {
 
 module.exports = Pattern
 
-},{"../dist/tidal.js":218,"./queryArc.js":220,"fraction.js":207}],220:[function(require,module,exports){
+},{"../dist/tidal.js":220,"./queryArc.js":222,"fraction.js":210}],222:[function(require,module,exports){
 const Fraction = require( 'fraction.js' )
 const util     = require( 'util' )
 const bjork    = require( 'bjork' ) 
@@ -24768,5 +25320,110 @@ const handlers = {
 
 module.exports.queryArc = queryArc
 
-},{"bjork":206,"fraction.js":207,"seedrandom":209,"util":133}]},{},[95])(95)
+},{"bjork":209,"fraction.js":210,"seedrandom":211,"util":136}],223:[function(require,module,exports){
+'use strict'
+
+let MemoryHelper = {
+  create( sizeOrBuffer=4096, memtype=Float32Array ) {
+    let helper = Object.create( this )
+
+    // conveniently, buffer constructors accept either a size or an array buffer to use...
+    // so, no matter which is passed to sizeOrBuffer it should work.
+    Object.assign( helper, {
+      heap: new memtype( sizeOrBuffer ),
+      list: {},
+      freeList: {}
+    })
+
+    return helper
+  },
+
+  alloc( size, immutable ) {
+    let idx = -1
+
+    if( size > this.heap.length ) {
+      throw Error( 'Allocation request is larger than heap size of ' + this.heap.length )
+    }
+
+    for( let key in this.freeList ) {
+      let candidate = this.freeList[ key ]
+
+      if( candidate.size >= size ) {
+        idx = key
+
+        this.list[ idx ] = { size, immutable, references:1 }
+
+        if( candidate.size !== size ) {
+          let newIndex = idx + size,
+              newFreeSize
+
+          for( let key in this.list ) {
+            if( key > newIndex ) {
+              newFreeSize = key - newIndex
+              this.freeList[ newIndex ] = newFreeSize
+            }
+          }
+        }
+
+        break
+      }
+    }
+
+    if( idx !== -1 ) delete this.freeList[ idx ]
+
+    if( idx === -1 ) {
+      let keys = Object.keys( this.list ),
+          lastIndex
+
+      if( keys.length ) { // if not first allocation...
+        lastIndex = parseInt( keys[ keys.length - 1 ] )
+
+        idx = lastIndex + this.list[ lastIndex ].size
+      }else{
+        idx = 0
+      }
+
+      this.list[ idx ] = { size, immutable, references:1 }
+    }
+
+    if( idx + size >= this.heap.length ) {
+      throw Error( 'No available blocks remain sufficient for allocation request.' )
+    }
+    return idx
+  },
+
+  addReference( index ) {
+    if( this.list[ index ] !== undefined ) { 
+      this.list[ index ].references++
+    }
+  },
+
+  free( index ) {
+    if( this.list[ index ] === undefined ) {
+      throw Error( 'Calling free() on non-existing block.' )
+    }
+
+    let slot = this.list[ index ]
+    if( slot === 0 ) return
+    slot.references--
+
+    if( slot.references === 0 && slot.immutable !== true ) {    
+      this.list[ index ] = 0
+
+      let freeBlockSize = 0
+      for( let key in this.list ) {
+        if( key > index ) {
+          freeBlockSize = key - index
+          break
+        }
+      }
+
+      this.freeList[ index ] = freeBlockSize
+    }
+  },
+}
+
+module.exports = MemoryHelper
+
+},{}]},{},[96])(96)
 });
