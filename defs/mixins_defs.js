@@ -7,6 +7,32 @@ module.exports = [
     name: "number(sequencable)",
     ternName: "number__sequencable",
     methods:{
+      fade: {
+        name:"function",
+        args:[
+          {
+            name:"start",
+            type:overloaded,
+            default:0,
+            required
+          },
+          {
+            name:"end",
+            type:overloaded,
+            default:0,
+            required
+          },
+          {
+            name:"time",
+            type:"number",
+            default:0,
+            required
+          }
+        ],
+        returns:"this",
+        doc: "The fade method fades a property between two values over a given timespan (measured in meeasures). If you pass null for either the start or end argument, the fade will substitute the current value of the property. For example, to fade an instrument in from 0 to its current gain over 8 measures, use syn.gain.fade( 0, null, 8)",
+      },
+     
       seq:{
         args:[
           {
