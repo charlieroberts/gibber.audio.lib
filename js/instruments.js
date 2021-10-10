@@ -18,8 +18,50 @@ const Instruments = {
       }
 
       //const shouldPool = pooledInstruments.indexOf( instrumentName ) > -1
-      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false )
+      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false ) 
 
+      // for poly notation like Synth[3]()
+      // create or extend dictionary with maxVoices property
+      for( let i = 0; i < 20; i++ ) {
+        instruments[ instrumentName ][i] = function( ...args ) {
+          if( args.length > 0 ) {
+            if( typeof args[0] === 'string' ) {
+              if( args.length > 1 ) {
+                if( typeof args[1] === 'object' ) {
+                  args[1].maxVoices = i || 1
+                } 
+              }else{
+                args[1] = { maxVoices:i || 1 }
+              }
+            }else if( typeof args[0] === 'object' ) {
+              args[0].maxVoices = i || 1
+            }
+          }else{
+            args[0] = { maxVoices:i || 1 }
+          } 
+
+          // use monophonic version if voice count is 1 or less
+          let name
+          if( i > 1 ) {
+            name = instrumentName === 'Sampler' ? 'Multisampler' : 'Poly'+instrumentName
+            if( name === 'PolyMonosynth' ) name = 'PolyMono' 
+          }else{
+            name = instrumentName
+          }
+
+          return instruments[ name ]( ...args )
+        }
+      }
+
+
+      instruments[ instrumentName ].presets = Audio.Presets.instruments[ instrumentName ] 
+      if( instruments[ instrumentName ].presets !== undefined ) {
+        instruments[ instrumentName ].presets.inspect = function() {
+          console.table( this )
+        }
+      }else{
+        instruments[ instrumentName ].presets = { inspect() { console.log( `${instrumentName} has no presets.` ) } }
+      }
     }
     instruments.Pluck = instruments.Karplus
     return instruments
@@ -54,10 +96,10 @@ const Instruments = {
       methods:[ 'note','trigger' ],
     },
     Sampler:{
-      methods:[ 'note','trigger', 'loadFile', 'loadBuffer' ],
+      methods:[ 'note', 'trigger', 'loadFile', 'loadBuffer' ],
     },
     Multisampler:{
-      methods:[ 'note','trigger', 'pick', 'pickFile'], 
+      methods:[ 'note', 'trigger', 'pick', 'pickFile', 'pickplay', 'loadSample', 'setpan', 'setrate' ], 
     },
     Snare:{
       methods:[ 'note','trigger' ],
