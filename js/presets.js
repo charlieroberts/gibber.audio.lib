@@ -6,6 +6,7 @@ const Presets = {
     if( typeof args[0] === 'object' ) {
       output = args[ 0 ]  
     }else if( typeof args[0] === 'string' ){
+      if( args[0] === 'inspect' ) return null
       output = {}
       const preset = Presets[ description.category ][ description.name ][ args[0] ]
 
@@ -24,7 +25,7 @@ const Presets = {
           output.__presetInit__ = preset.presetInit 
         } 
       }else{
-        console.warn( `The preset ${args[0]} for the ${description.name} does not exist.` )
+        console.warn( `The preset ${args[0]} for the ${description.category.slice(0,-1)} ${description.name} does not exist.` )
       }
       // if there is an extra argument to modify the preset...
       if( args.length > 1 ) {
@@ -61,6 +62,8 @@ const Presets = {
     Chorus: require( './presets/chorus_presets.js' ),
     Distortion: require( './presets/distortion_presets.js' ),
     Flanger: require( './presets/flanger_presets.js' ),
+    Reverb: require( './presets/reverb.js' ),
+    Delay: require( './presets/delay_presets.js' ),
   },
 
   misc: {
@@ -69,6 +72,7 @@ const Presets = {
 
 }
 
+Presets.instruments.Sampler   = Presets.instruments.Multisampler
 Presets.instruments.PolySynth = Presets.instruments.Synth
 Presets.instruments.PolyFM = Presets.instruments.FM
 Presets.instruments.PolyMono = Presets.instruments.Monosynth
