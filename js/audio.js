@@ -22,7 +22,7 @@ const Audio = {
   Clock: require( './clock.js' ),
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
-  Make: require( './make.js' ),
+  __Make: require( './make.js' ),
   initialized:false,
   autoConnect:true,
   shouldDelay:false,
@@ -49,6 +49,8 @@ const Audio = {
       Utility.export( obj )
       this.Gen.export( obj )
 
+      obj.Gibberish = this.Gibberish
+
       obj.gen = this.Gen.make
       obj.lfo = this.Gen.composites.lfo
       obj.Ensemble = this.Ensemble
@@ -57,13 +59,13 @@ const Audio = {
       obj.Theory = this.Theory
       obj.Freesound = this.Freesound
       obj.Clock = this.Clock
+      obj.Clock.export( obj )
       obj.WavePattern = this.WavePattern
       obj.Gen = this.Gen
       obj.stop = this.stop
 
       obj.Out = this.Out
       obj.Make = this.Make
-      obj.Gibberish = this.Gibberish
       obj.future = this.Gibberish.utilities.future
     }else{
       Audio.exportTarget = obj
@@ -102,18 +104,20 @@ const Audio = {
         //ctx = new AudioContext()
       }
 
-      Gibberish.init( 44100*60*60, ctx ).then( processorNode => {
+      Gibberish.init( 44100*60*20, ctx ).then( processorNode => {
         // XXX remove once gibber.core.lib has been properly integrated 
         Audio.Core.Audio = Audio.Core.audio = Audio
 
+        Audio.Gibberish = Gibberish
+
         Audio.initialized = true
         Audio.node = processorNode
+        Audio.Ugen = Ugen
+        Audio.Make = Audio.__Make( Audio )
         Audio.Gen = Gen( Audio )
         Audio.Gen.init()
-        //Audio.Arp = Arp( Gibber )
         Audio.Gen.export( Audio.Gen.ugens )
         Audio.Theory.init( window.Gibber )
-        Audio.Ugen = Ugen
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Audio )
         Audio.ctx = ctx
@@ -149,7 +153,7 @@ const Audio = {
         //const __start = Audio.instruments.Synth().connect()
         //__start.disconnect()
 
-        //Audio.Gibberish.genish.gen.histories.clear()
+        //Audio.Gibberish.genishi.gen.histories.clear()
         Audio.clear()
 
         resolve( [Audio,'Audio'] )
@@ -157,6 +161,59 @@ const Audio = {
     })
     
     return p
+  },
+
+  restart() {
+    Gibber.clear()
+    Gibberish.worklet.port.close()
+    window.w = Gibberish.worklet
+    Gibberish.worklet.disconnect()
+
+    Gibberish.init( 44100*60*20, undefined, 'worklet', true ).then( processorNode => {
+      Audio.out = Gibberish.output
+      Audio.node = processorNode
+
+      Audio.Theory.deleteProperties()
+      Audio.Theory.init( window.Gibber )
+
+      Audio.initialized = true
+      Audio.node = processorNode
+      Audio.Out = Gibberish.output
+
+      Audio.Make = Audio.__Make( Audio )
+      Audio.Gen = Gen( Audio )
+      Audio.Gen.init()
+      Audio.Gen.export( Audio.Gen.ugens )
+
+      Audio.WavePattern = WavePattern( Audio )
+      Audio.createUgens()
+        
+      Audio.Clock.init( Audio.Gen, Audio )
+
+      Gibberish.worklet.port.__postMessage = Gibberish.worklet.port.postMessage
+      Gibberish.worklet.port.postMessage = function( dict ) {
+        if( Audio.shouldDelay === true ) dict.delay = true
+
+        Gibberish.worklet.port.__postMessage( dict )
+      }
+
+      Audio.export( window )
+      Gibber.export( window )
+
+      const memIdx = Object.keys( Gibberish.memory.list ).reverse()[0]
+      this.__memoryEnd = parseInt( memIdx ) + Gibberish.memory.list[ memIdx ]
+
+      // XXX this forces the gibberish scheduler to start
+      // running, but it's about as hacky as it can get...
+      const __start = Audio.instruments.Synth().connect()
+      __start.disconnect()
+
+      //Audio.Gibberish.genishi.gen.histories.clear()
+
+      //Audio.clear()
+      console.log( 'audio engine successfully restarted.' )
+      Audio.publish( 'restart' )
+    })
   },
 
   // XXX stop clock from being cleared.
@@ -215,7 +272,6 @@ const Audio = {
     const Pattern = this.Core.__Pattern
     Pattern.transfer( this, Pattern.toString() )
 
-    this.Make = this.Make( this )
     
     const drums = require( './drums.js' )( this )
     Object.assign( this, drums )
@@ -232,7 +288,7 @@ const Audio = {
   },
 
   createPubSub() {
-    const events = {}
+    const events = this.pubevents = {}
     this.subscribe = function( key, fcn ) {
       if( typeof events[ key ] === 'undefined' ) {
         events[ key ] = []
@@ -276,6 +332,8 @@ const Audio = {
       })
 
       wrappedTo[ name ] = f
+      //to[ '__'+name].value = f
+
     }else if( from.type === 'gen' ) {
       // gen objects can be referred to without the graphics/audio abstraction,
       // in which case they will have no .render() function, and don't need to be rendered
@@ -288,10 +346,28 @@ const Audio = {
   createGetter( obj, name ) { return () => obj[ '__' + name ] },
 
   createSetter( obj, name, post, transform=null, isPoly=false ) {
+    if( typeof obj.__wrapped__ === 'object' ) {
+      let desc = Object.getOwnPropertyDescriptor( obj.__wrapped__, name )
+
+      if( desc !== undefined ) {
+        Object.defineProperty( obj.__wrapped__, name,  {
+          configurable:true,
+          set(v) {
+            obj[ '__'+name ].value = v
+            if( desc.set ) {
+              desc.set( v )
+            }else{
+              obj.__wrapped__.value = v
+            }
+          }
+        })
+      }
+    }
     const setter = v => {
       let value, shouldSend = true
 
-      if( typeof v === 'number' || typeof v === 'string' ) {
+
+      if( typeof v === 'number' || typeof v === 'string' || v === null ) {
         value = transform !== null ? transform( v ) : v
 
         if( isPoly === true ) {
@@ -314,15 +390,42 @@ const Audio = {
       }else if( typeof v === 'object' && v !== null && v.type === 'gen' ) {
         // gen objects can be referred to without the graphics/audio abstraction,
         // in which case they will have no .render() function, and don't need to be rendered
+
+        v = transform !== null ? transform( v ) : v       
         const gen = v.render !== undefined ? v.render() : v 
 
-        obj['__'+ name ].value = gen
+        obj['__'+ name ].value = gen 
         value = { id: gen.id }
-      }else{
-        obj[ '__'+name].value = v
-        value = v !== null ? { id:v.id } : v
+      }else if( typeof v === 'object' ) { //&& typeof v !== null ) {
+        //if( obj.__useMapping === false || name === 'input' ) {
+        //  obj[ '__'+name].value = v
+        //  value = v !== null ? { id:v.id } : v
+        //}else{
+        //  //Audio.createMapping( v, obj, name, obj.__wrapped__ )
+        //  const f = obj[ '__' + name ].follow = Follow({ input: v })
+
+        //  let m = f.multiplier
+        //  Object.defineProperty( obj[ name ], 'multiplier', {
+        //    get() { return m },
+        //    set(v) { m = v; f.multiplier = m }
+        //  })
+
+        //  let o = f.offset
+        //  Object.defineProperty( obj[ name ], 'offset', {
+        //    get() { return o },
+        //    set(v) { o = v; f.offset = o }
+        //  })
+
+          //wrappedTo[ name ] = f
+          //obj[ '__'+name ].value = f.__wrapped__
+          //value = { id:f.id }
+          obj[ '__'+name ].value = v.__wrapped__
+          value = { id:v.id }
+        //}
+               //
+        //obj[ '__'+name].value = v
+        //value = v !== null ? { id:v.id } : v
       }
-      //Audio.createMapping( v, obj, name, obj.__wrapped__ )
 
       if( Gibberish.mode === 'worklet' && shouldSend === true ) {
         Gibberish.worklet.port.postMessage({
@@ -335,6 +438,7 @@ const Audio = {
       if( post !== null ) {
         post.call( obj )
       }     
+      if( Gibberish.mode === 'worklet' ) Audio.publish( `property.set:${obj.id}`, obj, v )
     }
 
     return setter
