@@ -1,5 +1,5 @@
-module.exports = function( Gibber ) {
-  const Gibberish = Gibber.Gibberish
+module.exports = function( Audio ) {
+  const Gibberish = Audio.Gibberish
 
   const fnc = function( props ){
     const name = props.name
@@ -24,10 +24,10 @@ module.exports = function( Gibber ) {
     }`
     })
 
-    const out = Gibber.Ugen( 
+    const out = Audio.Ugen( 
       Gibberish[ name  ],
       { properties, methods:[], name, category:'instruments'},
-      Gibber
+      Audio 
     )
     return out
   }
