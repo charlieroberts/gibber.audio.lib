@@ -1,12 +1,20 @@
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 
+// XXX must use form key:function() {} due to serialization
 const Clock = {
   __beatCount:0,
   id:null,
   nogibberish:true,
   bpm:140,
+  __lastBPM:140,
   seq:null,
+
+  export:function( obj ) {
+    obj.btos = Clock.btos.bind( Clock )
+    obj.btoms = Clock.btoms.bind( Clock )
+    obj.stob = Clock.stob.bind( Clock )
+  },
 
   store:function() { 
     Gibberish.Clock = this
@@ -58,12 +66,13 @@ const Clock = {
         post: 'store'    
       })
       
-      let bpm = 140
+      let bpm = this.__lastBPM
       Object.defineProperty( this, 'bpm', {
         get() { return bpm },
         set(v){ 
           bpm = v
           if( Gibberish.mode === 'worklet' ) {
+            this.__lastBPM = v
             if( Audio.Gibber.Tidal !== undefined ) Audio.Gibber.Tidal.cps = bpm/120/2
             Gibberish.worklet.port.postMessage({
               address:'set',
@@ -93,7 +102,7 @@ const Clock = {
       //  name:'audioClock'
       //})
 
-      this.bpm = 140
+      this.bpm = this.__lastBPM
     }
 
     if( Gibberish.mode === 'processor' )
