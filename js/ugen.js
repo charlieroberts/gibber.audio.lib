@@ -697,7 +697,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
         const p = new Proxy( b, {
           set( target, property, value, receiver ) {
-            //console.log( 'set:', target, property, value, receiver )
+            // console.log( 'set:', target, property, value, receiver )
             if( b[ property ] === undefined && property !== 'input' ) {
               obj[ property ] = value
             }else{
@@ -719,7 +719,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           const objKeys = Object.keys( obj.__wrapped__.__properties__ )
           const __obj = {}
           objKeys.forEach( key => {
-            if( key[0] !== '_' && key !== 'bypass' ) {
+            //console.log( 'key:', key, obj.__wrapped__ )
+            if( key[0] !== '_' && key !== 'bypass' && obj[key] !== undefined ) {
               __obj[ key ] = obj[ key ].value !== undefined
                 ? obj[ key ].value
                 : obj.__wrapped__.__properties__[ key ].value
@@ -736,7 +737,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           console.groupEnd()
         }
 
-        return b
+        return p
       }
     }
     //console.log( `%c${description.name} created.`, 'color:white;background:#009' )
