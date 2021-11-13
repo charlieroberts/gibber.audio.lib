@@ -101,6 +101,9 @@ const Instruments = {
     Multisampler:{
       methods:[ 'note', 'trigger', 'pick', 'pickFile', 'pickplay', 'loadSample', 'setpan', 'setrate' ], 
     },
+    Soundfont:{
+      methods:[ 'note', 'trigger', 'midinote', 'midichord', 'chord', 'load', 'setpan', 'setrate' ], 
+    },
     Snare:{
       methods:[ 'note','trigger' ],
     },

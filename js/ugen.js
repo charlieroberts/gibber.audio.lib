@@ -146,7 +146,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     }
 
     // add poly methods
-    if( description.name.indexOf('Poly') > -1 || description.name.indexOf('Multi') > -1 ) {
+    if( description.name.indexOf('Poly') > -1 || description.name.indexOf('Multi') > -1 || description.name.indexOf('Soundfont') > -1 ) {
       let useProp = description.name.indexOf('Poly') > -1
       obj.spread = function( amt=1 ) {
         if( amt === 0 ) {
@@ -218,7 +218,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         Audio.createProperty( obj, propertyName, value, null, 0, transform )
 
         // create per-voice version of property... what properties should be excluded?
-        if( description.name.indexOf('Poly') > -1 || description.name.indexOf('Multi') > -1 ) {
+        if( description.name.indexOf('Poly') > -1 || description.name.indexOf('Multi') > -1 || description.name.indexOf('Soundfont') > -1 ) {
           Audio.createProperty( obj, propertyName+'V', value, null, 0, transform, true )//, timeProps, Audio, true )
 
           //createProperty( obj, propertyName, __wrappedObject, timeProps, Audio, true )
@@ -242,7 +242,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     // wrap methods and add sequencing to them
     if( description.methods !== null ) {
       for( let methodName of description.methods ) {
-        if( methodName !== 'note' || description.name.indexOf('Sampler') > -1 || description.name.indexOf('Multisampler') > -1  ) {
+        if( methodName !== 'note' || description.name.indexOf('Sampler') > -1 || description.name.indexOf('Multisampler') > -1 ) { //|| description.name.indexOf('Soundfont') > -1 ) {
           //obj[ methodName ] = __wrappedObject[ methodName ].bind( __wrappedObject )
           obj[ methodName ] = function( ...args ) {
             if( args.length === 0 ) {
@@ -380,6 +380,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         obj[ methodName ].tidals = []
 
         obj[ methodName ].seq = function( values, timings, number=0, delay=0, priority=10000 ) {
+          console.log( 'method seq:', methodName, number )
           let prevSeq = obj[ methodName ].sequencers[ number ] 
           if( prevSeq !== undefined ) { 
             const idx = obj.__sequencers.indexOf( prevSeq )
@@ -389,7 +390,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             // removeSeq( obj, prevSeq )
           }
 
-          let s = Audio.Core.Seq({ values, timings, target:__wrappedObject, key:methodName, priority })
+          let s = Audio.Core.Seq({ values, timings, target:obj/*__wrappedObject*/, key:methodName, priority })
           
           if( typeof delay !== 'function' ) {
             s.start( Audio.Clock.time( delay ) )
@@ -676,7 +677,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     // has been instantiated... it is primarily used to add effects and modulations
     // to a preset.
     if( properties !== undefined && properties.__presetInit__ !== undefined ) {
-      properties.__presetInit__.call( obj, Audio )
+      properties.__presetInit__.call( obj, Audio, args[1] )
     }
 
     // only connect if shouldNotConneect does not equal true (for LFOs and other modulation sources)

@@ -55,7 +55,8 @@ const Presets = {
 
     EDrums: require( './presets/edrums_presets.js' ),
     Drums:  require( './presets/drums_presets.js' ),
-    Multisampler: require( './presets/multisampler.js' )
+    Multisampler: require( './presets/multisampler.js' ),
+    Soundfont:    require( './presets/soundfont_presets.js' )
   },
 
   effects: {
