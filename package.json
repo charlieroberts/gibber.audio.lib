@@ -31,7 +31,9 @@
     "url": "https://github.com/charlieroberts/gibber.audio.lib/issues"
   },
   "main": "./js/audio.js",
-  "scripts": {},
+  "scripts": {
+    "link": "npm link gibberish-dsp genish.js gibber.core.lib"
+  },
   "keywords": [
     "audio",
     "music",
