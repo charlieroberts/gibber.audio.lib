@@ -380,7 +380,6 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         obj[ methodName ].tidals = []
 
         obj[ methodName ].seq = function( values, timings, number=0, delay=0, priority=10000 ) {
-          console.log( 'method seq:', methodName, number )
           let prevSeq = obj[ methodName ].sequencers[ number ] 
           if( prevSeq !== undefined ) { 
             const idx = obj.__sequencers.indexOf( prevSeq )

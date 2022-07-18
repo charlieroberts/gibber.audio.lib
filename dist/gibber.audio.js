@@ -889,13 +889,16 @@ module.exports = ( incr=1, min=0, max=Infinity, reset=0, loops=1,  properties ) 
   defaults )
  
   Object.defineProperty( ugen, 'value', {
-    get() {
+    get() { 
+      //console.log( 'counter value', this.memory.value.idx, gen.memory.heap[ this.memory.value.idx ], gen.memory )
+        
       if( this.memory.value.idx !== null ) {
         return gen.memory.heap[ this.memory.value.idx ]
       }
     },
     set( v ) {
       if( this.memory.value.idx !== null ) {
+        //console.log( 'settting counter', v )
         gen.memory.heap[ this.memory.value.idx ] = v 
       }
     }
@@ -2594,8 +2597,6 @@ let proto = {
     gen.memo[ this.name ] = this.name
 
     return [this.name, out]
-    
-    return out
   }
 }
 
@@ -2632,8 +2633,6 @@ let proto = {
     gen.memo[ this.name ] = this.name
 
     return [this.name, out]
-    
-    return out
   }
 }
 
@@ -3553,8 +3552,6 @@ const proto = {
     gen.memo[ this.name ] = this.name
 
     return [this.name, out]
-    
-    return out
   }
 }
 
@@ -6900,20 +6897,25 @@ const Gen  = {
       const _mul   = g.mul( osc, amp ),
             _add   = g.add( center, _mul ) 
 
-      const lfo = shouldRound ? Gen.make( g.round( _add ) ) : Gen.make( _add )
+      const lfo = shouldRound 
+        ? Gen.make( g.round( _add ), ['bias', 'frequency', 'gain'] ) 
+        : Gen.make( _add, [ 'bias', 'frequency', 'gain'] )
 
       Object.defineProperties( lfo, {
         frequency: {
-          set(v) { lfo.p1 = v },
-          get()  { return lfo.p1 }
+          configurable:true,
+          set(v) { lfo.rendered.p1 = v },
+          get()  { return lfo.rendered.p1 }
         },
         gain: {
-          set(v) { lfo.p2 = v },
-          get()  { return lfo.p2 }
+          configurable:true,
+          set(v) { lfo.rendered.p2 = v },
+          get()  { return lfo.rendered.p2 }
         },
         bias: {
-          set(v) { lfo.p0 = v },
-          get()  { return lfo.p0 }
+          configurable:true,
+          set(v) { lfo.rendered.p0 = v },
+          get()  { return lfo.rendered.p0 }
         }
       })
 
@@ -7126,9 +7128,11 @@ const Gen  = {
     if( Array.isArray( propertyNames )) {
       for( let i = 0; i < propertyNames.length; i++ ){
         const propertyName = propertyNames[ i ]
+        const desc = Object.getOwnPropertyDescriptor( target, propertyName )
         if( out[ 'p'+i ] !== undefined && propertyName !== null && propertyName !== undefined ){
           out[ '__'+propertyName ] = out[ 'p'+i ]
           Object.defineProperty( out, propertyName, {
+            configurable:true,
             get() { return out[ '__' + propertyName ] },
             set(v){
               if( v === undefined || v === null ) return
@@ -7136,10 +7140,13 @@ const Gen  = {
             }
           })
           Object.defineProperty( target, propertyName, {
+            configurable:true,
             get() { return out[ '__' + propertyName ] },
             set(v){
               if( v === undefined || v === null ) return
               out[ '__' + propertyName ].value = v
+
+              if( typeof desc.set === 'function' ) desc.set.call( target, v )
             }
           })
 
@@ -8883,6 +8890,7 @@ const Theory = {
   __offset:0,
   __degree:'i',
   __loadingPrefix:'js/external/tune.json/', 
+  __loadingExt:'js',
   __tunings:{
     et: {
       root:'60',
@@ -9200,7 +9208,7 @@ const Theory = {
         return
       }
 
-      const path = this.__loadingPrefix + name + '.js' 
+      const path = this.__loadingPrefix + name + '.' + this.__loadingExt 
       fetch( path )
         .catch( console.err )
         .then( data => {
@@ -9211,28 +9219,50 @@ const Theory = {
           } 
         })
         .then( json => {
-          this.__tuning.value = name
-          Gibberish.worklet.port.postMessage({
-            address:'addToProperty',
-            object:this.id,
-            name:'__tunings',
-            key:name,
-            value:json
-          })
+          this.addScaleJSON( json, name )
+          //this.__tuning.value = name
+          //Gibberish.worklet.port.postMessage({
+          //  address:'addToProperty',
+          //  object:this.id,
+          //  name:'__tunings',
+          //  key:name,
+          //  value:json
+          //})
 
-          Gibberish.worklet.port.postMessage({
-            address:'method',
-            object:this.id,
-            name:'loadScale',
-            args:[name]
-          })
+          //Gibberish.worklet.port.postMessage({
+          //  address:'method',
+          //  object:this.id,
+          //  name:'loadScale',
+          //  args:[name]
+          //})
 
-          this.__tunings[ name ] = json
-          this.Tune.loadScale( name )
+          //this.__tunings[ name ] = json
+          //this.Tune.loadScale( name )
         })
     }else{
       this.Tune.loadScale( name )
     }
+  },
+
+  addScaleJSON: function( json, name ) {
+    this.__tuning.value = name
+    Gibberish.worklet.port.postMessage({
+      address:'addToProperty',
+      object:this.id,
+      name:'__tunings',
+      key:name,
+      value:json
+    })
+
+    Gibberish.worklet.port.postMessage({
+      address:'method',
+      object:this.id,
+      name:'loadScale',
+      args:[name]
+    })
+
+    this.__tunings[ name ] = json
+    this.Tune.loadScale( name )
   },
 
   // REMEMBER THAT THE .note METHOD IS ALSO MONKEY-PATCHED
@@ -9698,7 +9728,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             // removeSeq( obj, prevSeq )
           }
 
-          let s = Audio.Core.Seq({ values, timings, target:__wrappedObject, key:methodName, priority })
+          let s = Audio.Core.Seq({ values, timings, target:obj/*__wrappedObject*/, key:methodName, priority })
           
           if( typeof delay !== 'function' ) {
             s.start( Audio.Clock.time( delay ) )
@@ -17818,7 +17848,16 @@ module.exports = function( Gibberish ) {
         g.gen.memory.heap[ voice.bufferLoc.memory.values.idx ] = sampler.dataIdx
 
         //if( rate !== null ) g.gen.memory.heap[ voice.rate.memory.values.idx ] = rate
-        if( rate !== null ) voice.rate = rate 
+        if( rate !== null ) voice.rate = rate
+        if( rate > 0 ) {
+          voice.trigger()
+        }else{
+          //console.log( 'reverse?', rate )
+          voice.bang.trigger()
+          //voice.phase.value = 0
+          voice.phase.value = sampler.dataLength - 1
+          //console.log( 'phase', voice.phase.value )
+        }
         //if( rate < 0 ) {
         //  const phase = sampler.dataIdx + Math.round((sampler.dataLength/2)) - 1
         //  console.log( 'phase:', phase, 'length:', sampler.dataLength, 'start:', sampler.dataIdx )
@@ -17829,7 +17868,7 @@ module.exports = function( Gibberish ) {
         //  voice.trigger()
         //}
         
-        voice.trigger()
+        //voice.trigger()
         //g.gen.memory.heap[ voice.rate.memory.values.idx ] = rate
       }
 
@@ -17870,7 +17909,6 @@ module.exports = function( Gibberish ) {
       Gibberish.worklet.port.postMessage( syn.__meta__ )
     }
 
-    // create all our vocecs
     const voices = []
     for( let i = 0; i < syn.maxVoices; i++ ) {
       'use jsdsp'
@@ -17882,6 +17920,14 @@ module.exports = function( Gibberish ) {
         // XXX how do I change this from main thread?
         __pan: g.data( [.5], 1, { meta:true }),
         __rate: g.data( [1], 1, { meta:true }),
+        __shouldLoop: g.data( [1], 1, { meta:true }),
+        __loudness:  g.data( [1], 1, { meta:true }),
+        get loudness() { 
+          return g.gen.memory.heap[ this.__loudness.memory.values.idx   ]
+        },
+        set loudness( v ) {
+          g.gen.memory.heap[ this.__loudness.memory.values.idx ] = v
+        },
         set pan(v) {
           g.gen.memory.heap[ this.__pan.memory.values.idx ] = v
         },
@@ -17918,8 +17964,8 @@ module.exports = function( Gibberish ) {
         0
       ) 
       * loudness 
-      * triggerLoudness 
-      
+      * voice.__loudness[0] 
+
       const pan = g.pan( voice.graph, voice.graph, voice.__pan[0] )
       voice.graph = [ pan.left, pan.right ]
 
@@ -18325,7 +18371,14 @@ module.exports = function( Gibberish ) {
       syn.__bang__ = g.bang()
       syn.__trigger = syn.__bang__.trigger
 
-      syn.__phase__ = g.counter( rate, g.mul(start,bufferLength), g.mul( end, bufferLength ), syn.__bang__, shouldLoop, { shouldWrap:false, initialValue:9999999 })
+      syn.__phase__ = g.counter( 
+        rate, 
+        g.mul(start,bufferLength), 
+        g.mul( end, bufferLength ), 
+        syn.__bang__, 
+        shouldLoop, 
+        { shouldWrap:false, initialValue:9999999 }
+      )
       
       syn.__rateStorage__ = rateStorage
       rateStorage[0] = rate
@@ -18665,22 +18718,12 @@ module.exports = function( Gibberish ) {
         g.gen.memory.heap[ voice.__loopStart.memory.values.idx ] = sampler.zone.loopStart
         g.gen.memory.heap[ voice.__loopEnd.memory.values.idx   ] = sampler.zone.loopEnd
 
-        //voice.loudness = sampler.__triggerLoudness
-
         if( volume !== null )
           g.gen.memory.heap[ voice.loudness.memory.values.idx   ] = volume
-        
-        //console.log( 'idx:', voice.loudness.memory.values.idx )
-        //console.log( 'loudness:', g.gen.memory.heap[ voice.loudness.memory.values.idx   ])
 
         if( rate !== null ) voice.rate = rate 
         
-        console.log( 'volume:', volume )
-        //if( volume !== null ) {
-        //  g.gen.memory.heap[ voice.__triggerLoudness.memory.values.idx ] = volume
-        //}
         voice.trigger()
-        //g.gen.memory.heap[ voice.rate.memory.values.idx ] = rate
       }
 
       return voice
@@ -18725,9 +18768,6 @@ module.exports = function( Gibberish ) {
     for( let i = 0; i < syn.maxVoices; i++ ) {
       'use jsdsp'
 
-      const idx = Gibberish.memory.alloc( 1 )
-      let value = 1, isNumber = true
-
       const voice = {
         bufferLength: g.data( [1], 1, { meta:true }),
         bufferLoc:    g.data( [1], 1, { meta:true }),
@@ -18738,25 +18778,12 @@ module.exports = function( Gibberish ) {
         __shouldLoop: g.data( [1], 1, { meta:true }),
         __loopStart: g.data( [1], 1, { meta:true }),
         __loopEnd:   g.data( [1], 1, { meta:true }),
-        //loudness:    g.data( [1], 1, { meta:true }),
-        get loudnes() { 
-          return Gibberish.memory.heap[ idx ]
+        __loudness:  g.data( [1], 1, { meta:true }),
+        get loudness() { 
+          return g.gen.memory.heap[ this.__loudness.memory.values.idx   ]
         },
         set loudness( v ) {
-          //if( param === 'input' ) console.log( 'INPUT:', v, isNumber )
-          if( value !== v ) {
-            if( setter !== undefined ) setter( v )
-            if( typeof v === 'number' ) {
-              Gibberish.memory.heap[ idx ] = value = v
-              if( isNumber === false ) Gibberish.dirty( ugen )
-              isNumber = true
-            }else{
-              value = v
-              /*if( isNumber === true )*/ Gibberish.dirty( ugen )
-              //console.log( 'switching from number:', param, value )
-              isNumber = false
-            }
-          }
+          g.gen.memory.heap[ this.__loudness.memory.values.idx ] = v
         },
         set pan(v) {
           g.gen.memory.heap[ this.__pan.memory.values.idx ] = v
@@ -18794,7 +18821,7 @@ module.exports = function( Gibberish ) {
         0
       ) 
       * loudness 
-      * voice.loudness[0] 
+      * voice.__loudness[0] 
 
       // start of attempt to loop sustain...
       //voice.graph = g.ifelse(
@@ -21284,10 +21311,12 @@ const utilities = {
         }else if( obj !== undefined ) {
           const propSplit = propName.split('.')
           if( obj[ propSplit[ 0 ] ] !== undefined ) {
-            if( typeof obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ] !== 'function' ) {
-              obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ] = value
-            }else{
-              obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ]( value )
+            if( propSplit[1] !== undefined ) {
+              if( typeof obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ] !== 'function' ) {
+                obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ] = value
+              }else{
+                obj[ propSplit[ 0 ] ][ propSplit[ 1 ] ]( value )
+              }
             }
           }else{
             //console.log( 'undefined split property!', id, propSplit[0], propSplit[1], value, obj )

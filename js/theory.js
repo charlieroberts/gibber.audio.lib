@@ -22,6 +22,7 @@ const Theory = {
   __offset:0,
   __degree:'i',
   __loadingPrefix:'js/external/tune.json/', 
+  __loadingExt:'js',
   __tunings:{
     et: {
       root:'60',
@@ -339,7 +340,7 @@ const Theory = {
         return
       }
 
-      const path = this.__loadingPrefix + name + '.js' 
+      const path = this.__loadingPrefix + name + '.' + this.__loadingExt 
       fetch( path )
         .catch( console.err )
         .then( data => {
@@ -350,28 +351,50 @@ const Theory = {
           } 
         })
         .then( json => {
-          this.__tuning.value = name
-          Gibberish.worklet.port.postMessage({
-            address:'addToProperty',
-            object:this.id,
-            name:'__tunings',
-            key:name,
-            value:json
-          })
+          this.addScaleJSON( json, name )
+          //this.__tuning.value = name
+          //Gibberish.worklet.port.postMessage({
+          //  address:'addToProperty',
+          //  object:this.id,
+          //  name:'__tunings',
+          //  key:name,
+          //  value:json
+          //})
 
-          Gibberish.worklet.port.postMessage({
-            address:'method',
-            object:this.id,
-            name:'loadScale',
-            args:[name]
-          })
+          //Gibberish.worklet.port.postMessage({
+          //  address:'method',
+          //  object:this.id,
+          //  name:'loadScale',
+          //  args:[name]
+          //})
 
-          this.__tunings[ name ] = json
-          this.Tune.loadScale( name )
+          //this.__tunings[ name ] = json
+          //this.Tune.loadScale( name )
         })
     }else{
       this.Tune.loadScale( name )
     }
+  },
+
+  addScaleJSON: function( json, name ) {
+    this.__tuning.value = name
+    Gibberish.worklet.port.postMessage({
+      address:'addToProperty',
+      object:this.id,
+      name:'__tunings',
+      key:name,
+      value:json
+    })
+
+    Gibberish.worklet.port.postMessage({
+      address:'method',
+      object:this.id,
+      name:'loadScale',
+      args:[name]
+    })
+
+    this.__tunings[ name ] = json
+    this.Tune.loadScale( name )
   },
 
   // REMEMBER THAT THE .note METHOD IS ALSO MONKEY-PATCHED

@@ -370,20 +370,25 @@ const Gen  = {
       const _mul   = g.mul( osc, amp ),
             _add   = g.add( center, _mul ) 
 
-      const lfo = shouldRound ? Gen.make( g.round( _add ) ) : Gen.make( _add )
+      const lfo = shouldRound 
+        ? Gen.make( g.round( _add ), ['bias', 'frequency', 'gain'] ) 
+        : Gen.make( _add, [ 'bias', 'frequency', 'gain'] )
 
       Object.defineProperties( lfo, {
         frequency: {
-          set(v) { lfo.p1 = v },
-          get()  { return lfo.p1 }
+          configurable:true,
+          set(v) { lfo.rendered.p1 = v },
+          get()  { return lfo.rendered.p1 }
         },
         gain: {
-          set(v) { lfo.p2 = v },
-          get()  { return lfo.p2 }
+          configurable:true,
+          set(v) { lfo.rendered.p2 = v },
+          get()  { return lfo.rendered.p2 }
         },
         bias: {
-          set(v) { lfo.p0 = v },
-          get()  { return lfo.p0 }
+          configurable:true,
+          set(v) { lfo.rendered.p0 = v },
+          get()  { return lfo.rendered.p0 }
         }
       })
 
@@ -596,9 +601,11 @@ const Gen  = {
     if( Array.isArray( propertyNames )) {
       for( let i = 0; i < propertyNames.length; i++ ){
         const propertyName = propertyNames[ i ]
+        const desc = Object.getOwnPropertyDescriptor( target, propertyName )
         if( out[ 'p'+i ] !== undefined && propertyName !== null && propertyName !== undefined ){
           out[ '__'+propertyName ] = out[ 'p'+i ]
           Object.defineProperty( out, propertyName, {
+            configurable:true,
             get() { return out[ '__' + propertyName ] },
             set(v){
               if( v === undefined || v === null ) return
@@ -606,10 +613,13 @@ const Gen  = {
             }
           })
           Object.defineProperty( target, propertyName, {
+            configurable:true,
             get() { return out[ '__' + propertyName ] },
             set(v){
               if( v === undefined || v === null ) return
               out[ '__' + propertyName ].value = v
+
+              if( typeof desc.set === 'function' ) desc.set.call( target, v )
             }
           })
 
