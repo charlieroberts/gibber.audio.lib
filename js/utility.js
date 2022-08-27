@@ -133,9 +133,9 @@ const Utility = {
   time( v ) { return Gibber.Audio.Clock.time( v ) },
   btof( beats ) { return 1 / (beats * ( 60 / Gibber.Audio.Clock.bpm )) },
 
-  random() {
+  random(...args) {
     this.randomFlag = true
-    this.randomArgs = Array.prototype.slice.call( arguments, 0 )
+    this.randomArgs = args
 
     return this
   },
