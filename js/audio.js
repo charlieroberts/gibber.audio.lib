@@ -462,6 +462,7 @@ const Audio = {
     let ramp = Audio.envelopes.Ramp({ from, to, length:time, shouldLoop:false })
     // this is a key to not use an envelope follower for mapping
     ramp.__useMapping = false
+    ramp.__wrapped__.isFade = true
 
     if( delay === 0 ) {
       obj[ name ] = ramp
