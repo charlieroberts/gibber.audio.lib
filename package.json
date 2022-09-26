@@ -1,6 +1,6 @@
 {
   "name": "gibber.audio.lib",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "standalone audio library from Gibber to use in node or in HTML documents",
   "repository": {
     "type": "git",
