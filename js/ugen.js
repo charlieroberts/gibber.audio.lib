@@ -263,8 +263,11 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
                 obj[ methodName ].seq( ...args )  // must be sequence
               }
             }*/
+
             return obj
           }
+          obj[ methodName ].__name  = methodName
+          obj[ methodName ].__owner = obj
         }else{
           // in this block we are monkey patching the note method of Gibberish synths so that
           // they use Gibber's harmonic system inside the AudioWorkletProcessor.
@@ -304,6 +307,8 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
             return obj
           }
+          obj[ methodName ].__name = methodName
+          obj[ methodName ].__owner = obj
 
           Gibberish.worklet.port.postMessage({
             address:'addMethod',
@@ -672,6 +677,10 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
     Object.defineProperty( obj, '_', { get() { obj.disconnect(); return obj } })
 
+    const instrumentName = description.name ==='Multisampler' ? 'Sampler' : description.name
+    if( Gibber.extensions[ instrumentName ] !== undefined ) {
+      Object.assign( obj, Gibber.extensions[ instrumentName ] ) 
+    }
     // presetInit is a function in presets that triggers actions after the ugen
     // has been instantiated... it is primarily used to add effects and modulations
     // to a preset.
