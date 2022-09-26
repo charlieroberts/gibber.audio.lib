@@ -68,10 +68,10 @@ module.exports = function( __Audio ) {
 
     const temp = Audio.autoConnect
     Audio.autoConnect = false
-    const k  = Audio.instruments.Sampler({ filename:'./resources/audiofiles/kick.wav' })
-    const s  = Audio.instruments.Sampler({ filename:'./resources/audiofiles/snare.wav' })
-    const ch = Audio.instruments.Sampler({ filename:'./resources/audiofiles/hat.wav' })
-    const oh = Audio.instruments.Sampler({ filename:'./resources/audiofiles/openhat.wav' })
+    const k  = Audio.instruments.Sampler({ files:['./resources/audiofiles/kick.wav' ] })
+    const s  = Audio.instruments.Sampler({ files:['./resources/audiofiles/snare.wav' ] })
+    const ch = Audio.instruments.Sampler({ files:['./resources/audiofiles/hat.wav' ] })
+    const oh = Audio.instruments.Sampler({ files:['./resources/audiofiles/openhat.wav' ] })
     Audio.autoConnect = temp
 
     const drums = Audio.Ensemble({
@@ -89,6 +89,7 @@ module.exports = function( __Audio ) {
     if( Audio.autoConnect === true ) drums.connect()
 
     drums.__sequencers = [ ]
+
     //if( typeof score === 'string' ) {
     //  drums.seq = Audio.Seq({
     //    target:drums,
@@ -113,7 +114,7 @@ module.exports = function( __Audio ) {
     addMethod( drums, 'end', 1 )
 
     props = Presets.process( { name:'Drums', category:'instruments' }, args, Audio )
-    if( props !== undefined && props.__presetInit__ !== undefined ) {
+    if( props !== undefined ) {
       Object.assign( drums, props )
       if( props.__presetInit__ !== undefined ) props.__presetInit__.call( drums, Audio )
     }
