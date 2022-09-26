@@ -72,13 +72,13 @@ module.exports = {
   },
   cr7030: {
     files:[
-      'resources/audiofiles/cr7030/68602__birdflu__bongo7030.wav',
-      'resources/audiofiles/cr7030/68603__birdflu__clave7030.wav',
-      'resources/audiofiles/cr7030/68606__birdflu__hatclosed7030.wav',
-      'resources/audiofiles/cr7030/68607__birdflu__hatopen7030.wav',
-      'resources/audiofiles/cr7030/68608__birdflu__kick7030.wav',
-      'resources/audiofiles/cr7030/68609__birdflu__snare7030.wav',
-      'resources/audiofiles/cr7030/68610__birdflu__tom7030.wav',
+      './resources/audiofiles/cr7030/68602__birdflu__bongo7030.wav',
+      './resources/audiofiles/cr7030/68603__birdflu__clave7030.wav',
+      './resources/audiofiles/cr7030/68606__birdflu__hatclosed7030.wav',
+      './resources/audiofiles/cr7030/68607__birdflu__hatopen7030.wav',
+      './resources/audiofiles/cr7030/68608__birdflu__kick7030.wav',
+      './resources/audiofiles/cr7030/68609__birdflu__snare7030.wav',
+      './resources/audiofiles/cr7030/68610__birdflu__tom7030.wav',
     ],
     presetInit(){
       this.length = 7

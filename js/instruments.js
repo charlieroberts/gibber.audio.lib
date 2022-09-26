@@ -3,7 +3,7 @@ const Ugen      = require( './ugen.js' )
 
 const Instruments = {
   create( Audio ) {
-    const instruments = {}
+    const instruments = { extensions:{} }
     //const pooledInstruments = ['Synth','Monosynth','FM']
     for( let instrumentName in Gibberish.instruments ) {
       const gibberishConstructor = Gibberish.instruments[ instrumentName ]
@@ -18,8 +18,16 @@ const Instruments = {
       }
 
       //const shouldPool = pooledInstruments.indexOf( instrumentName ) > -1
-      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false ) 
+      //const constructor = Ugen( gibberishConstructor, description, Audio, false ) 
+      //instruments[ instrumentName ] = function(...args) {
+      //  let instr = constructor( ...args )
+      //  if( instruments.extensions[ instrumentName ] !== undefined ) {
+      //    instr = Object.assign( instr, extensions[ instrumentName ] ) 
+      //  }
+      //  return instr
+      //}
 
+      instruments[ instrumentName ] = Ugen( gibberishConstructor, description, Audio, false ) 
       // for poly notation like Synth[3]()
       // create or extend dictionary with maxVoices property
       for( let i = 0; i < 20; i++ ) {
@@ -42,14 +50,20 @@ const Instruments = {
 
           // use monophonic version if voice count is 1 or less
           let name
-          if( i > 1 ) {
-            name = instrumentName === 'Sampler' ? 'Multisampler' : 'Poly'+instrumentName
+          if( i > 1 && instrumentName !== 'Multisampler' ) {
+            name = instrumentName =  'Poly'+instrumentName
             if( name === 'PolyMonosynth' ) name = 'PolyMono' 
           }else{
             name = instrumentName
           }
 
-          return instruments[ name ]( ...args )
+          let instr =  instruments[ name ]( ...args )
+
+          // mixin extra functions as needed
+          //if( instruments.extensions[ instrumentName ] !== undefined ) {
+          //  instr = Object.assign( instr, extensions[ instrumentName ] ) 
+          //}
+          return instr
         }
       }
 
@@ -64,6 +78,7 @@ const Instruments = {
       }
     }
     instruments.Pluck = instruments.Karplus
+    instruments.Sampler = instruments.Multisampler
     return instruments
   },
 
