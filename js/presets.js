@@ -25,7 +25,12 @@ const Presets = {
           output.__presetInit__ = preset.presetInit 
         } 
       }else{
-        console.warn( `The preset ${args[0]} for the ${description.category.slice(0,-1)} ${description.name} does not exist.` )
+        if( description.name === 'Sampler' || description.name === 'Multisampler' ) {
+          console.log( 'loading samples ' + args[0] )
+          output.__presetInit__ = function() { this.load( args[0] ) }
+        }else{
+          console.warn( `The preset ${args[0]} for the ${description.category.slice(0,-1)} ${description.name} does not exist.` )
+        }
       }
       // if there is an extra argument to modify the preset...
       if( args.length > 1 ) {
