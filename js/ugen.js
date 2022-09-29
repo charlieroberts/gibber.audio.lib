@@ -678,7 +678,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
     Object.defineProperty( obj, '_', { get() { obj.disconnect(); return obj } })
 
     const instrumentName = description.name ==='Multisampler' ? 'Sampler' : description.name
-    if( Gibber.extensions[ instrumentName ] !== undefined ) {
+    if( Gibber.extensions !== undefined && Gibber.extensions[ instrumentName ] !== undefined ) {
       Object.assign( obj, Gibber.extensions[ instrumentName ] ) 
     }
     // presetInit is a function in presets that triggers actions after the ugen

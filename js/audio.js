@@ -14,9 +14,6 @@ const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
 const WaveObjects = require( './waveObjects.js' )
-//const Core        = require( 'gibber.core.lib' )
-const AWPF        = require( './external/audioworklet-polyfill.js' )
-//const Arp         = require( './arp.js' )
 
 const Audio = {
   Clock: require( './clock.js' ),
@@ -94,17 +91,8 @@ const Audio = {
 
     this.createPubSub()
 
-    const AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
-    window.AudioContext = AC
-    AWPF( window, bufferSize ) 
-
     const p = new Promise( (resolve, reject) => {
-      if( ctx === null ) {
-        ctx = new AC({ latencyHint })
-        //ctx = new AudioContext()
-      }
-
-      Gibberish.init( 44100*60*20, ctx ).then( processorNode => {
+      Gibberish.init( 44100*60*20, ctx, 'worklet', { latencyHint }).then( processorNode => {
         // XXX remove once gibber.core.lib has been properly integrated 
         Audio.Core.Audio = Audio.Core.audio = Audio
 
