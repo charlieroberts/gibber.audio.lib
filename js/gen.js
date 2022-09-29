@@ -588,7 +588,7 @@ const Gen  = {
         if( count++ % 6 === 0 ) {
           // XXX this shouldn't happen here, should happen when the annotation is created.
           if( Audio.Gibber.Environment !== undefined ) {
-o           if( Audio.Gibber.Environment.Annotations.waveform.widgets[ temp ] === undefined ) {
+            if( Audio.Gibber.Environment.Annotations.waveform.widgets[ temp ] === undefined ) {
               Audio.Gibber.Environment.Annotations.waveform.widgets[ temp ] = out.widget
             }
             Audio.Gibber.Environment.Annotations.waveform.updateWidget( out.widget, v, false )
