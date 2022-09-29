@@ -1,7 +1,7 @@
 const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
-
+const seqDefaults = require( './defaults.js' )
 // Gibber ugens are essentially wrappers around underlying gibberish 
 // ugens, providing convenience methods for rapidly sequencing
 // and modulating them.
@@ -748,6 +748,59 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
 
         return p
       }
+    }
+
+    // create default sequencing methods
+    if( obj.seq === undefined ) {
+      obj.seq = function( values, timings, number=0, delay=0, priority=10000 ) {
+        const methodName = seqDefaults[ obj.name ] 
+        let prevSeq = obj[ methodName ].sequencers[ number ] 
+        if( prevSeq !== undefined ) { 
+          const idx = obj.__sequencers.indexOf( prevSeq )
+          obj.__sequencers.splice( idx, 1 )
+          //prevSeq.stop()
+          prevSeq.clear()
+          // removeSeq( obj, prevSeq )
+        }
+
+        let s = Audio.Core.Seq({ values, timings, target:obj/*__wrappedObject*/, key:methodName, priority })
+
+        if( typeof delay !== 'function' ) {
+          s.start( Audio.Clock.time( delay ) )
+        }else{
+          delay.seqs.push( s )
+        }
+        obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
+        obj.__sequencers.push( s )
+
+        // return object for method chaining
+        return obj
+      }
+      obj.tidal= function( pattern, number=0, delay=0 ) {
+        const methodName = seqDefaults[ obj.name ] 
+        let prevSeq = obj[ methodName ].tidals[ number ] 
+        let s = Audio.Core.Tidal({ pattern, target:__wrappedObject, key:methodName })
+        if( s !== null ) {
+          if( prevSeq !== undefined ) { 
+            const idx = obj.__tidals.indexOf( prevSeq )
+            obj.__tidals.splice( idx, 1 )
+            prevSeq.stop()
+            prevSeq.clear()
+            // removeSeq( obj, prevSeq )
+          }
+
+          s.start( Audio.Clock.time( delay ) )
+          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
+          obj.__tidals.push( s )
+
+          // XXX need to clean this up! this is solely here for annotations, and to 
+          // match what I did for ensembles... 
+          obj[ methodName ].__tidal = s
+        }
+
+        // return object for method chaining
+        return obj
+      } 
     }
     //console.log( `%c${description.name} created.`, 'color:white;background:#009' )
     Audio.publish( 'new ugen', description.name + ' created'  )
