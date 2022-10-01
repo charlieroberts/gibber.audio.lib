@@ -54,7 +54,7 @@ module.exports = function( Audio ) {
             const path = json.previews[ 'preview-hq-mp3' ]
             
             sampler.loadSample( path )
-            //console.log( 'loading:', path )
+            console.log( 'freesound now loading:', path )
           }) 
       }else{
         if( Audio.Gibberish.mode === 'worklet' ) {
