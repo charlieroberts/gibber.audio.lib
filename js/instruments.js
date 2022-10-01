@@ -51,7 +51,7 @@ const Instruments = {
           // use monophonic version if voice count is 1 or less
           let name
           if( i > 1 && instrumentName !== 'Multisampler' ) {
-            name = instrumentName =  'Poly'+instrumentName
+            name = 'Poly'+instrumentName
             if( name === 'PolyMonosynth' ) name = 'PolyMono' 
           }else{
             name = instrumentName
