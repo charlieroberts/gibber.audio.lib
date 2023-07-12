@@ -2,14 +2,14 @@ module.exports = {
 
   'spaceverb': {
     presetInit: function( audio ) {
-      this.fx.verb = audio.effects.Freeverb({ roomSize:.985, dry:1 })
+      this.fx.verb = audio.effects.Reverb({ roomSize:.985, dry:1 })
       this.fx.add( this.fx.verb )
     }
   },
   'echoverb.1/3': {
     presetInit: function( audio ) {
       this.fx.delay = audio.effects.Delay({ time:1/3, feedback:.35, wetdry:.5 })
-      this.fx.reverb  = audio.effects.Freeverb({ roomSize:.985, dry:1 })
+      this.fx.reverb  = audio.effects.Reverb({ roomSize:.985, dry:1 })
       this.fx.add( this.fx.delay )
       this.fx.add( this.fx.reverb )
       this.feedback = this.fx.delay.feedback
@@ -20,7 +20,7 @@ module.exports = {
   'echoverb.1/6': {
     presetInit: function( audio ) {
       this.fx.delay = audio.effects.Delay({ time:1/6, feedback:.35, wetdry:.5 })
-      this.fx.verb  = audio.effects.Freeverb({ roomSize:.985, dry:1 })
+      this.fx.verb  = audio.effects.Reverb({ roomSize:.985, dry:1 })
       this.fx.add( this.fx.delay, this.fx.reverb )
       this.feedback = this.fx.delay.feedback
       this.time = this.fx.delay.time
