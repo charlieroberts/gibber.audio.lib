@@ -16,6 +16,9 @@ const defs = [
   
   require( './instruments/drums_def.js' ),
   require( './instruments/edrums_def.js' ),
+
+  require( './instruments/sampler.js' ),
+  require( './instruments/freesound.js' )
 ]
 
 defs.forEach( v => {
