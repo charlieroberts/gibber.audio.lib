@@ -1,6 +1,7 @@
 module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
 
+  // make async?
   const fnc = function( props ){
     const name = props.name
     const type = props.type
@@ -9,10 +10,20 @@ module.exports = function( Audio ) {
     const ugen = Object.create( Gibberish.prototypes[ '${type}' ] )
     const graphfnc = ${props.constructor.toString()}
 
-    const proxy = Gibberish.factory( ugen, graphfnc(), '${name}', ${JSON.stringify(properties)} )
-    return proxy`
+    // XXX what if graphfnc() returns a promise? this is the case
+    // when attempting to return a graph create inside a promise made
+    // by calling g.data, for example. 
+    // can we make the final function async and wait for the resulting
+    // graph to be full generated?
+    let value = graphfnc()
+    if( value.then !== undefined ) {
+      // promise
+      value = value()
+    }
+    const proxy = Gibberish.factory( ugen, value, '${name}', ${JSON.stringify(properties)} );
+    return proxy;`
 
-    Gibberish[ name ] = new Function( block )
+    Gibberish[ name ] = new Function( block )//function() { eval( block ) }
 
     Gibberish.worklet.port.postMessage({
       name,
