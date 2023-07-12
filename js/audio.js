@@ -13,7 +13,7 @@ const Utility     = require( './utility.js' )
 const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
-const WaveObjects = require( './waveObjects.js' )
+//const WaveObjects = require( './waveObjects.js' )
 
 const Audio = {
   Clock: require( './clock.js' ),
@@ -27,6 +27,8 @@ const Audio = {
   oscillators:{},
   effects:{},
   exportTarget:null,
+  memoryLimit: 44100 * 60 * 20,
+  latencyHint:.05,
 
   export( obj ) {
     if( Audio.initialized ){ 
@@ -38,7 +40,7 @@ const Audio = {
         this.filters,
         this.busses, 
         this.envelopes, 
-        this.waveObjects, 
+        //this.waveObjects, 
         this.binops, 
         this.analysis 
       )
@@ -92,7 +94,7 @@ const Audio = {
     this.createPubSub()
 
     const p = new Promise( (resolve, reject) => {
-      Gibberish.init( 44100*60*20, ctx, 'worklet', { latencyHint }).then( processorNode => {
+      Gibberish.init( Audio.memoryLimit, ctx, 'worklet', { latencyHint:Audio.latencyHint }).then( processorNode => {
         // XXX remove once gibber.core.lib has been properly integrated 
         Audio.Core.Audio = Audio.Core.audio = Audio
 
@@ -109,12 +111,13 @@ const Audio = {
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Audio )
         Audio.ctx = ctx
-        Audio.Out = Gibberish.output
         
         // must wait for Gen to be initialized
         Audio.Clock.init( Audio.Gen, Audio )
 
         Audio.createUgens()
+        Audio.Out = Audio.busses.Bus2()//Gibberish.output
+        Audio.Out.connect( Gibberish.output )
         
         if( Audio.exportTarget !== null ) Audio.export( Audio.exportTarget )
 
@@ -157,7 +160,7 @@ const Audio = {
     window.w = Gibberish.worklet
     Gibberish.worklet.disconnect()
 
-    Gibberish.init( 44100*60*20, undefined, 'worklet', true ).then( processorNode => {
+    Gibberish.init( Audio.memoryLimit, undefined, 'worklet', true ).then( processorNode => {
       Audio.out = Gibberish.output
       Audio.node = processorNode
 
@@ -207,6 +210,8 @@ const Audio = {
   // XXX stop clock from being cleared.
   clear() { 
     Gibberish.clear() 
+    Audio.Out = Audio.busses.Bus2()//Gibberish.output
+    Audio.Out.connect( Gibberish.output )
     Audio.Clock.init( Audio.Gen, Audio )
 
     // the idea is that we only clear memory that was filled after
@@ -255,7 +260,7 @@ const Audio = {
     this.effects = Effects.create( this )
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
-    this.waveObjects = WaveObjects( this )
+    //this.waveObjects = WaveObjects( this )
 
     const Pattern = this.Core.__Pattern
     Pattern.transfer( this, Pattern.toString() )
