@@ -145,7 +145,17 @@ module.exports = {
     decay:1/8,
     panVoices:true
   },
-
+  'square.bass': {
+    waveform:'square',
+    shape:'exponential',
+    antialias:true,
+    filterModel:2,
+    cutoff:.25,
+    decay:1/4,
+    panVoices:false,
+    octave:-3,
+    gain:1
+  },
   'square.perc.long': { 
     waveform:'square', 
     shape:'exponential', 

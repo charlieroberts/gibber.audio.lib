@@ -12,21 +12,24 @@ module.exports = [
         args:[
           {
             name:"start",
-            type:overloaded,
+            type:'number',
             default:0,
+            doc:"The starting value for the fade. If a value of null is passed, the current value of the property will be the fade starting point.",
             required
           },
           {
             name:"end",
-            type:overloaded,
-            default:0,
-            required
+            type:'number',
+            default:1,
+            required,
+            doc:"The end value for the fade. If a value of null is passed, the current value of the property will be the end of the fade."
           },
           {
             name:"time",
             type:"number",
-            default:0,
-            required
+            default:4,
+            required,
+            doc:"The duration of the fade, in measures."
           }
         ],
         returns:"this",
@@ -39,13 +42,15 @@ module.exports = [
             name:"values",
             type:overloaded,
             default:"none",
+            doc:"This determines the output of the sequencer. A single value will be outputted repeatedly. Arrays will be converted to gibber Pattern objects. gen expressions creating signals can also be used here; this signals will be sampled whenever the sequencer is triggered (as determined by the timings argument).",
             required
           },
           {
             name:"timings",
             type:overloaded,
             default:"none",
-            optional
+            optional,
+            doc:"This argument determines when the sequencer fires. If no value is passed, the sequencer will fire whenever another sequencer on the same object fires... this enables you to only specify a single timings pattern and control all sequencers on an object with it. Arrays passed as an argument will be automatically converted to gibber pattern objects."
           },
           {
             name:"seq_id",
@@ -53,11 +58,12 @@ module.exports = [
             default:0,
             min:0,
             max:Infinity,
-            optional
+            optional,
+            doc:"This argument is used to identify individual sequencers, as multiple sequencers can be assigned to control a single method/property."
           }
         ],
         returns:"this",
-        doc: "The seq method enables you to easily sequence any method or property. You can pass a single value or an array of values for both the 'values' and 'timings' arguments. The timings argument will determine when the sequencer fires and the values argument will determine output."
+        doc: "The seq method enables you to easily sequence any method or property. You can pass a single value or a pattern/array of values for both the 'values' and 'timings' arguments. The timings argument will determine when the sequencer fires and the values argument will determine output."
       },
       start: {
         name:"function",
@@ -78,7 +84,8 @@ module.exports = [
             name:"pattern",
             type:"string",
             default:"none",
-            required
+            required,
+            doc:"A string using the TidalCycles mini-notation. See the TidalCycles tutorial for more information."
           },
           {
             name:"tidal_id",
@@ -114,13 +121,17 @@ module.exports = [
             name:"values",
             type:overloaded,
             default:"none",
-            required
+            required,
+            doc:"This determines the output of the sequencer. A single value will be outputted repeatedly. Arrays will be converted to gibber Pattern objects. gen expressions creating signals can also be used here; this signals will be sampled whenever the sequencer is triggered (as determined by the timings argument).",
+
           },
           {
             name:"timings",
             type:overloaded,
             default:"none",
-            optional
+            optional,
+            doc:"This argument determines when the sequencer fires. If no value is passed, the sequencer will fire whenever another sequencer on the same object fires... this enables you to only specify a single timings pattern and control all sequencers on an object with it. Arrays passed as an argument will be automatically converted to gibber pattern objects."
+
           },
           {
             name:"seq_id",
@@ -153,7 +164,8 @@ module.exports = [
             name:"pattern",
             type:"string",
             default:"none",
-            required
+            required,
+            doc:"A string using the TidalCycles mini-notation. See the TidalCycles tutorial for more information."
           },
           {
             name:"tidal_id",
