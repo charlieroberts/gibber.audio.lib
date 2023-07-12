@@ -24,36 +24,16 @@ const Effects = {
 
       const shouldUsePool = poolEffects.indexOf( effectName ) > -1 
 
-      effects[ effectName ] = Ugen( gibberishConstructor, description, Audio, shouldUsePool )
+      effects[ replaceName ] = Ugen( gibberishConstructor, description, Audio, shouldUsePool )
       
-      effects[ effectName ].presets = Audio.Presets.effects[ effectName ] 
-      if( effects[ effectName ].presets !== undefined ) {
-        effects[ effectName ].presets.inspect = function() {
+      effects[ replaceName ].presets = Audio.Presets.effects[ replaceName ] 
+      if( effects[ replaceName ].presets !== undefined ) {
+        effects[ replaceName ].presets.inspect = function() {
           console.table( this )
         }
       }else{
-        effects[ effectName ].presets = { inspect() { console.log( `${effectName} has no presets.` ) } }
+        effects[ replaceName ].presets = { inspect() { console.log( `${effectName} has no presets.` ) } }
       }
-    }
-
-    effects.Reverb = function( ...args ) {
-      let argprops = null
-      if( args.length === 1 ) {
-        if( typeof args[0] === 'object' ) argprops = args[0]
-      }else if( args.length === 2 ) {
-        argprops = args[1]
-      }
-      const props = Object.assign( {}, { model:0 }, argprops )
-
-      let ugen = null
-      switch( props.model ) {
-        case 0:
-        default:
-          ugen = effects.Freeverb(...args )
-          break;
-      }
-
-      return ugen
     }
 
     return effects
