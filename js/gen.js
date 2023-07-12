@@ -47,6 +47,7 @@ const Gen  = {
     Gen.names.push( ...Object.keys( Gen.functions ) )
     //Gen.names.push( ...Object.keys( Gen.composites ) )
     Gen.names.push( 'gen' )
+    Gen.names.push( 'line')
     Gen.names.push( 'lfo' )
     Gen.names.push( 'sine' )
     Gen.names.push( 'square' )
@@ -297,6 +298,14 @@ const Gen  = {
         str += p
       }else if( typeof p === 'string' ) {
         str += p
+      }else if( typeof p === 'object' && p.type ==='gen' ) { 
+        let pName = 'p'+paramArray.length
+        //str += pName
+        p.toString = new Function(`return 'v_${p.id}'`)
+        paramArray.push( [`${pName}`, p ] )
+        str += `g.in('${pName}')`
+        // if another gen graph... but 
+        //str += `'v_${p.id}'` 
       }else{
         console.log( 'CODEGEN ERROR:', p )
       }
@@ -309,11 +318,17 @@ const Gen  = {
     }
     
     str += ')'
+    //console.log( str )
 
     return str
   },
 
   composites: { 
+    line( period=4, min=0, max=1 ) {
+      const range = max - min
+      // XXX 4 is magic number, only works as long as we're in 4/4
+      return Gen.make( Gen.ugens.add( min, Gen.ugens.mul( Gen.ugens.phasor( Audio.Utilities.btof( period * 4 ), 0, { min:0 } ), range )))
+    },
     sine( frequency=2, amp=4, center=0, shouldRound=false ) {
       return Gen.composites.lfo( 'sine', frequency, amp, center, shouldRound )
     },
@@ -407,6 +422,7 @@ const Gen  = {
         amt = from - to
 
         fade = g.gtp( g.sub( from, g.accum( g.div( amt, g.mul(beatsInSeconds, g.samplerate ) ), 0 ) ), to )
+
       }else{
         amt = to - from
         fade = g.add( from, g.ltp( g.accum( g.div( amt, g.mul( beatsInSeconds, g.samplerate ) ), 0 ), to ) )
