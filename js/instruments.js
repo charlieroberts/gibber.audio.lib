@@ -74,7 +74,17 @@ const Instruments = {
           console.table( this )
         }
       }else{
-        instruments[ instrumentName ].presets = { inspect() { console.log( `${instrumentName} has no presets.` ) } }
+        instruments[ instrumentName ].presets = { 
+          inspect() { console.log( `${instrumentName} has no presets.` ) } 
+        }
+      }
+      instruments[ instrumentName ].presets.list = function() {
+        const names = Object.keys( this )
+        names.splice( names.indexOf( 'inspect' ), 1 )
+        names.splice( names.indexOf( 'list' ), 1 )
+        console.group( `${instrumentName} presets` )
+        names.forEach( v=>console.log(v) )
+        console.groupEnd()
       }
     }
     instruments.Pluck = instruments.Karplus
