@@ -11,15 +11,6 @@ module.exports = {
       this.length = 4
     }
   },
-  test: {
-    files:[
-      'resources/audiofiles/kick.wav',
-      'resources/audiofiles/openhat.wav'
-    ],
-    presetInit() {
-      this.length = 2
-    }
-  },
   beatbox: {
     files:[
       'resources/audiofiles/beatbox/^k.wav',
