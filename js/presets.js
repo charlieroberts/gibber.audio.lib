@@ -49,27 +49,26 @@ const Presets = {
   },
 
   instruments: {
-    Complex: require( './presets/complex_presets.js' ),
-    Synth: require( './presets/synth_presets.js' ),
-    FM:    require( './presets/fm_presets.js' ),
-    Monosynth: require( './presets/monosynth_presets.js' ),
-    PolyMono: require( './presets/monosynth_presets.js' ),
-    Snare: require( './presets/snare_presets.js' ),
-    Kick: require( './presets/kick_presets.js' ),
-    Hat: require( './presets/hat_presets.js' ),
-
-    EDrums: require( './presets/edrums_presets.js' ),
-    Drums:  require( './presets/drums_presets.js' ),
+    Complex:      require( './presets/complex_presets.js' ),
+    Synth:        require( './presets/synth_presets.js' ),
+    FM:           require( './presets/fm_presets.js' ),
+    Monosynth:    require( './presets/monosynth_presets.js' ),
+    PolyMono:     require( './presets/monosynth_presets.js' ),
+    Snare:        require( './presets/snare_presets.js' ),
+    Kick:         require( './presets/kick_presets.js' ),
+    Hat:          require( './presets/hat_presets.js' ),
+    EDrums:       require( './presets/edrums_presets.js' ),
+    Drums:        require( './presets/drums_presets.js' ),
     Multisampler: require( './presets/multisampler.js' ),
     Soundfont:    require( './presets/soundfont_presets.js' )
   },
 
   effects: {
-    Chorus: require( './presets/chorus_presets.js' ),
+    Chorus:     require( './presets/chorus_presets.js' ),
     Distortion: require( './presets/distortion_presets.js' ),
-    Flanger: require( './presets/flanger_presets.js' ),
-    Reverb: require( './presets/reverb.js' ),
-    Delay: require( './presets/delay_presets.js' ),
+    Flanger:    require( './presets/flanger_presets.js' ),
+    Reverb:     require( './presets/reverb.js' ),
+    Delay:      require( './presets/delay_presets.js' ),
   },
 
   misc: {
@@ -80,7 +79,7 @@ const Presets = {
 
 Presets.instruments.Sampler   = Presets.instruments.Multisampler
 Presets.instruments.PolySynth = Presets.instruments.Synth
-Presets.instruments.PolyFM = Presets.instruments.FM
-Presets.instruments.PolyMono = Presets.instruments.Monosynth
+Presets.instruments.PolyFM    = Presets.instruments.FM
+Presets.instruments.PolyMono  = Presets.instruments.Monosynth
 
 module.exports = Presets
