@@ -314,18 +314,18 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             address:'addMethod',
             id:__wrappedObject.id,
             key:'notef',
-            function:`function( note, __loudness=null ){
+            function:`function( note, __loudness=null, decay=null ){
               const loudness = __loudness = null ? this.__triggerLoudness : __loudness
-              this.___note( note, loudness ) 
+              this.___note( note, loudness, decay ) 
             }`
           })
           Gibberish.worklet.port.postMessage({
             address:'addMethod',
             id:__wrappedObject.id,
             key:'notec',
-            function:`function( note, __loudness=null ){
+            function:`function( note, __loudness=null, decay=null ){
               const loudness = __loudness = null ? this.__triggerLoudness : __loudness
-              this.note( note, loudness, false ) 
+              this.note( note, loudness, decay, false ) 
             }`
           })
           // when a message is received at the address 'monkeyPatch',
@@ -338,7 +338,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             address:'monkeyPatch',
             id:__wrappedObject.id,
             key:'note',
-            function:`function( note, __loudness, round=true ){ 
+            function:`function( note, __loudness, decay=null, round=true ){ 
               const octave = this.octave || 0
               let notesInOctave = 7
               const mode = Gibberish.Theory.mode
@@ -353,7 +353,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
               let __note = Gibberish.Theory.note( note + offset, 0, round )
 
               const loudness = __loudness = null ? this.__triggerLoudness : __loudness
-              this.___note( __note, loudness ) 
+              return this.___note( __note, loudness, decay ) 
             }`
           })
           
@@ -581,7 +581,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
                 target[0].connect( connection[0], connection[2] )
               }
             }else{
-              target[0].connect( Audio.Master )
+              target[0].connect( Audio.Out )
             }
           }else if( value === 0 && lengthCheck !== 0 ) {
             // ugh...
@@ -650,7 +650,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }else{
           // if no fx chain, connect directly to output
           if( obj.fx.length === 0 ) {
-            __wrappedObject.connect( dest, level )
+            __wrappedObject.connect( dest || Audio.Out, level )
           }else{
             // otherwise, connect last effect in chain to output
             obj.fx[ obj.fx.length - 1 ].__wrapped__.connect( dest, level )
@@ -695,7 +695,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         if( Audio.autoConnect === true ) {
           // ensure that the ugen hasn't already been connected through the fx chain,
           // possibly through initialization of a preset
-          if( obj.fx.length === 0 ) obj.connect( Audio.Master )
+          if( obj.fx.length === 0 ) obj.connect( Audio.Out )
         }
       }
 
@@ -798,9 +798,11 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           obj[ methodName ].__tidal = s
         }
 
+
         // return object for method chaining
         return obj
-      } 
+      }
+      obj.__seqDefault = seqDefaults[ obj.name ] || 'trigger'
     }
     //console.log( `%c${description.name} created.`, 'color:white;background:#009' )
     Audio.publish( 'new ugen', description.name + ' created'  )
