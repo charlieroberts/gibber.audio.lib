@@ -9,7 +9,7 @@
   "devDependencies": {
     "browserify": "^16.2.0",
     "codemirror": "^5.48.0",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-beautify": "^3.0.0",
     "gulp-json-validator": "^1.2.0",
     "gulp-rename": "^1.2.2",
