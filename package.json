@@ -19,7 +19,7 @@
     "tern": "^0.24.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
-    "watchify": "^3.11.0"
+    "watchify": "^4.0.0"
   },
   "dependencies": {
     "acorn": "^6.2.0",
