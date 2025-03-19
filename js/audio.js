@@ -19,6 +19,7 @@ const Audio = {
   Clock: require( './clock.js' ),
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
+  __seqDefaults: require('./defaults.js'),
   __Make: require( './make.js' ),
   initialized:false,
   autoConnect:true,
@@ -42,7 +43,7 @@ const Audio = {
         this.envelopes, 
         //this.waveObjects, 
         this.binops, 
-        this.analysis 
+        this.analysis
       )
       
       Utility.export( obj )
@@ -130,6 +131,9 @@ const Audio = {
         }
 
         Audio.export( window )
+        Audio.phase = Audio.makePhase()
+        Audio.phase.connect( Audio.Out, 0 )
+        Audio.setupGlobals()
 
         //const drums = Audio.Drums('x*o-')
         //drums.disconnect()
@@ -146,6 +150,7 @@ const Audio = {
 
         //Audio.Gibberish.genishi.gen.histories.clear()
         Audio.clear()
+
 
         resolve( [Audio,'Audio'] )
       })
@@ -191,6 +196,9 @@ const Audio = {
       Audio.export( window )
       Gibber.export( window )
 
+      Audio.phase = Audio.makePhase()
+      Audio.phase.connect( Audio.Out, 0 ) 
+
       const memIdx = Object.keys( Gibberish.memory.list ).reverse()[0]
       this.__memoryEnd = parseInt( memIdx ) + Gibberish.memory.list[ memIdx ]
 
@@ -207,12 +215,228 @@ const Audio = {
     })
   },
 
+  setupGlobals() {
+    const run = fnc => {
+      const str = fnc.toString()
+      const idx = str.indexOf('=>') + 2
+      const code = str.slice( idx ).trim()
+      Gibberish.worklet.port.__postMessage({
+        address:'eval',
+        code
+      })
+    }
+
+    run( ()=> {
+      global.main = function( fnc ) {
+        let str = fnc.toString()
+        let idx = str.indexOf('=>') + 2
+
+        Gibberish.processor.port.postMessage({
+          address:'eval',
+          code:str.slice( idx ).trim()
+        })
+      }
+
+      Clock = Gibberish.Clock
+    })
+
+    run( ()=> {
+      global.recursions = {}
+      //sin = Math.sin
+      //sinn = v => .5 + Math.sin(v) * .5
+      //sinr = v => Math.round( Math.sin(v) )
+      //cos = Math.cos
+      //cosn = v => .5 + Math.cos(v) * .5
+      //cosr = v => Math.round( Math.cos(v) )
+      abs = Math.abs
+      floor = Math.floor
+      ceil = Math.ceil
+      random = Math.random
+      round = Math.round
+      min = Math.min
+      max = Math.max
+      g = global
+      g.phase = Gibberish.ugens.get( 6 )
+      g.line = (freq=1,gain=1,offset=0) => offset + (((g.phase.graph.value*(1/freq)) / (Math.PI * 2)) % 1 ) * gain
+      cos  = (freq=1,gain=1,offset=0) => offset + Math.cos( g.phase.graph.value*(1/freq)*6.283185307179586) * gain
+      cosn = (freq=1,gain=1,offset=0) => offset + (.5+Math.cos(g.phase.graph.value*(1/freq)*6.283185307179586)*.5) * gain + offset
+      sin  = (freq=1,gain=1,offset=0) => offset + Math.sin( g.phase.graph.value*(1/freq)*6.283185307179586) * gain
+      sinn = (freq=1,gain=1,offset=0) => offset + (.5+Math.sin(g.phase.graph.value*(1/freq)*6.283185307179586)*.5) * gain + offset
+
+      global.tr = function( fnc, name, dict, delay=0 ) {
+        if( global.recursions[ name ] !== undefined ) {
+          const remove = function() {
+            const idx = Gibberish.scheduler.queue.data.findIndex( 
+              evt => evt.func.toString().indexOf( `global.recursions['${name}']`) > -1
+            )
+            if( idx > -1 ) {
+              Gibberish.scheduler.queue.data.splice( idx, 1 )
+              Gibberish.scheduler.queue.length--
+            }
+          }
+          if( delay === 0 ) {
+            remove()
+          }else{
+            Gibberish.scheduler.add(
+              Clock.time( delay ),
+              remove,
+              1
+            )
+          }
+        }
+        const keys = Object.keys( dict )
+        const objs = keys.map( key => {
+          let val = null
+          if( typeof dict[key] === 'object' || typeof dict[key] === 'function' ) {
+            if( dict[ key ].id !== undefined ) {
+              val = Gibberish.ugens.get( dict[ key ].id )
+            }else{
+              val = JSON.stringify( dict[ key ] )
+            }
+          }else{
+            val = dict[ key ]
+          }
+          return val
+        })
+
+        global.recursions[name] = function( ...args ) {
+          let __nexttime__ = fnc(...args)
+          if( __nexttime__ === -987654321 ) {
+            return
+          }
+          if( isNaN( __nexttime__ ) === false && __nexttime__ <= 0 ) {
+            console.warn( 'temporal recursion scheduled with a time <= 0; this would create a potentially infinite loop. substituting a time of one measure.' )
+            __nexttime__ = 1
+          }
+          if( __nexttime__ && __nexttime__ > 0 ) {
+            Gibberish.scheduler.add(
+              Clock.time( __nexttime__ ),
+              ()=>{
+                global.recursions[ name ](...objs)
+              },
+              1
+            )
+          }
+        }
+
+        if( delay === 0 ) {
+          global.recursions[ name ]( ...objs )
+        }else{
+          Gibberish.scheduler.add(
+            Clock.time( delay ),
+            ()=>{
+              global.recursions[ name ](...objs)
+            },
+            1
+          )
+        }
+      } 
+    })
+
+    const tr = function( fnc, name, dict, immediate=0, delay=0 ) {
+      let code = fnc.toString()
+      const keys = Object.keys( dict )
+
+      code = `
+      const remove = function() {
+        if( global.recursions['${name}'] !== undefined ) {
+          const idx = Gibberish.scheduler.queue.data.findIndex( evt => evt.func.toString().indexOf( "global.recursions['${name}']") > -1 )
+          if( idx > -1 ) {
+            Gibberish.scheduler.queue.data.splice( idx, 1 )
+            Gibberish.scheduler.queue.length--
+          }
+        }
+      }
+      
+      const make = function() {
+        const objs = [${keys.map( key => typeof dict[key] === 'object' || typeof dict[key] === 'function'
+          ? dict[ key ].id !== undefined
+            ? 'Gibberish.ugens.get(' + dict[ key ].id + ')'
+            : JSON.stringify( dict[ key ] )
+          : `'${dict[ key ]}'` ).join(',')
+  }]
+        ;global.recursions['${name}'] = function ${name} (${keys}) {
+          let __nexttime__ = ( ${code} )(${keys})
+          if( __nexttime__ === -987654321 ) {
+            return
+          }
+          if( isNaN( __nexttime__ ) === false && __nexttime__ <= 0 ) {
+            console.warn( 'temporal recursion scheduled with a time <= 0; this would create a potentially infinite loop. substituting a time of one measure.' )
+            __nexttime__ = 1
+          }
+          if( __nexttime__ && __nexttime__ > 0 ) {
+            Gibberish.scheduler.add(
+              Clock.time( __nexttime__ ),
+              (${keys})=>{
+                global.recursions['${name}'](...objs)
+              },
+              1
+            )
+          }
+        }
+        return objs
+      }
+
+      if( ${delay} === 0 ) {
+        remove()
+        const objs = make()
+        global.recursions[ '${name}' ]( ...objs )
+      }else{
+        Gibberish.scheduler.add(
+          Clock.time( ${delay} ),
+          ()=>{
+            remove()
+            const objs = make()
+            global.recursions[ '${name}' ](...objs)
+          },
+          1
+        )
+      }`
+
+
+      if( immediate === 0 ) {
+        Gibberish.worklet.port.postMessage({
+          address:'eval',
+          code
+        })
+      }else{
+        Gibberish.worklet.port.__postMessage({
+          address:'eval',
+          code
+        })
+      }
+    }
+
+    const Score = function( score ) {
+      for( let i = 0; i < score.length; i+=2 ) {
+        let cmd = score[ i + 1 ].toString()
+        const arrowIndex = cmd.indexOf('=>')
+        const functionIndex = cmd.indexOf('function')
+
+        if( arrowIndex > -1 ) {
+          cmd = cmd.slice( arrowIndex + 2 )
+        }else if( functionIndex > -1 ) {
+          cmd = cmd.slice( cmd.indexOf('{') )
+        }
+
+        future( 
+          new Function(`global.main( ()=> eval(\`${cmd}\`) )`),
+          score[ i ],
+          {}
+        )
+      }
+    }
+    
+    Audio.globals = { run, tr, Score }
+  },
+
   // XXX stop clock from being cleared.
   clear() { 
     Gibberish.clear() 
     Audio.Out = Audio.busses.Bus2()//Gibberish.output
     Audio.Out.connect( Gibberish.output )
     Audio.Clock.init( Audio.Gen, Audio )
+    Audio.phase.connect( Audio.Out, 0 )
 
     // the idea is that we only clear memory that was filled after
     // the initial Gibber initialization... this stops objects
@@ -236,6 +460,25 @@ const Audio = {
     }
     
     Audio.publish('clear')
+  },
+
+  makePhase() {
+    const def = {
+      name:'Phase',
+      type:'Ugen',
+      properties: { bpm:Audio.Clock.bpm, sr:Gibberish.ctx.sampleRate },
+      constructor: function() {
+        const gen = Gibberish.genish
+        const graph = gen.accum(
+          gen.div( gen.div( gen.in('bpm'), 240), gen.in('sr')),
+          0,
+          { max:Infinity }
+        )
+        return graph
+      }
+    }
+
+    return Make( def )()
   },
 
   stop() {
