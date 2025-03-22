@@ -215,7 +215,12 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           ? __wrappedObject.__properties__[ propertyName ]
           : __wrappedObject[ propertyName ]
 
-        Audio.createProperty( obj, propertyName, value, null, 0, transform )
+        if( propertyName === 'octave' ) {
+          obj.octave = properties.octave || 0
+          __wrappedObject.__properties__.octave = __wrappedObject.octave = obj.octave
+        }else{
+          Audio.createProperty( obj, propertyName, value, null, 0, transform )
+        }
 
         // create per-voice version of property... what properties should be excluded?
         if( description.name.indexOf('Poly') > -1 || description.name.indexOf('Multi') > -1 || description.name.indexOf('Soundfont') > -1 ) {
@@ -471,6 +476,13 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       set(v) {}
     })
 
+    obj.map = ( scale=1,offset=0 ) => {
+      const f = Audio.analysis.Follow({ input:obj })
+      f.multiplier = scale
+      f.offset = offset
+      return f
+    }
+
     obj.inspect = ()=> {
       console.group( 'Inspecting ' + description.name )
       const keys = Object.keys( obj.__wrapped__.__properties__ )
@@ -487,7 +499,11 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       console.groupEnd()
     }
 
-    obj.out = function( scale=1, offset=0, bufferSize=null ) {
+    obj.follow = function( scale=1, offset=0, bufferSize=null ) {
+      return obj.out( scale, offset, bufferSize, true )
+    }
+
+    obj.out = function( scale=1, offset=0, bufferSize=null, continuous=null ) {
       // if the buffer size changes...
       if( bufferSize !== null ) {
         if( obj.__follow !== null ) {
@@ -510,7 +526,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }
       }
 
-      if( Ugen.OUTPUT === Ugen.OUTPUT_FUNCTION )
+      if( continuous === true || Ugen.OUTPUT === Ugen.OUTPUT_FUNCTION )
         return ()=> obj.__out * scale + offset
       else
         return Math.abs( obj.__out * scale ) + offset 
@@ -805,7 +821,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       obj.__seqDefault = seqDefaults[ obj.name ] || 'trigger'
     }
     //console.log( `%c${description.name} created.`, 'color:white;background:#009' )
-    Audio.publish( 'new ugen', description.name + ' created'  )
+    Audio.publish( 'new ugen', description.name + ' created', obj  )
 
     return obj
   }
