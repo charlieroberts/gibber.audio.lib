@@ -162,9 +162,9 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         const incr = 1/(children.length-1) * amt
         children.forEach( (c,i) => {
           if( useProp ) 
-            c.pan = (.5 - amt/2) + i * incr
+            c.pan = Math.min(.999999,(.5 - amt/2) + i * incr)
           else
-            if( obj.maxVoices.value > 1 ) obj.setpan( i, (.5-amt/2) + i * incr )
+            if( obj.maxVoices.value > 1 ) obj.setpan( i, Math.min(.999999,(.5-amt/2) + i * incr ))
         })
 
         return obj
