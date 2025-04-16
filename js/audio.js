@@ -264,26 +264,14 @@ const Audio = {
       sinn = (freq=1,gain=1,offset=0) => offset + (.5+Math.sin(g.phase.graph.value*(1/freq)*6.283185307179586)*.5) * gain + offset
 
       global.tr = function( fnc, name, dict, delay=0 ) {
-        if( global.recursions[ name ] !== undefined ) {
-          const remove = function() {
-            const idx = Gibberish.scheduler.queue.data.findIndex( 
-              evt => evt.func.toString().indexOf( `global.recursions['${name}']`) > -1
-            )
-            if( idx > -1 ) {
-              Gibberish.scheduler.queue.data.splice( idx, 1 )
-              Gibberish.scheduler.queue.length--
-            }
-          }
-          if( delay === 0 ) {
-            remove()
-          }else{
-            Gibberish.scheduler.add(
-              Clock.time( delay ),
-              remove,
-              1
-            )
-          }
-        }
+        // there are two versions of this function, in effect (I KNOW)
+        // the first function is called when a recursion is created from
+        // within the audio thread. The second version is called when
+        // the recursion is created within the main thread... in this case
+        // the function is compiled to a string and sent to the audio
+        // thread to be evaluated.
+
+        /*********** BEGIN AUDIO THREAD RECURSION FUNCTION ************/
         const keys = Object.keys( dict )
         const objs = keys.map( key => {
           let val = null
@@ -299,33 +287,56 @@ const Audio = {
           return val
         })
 
-        global.recursions[name] = function( ...args ) {
-          let __nexttime__ = fnc(...args)
-          if( __nexttime__ === -987654321 ) {
-            return
-          }
-          if( isNaN( __nexttime__ ) === false && __nexttime__ <= 0 ) {
-            console.warn( 'temporal recursion scheduled with a time <= 0; this would create a potentially infinite loop. substituting a time of one measure.' )
-            __nexttime__ = 1
-          }
-          if( __nexttime__ && __nexttime__ > 0 ) {
-            Gibberish.scheduler.add(
-              Clock.time( __nexttime__ ),
-              ()=>{
-                global.recursions[ name ](...objs)
-              },
-              1
+        // we need to wait to make our new recursion until after any nudge/delay
+        // has been scheduled, so we create the recursion inside the *make* function
+        // which is then scheduled for delayed execution (if needed) or called immediately
+        // if no delay is applied
+        const make = function() {
+          const remove = function( num = 0 ) {
+            // TODO could we just look for name? wouldn't that be shorter?
+            const idx = Gibberish.scheduler.queue.data.findIndex( 
+              evt => evt.func.toString().indexOf( `global.recursions['${name}'](...objs)`) > -1 
             )
+            if( idx > -1 ) {
+              Gibberish.scheduler.queue.data.splice( idx, 1 )
+            }
           }
+          
+          global.recursions[name] = function( ...args ) {
+            let __nexttime__ = fnc(...args)
+            if( __nexttime__ === -987654321 ) {
+              return
+            }
+            if( isNaN( __nexttime__ ) === false && __nexttime__ <= 0 ) {
+              console.warn( 'temporal recursion scheduled with a time <= 0; this would create a potentially infinite loop. substituting a time of one measure.' )
+              __nexttime__ = 1
+            }
+            if( __nexttime__ && __nexttime__ > 0 ) {
+              Gibberish.scheduler.add(
+                Clock.time( __nexttime__ ),
+                // bad hack to force the function to be found when looking
+                // for recursion replacement, include function name in string
+                // at top of function
+                eval( `()=> { global.recursions['${name}'](...objs) }` ),
+                0
+              )
+            }
+          }
+          global.recursions[ name ].remove = remove 
         }
 
         if( delay === 0 ) {
-          global.recursions[ name ]( ...objs )
+          if( global.recursions[ name ] !== undefined ) global.recursions[ name ].remove()
+          make()
+          global.recursions[name](...objs)
         }else{
           Gibberish.scheduler.add(
             Clock.time( delay ),
             ()=>{
-              global.recursions[ name ](...objs)
+              if( global.recursions[ name ] !== undefined ) global.recursions[ name ].remove()
+              make()
+              // don't adjust spacing below for realz don't
+              global.recursions[name](...objs)
             },
             1
           )
@@ -333,65 +344,71 @@ const Audio = {
       } 
     })
 
+    /************* BEGIN MAIN THREAD RECURSION CONSTRUCTION *************/
     const tr = function( fnc, name, dict, immediate=0, delay=0 ) {
       let code = fnc.toString()
       const keys = Object.keys( dict )
 
       code = `
-      const remove = function() {
-        if( global.recursions['${name}'] !== undefined ) {
-          const idx = Gibberish.scheduler.queue.data.findIndex( evt => evt.func.toString().indexOf( "global.recursions['${name}']") > -1 )
-          if( idx > -1 ) {
-            Gibberish.scheduler.queue.data.splice( idx, 1 )
-            Gibberish.scheduler.queue.length--
+        const make = function() {
+          const objs = [
+            ${keys.map( key => typeof dict[key] === 'object' || typeof dict[key] === 'function'
+              ? dict[ key ].id !== undefined
+                ? 'Gibberish.ugens.get(' + dict[ key ].id + ')'
+                : JSON.stringify( dict[ key ] )
+              : `'${dict[ key ]}'` )
+            .join(',')
+          }]
+          ;global.recursions['${name}'] = function ${name} (${keys}) {
+            let __nexttime__ = ( ${code} )(${keys})
+
+            if( __nexttime__ === -987654321 ) {
+              return
+            }
+            if( isNaN( __nexttime__ ) === false && __nexttime__ <= 0 ) {
+              console.warn( 'temporal recursion scheduled with a time <= 0; this would create a potentially infinite loop. substituting a time of one measure.' )
+              __nexttime__ = 1
+            }
+            if( __nexttime__ && __nexttime__ > 0 ) {
+              Gibberish.scheduler.add(
+                Clock.time( __nexttime__ ),
+                (${keys})=>{
+                  global.recursions['${name}'](...objs)
+                },
+                100
+              )
+            }
           }
+          const remove = function( num = 0 ) {
+            if( global.recursions['${name}'] !== undefined ) {
+              const idx = Gibberish.scheduler.queue.data.findIndex( evt => evt.func.toString().indexOf( "global.recursions['${name}'](...objs)") > -1 )
+              if( idx > -1 ) {
+                Gibberish.scheduler.queue.data.splice( idx, 1 )
+                Gibberish.scheduler.queue.length--
+              }
+            }
+          }
+
+          global.recursions['${name}'].remove = remove;
+          return objs
         }
-      }
-      
-      const make = function() {
-        const objs = [${keys.map( key => typeof dict[key] === 'object' || typeof dict[key] === 'function'
-          ? dict[ key ].id !== undefined
-            ? 'Gibberish.ugens.get(' + dict[ key ].id + ')'
-            : JSON.stringify( dict[ key ] )
-          : `'${dict[ key ]}'` ).join(',')
-  }]
-        ;global.recursions['${name}'] = function ${name} (${keys}) {
-          let __nexttime__ = ( ${code} )(${keys})
-          if( __nexttime__ === -987654321 ) {
-            return
-          }
-          if( isNaN( __nexttime__ ) === false && __nexttime__ <= 0 ) {
-            console.warn( 'temporal recursion scheduled with a time <= 0; this would create a potentially infinite loop. substituting a time of one measure.' )
-            __nexttime__ = 1
-          }
-          if( __nexttime__ && __nexttime__ > 0 ) {
-            Gibberish.scheduler.add(
-              Clock.time( __nexttime__ ),
-              (${keys})=>{
-                global.recursions['${name}'](...objs)
-              },
-              1
-            )
-          }
-        }
-        return objs
-      }
 
       if( ${delay} === 0 ) {
-        remove()
+        if( global.recursions['${name}'] !== undefined ) global.recursions['${name}'].remove()
         const objs = make()
-        global.recursions[ '${name}' ]( ...objs )
+        global.recursions[ '${name}' ](...objs)
       }else{
         Gibberish.scheduler.add(
           Clock.time( ${delay} ),
           ()=>{
-            remove()
+            if( global.recursions['${name}'] !== undefined ) global.recursions['${name}'].remove()
             const objs = make()
             global.recursions[ '${name}' ](...objs)
           },
-          1
+          -1
         )
-      }`
+      }
+  `
 
 
       if( immediate === 0 ) {
