@@ -2,8 +2,9 @@ module.exports = function( Audio ) {
   const token = '6a00f80ba02b2755a044cc4ef004febfc4ccd476'
 
   const Freesound = function( query, options ) {
-    const props = Object.assign( { count:1, maxVoices:1, panVoices:true }, typeof query === 'object' ? query : options )
-    const sampler = Audio.instruments.Multisampler( props )
+    const props = Object.assign( {}, Freesound.defaultProps,  typeof query === 'object' ? query : options )
+    const sampler = Audio.instruments[ props.type ]( props )
+    if( sampler.loadSample === undefined ) sampler.loadSample = sampler.__wrapped__.loadSample
     setTimeout( ()=>queries[ typeof query ]( query, sampler, props.count ), 0 )
  
     return sampler
@@ -11,7 +12,7 @@ module.exports = function( Audio ) {
 
   Freesound.loaded = {}
   Freesound.queries = {}
-
+  Freesound.defaultProps = { count:1, maxVoices:1, panVoices:true, type:'Multisampler' }
   Freesound.defaults = {
     sort: 'downloads',
     single:true,
@@ -53,12 +54,17 @@ module.exports = function( Audio ) {
           .then( json => {
             const path = json.previews[ 'preview-hq-mp3' ]
             
-            sampler.loadSample( path )
+            //sampler.loadSample( path )
+            sampler.loadSample( path, (__sampler,buffer) => {
+              Freesound.loaded[ id ] = buffer.data.buffer
+            })
+
             console.log( 'freesound now loading:', path )
           }) 
       }else{
         if( Audio.Gibberish.mode === 'worklet' ) {
-          sampler.samplers[ num ].loadBuffer( Freesound.loaded[ id ] )
+          console.log( 'reusing loaded freesound:', path )
+          sampler.loadSample( id, null, Freesound.loaded[ id ] )
         }
       }
     },
@@ -88,7 +94,7 @@ module.exports = function( Audio ) {
             console.log(`%cNo sounds were found for this query!`, `background:red;color:white`)
           }
           sampler.length = count < sounds.results.length ? count : sounds.results.length
-          console.table( sounds.results.map( r=>({file:r.name,author:r.username,license:'CC/'+r.license.split('/').slice(4).join('/')}) ) )
+          console.table( sounds.results.map( r=>({file:r.name, id:r.id, author:r.username,license:'CC/'+r.license.split('/').slice(4).join('/') }) ) )
           for( let i = 0; i < sampler.length; i++ ) {
             const result = sounds.results[i]
             if( result !== undefined ) {
