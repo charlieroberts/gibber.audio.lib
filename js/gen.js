@@ -9,11 +9,11 @@ const binops = [
 const monops = [
   'abs','acos','acosh','asin','asinh','atan','atan2','atanh','cos','cosh',
   'sin','sinh','tan','tanh', 'floor',
-  'ceil', 'round', 'sign', 'trunc', 'fract', 'param', 'in',
+  'ceil', 'round', 'sign', 'trunc', 'fract', 'param', 'in'
 ]
 
 const noops = [
-  'noise'
+  'noise', 'bang'
 ]
 
 const Gen  = {
@@ -191,6 +191,7 @@ const Gen  = {
     train:  { properties:[ '0','1' ],  str:'train' },
     rate:   { properties:[ '0' ], str:'rate' },
     noise:  { properties:[], str:'noise' },
+    bang:   { properties:[], str:'bang' },
     accum:  { properties:[ '0','1' ], str:'accum' },
     counter:{ properties:[ '0','1' ], str:'counter' },
     scale:  { properties: ['0', '1', '2', '3'], str:'scale' },
