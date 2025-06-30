@@ -1,0 +1,192 @@
+module.exports = {
+  drums: { 
+    files:[
+      'resources/audiofiles/kick.wav',
+      'resources/audiofiles/hat.wav',
+      'resources/audiofiles/snare.wav',
+      'resources/audiofiles/openhat.wav'
+    ],
+    presetInit() {
+      this.length = 4
+    }
+  },
+  trumpet: {
+    files:[
+      'resources/audiofiles/trumpet.wav'
+    ],
+    presetInit() { this.length = 1 }
+  },
+  beatbox: {
+    files:[
+      'resources/audiofiles/beatbox/^k.wav',
+      'resources/audiofiles/beatbox/^p.wav',
+      'resources/audiofiles/beatbox/^tss.wav',
+      'resources/audiofiles/beatbox/8.wav',
+      'resources/audiofiles/beatbox/a.wav',
+      'resources/audiofiles/beatbox/b.wav',
+      'resources/audiofiles/beatbox/d.wav',
+      'resources/audiofiles/beatbox/dot.wav',
+      'resources/audiofiles/beatbox/duf.wav',
+      'resources/audiofiles/beatbox/f.wav',
+      'resources/audiofiles/beatbox/k.wav',
+      'resources/audiofiles/beatbox/h.wav',
+      'resources/audiofiles/beatbox/m.wav',
+      'resources/audiofiles/beatbox/n.wav',
+    ],
+    presetInit() {
+      this.length = 14
+    }
+  },
+  bleeps: {
+    files:[
+      'resources/audiofiles/bent-bleeps/51063__stamperadam__bleep1.wav',
+      'resources/audiofiles/bent-bleeps/51064__stamperadam__bleep2.wav',
+      'resources/audiofiles/bent-bleeps/51065__stamperadam__clap.wav',
+      'resources/audiofiles/bent-bleeps/51066__stamperadam__click.wav',
+      'resources/audiofiles/bent-bleeps/51067__stamperadam__click1.wav',
+      'resources/audiofiles/bent-bleeps/51068__stamperadam__g1.wav',
+      'resources/audiofiles/bent-bleeps/51069__stamperadam__g2.wav',
+      'resources/audiofiles/bent-bleeps/51070__stamperadam__g3.wav',
+      'resources/audiofiles/bent-bleeps/51071__stamperadam__g4.wav',
+      'resources/audiofiles/bent-bleeps/51072__stamperadam__g5.wav',
+      'resources/audiofiles/bent-bleeps/51073__stamperadam__g6.wav',
+      'resources/audiofiles/bent-bleeps/51074__stamperadam__g7.wav',
+      'resources/audiofiles/bent-bleeps/51075__stamperadam__g8.wav',
+      'resources/audiofiles/bent-bleeps/51076__stamperadam__g9.wav',
+      'resources/audiofiles/bent-bleeps/51077__stamperadam__glitch.wav',
+      'resources/audiofiles/bent-bleeps/51078__stamperadam__hatt.wav',
+      'resources/audiofiles/bent-bleeps/51079__stamperadam__hit.wav',
+      'resources/audiofiles/bent-bleeps/51080__stamperadam__hitt.wav',
+      'resources/audiofiles/bent-bleeps/51081__stamperadam__hum.wav',
+      'resources/audiofiles/bent-bleeps/51082__stamperadam__kik.wav',
+      'resources/audiofiles/bent-bleeps/51083__stamperadam__snar.wav',
+      'resources/audiofiles/bent-bleeps/51084__stamperadam__wa.wav',
+    ],
+    presetInit() {
+      this.length = 22
+    }
+  },
+  breaks: {
+    files:[
+      './resources/audiofiles/breaks.120bpm/188553__mika55__120bpm-drum-loop.wav',
+      './resources/audiofiles/breaks.120bpm/188553__mika55__120bpm-drum-loop.wav',
+      './resources/audiofiles/breaks.120bpm/381956__waveplaysfx__drumloop-120-bpm-edm-drum-loop-023.wav',
+      './resources/audiofiles/breaks.120bpm/404052__theflakesmaster__dance-beat.wav',
+      './resources/audiofiles/breaks.120bpm/474932__disquantic__ragga-tech-drums-by-dsqt-120-bpm.wav',
+      './resources/audiofiles/breaks.120bpm/515673__akustika__120-disco80.wav',
+    ],
+    presetInit() {
+      this.length = 5
+    }
+  },
+
+  cr7030: {
+    files:[
+      './resources/audiofiles/cr7030/68602__birdflu__bongo7030.wav',
+      './resources/audiofiles/cr7030/68603__birdflu__clave7030.wav',
+      './resources/audiofiles/cr7030/68606__birdflu__hatclosed7030.wav',
+      './resources/audiofiles/cr7030/68607__birdflu__hatopen7030.wav',
+      './resources/audiofiles/cr7030/68608__birdflu__kick7030.wav',
+      './resources/audiofiles/cr7030/68609__birdflu__snare7030.wav',
+      './resources/audiofiles/cr7030/68610__birdflu__tom7030.wav',
+    ],
+    presetInit(){
+      this.length = 7
+    }
+  },
+  kicks: {
+    files:[
+      'resources/audiofiles/kicks/249200__netr-si__kick-32.wav',
+      'resources/audiofiles/kicks/249201__netr-si__kick-33.wav',
+      'resources/audiofiles/kicks/249202__netr-si__kick-27.wav',
+      'resources/audiofiles/kicks/249203__netr-si__kick-28.wav',
+      'resources/audiofiles/kicks/249204__netr-si__kick-25.wav',
+      'resources/audiofiles/kicks/249205__netr-si__kick-26.wav',
+      'resources/audiofiles/kicks/249206__netr-si__kick-30.wav',
+      'resources/audiofiles/kicks/249207__netr-si__kick-31.wav',
+      'resources/audiofiles/kicks/249208__netr-si__kick-29.wav',
+      'resources/audiofiles/kicks/249209__netr-si__kick-3.wav',
+      'resources/audiofiles/kicks/249211__netr-si__kick-42.wav',
+      'resources/audiofiles/kicks/249212__netr-si__kick-41.wav',
+      'resources/audiofiles/kicks/249213__netr-si__kick-35.wav',
+      'resources/audiofiles/kicks/249214__netr-si__kick-34.wav',
+      'resources/audiofiles/kicks/249215__netr-si__kick-37.wav',
+      'resources/audiofiles/kicks/249216__netr-si__kick-36.wav',
+      'resources/audiofiles/kicks/249217__netr-si__kick-39.wav',
+      'resources/audiofiles/kicks/249218__netr-si__kick-38.wav',
+      'resources/audiofiles/kicks/249219__netr-si__kick-40.wav',
+      'resources/audiofiles/kicks/249220__netr-si__kick-4.wav',
+      'resources/audiofiles/kicks/249222__netr-si__kick-87.wav',
+      'resources/audiofiles/kicks/249223__netr-si__kick-9.wav',
+      'resources/audiofiles/kicks/249224__netr-si__kick-83.wav',
+      'resources/audiofiles/kicks/249225__netr-si__kick-84.wav',
+      'resources/audiofiles/kicks/249226__netr-si__kick-85.wav',
+      'resources/audiofiles/kicks/249227__netr-si__kick-86.wav',
+      'resources/audiofiles/kicks/249228__netr-si__kick-8.wav',
+      'resources/audiofiles/kicks/249229__netr-si__kick-80.wav',
+      'resources/audiofiles/kicks/249230__netr-si__kick-81.wav',
+      'resources/audiofiles/kicks/249231__netr-si__kick-82.wav',
+      'resources/audiofiles/kicks/249232__netr-si__kick-20.wav',
+      'resources/audiofiles/kicks/249233__netr-si__kick-2.wav',
+      'resources/audiofiles/kicks/249234__netr-si__kick-19.wav',
+      'resources/audiofiles/kicks/249235__netr-si__kick-18.wav',
+      'resources/audiofiles/kicks/249236__netr-si__kick-24.wav',
+      'resources/audiofiles/kicks/249237__netr-si__kick-23.wav',
+      'resources/audiofiles/kicks/249238__netr-si__kick-22.wav',
+      'resources/audiofiles/kicks/249239__netr-si__kick-21.wav',
+      'resources/audiofiles/kicks/249240__netr-si__kick-25-2.wav',
+      'resources/audiofiles/kicks/249241__netr-si__kick-25-1.wav',
+      'resources/audiofiles/kicks/249242__netr-si__kick-12.wav',
+      'resources/audiofiles/kicks/249243__netr-si__kick-11.wav',
+      'resources/audiofiles/kicks/249244__netr-si__kick-10.wav',
+      'resources/audiofiles/kicks/249245__netr-si__kick-1.wav',
+      'resources/audiofiles/kicks/249246__netr-si__kick-15.wav',
+      'resources/audiofiles/kicks/249247__netr-si__kick-14.wav',
+      'resources/audiofiles/kicks/249248__netr-si__kick-14-1.wav',
+      'resources/audiofiles/kicks/249249__netr-si__kick-13.wav',
+      'resources/audiofiles/kicks/249250__netr-si__kick-17.wav',
+      'resources/audiofiles/kicks/249251__netr-si__kick-16.wav',
+      'resources/audiofiles/kicks/249252__netr-si__kick-67.wav',
+      'resources/audiofiles/kicks/249253__netr-si__kick-68.wav',
+      'resources/audiofiles/kicks/249254__netr-si__kick-65.wav',
+      'resources/audiofiles/kicks/249255__netr-si__kick-66.wav',
+      'resources/audiofiles/kicks/249256__netr-si__kick-63.wav',
+      'resources/audiofiles/kicks/249257__netr-si__kick-64.wav',
+      'resources/audiofiles/kicks/249258__netr-si__kick-61.wav',
+      'resources/audiofiles/kicks/249259__netr-si__kick-62s.wav',
+      'resources/audiofiles/kicks/249260__netr-si__kick-69.wav',
+      'resources/audiofiles/kicks/249261__netr-si__kick-7.wav',
+      'resources/audiofiles/kicks/249262__netr-si__kick-75.wav',
+      'resources/audiofiles/kicks/249263__netr-si__kick-74.wav',
+      'resources/audiofiles/kicks/249264__netr-si__kick-77.wav',
+      'resources/audiofiles/kicks/249265__netr-si__kick-76.wav',
+      'resources/audiofiles/kicks/249266__netr-si__kick-71.wav',
+      'resources/audiofiles/kicks/249267__netr-si__kick-70.wav',
+      'resources/audiofiles/kicks/249268__netr-si__kick-73.wav',
+      'resources/audiofiles/kicks/249269__netr-si__kick-72.wav',
+      'resources/audiofiles/kicks/249270__netr-si__kick-79.wav',
+      'resources/audiofiles/kicks/249271__netr-si__kick-78.wav',
+      'resources/audiofiles/kicks/249272__netr-si__kick-43.wav',
+      'resources/audiofiles/kicks/249273__netr-si__kick-44.wav',
+      'resources/audiofiles/kicks/249274__netr-si__kick-45.wav',
+      'resources/audiofiles/kicks/249275__netr-si__kick-46.wav',
+      'resources/audiofiles/kicks/249276__netr-si__kick-47.wav',
+      'resources/audiofiles/kicks/249277__netr-si__kick-48.wav',
+      'resources/audiofiles/kicks/249278__netr-si__kick-49.wav',
+      'resources/audiofiles/kicks/249279__netr-si__kick-5.wav',
+      'resources/audiofiles/kicks/249280__netr-si__kick-50.wav',
+      'resources/audiofiles/kicks/249281__netr-si__kick-51.wav',
+      'resources/audiofiles/kicks/249282__netr-si__kick-60.wav',
+      'resources/audiofiles/kicks/249283__netr-si__kick-6.wav',
+      'resources/audiofiles/kicks/249284__netr-si__kick-59.wav',
+      'resources/audiofiles/kicks/249285__netr-si__kick-58.wav',
+      'resources/audiofiles/kicks/249286__netr-si__kick-57.wav',
+      'resources/audiofiles/kicks/249287__netr-si__kick-56.wav',
+      'resources/audiofiles/kicks/249288__netr-si__kick-55.wav',
+      'resources/audiofiles/kicks/249289__netr-si__kick-54.wav',
+      'resources/audiofiles/kicks/249290__netr-si__kick-53.wav',
+      'resources/audiofiles/kicks/249291__netr-si__kick-52.wav',
+    ],
+    presetInit() { this.length = 90 }
+  }
+}
