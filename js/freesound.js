@@ -63,7 +63,7 @@ module.exports = function( Audio ) {
           }) 
       }else{
         if( Audio.Gibberish.mode === 'worklet' ) {
-          console.log( 'reusing loaded freesound:', path )
+          console.log( 'reusing loaded freesound:', id )
           sampler.loadSample( id, null, Freesound.loaded[ id ] )
         }
       }

@@ -289,7 +289,7 @@ module.exports = ( attackTime = 44100, decayTime = 44100, _props ) => {
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":19,"./div.js":24,"./env.js":25,"./gen.js":33,"./gte.js":35,"./ifelseif.js":38,"./lt.js":41,"./memo.js":45,"./mul.js":51,"./neq.js":52,"./peek.js":57,"./poke.js":61,"./sub.js":72,"./utilities.js":78}],5:[function(require,module,exports){
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":19,"./div.js":24,"./env.js":25,"./gen.js":33,"./gte.js":35,"./ifelseif.js":38,"./lt.js":41,"./memo.js":45,"./mul.js":51,"./neq.js":52,"./peek.js":58,"./poke.js":62,"./sub.js":73,"./utilities.js":79}],5:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -459,7 +459,7 @@ module.exports = ( attackTime=44, decayTime=22050, sustainTime=44100, sustainLev
   return out 
 }
 
-},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":19,"./div.js":24,"./env.js":25,"./gen.js":33,"./gtp.js":36,"./ifelseif.js":38,"./lt.js":41,"./mul.js":51,"./neq.js":52,"./not.js":54,"./param.js":56,"./peek.js":57,"./poke.js":61,"./sub.js":72}],7:[function(require,module,exports){
+},{"./accum.js":2,"./add.js":5,"./and.js":7,"./bang.js":11,"./data.js":19,"./div.js":24,"./env.js":25,"./gen.js":33,"./gtp.js":36,"./ifelseif.js":38,"./lt.js":41,"./mul.js":51,"./neq.js":52,"./not.js":54,"./param.js":57,"./peek.js":58,"./poke.js":62,"./sub.js":73}],7:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -588,7 +588,7 @@ module.exports = ( decayTime = 44100 ) => {
   return sub( 1, ssd.out )
 }
 
-},{"./gen.js":33,"./history.js":37,"./mul.js":51,"./sub.js":72}],11:[function(require,module,exports){
+},{"./gen.js":33,"./history.js":37,"./mul.js":51,"./sub.js":73}],11:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -627,7 +627,8 @@ module.exports = ( _props ) => {
     if( usingWorklet === true && ugen.node !== null ) {
       ugen.node.port.postMessage({ key:'set', idx:ugen.memory.value.idx, value:ugen.max })
     }else{
-      gen.memory.heap[ ugen.memory.value.idx ] = ugen.max 
+      if( gen.memory && gen.memory.heap )
+        gen.memory.heap[ ugen.memory.value.idx ] = ugen.max 
     }
   }
 
@@ -754,7 +755,7 @@ module.exports = ( in1, min=-1, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":30,"./gen.js":33,"./memo.js":45,"./sub.js":72}],15:[function(require,module,exports){
+},{"./floor.js":30,"./gen.js":33,"./memo.js":45,"./sub.js":73}],15:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -945,7 +946,7 @@ module.exports = ( frequency=1, reset=0, _props ) => {
   return ugen
 }
 
-},{"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":57,"./phasor.js":59}],18:[function(require,module,exports){
+},{"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":58,"./phasor.js":60}],18:[function(require,module,exports){
 'use strict'
 
 const gen  = require( './gen.js' ),
@@ -981,7 +982,7 @@ module.exports = ( frequency=1, reset=0, _props ) => {
   return ugen
 }
 
-},{"./add.js":5,"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":57,"./phasor.js":59}],19:[function(require,module,exports){
+},{"./add.js":5,"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":58,"./phasor.js":60}],19:[function(require,module,exports){
 'use strict'
 
 const gen  = require('./gen.js'),
@@ -1155,7 +1156,7 @@ module.exports = ( x, y=1, properties ) => {
 }
 
 
-},{"./gen.js":33,"./peek.js":57,"./poke.js":61,"./utilities.js":78}],20:[function(require,module,exports){
+},{"./gen.js":33,"./peek.js":58,"./poke.js":62,"./utilities.js":79}],20:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1178,7 +1179,7 @@ module.exports = ( in1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./gen.js":33,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":72}],21:[function(require,module,exports){
+},{"./add.js":5,"./gen.js":33,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":73}],21:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1199,7 +1200,7 @@ module.exports = ( decayTime = 44100, props ) => {
   return ssd.out 
 }
 
-},{"./gen.js":33,"./history.js":37,"./mul.js":51,"./t60.js":74}],22:[function(require,module,exports){
+},{"./gen.js":33,"./history.js":37,"./mul.js":51,"./t60.js":75}],22:[function(require,module,exports){
 'use strict'
 
 const gen  = require( './gen.js'  ),
@@ -1255,7 +1256,7 @@ module.exports = ( in1, taps, properties ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./data.js":19,"./gen.js":33,"./memo.js":45,"./peek.js":57,"./poke.js":61,"./sub.js":72,"./wrap.js":80}],23:[function(require,module,exports){
+},{"./accum.js":2,"./data.js":19,"./gen.js":33,"./memo.js":45,"./peek.js":58,"./poke.js":62,"./sub.js":73,"./wrap.js":81}],23:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -1273,7 +1274,7 @@ module.exports = ( in1 ) => {
   return ugen
 }
 
-},{"./gen.js":33,"./history.js":37,"./sub.js":72}],24:[function(require,module,exports){
+},{"./gen.js":33,"./history.js":37,"./sub.js":73}],24:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -1332,8 +1333,6 @@ module.exports = (...args) => {
 let gen     = require( './gen' ),
     windows = require( './windows' ),
     data    = require( './data' ),
-    peek    = require( './peek' ),
-    phasor  = require( './phasor' ),
     defaults = {
       type:'triangular', length:1024, alpha:.15, shift:0, reverse:false 
     }
@@ -1362,7 +1361,7 @@ module.exports = props => {
   return ugen
 }
 
-},{"./data":19,"./gen":33,"./peek":57,"./phasor":59,"./windows":79}],26:[function(require,module,exports){
+},{"./data":19,"./gen":33,"./windows":80}],26:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -2139,7 +2138,7 @@ gen.__proto__ = new EE()
 
 module.exports = gen
 
-},{"events":121,"memory-helper":207}],34:[function(require,module,exports){
+},{"events":125,"memory-helper":212}],34:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2561,6 +2560,7 @@ const library = {
   ifelse:   require( './ifelseif.js' ),
   bang:     require( './bang.js' ),
   and:      require( './and.js' ),
+  or:       require( './or.js' ),
   pan:      require( './pan.js' ),
   eq:       require( './eq.js' ),
   neq:      require( './neq.js' ),
@@ -2573,7 +2573,7 @@ library.gen.lib = library
 
 module.exports = library
 
-},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./cycleN.js":18,"./data.js":19,"./dcblock.js":20,"./decay.js":21,"./delay.js":22,"./delta.js":23,"./div.js":24,"./env.js":25,"./eq.js":26,"./exp.js":27,"./floor.js":30,"./fold.js":31,"./gate.js":32,"./gen.js":33,"./gt.js":34,"./gte.js":35,"./gtp.js":36,"./history.js":37,"./ifelseif.js":38,"./in.js":39,"./lt.js":41,"./lte.js":42,"./ltp.js":43,"./max.js":44,"./memo.js":45,"./min.js":46,"./mix.js":47,"./mod.js":48,"./mstosamps.js":49,"./mtof.js":50,"./mul.js":51,"./neq.js":52,"./noise.js":53,"./not.js":54,"./pan.js":55,"./param.js":56,"./peek.js":57,"./peekDyn.js":58,"./phasor.js":59,"./phasorN.js":60,"./poke.js":61,"./pow.js":62,"./process.js":63,"./rate.js":64,"./round.js":65,"./sah.js":66,"./selector.js":67,"./seq.js":68,"./sign.js":69,"./sin.js":70,"./slide.js":71,"./sub.js":72,"./switch.js":73,"./t60.js":74,"./tan.js":75,"./tanh.js":76,"./train.js":77,"./utilities.js":78,"./windows.js":79,"./wrap.js":80}],41:[function(require,module,exports){
+},{"./abs.js":1,"./accum.js":2,"./acos.js":3,"./ad.js":4,"./add.js":5,"./adsr.js":6,"./and.js":7,"./asin.js":8,"./atan.js":9,"./attack.js":10,"./bang.js":11,"./bool.js":12,"./ceil.js":13,"./clamp.js":14,"./cos.js":15,"./counter.js":16,"./cycle.js":17,"./cycleN.js":18,"./data.js":19,"./dcblock.js":20,"./decay.js":21,"./delay.js":22,"./delta.js":23,"./div.js":24,"./env.js":25,"./eq.js":26,"./exp.js":27,"./floor.js":30,"./fold.js":31,"./gate.js":32,"./gen.js":33,"./gt.js":34,"./gte.js":35,"./gtp.js":36,"./history.js":37,"./ifelseif.js":38,"./in.js":39,"./lt.js":41,"./lte.js":42,"./ltp.js":43,"./max.js":44,"./memo.js":45,"./min.js":46,"./mix.js":47,"./mod.js":48,"./mstosamps.js":49,"./mtof.js":50,"./mul.js":51,"./neq.js":52,"./noise.js":53,"./not.js":54,"./or.js":55,"./pan.js":56,"./param.js":57,"./peek.js":58,"./peekDyn.js":59,"./phasor.js":60,"./phasorN.js":61,"./poke.js":62,"./pow.js":63,"./process.js":64,"./rate.js":65,"./round.js":66,"./sah.js":67,"./selector.js":68,"./seq.js":69,"./sign.js":70,"./sin.js":71,"./slide.js":72,"./sub.js":73,"./switch.js":74,"./t60.js":75,"./tan.js":76,"./tanh.js":77,"./train.js":78,"./utilities.js":79,"./windows.js":80,"./wrap.js":81}],41:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -2795,7 +2795,7 @@ module.exports = ( in1, in2, t=.5 ) => {
   return ugen
 }
 
-},{"./add.js":5,"./gen.js":33,"./memo.js":45,"./mul.js":51,"./sub.js":72}],48:[function(require,module,exports){
+},{"./add.js":5,"./gen.js":33,"./memo.js":45,"./mul.js":51,"./sub.js":73}],48:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -3067,6 +3067,38 @@ module.exports = x => {
 },{"./gen.js":33}],55:[function(require,module,exports){
 'use strict'
 
+let gen = require( './gen.js' )
+
+let proto = {
+  basename:'or',
+
+  gen() {
+    let inputs = gen.getInputs( this ), out
+
+    out = `  var ${this.name} = (${inputs[0]} !== 0 || ${inputs[1]} !== 0) | 0\n\n`
+
+    gen.memo[ this.name ] = `${this.name}`
+
+    return [ `${this.name}`, out ]
+  },
+
+}
+
+module.exports = ( in1, in2 ) => {
+  let ugen = Object.create( proto )
+  Object.assign( ugen, {
+    uid:     gen.getUID(),
+    inputs:  [ in1, in2 ],
+  })
+  
+  ugen.name = `${ugen.basename}${ugen.uid}`
+
+  return ugen
+}
+
+},{"./gen.js":33}],56:[function(require,module,exports){
+'use strict'
+
 let gen = require( './gen.js' ),
     data = require( './data.js' ),
     peek = require( './peek.js' ),
@@ -3108,7 +3140,7 @@ module.exports = ( leftInput, rightInput, pan =.5, properties ) => {
   return ugen
 }
 
-},{"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":57}],56:[function(require,module,exports){
+},{"./data.js":19,"./gen.js":33,"./mul.js":51,"./peek.js":58}],57:[function(require,module,exports){
 'use strict'
 
 let gen = require('./gen.js')
@@ -3181,7 +3213,7 @@ module.exports = ( propName=0, value=0, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./gen.js":33}],57:[function(require,module,exports){
+},{"./gen.js":33}],58:[function(require,module,exports){
 
 const gen  = require('./gen.js'),
       dataUgen = require('./data.js')
@@ -3273,7 +3305,7 @@ module.exports = ( input_data, index=0, properties ) => {
 }
 
 
-},{"./data.js":19,"./gen.js":33}],58:[function(require,module,exports){
+},{"./data.js":19,"./gen.js":33}],59:[function(require,module,exports){
 const gen  = require('./gen.js'),
       dataUgen = require('./data.js')
 
@@ -3364,7 +3396,7 @@ module.exports = ( input_data, length, index=0, properties ) => {
 }
 
 
-},{"./data.js":19,"./gen.js":33}],59:[function(require,module,exports){
+},{"./data.js":19,"./gen.js":33}],60:[function(require,module,exports){
 'use strict'
 
 const gen   = require( './gen.js' ),
@@ -3395,7 +3427,7 @@ module.exports = ( frequency = 1, reset = 0, _props ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./mul.js":51}],60:[function(require,module,exports){
+},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./mul.js":51}],61:[function(require,module,exports){
 'use strict'
 
 const gen   = require( './gen.js' ),
@@ -3426,7 +3458,7 @@ module.exports = ( frequency = 1, reset = 0, _props ) => {
   return ugen
 }
 
-},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./mul.js":51}],61:[function(require,module,exports){
+},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./mul.js":51}],62:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -3481,7 +3513,7 @@ module.exports = ( data, value, index, properties ) => {
   return ugen
 }
 
-},{"./gen.js":33,"./mul.js":51,"./wrap.js":80}],62:[function(require,module,exports){
+},{"./gen.js":33,"./mul.js":51,"./wrap.js":81}],63:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3527,7 +3559,7 @@ module.exports = (x,y) => {
   return pow
 }
 
-},{"./gen.js":33}],63:[function(require,module,exports){
+},{"./gen.js":33}],64:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3579,7 +3611,7 @@ module.exports = (...args) => {
   return process 
 }
 
-},{"./gen.js":33}],64:[function(require,module,exports){
+},{"./gen.js":33}],65:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3631,7 +3663,7 @@ module.exports = ( in1, rate ) => {
   return ugen
 }
 
-},{"./add.js":5,"./delta.js":23,"./gen.js":33,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":72,"./wrap.js":80}],65:[function(require,module,exports){
+},{"./add.js":5,"./delta.js":23,"./gen.js":33,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":73,"./wrap.js":81}],66:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3668,7 +3700,7 @@ module.exports = x => {
   return round
 }
 
-},{"./gen.js":33}],66:[function(require,module,exports){
+},{"./gen.js":33}],67:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' )
@@ -3725,7 +3757,7 @@ module.exports = ( in1, control, threshold=0, properties ) => {
   return ugen
 }
 
-},{"./gen.js":33}],67:[function(require,module,exports){
+},{"./gen.js":33}],68:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -3777,7 +3809,7 @@ module.exports = ( ...inputs ) => {
   return ugen
 }
 
-},{"./gen.js":33}],68:[function(require,module,exports){
+},{"./gen.js":33}],69:[function(require,module,exports){
 'use strict'
 
 let gen   = require( './gen.js' ),
@@ -3820,7 +3852,7 @@ module.exports = ( durations = 11025, values = [0,1], phaseIncrement = 1) => {
   return ugen
 }
 
-},{"./accum.js":2,"./counter.js":16,"./data.js":19,"./gen.js":33,"./history.js":37,"./peek.js":57}],69:[function(require,module,exports){
+},{"./accum.js":2,"./counter.js":16,"./data.js":19,"./gen.js":33,"./history.js":37,"./peek.js":58}],70:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3857,7 +3889,7 @@ module.exports = x => {
   return sign
 }
 
-},{"./gen.js":33}],70:[function(require,module,exports){
+},{"./gen.js":33}],71:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -3896,7 +3928,7 @@ module.exports = x => {
   return sin
 }
 
-},{"./gen.js":33}],71:[function(require,module,exports){
+},{"./gen.js":33}],72:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -3923,7 +3955,7 @@ module.exports = ( in1, slideUp = 1, slideDown = 1 ) => {
   return filter
 }
 
-},{"./add.js":5,"./div.js":24,"./gen.js":33,"./gt.js":34,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":72,"./switch.js":73}],72:[function(require,module,exports){
+},{"./add.js":5,"./div.js":24,"./gen.js":33,"./gt.js":34,"./history.js":37,"./memo.js":45,"./mul.js":51,"./sub.js":73,"./switch.js":74}],73:[function(require,module,exports){
 'use strict'
 
 const gen = require('./gen.js')
@@ -3988,7 +4020,7 @@ module.exports = ( ...args ) => {
   return sub
 }
 
-},{"./gen.js":33}],73:[function(require,module,exports){
+},{"./gen.js":33}],74:[function(require,module,exports){
 'use strict'
 
 let gen = require( './gen.js' )
@@ -4022,7 +4054,7 @@ module.exports = ( control, in1 = 1, in2 = 0 ) => {
   return ugen
 }
 
-},{"./gen.js":33}],74:[function(require,module,exports){
+},{"./gen.js":33}],75:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -4065,7 +4097,7 @@ module.exports = x => {
   return t60
 }
 
-},{"./gen.js":33}],75:[function(require,module,exports){
+},{"./gen.js":33}],76:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -4104,7 +4136,7 @@ module.exports = x => {
   return tan
 }
 
-},{"./gen.js":33}],76:[function(require,module,exports){
+},{"./gen.js":33}],77:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js')
@@ -4143,7 +4175,7 @@ module.exports = x => {
   return tanh
 }
 
-},{"./gen.js":33}],77:[function(require,module,exports){
+},{"./gen.js":33}],78:[function(require,module,exports){
 'use strict'
 
 let gen     = require( './gen.js' ),
@@ -4160,7 +4192,7 @@ module.exports = ( frequency=440, pulsewidth=.5 ) => {
 }
 
 
-},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./lt.js":41}],78:[function(require,module,exports){
+},{"./accum.js":2,"./div.js":24,"./gen.js":33,"./lt.js":41}],79:[function(require,module,exports){
 'use strict'
 
 const AWPF = require( './external/audioworklet-polyfill.js' ),
@@ -4188,36 +4220,41 @@ const utilities = {
     if( gen.graph !== null ) gen.free( gen.graph )
   },
 
-  createContext( bufferSize = 2048 ) {
-    const AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
-    
-    // tell polyfill global object and buffersize
-    AWPF( window, bufferSize )
+  createContext( bufferSize = 2048, __AC=null ) {
+    if( __AC === null ) {
+      const AC = typeof AudioContext === 'undefined' ? webkitAudioContext : AudioContext
+      
+      // tell polyfill global object and buffersize
+      AWPF( window, bufferSize )
 
-    const start = () => {
-      if( typeof AC !== 'undefined' ) {
-        this.ctx = new AC({ latencyHint:.0125 })
+      const start = () => {
+        if( typeof AC !== 'undefined' ) {
+          this.ctx = new AC({ latencyHint:.0125 })
 
-        gen.samplerate = this.ctx.sampleRate
+          gen.samplerate = this.ctx.sampleRate
 
-        if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
-          window.removeEventListener( 'touchstart', start )
-        }else{
-          window.removeEventListener( 'mousedown', start )
-          window.removeEventListener( 'keydown', start )
+          if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
+            window.removeEventListener( 'touchstart', start )
+          }else{
+            window.removeEventListener( 'mousedown', start )
+            window.removeEventListener( 'keydown', start )
+          }
+
+          const mySource = utilities.ctx.createBufferSource()
+          mySource.connect( utilities.ctx.destination )
+          mySource.start()
         }
-
-        const mySource = utilities.ctx.createBufferSource()
-        mySource.connect( utilities.ctx.destination )
-        mySource.start()
       }
-    }
 
-    if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
-      window.addEventListener( 'touchstart', start )
+      if( document && document.documentElement && 'ontouchstart' in document.documentElement ) {
+        window.addEventListener( 'touchstart', start )
+      }else{
+        window.addEventListener( 'mousedown', start )
+        window.addEventListener( 'keydown', start )
+      }
     }else{
-      window.addEventListener( 'mousedown', start )
-      window.addEventListener( 'keydown', start )
+      this.ctx = __AC
+      gen.samplerate = this.ctx.sampleRate
     }
 
     return this
@@ -4406,11 +4443,13 @@ class ${name}Processor extends AudioWorkletProcessor {
 
   process( inputs, outputs, parameters ) {
     if( this.initialized === true ) {
+
       const output = outputs[0]
       ${inputsString}
       const len    = channel0.length
       const memory = this.memory ${parameterDereferences}${inputDereferences}${memberString}
       ${kernel ? 'const kernel = this.kernel' : '' }
+
 
       for( let i = 0; i < len; ++i ) {
         ${kernel ? 'kernel( memory )\n' : prettyCallback}
@@ -4445,6 +4484,75 @@ registerProcessor( '${name}', ${name}Processor)`
       this.registeredForNodeAssignment.push( ugen )
     }
   },
+
+  makeWorklet( graph, name, debug=false, mem=44100 * 1, __eval=false, kernel=false ) {
+    const [ url, codeString, inputs, params, numChannels ] = utilities.createWorkletProcessor( graph, name, debug, mem, __eval, kernel )
+
+    const nodePromise = new Promise( (resolve,reject) => {
+      utilities.ctx.audioWorklet.addModule( url ).then( ()=> {
+        const workletNode = new AudioWorkletNode( utilities.ctx, name, { channelInterpretation:'discrete', channelCount: numChannels, outputChannelCount:[ numChannels ] })
+
+        workletNode.callbacks = {}
+        workletNode.onmessage = function( event ) {
+          if( event.data.message === 'return' ) {
+            workletNode.callbacks[ event.data.idx ]( event.data.value )
+
+
+            delete workletNode.callbacks[ event.data.idx ]
+          }
+        }
+
+        workletNode.getMemoryValue = function( idx, cb ) {
+          this.workletCallbacks[ idx ] = cb
+          this.workletNode.port.postMessage({ key:'get', idx: idx })
+        }
+        
+        workletNode.port.postMessage({ key:'init', memory:gen.memory.heap })
+        utilities.workletNode = workletNode
+
+        utilities.registeredForNodeAssignment.forEach( ugen => ugen.node = workletNode )
+        utilities.registeredForNodeAssignment.length = 0
+
+        // assign all params as properties of node for easier reference 
+        for( let dict of inputs.values() ) {
+          const name = Object.keys( dict )[0]
+          const param = workletNode.parameters.get( name )
+      
+          Object.defineProperty( workletNode, name, {
+            set( v ) {
+              param.value = v
+            },
+            get() {
+              return param.value
+            }
+          })
+        }
+
+        for( let ugen of params.values() ) {
+          const name = ugen.name
+          const param = workletNode.parameters.get( name )
+          ugen.waapi = param 
+          // initialize?
+          param.value = ugen.defaultValue
+
+          Object.defineProperty( workletNode, name, {
+            set( v ) {
+              param.value = v
+            },
+            get() {
+              return param.value
+            }
+          })
+        }
+
+        resolve( workletNode )
+      })
+
+    })
+
+    return nodePromise
+  },
+
 
   playWorklet( graph, name, debug=false, mem=44100 * 60, __eval=false, kernel=false ) {
     utilities.clear()
@@ -4567,7 +4675,7 @@ utilities.clear.callbacks = []
 
 module.exports = utilities
 
-},{"./data.js":19,"./external/audioworklet-polyfill.js":28,"./gen.js":33}],79:[function(require,module,exports){
+},{"./data.js":19,"./external/audioworklet-polyfill.js":28,"./gen.js":33}],80:[function(require,module,exports){
 'use strict'
 
 /*
@@ -4650,12 +4758,19 @@ const windows = module.exports = {
     return Math.pow( index / length, alpha )
   },
 
+  rexponential( length, index, alpha ) {
+    return Math.pow( index / length, alpha )
+  },
+
   linear( length, index ) {
     return index / length
   }
 }
 
-},{}],80:[function(require,module,exports){
+windows.expodec = windows.rexponential
+windows.rexpodec = windows.exponential
+
+},{}],81:[function(require,module,exports){
 'use strict'
 
 let gen  = require('./gen.js'),
@@ -4710,7 +4825,7 @@ module.exports = ( in1, min=0, max=1 ) => {
   return ugen
 }
 
-},{"./floor.js":30,"./gen.js":33,"./memo.js":45,"./sub.js":72}],81:[function(require,module,exports){
+},{"./floor.js":30,"./gen.js":33,"./memo.js":45,"./sub.js":73}],82:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -4765,7 +4880,8 @@ const Analysis = {
 
 module.exports = Analysis 
 
-},{"./ugen.js":117,"gibberish-dsp":166}],82:[function(require,module,exports){
+},{"./ugen.js":122,"gibberish-dsp":169}],83:[function(require,module,exports){
+(function (global){
 const Gibberish   = require( 'gibberish-dsp' )
 const Ugen        = require( './ugen.js' )
 const Instruments = require( './instruments.js' )
@@ -4781,12 +4897,13 @@ const Utility     = require( './utility.js' )
 const Freesound   = require( './freesound.js' )
 const Gen         = require( './gen.js' )
 const WavePattern = require( './wavePattern.js' )
-const WaveObjects = require( './waveObjects.js' )
+//const WaveObjects = require( './waveObjects.js' )
 
 const Audio = {
   Clock: require( './clock.js' ),
   Theory: require( './theory.js' ),
   Presets: require( './presets.js' ),
+  __seqDefaults: require('./defaults.js'),
   __Make: require( './make.js' ),
   initialized:false,
   autoConnect:true,
@@ -4795,6 +4912,8 @@ const Audio = {
   oscillators:{},
   effects:{},
   exportTarget:null,
+  memoryLimit: 44100 * 60 * 20,
+  latencyHint:.05,
 
   export( obj ) {
     if( Audio.initialized ){ 
@@ -4806,9 +4925,9 @@ const Audio = {
         this.filters,
         this.busses, 
         this.envelopes, 
-        this.waveObjects, 
+        //this.waveObjects, 
         this.binops, 
-        this.analysis 
+        this.analysis
       )
       
       Utility.export( obj )
@@ -4860,7 +4979,7 @@ const Audio = {
     this.createPubSub()
 
     const p = new Promise( (resolve, reject) => {
-      Gibberish.init( 44100*60*20, ctx, 'worklet', { latencyHint }).then( processorNode => {
+      Gibberish.init( Audio.memoryLimit, ctx, 'worklet', { latencyHint:Audio.latencyHint }).then( processorNode => {
         // XXX remove once gibber.core.lib has been properly integrated 
         Audio.Core.Audio = Audio.Core.audio = Audio
 
@@ -4877,12 +4996,13 @@ const Audio = {
         Audio.Utilities = Utility
         Audio.WavePattern = WavePattern( Audio )
         Audio.ctx = ctx
-        Audio.Out = Gibberish.output
         
         // must wait for Gen to be initialized
         Audio.Clock.init( Audio.Gen, Audio )
 
         Audio.createUgens()
+        Audio.Out = Audio.busses.Bus2()//Gibberish.output
+        Audio.Out.connect( Gibberish.output )
         
         if( Audio.exportTarget !== null ) Audio.export( Audio.exportTarget )
 
@@ -4895,6 +5015,9 @@ const Audio = {
         }
 
         Audio.export( window )
+        Audio.phase = Audio.makePhase()
+        Audio.phase.connect( Audio.Out, 0 )
+        Audio.setupGlobals()
 
         //const drums = Audio.Drums('x*o-')
         //drums.disconnect()
@@ -4912,6 +5035,7 @@ const Audio = {
         //Audio.Gibberish.genishi.gen.histories.clear()
         Audio.clear()
 
+
         resolve( [Audio,'Audio'] )
       })
     })
@@ -4925,7 +5049,7 @@ const Audio = {
     window.w = Gibberish.worklet
     Gibberish.worklet.disconnect()
 
-    Gibberish.init( 44100*60*20, undefined, 'worklet', true ).then( processorNode => {
+    Gibberish.init( Audio.memoryLimit, undefined, 'worklet', true ).then( processorNode => {
       Audio.out = Gibberish.output
       Audio.node = processorNode
 
@@ -4956,6 +5080,9 @@ const Audio = {
       Audio.export( window )
       Gibber.export( window )
 
+      Audio.phase = Audio.makePhase()
+      Audio.phase.connect( Audio.Out, 0 ) 
+
       const memIdx = Object.keys( Gibberish.memory.list ).reverse()[0]
       this.__memoryEnd = parseInt( memIdx ) + Gibberish.memory.list[ memIdx ]
 
@@ -4972,10 +5099,266 @@ const Audio = {
     })
   },
 
+  setupGlobals() {
+    const run = fnc => {
+      const str = fnc.toString()
+      const idx = str.indexOf('=>') + 2
+      const code = str.slice( idx ).trim()
+      Gibberish.worklet.port.__postMessage({
+        address:'eval',
+        code
+      })
+    }
+
+    run( ()=> {
+      global.main = function( fnc ) {
+        let str = fnc.toString()
+        let idx = str.indexOf('=>') + 2
+
+        Gibberish.processor.port.postMessage({
+          address:'eval',
+          code:str.slice( idx ).trim()
+        })
+      }
+
+      Clock = Gibberish.Clock
+    })
+
+    run( ()=> {
+      global.recursions = {}
+      //sin = Math.sin
+      //sinn = v => .5 + Math.sin(v) * .5
+      //sinr = v => Math.round( Math.sin(v) )
+      //cos = Math.cos
+      //cosn = v => .5 + Math.cos(v) * .5
+      //cosr = v => Math.round( Math.cos(v) )
+      abs = Math.abs
+      floor = Math.floor
+      ceil = Math.ceil
+      random = Math.random
+      round = Math.round
+      min = Math.min
+      max = Math.max
+      g = global
+      g.phase = Gibberish.ugens.get( 6 )
+      g.line = (freq=1,gain=1,offset=0) => offset + (((g.phase.graph.value*(1/freq)) / (Math.PI * 2)) % 1 ) * gain
+      cos  = (freq=1,gain=1,offset=0) => offset + Math.cos( g.phase.graph.value*(1/freq)*6.283185307179586) * gain
+      cosn = (freq=1,gain=1,offset=0) => offset + (.5+Math.cos(g.phase.graph.value*(1/freq)*6.283185307179586)*.5) * gain + offset
+      sin  = (freq=1,gain=1,offset=0) => offset + Math.sin( g.phase.graph.value*(1/freq)*6.283185307179586) * gain
+      sinn = (freq=1,gain=1,offset=0) => offset + (.5+Math.sin(g.phase.graph.value*(1/freq)*6.283185307179586)*.5) * gain + offset
+
+      global.tr = function( fnc, name, dict, delay=0 ) {
+        // there are two versions of this function, in effect (I KNOW)
+        // the first function is called when a recursion is created from
+        // within the audio thread. The second version is called when
+        // the recursion is created within the main thread... in this case
+        // the function is compiled to a string and sent to the audio
+        // thread to be evaluated.
+
+        /*********** BEGIN AUDIO THREAD RECURSION FUNCTION ************/
+        const keys = Object.keys( dict )
+        const objs = keys.map( key => {
+          let val = null
+          if( typeof dict[key] === 'object' || typeof dict[key] === 'function' ) {
+            if( dict[ key ].id !== undefined ) {
+              val = Gibberish.ugens.get( dict[ key ].id )
+            }else{
+              val = JSON.stringify( dict[ key ] )
+            }
+          }else{
+            val = dict[ key ]
+          }
+          return val
+        })
+
+        // we need to wait to make our new recursion until after any nudge/delay
+        // has been scheduled, so we create the recursion inside the *make* function
+        // which is then scheduled for delayed execution (if needed) or called immediately
+        // if no delay is applied
+        const make = function() {
+          const remove = function( num = 0 ) {
+            // TODO could we just look for name? wouldn't that be shorter?
+            const idx = Gibberish.scheduler.queue.data.findIndex( 
+              evt => evt.func.toString().indexOf( `global.recursions['${name}'](...objs)`) > -1 
+            )
+            if( idx > -1 ) {
+              Gibberish.scheduler.queue.data.splice( idx, 1 )
+            }
+          }
+          
+          let floatError = 0
+          global.recursions[name] = function( ...args ) {
+            let __nexttime__ = fnc(...args)
+            if( __nexttime__ === -987654321 ) {
+              return
+            }
+            if( isNaN( __nexttime__ ) === false && __nexttime__ <= 0 ) {
+              console.warn( 'temporal recursion scheduled with a time <= 0; this would create a potentially infinite loop. substituting a time of one measure.' )
+              __nexttime__ = 1
+            }
+            if( __nexttime__ && __nexttime__ > 0 ) {
+              
+              const t = Clock.time( __nexttime__ )
+              let newTime = Math.floor(t)
+              floatError += t - newTime
+
+              while( floatError >= 1 ) {
+                newTime += 1
+                floatError -= 1
+              }
+
+              Gibberish.scheduler.add(
+                newTime,
+                // bad hack to force the function to be found when looking
+                // for recursion replacement, include function name in string
+                // at top of function
+                eval( `()=> { global.recursions['${name}'](...objs) }` ),
+                0
+              )
+            }
+          }
+          global.recursions[ name ].remove = remove 
+        }
+
+        if( delay === 0 ) {
+          if( global.recursions[ name ] !== undefined ) global.recursions[ name ].remove()
+          make()
+          global.recursions[name](...objs)
+        }else{
+          Gibberish.scheduler.add(
+            Clock.time( delay ),
+            ()=>{
+              if( global.recursions[ name ] !== undefined ) global.recursions[ name ].remove()
+              make()
+              // don't adjust spacing below for realz don't
+              global.recursions[name](...objs)
+            },
+            1
+          )
+        }
+      } 
+    })
+
+    /************* BEGIN MAIN THREAD RECURSION CONSTRUCTION *************/
+    const tr = function( fnc, name, dict, immediate=0, delay=0 ) {
+      let code = fnc.toString()
+      const keys = Object.keys( dict )
+
+      code = `
+        const make = function() {
+          const objs = [
+            ${keys.map( key => typeof dict[key] === 'object' || typeof dict[key] === 'function'
+              ? dict[ key ].id !== undefined
+                ? 'Gibberish.ugens.get(' + dict[ key ].id + ')'
+                : JSON.stringify( dict[ key ] )
+              : `'${dict[ key ]}'` )
+            .join(',')
+          }]
+          ;
+          let floatError = 0;
+          global.recursions['${name}'] = function ${name} (${keys}) {
+            let __nexttime__ = ( ${code} )(${keys})
+
+            if( __nexttime__ === -987654321 ) {
+              return
+            }
+            if( isNaN( __nexttime__ ) === false && __nexttime__ <= 0 ) {
+              console.warn( 'temporal recursion scheduled with a time <= 0; this would create a potentially infinite loop. substituting a time of one measure.' )
+              __nexttime__ = 1
+            }
+            if( __nexttime__ && __nexttime__ > 0 ) {
+              const t = Clock.time( __nexttime__ )
+              let newTime = Math.floor(t)
+              floatError += t - newTime
+
+              while( floatError >= 1 ) {
+                newTime += 1
+                floatError -= 1
+              }
+              Gibberish.scheduler.add(
+                newTime,
+                (${keys})=>{
+                  global.recursions['${name}'](...objs)
+                },
+                100
+              )
+            }
+          }
+          const remove = function( num = 0 ) {
+            if( global.recursions['${name}'] !== undefined ) {
+              const idx = Gibberish.scheduler.queue.data.findIndex( evt => evt.func.toString().indexOf( "global.recursions['${name}'](...objs)") > -1 )
+              if( idx > -1 ) {
+                Gibberish.scheduler.queue.data.splice( idx, 1 )
+                Gibberish.scheduler.queue.length--
+              }
+            }
+          }
+
+          global.recursions['${name}'].remove = remove;
+          return objs
+        }
+
+      if( ${delay} === 0 ) {
+        if( global.recursions['${name}'] !== undefined ) global.recursions['${name}'].remove()
+        const objs = make()
+        global.recursions[ '${name}' ](...objs)
+      }else{
+        Gibberish.scheduler.add(
+          Clock.time( ${delay} ),
+          ()=>{
+            if( global.recursions['${name}'] !== undefined ) global.recursions['${name}'].remove()
+            const objs = make()
+            global.recursions[ '${name}' ](...objs)
+          },
+          -1
+        )
+      }
+  `
+
+
+      if( immediate === 0 ) {
+        Gibberish.worklet.port.postMessage({
+          address:'eval',
+          code
+        })
+      }else{
+        Gibberish.worklet.port.__postMessage({
+          address:'eval',
+          code
+        })
+      }
+    }
+
+    const Score = function( score ) {
+      for( let i = 0; i < score.length; i+=2 ) {
+        let cmd = score[ i + 1 ].toString()
+        const arrowIndex = cmd.indexOf('=>')
+        const functionIndex = cmd.indexOf('function')
+
+        if( arrowIndex > -1 ) {
+          cmd = cmd.slice( arrowIndex + 2 )
+        }else if( functionIndex > -1 ) {
+          cmd = cmd.slice( cmd.indexOf('{') )
+        }
+
+        future( 
+          new Function(`global.main( ()=> eval(\`${cmd}\`) )`),
+          score[ i ],
+          {}
+        )
+      }
+    }
+    
+    Audio.globals = { run, tr, Score }
+  },
+
   // XXX stop clock from being cleared.
   clear() { 
     Gibberish.clear() 
+    Audio.Out = Audio.busses.Bus2()//Gibberish.output
+    Audio.Out.connect( Gibberish.output )
     Audio.Clock.init( Audio.Gen, Audio )
+    Audio.phase.connect( Audio.Out, 0 )
 
     // the idea is that we only clear memory that was filled after
     // the initial Gibber initialization... this stops objects
@@ -5001,6 +5384,25 @@ const Audio = {
     Audio.publish('clear')
   },
 
+  makePhase() {
+    const def = {
+      name:'Phase',
+      type:'Ugen',
+      properties: { bpm:Audio.Clock.bpm, sr:Gibberish.ctx.sampleRate },
+      constructor: function() {
+        const gen = Gibberish.genish
+        const graph = gen.accum(
+          gen.div( gen.div( gen.in('bpm'), 240), gen.in('sr')),
+          0,
+          { max:Infinity }
+        )
+        return graph
+      }
+    }
+
+    return Make( def )()
+  },
+
   stop() {
     Gibber.Seq.sequencers.forEach( s => s.stop() )
   },
@@ -5023,7 +5425,7 @@ const Audio = {
     this.effects = Effects.create( this )
     this.busses = Busses.create( this )
     this.Ensemble = Ensemble( this )
-    this.waveObjects = WaveObjects( this )
+    //this.waveObjects = WaveObjects( this )
 
     const Pattern = this.Core.__Pattern
     Pattern.transfer( this, Pattern.toString() )
@@ -5271,7 +5673,8 @@ const Audio = {
 
 module.exports = Audio
 
-},{"./analysis.js":81,"./binops.js":83,"./busses.js":84,"./clock.js":85,"./drums.js":86,"./effects.js":87,"./ensemble.js":88,"./envelopes.js":89,"./filters.js":91,"./freesound.js":92,"./gen.js":93,"./instruments.js":95,"./make.js":96,"./oscillators.js":97,"./presets.js":98,"./theory.js":116,"./ugen.js":117,"./utility.js":118,"./waveObjects.js":119,"./wavePattern.js":120,"gibberish-dsp":166}],83:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./analysis.js":82,"./binops.js":84,"./busses.js":85,"./clock.js":86,"./defaults.js":87,"./drums.js":88,"./effects.js":89,"./ensemble.js":90,"./envelopes.js":91,"./filters.js":93,"./freesound.js":94,"./gen.js":95,"./instruments.js":97,"./make.js":98,"./oscillators.js":99,"./presets.js":100,"./theory.js":121,"./ugen.js":122,"./utility.js":123,"./wavePattern.js":124,"gibberish-dsp":169}],84:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5311,7 +5714,7 @@ const Binops = {
 
 module.exports = Binops
 
-},{"./ugen.js":117,"gibberish-dsp":166}],84:[function(require,module,exports){
+},{"./ugen.js":122,"gibberish-dsp":169}],85:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5363,7 +5766,7 @@ const Busses = {
 
 module.exports = Busses
 
-},{"./ugen.js":117,"gibberish-dsp":166}],85:[function(require,module,exports){
+},{"./ugen.js":122,"gibberish-dsp":169}],86:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 
@@ -5371,6 +5774,7 @@ const serialize = require( 'serialize-javascript' )
 const Clock = {
   __beatCount:0,
   id:null,
+  name:'Clock',
   nogibberish:true,
   bpm:140,
   __lastBPM:140,
@@ -5407,72 +5811,77 @@ const Clock = {
   init:function( Gen, Audio ) {
     // needed so that when the clock is re-initialized (for example, after clearing)
     // gibber won't try and serialized its sequencer
-    this.seq = null
+    if( this.seq === null ) {
 
-    const clockFunc = ()=> {
-      Gibberish.worklet.port.postMessage({
-        address: 'beat',
-        value: this.beatCount
-      }) 
+      this.clockFunc = ()=> {
+        Gibberish.worklet.port.postMessage({
+          address: 'beat',
+          value: this.beatCount
+        }) 
 
-      if( this.beatCount++ % 4 === 0 ) {
-        Gibberish.processor.playQueue()//.forEach( f => { f() } )
+        if( this.beatCount++ % 4 === 0 ) {
+          Gibberish.processor.playQueue()//.forEach( f => { f() } )
+        }
+      }
+
+      if( Gibberish.mode === 'worklet' ) {
+        this.id = Gibberish.utilities.getUID()
+        this.audioClock = null
+        this.__rate = null
+
+        Gibberish.worklet.port.postMessage({
+          address:'add',
+          properties:serialize( Clock ),
+          id:this.id,
+          post: 'store'    
+        })
+        
+        let bpm = this.__lastBPM
+        Object.defineProperty( this, 'bpm', {
+          get() { return bpm },
+          set(v){ 
+            bpm = v
+            if( Gibberish.mode === 'worklet' ) {
+              this.__lastBPM = v
+              if( Audio.Gibber.Tidal !== undefined ) Audio.Gibber.Tidal.cps = bpm/120/2
+              if( Audio.phase !== undefined ) Audio.phase.bpm = bpm
+
+              // watch out! always using same id here...
+              Gibberish.worklet.port.postMessage({
+                address:'set',
+                object:3,
+                name:'bpm',
+                value:bpm 
+              }) 
+            }
+          }
+        })
+
+        this.audioClock = Gen.make( Gen.ugens.abs(1) )
+        //this.__rate = this.audioClock.__p0 
+
+        Object.defineProperty( this, 'rate', {
+          configurable:true,
+          get() { return this.audioClock },
+          set(v){
+            this.audioClock.p0 = v
+          }
+        })
+
+        //Gibberish.worklet.port.postMessage({
+        //  address:'set',
+        //  value: Gen.make( Gen.ugens.abs(1) ),
+        //  object:this.id,
+        //  name:'audioClock'
+        //})
+
+        this.bpm = this.__lastBPM
       }
     }
 
-    if( Gibberish.mode === 'worklet' ) {
-      this.id = Gibberish.utilities.getUID()
-      this.audioClock = null
-      this.__rate = null
-
-      Gibberish.worklet.port.postMessage({
-        address:'add',
-        properties:serialize( Clock ),
-        id:this.id,
-        post: 'store'    
-      })
-      
-      let bpm = this.__lastBPM
-      Object.defineProperty( this, 'bpm', {
-        get() { return bpm },
-        set(v){ 
-          bpm = v
-          if( Gibberish.mode === 'worklet' ) {
-            this.__lastBPM = v
-            if( Audio.Gibber.Tidal !== undefined ) Audio.Gibber.Tidal.cps = bpm/120/2
-            Gibberish.worklet.port.postMessage({
-              address:'set',
-              object:this.id,
-              name:'bpm',
-              value:bpm 
-            }) 
-          }
-        }
-      })
-
-      this.audioClock = Gen.make( Gen.ugens.abs(1) )
-      //this.__rate = this.audioClock.__p0 
-
-      Object.defineProperty( this, 'rate', {
-        configurable:true,
-        get() { return this.audioClock },
-        set(v){
-          this.audioClock.p0 = v
-        }
-      })
-
-      //Gibberish.worklet.port.postMessage({
-      //  address:'set',
-      //  value: Gen.make( Gen.ugens.abs(1) ),
-      //  object:this.id,
-      //  name:'audioClock'
-      //})
-
-      this.bpm = this.__lastBPM
-    }
-
     if( Gibberish.mode === 'processor' )
-      this.seq = Gibberish.Sequencer.make( [ clockFunc ], [ ()=>Gibberish.Clock.time( 1/4 ) ] ).start()
+      this.seq = Gibberish.Sequencer.make( [ this.clockFunc ], [ ()=>Gibberish.Clock.time( 1/4 ) ] ).start()
+    
 
   },
 
@@ -5546,7 +5955,35 @@ const Clock = {
 
 module.exports = Clock
 
-},{"gibberish-dsp":166,"serialize-javascript":122}],86:[function(require,module,exports){
+},{"gibberish-dsp":169,"serialize-javascript":126}],87:[function(require,module,exports){
+module.exports = {
+  Synth:     'note',
+  FM:        'note',
+  Monosynth: 'note',
+  Complex:   'note',
+  Sampler:   'pickplay',
+  Snare:     'trigger',
+  Kick:      'trigger',
+  Clave:     'trigger',
+  Tom:       'note:',
+  Clap:      'trigger',
+  Hat:       'trigger',
+  Pluck:     'note',
+  Karplus:   'note',
+  Soundfont: 'note',
+  Conga:     'note',
+  PolySynth: 'note',
+  PolyFM:    'note',
+  PolyMono:  'note',
+  PolyComplex:'note',
+  Multisampler:'pickplay',
+  Grains:'pickplay',
+  PolyConga: 'note',
+  PolyTom:   'note',
+  PolyKarplus:'note'
+}
+
+},{}],88:[function(require,module,exports){
 const Ugen = require( './ugen.js' )
 const Presets = require( './presets.js' )
 
@@ -5617,10 +6054,10 @@ module.exports = function( __Audio ) {
 
     const temp = Audio.autoConnect
     Audio.autoConnect = false
-    const k  = Audio.instruments.Sampler({ files:['./resources/audiofiles/kick.wav' ] })
-    const s  = Audio.instruments.Sampler({ files:['./resources/audiofiles/snare.wav' ] })
-    const ch = Audio.instruments.Sampler({ files:['./resources/audiofiles/hat.wav' ] })
-    const oh = Audio.instruments.Sampler({ files:['./resources/audiofiles/openhat.wav' ] })
+    const k  = Audio.instruments.Sampler({ files:[Drums.prefix + '/resources/audiofiles/kick.wav' ] })
+    const s  = Audio.instruments.Sampler({ files:[Drums.prefix + '/resources/audiofiles/snare.wav' ] })
+    const ch = Audio.instruments.Sampler({ files:[Drums.prefix + '/resources/audiofiles/hat.wav' ] })
+    const oh = Audio.instruments.Sampler({ files:[Drums.prefix + '/resources/audiofiles/openhat.wav' ] })
     Audio.autoConnect = temp
 
     const drums = Audio.Ensemble({
@@ -5671,6 +6108,7 @@ module.exports = function( __Audio ) {
     drums.name = 'Drums'
     return drums
   }
+  Drums.prefix = '.'
 
   const EDrums = function(  ...args ) {
     const temp = Audio.autoConnect
@@ -5739,7 +6177,7 @@ module.exports = function( __Audio ) {
   return { Drums, EDrums }
 }
 
-},{"./presets.js":98,"./ugen.js":117}],87:[function(require,module,exports){
+},{"./presets.js":100,"./ugen.js":122}],89:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5766,36 +6204,16 @@ const Effects = {
 
       const shouldUsePool = poolEffects.indexOf( effectName ) > -1 
 
-      effects[ effectName ] = Ugen( gibberishConstructor, description, Audio, shouldUsePool )
+      effects[ replaceName ] = Ugen( gibberishConstructor, description, Audio, shouldUsePool )
       
-      effects[ effectName ].presets = Audio.Presets.effects[ effectName ] 
-      if( effects[ effectName ].presets !== undefined ) {
-        effects[ effectName ].presets.inspect = function() {
+      effects[ replaceName ].presets = Audio.Presets.effects[ replaceName ] 
+      if( effects[ replaceName ].presets !== undefined ) {
+        effects[ replaceName ].presets.inspect = function() {
           console.table( this )
         }
       }else{
-        effects[ effectName ].presets = { inspect() { console.log( `${effectName} has no presets.` ) } }
+        effects[ replaceName ].presets = { inspect() { console.log( `${effectName} has no presets.` ) } }
       }
-    }
-
-    effects.Reverb = function( ...args ) {
-      let argprops = null
-      if( args.length === 1 ) {
-        if( typeof args[0] === 'object' ) argprops = args[0]
-      }else if( args.length === 2 ) {
-        argprops = args[1]
-      }
-      const props = Object.assign( {}, { model:0 }, argprops )
-
-      let ugen = null
-      switch( props.model ) {
-        case 0:
-        default:
-          ugen = effects.Freeverb(...args )
-          break;
-      }
-
-      return ugen
     }
 
     return effects
@@ -5809,7 +6227,7 @@ const Effects = {
 
 module.exports = Effects
 
-},{"./ugen.js":117,"gibberish-dsp":166}],88:[function(require,module,exports){
+},{"./ugen.js":122,"gibberish-dsp":169}],90:[function(require,module,exports){
 module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
   const Ensemble = function( props ) {
@@ -5824,7 +6242,7 @@ module.exports = function( Audio ) {
       const args = dict.args
       cp[ key ] = {
         play: function( ...args ) { 
-          Gibberish.worklet.ugens.get( this.target )[ this.method ]( ...args ) 
+          return Gibberish.worklet.ugens.get( this.target )[ this.method ]( ...args ) 
         },
         target:target.id,
         method,
@@ -5844,9 +6262,9 @@ module.exports = function( Audio ) {
     cp.play = function( __key ) {
       const key = isNaN(__key) ? __key : parseInt( __key ) 
       if( Gibberish.mode === 'processor' ) {
-        Gibberish.worklet.ugens.get( this[ key ].target )[ this[ key ].method ]( ...this[ key ].args )
+        return Gibberish.worklet.ugens.get( this[ key ].target )[ this[ key ].method ]( ...this[ key ].args )
       }else{
-        props[ key ].target[ this[ key ].method ]( ...this[ key ].args )
+        return props[ key ].target[ this[ key ].method ]( ...this[ key ].args )
       }
     }
 
@@ -5898,13 +6316,14 @@ module.exports = function( Audio ) {
       return ens
     }
 
+    ens.__seqDefault = 'play'
     return ens
   }
 
   return Ensemble
 }
 
-},{}],89:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -5937,7 +6356,7 @@ const Envelopes = {
 
 module.exports = Envelopes
 
-},{"./ugen.js":117,"gibberish-dsp":166}],90:[function(require,module,exports){
+},{"./ugen.js":122,"gibberish-dsp":169}],92:[function(require,module,exports){
 
 // See all scales at: http://abbernie.github.io/tune/scales.html
 
@@ -6165,7 +6584,7 @@ Tune.prototype.root = function(newmidi, newfreq) {
 
 module.exports = Tune
 
-},{}],91:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -6228,13 +6647,14 @@ const Filters = {
 
 module.exports = Filters
 
-},{"./ugen.js":117,"gibberish-dsp":166}],92:[function(require,module,exports){
+},{"./ugen.js":122,"gibberish-dsp":169}],94:[function(require,module,exports){
 module.exports = function( Audio ) {
   const token = '6a00f80ba02b2755a044cc4ef004febfc4ccd476'
 
   const Freesound = function( query, options ) {
-    const props = Object.assign( { count:1, maxVoices:1, panVoices:true }, typeof query === 'object' ? query : options )
-    const sampler = Audio.instruments.Multisampler( props )
+    const props = Object.assign( {}, Freesound.defaultProps,  typeof query === 'object' ? query : options )
+    const sampler = Audio.instruments[ props.type ]( props )
+    if( sampler.loadSample === undefined ) sampler.loadSample = sampler.__wrapped__.loadSample
     setTimeout( ()=>queries[ typeof query ]( query, sampler, props.count ), 0 )
  
     return sampler
@@ -6242,7 +6662,7 @@ module.exports = function( Audio ) {
 
   Freesound.loaded = {}
   Freesound.queries = {}
-
+  Freesound.defaultProps = { count:1, maxVoices:1, panVoices:true, type:'Multisampler' }
   Freesound.defaults = {
     sort: 'downloads',
     single:true,
@@ -6284,12 +6704,17 @@ module.exports = function( Audio ) {
           .then( json => {
             const path = json.previews[ 'preview-hq-mp3' ]
             
-            sampler.loadSample( path )
-            //console.log( 'loading:', path )
+            //sampler.loadSample( path )
+            sampler.loadSample( path, (__sampler,buffer) => {
+              Freesound.loaded[ id ] = buffer.data.buffer
+            })
+
+            console.log( 'freesound now loading:', path )
           }) 
       }else{
         if( Audio.Gibberish.mode === 'worklet' ) {
-          sampler.samplers[ num ].loadBuffer( Freesound.loaded[ id ] )
+          console.log( 'reusing loaded freesound:', id )
+          sampler.loadSample( id, null, Freesound.loaded[ id ] )
         }
       }
     },
@@ -6319,7 +6744,7 @@ module.exports = function( Audio ) {
             console.log(`%cNo sounds were found for this query!`, `background:red;color:white`)
           }
           sampler.length = count < sounds.results.length ? count : sounds.results.length
-          console.table( sounds.results.map( r=>({file:r.name,author:r.username,license:'CC/'+r.license.split('/').slice(4).join('/')}) ) )
+          console.table( sounds.results.map( r=>({file:r.name, id:r.id, author:r.username,license:'CC/'+r.license.split('/').slice(4).join('/') }) ) )
           for( let i = 0; i < sampler.length; i++ ) {
             const result = sounds.results[i]
             if( result !== undefined ) {
@@ -6372,7 +6797,7 @@ module.exports = function( Audio ) {
   return Freesound
 }
 
-},{}],93:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 module.exports = function( Audio ) {
   
 const binops = [ 
@@ -6384,11 +6809,11 @@ const binops = [
 const monops = [
   'abs','acos','acosh','asin','asinh','atan','atan2','atanh','cos','cosh',
   'sin','sinh','tan','tanh', 'floor',
-  'ceil', 'round', 'sign', 'trunc', 'fract', 'param', 'in',
+  'ceil', 'round', 'sign', 'trunc', 'fract', 'param', 'in'
 ]
 
 const noops = [
-  'noise'
+  'noise', 'bang'
 ]
 
 const Gen  = {
@@ -6422,6 +6847,7 @@ const Gen  = {
     Gen.names.push( ...Object.keys( Gen.functions ) )
     //Gen.names.push( ...Object.keys( Gen.composites ) )
     Gen.names.push( 'gen' )
+    Gen.names.push( 'line')
     Gen.names.push( 'lfo' )
     Gen.names.push( 'sine' )
     Gen.names.push( 'square' )
@@ -6565,6 +6991,7 @@ const Gen  = {
     train:  { properties:[ '0','1' ],  str:'train' },
     rate:   { properties:[ '0' ], str:'rate' },
     noise:  { properties:[], str:'noise' },
+    bang:   { properties:[], str:'bang' },
     accum:  { properties:[ '0','1' ], str:'accum' },
     counter:{ properties:[ '0','1' ], str:'counter' },
     scale:  { properties: ['0', '1', '2', '3'], str:'scale' },
@@ -6672,6 +7099,14 @@ const Gen  = {
         str += p
       }else if( typeof p === 'string' ) {
         str += p
+      }else if( typeof p === 'object' && p.type ==='gen' ) { 
+        let pName = 'p'+paramArray.length
+        //str += pName
+        p.toString = new Function(`return 'v_${p.id}'`)
+        paramArray.push( [`${pName}`, p ] )
+        str += `g.in('${pName}')`
+        // if another gen graph... but 
+        //str += `'v_${p.id}'` 
       }else{
         console.log( 'CODEGEN ERROR:', p )
       }
@@ -6684,11 +7119,17 @@ const Gen  = {
     }
     
     str += ')'
+    //console.log( str )
 
     return str
   },
 
   composites: { 
+    line( period=4, min=0, max=1 ) {
+      const range = max - min
+      // XXX 4 is magic number, only works as long as we're in 4/4
+      return Gen.make( Gen.ugens.add( min, Gen.ugens.mul( Gen.ugens.phasor( Audio.Utilities.btof( period * 4 ), 0, { min:0 } ), range )))
+    },
     sine( frequency=2, amp=4, center=0, shouldRound=false ) {
       return Gen.composites.lfo( 'sine', frequency, amp, center, shouldRound )
     },
@@ -6782,6 +7223,7 @@ const Gen  = {
         amt = from - to
 
         fade = g.gtp( g.sub( from, g.accum( g.div( amt, g.mul(beatsInSeconds, g.samplerate ) ), 0 ) ), to )
+
       }else{
         amt = to - from
         fade = g.add( from, g.ltp( g.accum( g.div( amt, g.mul( beatsInSeconds, g.samplerate ) ), 0 ), to ) )
@@ -7018,7 +7460,7 @@ Gen.init()
 return Gen 
 }
 
-},{}],94:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 const Gibber = require( 'gibber.core.lib' )
 const Audio  = require( './audio.js' )
 
@@ -7042,7 +7484,7 @@ Gibber.init = function( audioOptions ) {
 
 module.exports = Gibber
 
-},{"./audio.js":82,"gibber.core.lib":125}],95:[function(require,module,exports){
+},{"./audio.js":83,"gibber.core.lib":129}],97:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7096,7 +7538,7 @@ const Instruments = {
           // use monophonic version if voice count is 1 or less
           let name
           if( i > 1 && instrumentName !== 'Multisampler' ) {
-            name = instrumentName =  'Poly'+instrumentName
+            name = 'Poly'+instrumentName
             if( name === 'PolyMonosynth' ) name = 'PolyMono' 
           }else{
             name = instrumentName
@@ -7119,7 +7561,17 @@ const Instruments = {
           console.table( this )
         }
       }else{
-        instruments[ instrumentName ].presets = { inspect() { console.log( `${instrumentName} has no presets.` ) } }
+        instruments[ instrumentName ].presets = { 
+          inspect() { console.log( `${instrumentName} has no presets.` ) } 
+        }
+      }
+      instruments[ instrumentName ].presets.list = function() {
+        const names = Object.keys( this )
+        names.splice( names.indexOf( 'inspect' ), 1 )
+        names.splice( names.indexOf( 'list' ), 1 )
+        console.group( `${instrumentName} presets` )
+        names.forEach( v=>console.log(v) )
+        console.groupEnd()
       }
     }
     instruments.Pluck = instruments.Karplus
@@ -7197,16 +7649,20 @@ const Instruments = {
     PolyTom:{
       methods:[ 'chord','note','trigger' ],
     },
+    PolyKick:{
+      methods:[ 'note','trigger' ],
+    },
   },
   
 }
 
 module.exports = Instruments
 
-},{"./ugen.js":117,"gibberish-dsp":166}],96:[function(require,module,exports){
+},{"./ugen.js":122,"gibberish-dsp":169}],98:[function(require,module,exports){
 module.exports = function( Audio ) {
   const Gibberish = Audio.Gibberish
 
+  // make async?
   const fnc = function( props ){
     const name = props.name
     const type = props.type
@@ -7215,10 +7671,20 @@ module.exports = function( Audio ) {
     const ugen = Object.create( Gibberish.prototypes[ '${type}' ] )
     const graphfnc = ${props.constructor.toString()}
 
-    const proxy = Gibberish.factory( ugen, graphfnc(), '${name}', ${JSON.stringify(properties)} )
-    return proxy`
+    // XXX what if graphfnc() returns a promise? this is the case
+    // when attempting to return a graph create inside a promise made
+    // by calling g.data, for example. 
+    // can we make the final function async and wait for the resulting
+    // graph to be full generated?
+    let value = graphfnc()
+    if( value.then !== undefined ) {
+      // promise
+      value = value()
+    }
+    const proxy = Gibberish.factory( ugen, value, '${name}', ${JSON.stringify(properties)} );
+    return proxy;`
 
-    Gibberish[ name ] = new Function( block )
+    Gibberish[ name ] = new Function( block )//function() { eval( block ) }
 
     Gibberish.worklet.port.postMessage({
       name,
@@ -7259,7 +7725,7 @@ sine.frequency.seq( [110,220,330], 1/8 )
 sine.connect()
 */
 
-},{}],97:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const Ugen      = require( './ugen.js' )
 
@@ -7292,7 +7758,7 @@ const Oscillators = {
 
 module.exports = Oscillators
 
-},{"./ugen.js":117,"gibberish-dsp":166}],98:[function(require,module,exports){
+},{"./ugen.js":122,"gibberish-dsp":169}],100:[function(require,module,exports){
 const Presets = {
   process( description, args, Audio ) {
     let output
@@ -7320,7 +7786,7 @@ const Presets = {
           output.__presetInit__ = preset.presetInit 
         } 
       }else{
-        if( description.name === 'Sampler' || description.name === 'Multisampler' ) {
+        if( description.name === 'Sampler' || description.name === 'Multisampler'  || description.name === 'Grains' ) {
           console.log( 'loading samples ' + args[0] )
           output.__presetInit__ = function() { this.load( args[0] ) }
         }else{
@@ -7344,27 +7810,29 @@ const Presets = {
   },
 
   instruments: {
-    Complex: require( './presets/complex_presets.js' ),
-    Synth: require( './presets/synth_presets.js' ),
-    FM:    require( './presets/fm_presets.js' ),
-    Monosynth: require( './presets/monosynth_presets.js' ),
-    PolyMono: require( './presets/monosynth_presets.js' ),
-    Snare: require( './presets/snare_presets.js' ),
-    Kick: require( './presets/kick_presets.js' ),
-    Hat: require( './presets/hat_presets.js' ),
-
-    EDrums: require( './presets/edrums_presets.js' ),
-    Drums:  require( './presets/drums_presets.js' ),
+    Complex:      require( './presets/complex_presets.js' ),
+    Synth:        require( './presets/synth_presets.js' ),
+    FM:           require( './presets/fm_presets.js' ),
+    Monosynth:    require( './presets/monosynth_presets.js' ),
+    PolyMono:     require( './presets/monosynth_presets.js' ),
+    Snare:        require( './presets/snare_presets.js' ),
+    Cowbell:      require( './presets/cowbell_presets.js' ),
+    Kick:         require( './presets/kick_presets.js' ),
+    Hat:          require( './presets/hat_presets.js' ),
+    EDrums:       require( './presets/edrums_presets.js' ),
+    Drums:        require( './presets/drums_presets.js' ),
     Multisampler: require( './presets/multisampler.js' ),
-    Soundfont:    require( './presets/soundfont_presets.js' )
+    Grains:       require( './presets/grains.js' ),
+    Soundfont:    require( './presets/soundfont_presets.js' ),
+    Karplus:      require( './presets/karplus_presets.js' )
   },
 
   effects: {
-    Chorus: require( './presets/chorus_presets.js' ),
+    Chorus:     require( './presets/chorus_presets.js' ),
     Distortion: require( './presets/distortion_presets.js' ),
-    Flanger: require( './presets/flanger_presets.js' ),
-    Reverb: require( './presets/reverb.js' ),
-    Delay: require( './presets/delay_presets.js' ),
+    Flanger:    require( './presets/flanger_presets.js' ),
+    Reverb:     require( './presets/reverb.js' ),
+    Delay:      require( './presets/delay_presets.js' ),
   },
 
   misc: {
@@ -7375,24 +7843,27 @@ const Presets = {
 
 Presets.instruments.Sampler   = Presets.instruments.Multisampler
 Presets.instruments.PolySynth = Presets.instruments.Synth
-Presets.instruments.PolyFM = Presets.instruments.FM
-Presets.instruments.PolyMono = Presets.instruments.Monosynth
+Presets.instruments.PolyFM    = Presets.instruments.FM
+Presets.instruments.PolyMono  = Presets.instruments.Monosynth
+Presets.instruments.PolyKick  = Presets.instruments.Kick
+Presets.instruments.PolyKarplus  = Presets.instruments.Karplus
+Presets.instruments.PolyComplex  = Presets.instruments.Complex
 
 module.exports = Presets
 
-},{"./presets/bus2_presets.js":99,"./presets/chorus_presets.js":100,"./presets/complex_presets.js":101,"./presets/delay_presets.js":102,"./presets/distortion_presets.js":103,"./presets/drums_presets.js":104,"./presets/edrums_presets.js":105,"./presets/flanger_presets.js":106,"./presets/fm_presets.js":107,"./presets/hat_presets.js":108,"./presets/kick_presets.js":109,"./presets/monosynth_presets.js":110,"./presets/multisampler.js":111,"./presets/reverb.js":112,"./presets/snare_presets.js":113,"./presets/soundfont_presets.js":114,"./presets/synth_presets.js":115}],99:[function(require,module,exports){
+},{"./presets/bus2_presets.js":101,"./presets/chorus_presets.js":102,"./presets/complex_presets.js":103,"./presets/cowbell_presets.js":104,"./presets/delay_presets.js":105,"./presets/distortion_presets.js":106,"./presets/drums_presets.js":107,"./presets/edrums_presets.js":108,"./presets/flanger_presets.js":109,"./presets/fm_presets.js":110,"./presets/grains.js":111,"./presets/hat_presets.js":112,"./presets/karplus_presets.js":113,"./presets/kick_presets.js":114,"./presets/monosynth_presets.js":115,"./presets/multisampler.js":116,"./presets/reverb.js":117,"./presets/snare_presets.js":118,"./presets/soundfont_presets.js":119,"./presets/synth_presets.js":120}],101:[function(require,module,exports){
 module.exports = {
 
   'spaceverb': {
     presetInit: function( audio ) {
-      this.fx.verb = audio.effects.Freeverb({ roomSize:.985, dry:1 })
+      this.fx.verb = audio.effects.Reverb({ roomSize:.985, dry:1 })
       this.fx.add( this.fx.verb )
     }
   },
   'echoverb.1/3': {
     presetInit: function( audio ) {
       this.fx.delay = audio.effects.Delay({ time:1/3, feedback:.35, wetdry:.5 })
-      this.fx.reverb  = audio.effects.Freeverb({ roomSize:.985, dry:1 })
+      this.fx.reverb  = audio.effects.Reverb({ roomSize:.985, dry:1 })
       this.fx.add( this.fx.delay )
       this.fx.add( this.fx.reverb )
       this.feedback = this.fx.delay.feedback
@@ -7403,7 +7874,7 @@ module.exports = {
   'echoverb.1/6': {
     presetInit: function( audio ) {
       this.fx.delay = audio.effects.Delay({ time:1/6, feedback:.35, wetdry:.5 })
-      this.fx.verb  = audio.effects.Freeverb({ roomSize:.985, dry:1 })
+      this.fx.verb  = audio.effects.Reverb({ roomSize:.985, dry:1 })
       this.fx.add( this.fx.delay, this.fx.reverb )
       this.feedback = this.fx.delay.feedback
       this.time = this.fx.delay.time
@@ -7462,7 +7933,7 @@ module.exports = {
   },
 }
 
-},{}],100:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports = {
 
   lush: {
@@ -7492,14 +7963,26 @@ module.exports = {
 
 }
 
-},{}],101:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 module.exports = {
   'plucked': {
     bias:.35,
     gain:1,
     decay:1/5,
     pregain:4,
+    postgain:4,
     description:'a short, clean sounding preset with a minimum of distortion/wavefolding.'
+  },
+  'bass': {
+    bias:.15,
+    gain:1,
+    decay:1,
+    pregain:4,
+    postgain:15,
+    filterMult:4,
+    Q:.75,
+    octave:-3,
+    description:'a relatively clean, percussive bass.'
   },
   
   'perc': {
@@ -7529,7 +8012,23 @@ module.exports = {
 
 }
 
-},{}],102:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
+module.exports = {
+  short: {
+    decay:.05,
+  },
+
+  med: {
+    decay:.2,
+  },
+
+  long: {
+    decay:.5,
+  }
+
+}
+
+},{}],105:[function(require,module,exports){
 module.exports = {
   '1/3' : {
     time:1/3, feedback:.35, wetdry:1 
@@ -7581,7 +8080,7 @@ module.exports = {
   }
 }
 
-},{}],103:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 module.exports = {
 
   crunch: {
@@ -7609,7 +8108,7 @@ module.exports = {
   }
 }
 
-},{}],104:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -7645,7 +8144,7 @@ module.exports = {
 
 }
 
-},{}],105:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 module.exports = {
 
   earshred: {
@@ -7713,7 +8212,7 @@ module.exports = {
 
 }
 
-},{}],106:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = {
   moderate: {
     feedback: .25,
@@ -7729,7 +8228,7 @@ module.exports = {
 
 }
 
-},{}],107:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = {
 
   bass : {
@@ -7859,14 +8358,235 @@ module.exports = {
   }
 }
 
-},{}],108:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
+module.exports = {
+  drums: { 
+    files:[
+      'resources/audiofiles/kick.wav',
+      'resources/audiofiles/hat.wav',
+      'resources/audiofiles/snare.wav',
+      'resources/audiofiles/openhat.wav'
+    ],
+    presetInit() {
+      this.length = 4
+    }
+  },
+  trumpet: {
+    files:[
+      'resources/audiofiles/trumpet.wav'
+    ],
+    presetInit() { this.length = 1 }
+  },
+  beatbox: {
+    files:[
+      'resources/audiofiles/beatbox/^k.wav',
+      'resources/audiofiles/beatbox/^p.wav',
+      'resources/audiofiles/beatbox/^tss.wav',
+      'resources/audiofiles/beatbox/8.wav',
+      'resources/audiofiles/beatbox/a.wav',
+      'resources/audiofiles/beatbox/b.wav',
+      'resources/audiofiles/beatbox/d.wav',
+      'resources/audiofiles/beatbox/dot.wav',
+      'resources/audiofiles/beatbox/duf.wav',
+      'resources/audiofiles/beatbox/f.wav',
+      'resources/audiofiles/beatbox/k.wav',
+      'resources/audiofiles/beatbox/h.wav',
+      'resources/audiofiles/beatbox/m.wav',
+      'resources/audiofiles/beatbox/n.wav',
+    ],
+    presetInit() {
+      this.length = 14
+    }
+  },
+  bleeps: {
+    files:[
+      'resources/audiofiles/bent-bleeps/51063__stamperadam__bleep1.wav',
+      'resources/audiofiles/bent-bleeps/51064__stamperadam__bleep2.wav',
+      'resources/audiofiles/bent-bleeps/51065__stamperadam__clap.wav',
+      'resources/audiofiles/bent-bleeps/51066__stamperadam__click.wav',
+      'resources/audiofiles/bent-bleeps/51067__stamperadam__click1.wav',
+      'resources/audiofiles/bent-bleeps/51068__stamperadam__g1.wav',
+      'resources/audiofiles/bent-bleeps/51069__stamperadam__g2.wav',
+      'resources/audiofiles/bent-bleeps/51070__stamperadam__g3.wav',
+      'resources/audiofiles/bent-bleeps/51071__stamperadam__g4.wav',
+      'resources/audiofiles/bent-bleeps/51072__stamperadam__g5.wav',
+      'resources/audiofiles/bent-bleeps/51073__stamperadam__g6.wav',
+      'resources/audiofiles/bent-bleeps/51074__stamperadam__g7.wav',
+      'resources/audiofiles/bent-bleeps/51075__stamperadam__g8.wav',
+      'resources/audiofiles/bent-bleeps/51076__stamperadam__g9.wav',
+      'resources/audiofiles/bent-bleeps/51077__stamperadam__glitch.wav',
+      'resources/audiofiles/bent-bleeps/51078__stamperadam__hatt.wav',
+      'resources/audiofiles/bent-bleeps/51079__stamperadam__hit.wav',
+      'resources/audiofiles/bent-bleeps/51080__stamperadam__hitt.wav',
+      'resources/audiofiles/bent-bleeps/51081__stamperadam__hum.wav',
+      'resources/audiofiles/bent-bleeps/51082__stamperadam__kik.wav',
+      'resources/audiofiles/bent-bleeps/51083__stamperadam__snar.wav',
+      'resources/audiofiles/bent-bleeps/51084__stamperadam__wa.wav',
+    ],
+    presetInit() {
+      this.length = 22
+    }
+  },
+  breaks: {
+    files:[
+      './resources/audiofiles/breaks.120bpm/188553__mika55__120bpm-drum-loop.wav',
+      './resources/audiofiles/breaks.120bpm/188553__mika55__120bpm-drum-loop.wav',
+      './resources/audiofiles/breaks.120bpm/381956__waveplaysfx__drumloop-120-bpm-edm-drum-loop-023.wav',
+      './resources/audiofiles/breaks.120bpm/404052__theflakesmaster__dance-beat.wav',
+      './resources/audiofiles/breaks.120bpm/474932__disquantic__ragga-tech-drums-by-dsqt-120-bpm.wav',
+      './resources/audiofiles/breaks.120bpm/515673__akustika__120-disco80.wav',
+    ],
+    presetInit() {
+      this.length = 5
+    }
+  },
+
+  cr7030: {
+    files:[
+      './resources/audiofiles/cr7030/68602__birdflu__bongo7030.wav',
+      './resources/audiofiles/cr7030/68603__birdflu__clave7030.wav',
+      './resources/audiofiles/cr7030/68606__birdflu__hatclosed7030.wav',
+      './resources/audiofiles/cr7030/68607__birdflu__hatopen7030.wav',
+      './resources/audiofiles/cr7030/68608__birdflu__kick7030.wav',
+      './resources/audiofiles/cr7030/68609__birdflu__snare7030.wav',
+      './resources/audiofiles/cr7030/68610__birdflu__tom7030.wav',
+    ],
+    presetInit(){
+      this.length = 7
+    }
+  },
+  kicks: {
+    files:[
+      'resources/audiofiles/kicks/249200__netr-si__kick-32.wav',
+      'resources/audiofiles/kicks/249201__netr-si__kick-33.wav',
+      'resources/audiofiles/kicks/249202__netr-si__kick-27.wav',
+      'resources/audiofiles/kicks/249203__netr-si__kick-28.wav',
+      'resources/audiofiles/kicks/249204__netr-si__kick-25.wav',
+      'resources/audiofiles/kicks/249205__netr-si__kick-26.wav',
+      'resources/audiofiles/kicks/249206__netr-si__kick-30.wav',
+      'resources/audiofiles/kicks/249207__netr-si__kick-31.wav',
+      'resources/audiofiles/kicks/249208__netr-si__kick-29.wav',
+      'resources/audiofiles/kicks/249209__netr-si__kick-3.wav',
+      'resources/audiofiles/kicks/249211__netr-si__kick-42.wav',
+      'resources/audiofiles/kicks/249212__netr-si__kick-41.wav',
+      'resources/audiofiles/kicks/249213__netr-si__kick-35.wav',
+      'resources/audiofiles/kicks/249214__netr-si__kick-34.wav',
+      'resources/audiofiles/kicks/249215__netr-si__kick-37.wav',
+      'resources/audiofiles/kicks/249216__netr-si__kick-36.wav',
+      'resources/audiofiles/kicks/249217__netr-si__kick-39.wav',
+      'resources/audiofiles/kicks/249218__netr-si__kick-38.wav',
+      'resources/audiofiles/kicks/249219__netr-si__kick-40.wav',
+      'resources/audiofiles/kicks/249220__netr-si__kick-4.wav',
+      'resources/audiofiles/kicks/249222__netr-si__kick-87.wav',
+      'resources/audiofiles/kicks/249223__netr-si__kick-9.wav',
+      'resources/audiofiles/kicks/249224__netr-si__kick-83.wav',
+      'resources/audiofiles/kicks/249225__netr-si__kick-84.wav',
+      'resources/audiofiles/kicks/249226__netr-si__kick-85.wav',
+      'resources/audiofiles/kicks/249227__netr-si__kick-86.wav',
+      'resources/audiofiles/kicks/249228__netr-si__kick-8.wav',
+      'resources/audiofiles/kicks/249229__netr-si__kick-80.wav',
+      'resources/audiofiles/kicks/249230__netr-si__kick-81.wav',
+      'resources/audiofiles/kicks/249231__netr-si__kick-82.wav',
+      'resources/audiofiles/kicks/249232__netr-si__kick-20.wav',
+      'resources/audiofiles/kicks/249233__netr-si__kick-2.wav',
+      'resources/audiofiles/kicks/249234__netr-si__kick-19.wav',
+      'resources/audiofiles/kicks/249235__netr-si__kick-18.wav',
+      'resources/audiofiles/kicks/249236__netr-si__kick-24.wav',
+      'resources/audiofiles/kicks/249237__netr-si__kick-23.wav',
+      'resources/audiofiles/kicks/249238__netr-si__kick-22.wav',
+      'resources/audiofiles/kicks/249239__netr-si__kick-21.wav',
+      'resources/audiofiles/kicks/249240__netr-si__kick-25-2.wav',
+      'resources/audiofiles/kicks/249241__netr-si__kick-25-1.wav',
+      'resources/audiofiles/kicks/249242__netr-si__kick-12.wav',
+      'resources/audiofiles/kicks/249243__netr-si__kick-11.wav',
+      'resources/audiofiles/kicks/249244__netr-si__kick-10.wav',
+      'resources/audiofiles/kicks/249245__netr-si__kick-1.wav',
+      'resources/audiofiles/kicks/249246__netr-si__kick-15.wav',
+      'resources/audiofiles/kicks/249247__netr-si__kick-14.wav',
+      'resources/audiofiles/kicks/249248__netr-si__kick-14-1.wav',
+      'resources/audiofiles/kicks/249249__netr-si__kick-13.wav',
+      'resources/audiofiles/kicks/249250__netr-si__kick-17.wav',
+      'resources/audiofiles/kicks/249251__netr-si__kick-16.wav',
+      'resources/audiofiles/kicks/249252__netr-si__kick-67.wav',
+      'resources/audiofiles/kicks/249253__netr-si__kick-68.wav',
+      'resources/audiofiles/kicks/249254__netr-si__kick-65.wav',
+      'resources/audiofiles/kicks/249255__netr-si__kick-66.wav',
+      'resources/audiofiles/kicks/249256__netr-si__kick-63.wav',
+      'resources/audiofiles/kicks/249257__netr-si__kick-64.wav',
+      'resources/audiofiles/kicks/249258__netr-si__kick-61.wav',
+      'resources/audiofiles/kicks/249259__netr-si__kick-62s.wav',
+      'resources/audiofiles/kicks/249260__netr-si__kick-69.wav',
+      'resources/audiofiles/kicks/249261__netr-si__kick-7.wav',
+      'resources/audiofiles/kicks/249262__netr-si__kick-75.wav',
+      'resources/audiofiles/kicks/249263__netr-si__kick-74.wav',
+      'resources/audiofiles/kicks/249264__netr-si__kick-77.wav',
+      'resources/audiofiles/kicks/249265__netr-si__kick-76.wav',
+      'resources/audiofiles/kicks/249266__netr-si__kick-71.wav',
+      'resources/audiofiles/kicks/249267__netr-si__kick-70.wav',
+      'resources/audiofiles/kicks/249268__netr-si__kick-73.wav',
+      'resources/audiofiles/kicks/249269__netr-si__kick-72.wav',
+      'resources/audiofiles/kicks/249270__netr-si__kick-79.wav',
+      'resources/audiofiles/kicks/249271__netr-si__kick-78.wav',
+      'resources/audiofiles/kicks/249272__netr-si__kick-43.wav',
+      'resources/audiofiles/kicks/249273__netr-si__kick-44.wav',
+      'resources/audiofiles/kicks/249274__netr-si__kick-45.wav',
+      'resources/audiofiles/kicks/249275__netr-si__kick-46.wav',
+      'resources/audiofiles/kicks/249276__netr-si__kick-47.wav',
+      'resources/audiofiles/kicks/249277__netr-si__kick-48.wav',
+      'resources/audiofiles/kicks/249278__netr-si__kick-49.wav',
+      'resources/audiofiles/kicks/249279__netr-si__kick-5.wav',
+      'resources/audiofiles/kicks/249280__netr-si__kick-50.wav',
+      'resources/audiofiles/kicks/249281__netr-si__kick-51.wav',
+      'resources/audiofiles/kicks/249282__netr-si__kick-60.wav',
+      'resources/audiofiles/kicks/249283__netr-si__kick-6.wav',
+      'resources/audiofiles/kicks/249284__netr-si__kick-59.wav',
+      'resources/audiofiles/kicks/249285__netr-si__kick-58.wav',
+      'resources/audiofiles/kicks/249286__netr-si__kick-57.wav',
+      'resources/audiofiles/kicks/249287__netr-si__kick-56.wav',
+      'resources/audiofiles/kicks/249288__netr-si__kick-55.wav',
+      'resources/audiofiles/kicks/249289__netr-si__kick-54.wav',
+      'resources/audiofiles/kicks/249290__netr-si__kick-53.wav',
+      'resources/audiofiles/kicks/249291__netr-si__kick-52.wav',
+    ],
+    presetInit() { this.length = 90 }
+  }
+}
+
+},{}],112:[function(require,module,exports){
 module.exports = {
   short: {
     decay:.01
   }
 }
 
-},{}],109:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
+module.exports = {
+  'short.bright': {
+    decay:.125,
+    damping:.1,
+  },
+  'short.dull': {
+    decay:.125,
+    damping:.9,
+  },
+
+  'long.bright': {
+    decay:3,
+    damping:.1
+  },
+  'long.dull': {
+    decay:3,
+    damping:.9
+  },
+  'hat': {
+    decay:.125,
+    damping:.1,
+    blend:.5
+  },
+
+}
+
+},{}],114:[function(require,module,exports){
 module.exports = {
 
   deep: {
@@ -7894,7 +8614,7 @@ module.exports = {
 
 }
 
-},{}],110:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 module.exports = {
 
   'short.dry' : { 
@@ -7915,6 +8635,23 @@ module.exports = {
     Q:.3,
     filterModel:1,
     filterMode:1
+  },
+  arpy2: {
+    attack: audio=> audio.Clock.ms(1),
+    decay:1/32,
+    presetInit: function( audio ) {
+      this.delay = audio.effects.Delay({ delay:audio.Clock.time(1/8), feedback:.5, wetdry:.25 }) 
+      this.fx.push( this.delay )
+    },
+    panVoices:true,
+    gain:.3,
+    octave2:0,
+    octave3:0,
+    cutoff:.35,
+    glide:1,
+    filterModel:1,
+    filterMult:3,
+    Q:.5,
   },
 
   lead : {
@@ -8040,6 +8777,18 @@ module.exports = {
     Q:.5,
     gain:.35
   },
+
+  bass3: {
+    attack: audio => audio.Clock.ms(1),
+    decay:1/4,
+    gain:.5,
+    glide:10, shape:'exponential',  detune2:-.505, octave:-3,
+    cutoff:.35,
+    filterMult:3.5,
+    waveform:'pwm',
+    pulsewidth:.25,
+    detune3:.005
+  },
   
   edgy: {
     decay:1/8,
@@ -8135,6 +8884,18 @@ module.exports = {
     detune3:-.01 
   },
 
+  supersaw: {
+    attack:1/4096,
+    decay:1/8, 
+    cutoff:2, 
+    filterMult:4,
+    antialias:true,
+    useADSR:false,
+    gain:.25,
+    detune2:.005,
+    detune3:-.005
+  },
+
   shinybass2: {
     Q:.125,
     cutoff:35,
@@ -8205,27 +8966,33 @@ module.exports = {
 
 }
 
-},{}],111:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = {
 
+  '808': {
+    files:[
+      'resources/audiofiles/dirt/808bd/BD0050.WAV',
+      'resources/audiofiles/dirt/808sd/SD0050.WAV',
+      'resources/audiofiles/dirt/808/CH.WAV',
+      'resources/audiofiles/dirt/808/MA.WAV',
+      'resources/audiofiles/dirt/808/CL.WAV',
+      'resources/audiofiles/dirt/808/CP.WAV',
+      'resources/audiofiles/dirt/808/CB.WAV',
+      'resources/audiofiles/dirt/808oh/OH10.WAV',
+      'resources/audiofiles/dirt/808cy/CY0025.WAV',
+    ],
+    presetInit() { this.length = 9 }
+  },
   drums: { 
     files:[
       'resources/audiofiles/kick.wav',
       'resources/audiofiles/hat.wav',
       'resources/audiofiles/snare.wav',
+      'resources/audiofiles/hat.wav',
       'resources/audiofiles/openhat.wav'
     ],
     presetInit() {
       this.length = 4
-    }
-  },
-  test: {
-    files:[
-      'resources/audiofiles/kick.wav',
-      'resources/audiofiles/openhat.wav'
-    ],
-    presetInit() {
-      this.length = 2
     }
   },
   beatbox: {
@@ -8276,6 +9043,18 @@ module.exports = {
     ],
     presetInit() {
       this.length = 22
+    }
+  },
+  breaks: {
+    files:[
+      './resources/audiofiles/breaks.120bpm/188553__mika55__120bpm-drum-loop.wav',
+      './resources/audiofiles/breaks.120bpm/381956__waveplaysfx__drumloop-120-bpm-edm-drum-loop-023.wav',
+      './resources/audiofiles/breaks.120bpm/404052__theflakesmaster__dance-beat.wav',
+      './resources/audiofiles/breaks.120bpm/474932__disquantic__ragga-tech-drums-by-dsqt-120-bpm.wav',
+      './resources/audiofiles/breaks.120bpm/515673__akustika__120-disco80.wav',
+    ],
+    presetInit() {
+      this.length = 5
     }
   },
   cr7030: {
@@ -8386,10 +9165,17 @@ module.exports = {
       'resources/audiofiles/kicks/249291__netr-si__kick-52.wav',
     ],
     presetInit() { this.length = 90 }
-  }
+  },
+  trumpet: {
+    files:[
+      'resources/audiofiles/trumpet.wav'
+    ],
+    presetInit() { this.length = 1 }
+  },
+
 }
 
-},{}],112:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = {
 
   'space': {
@@ -8398,7 +9184,7 @@ module.exports = {
   }
 }
 
-},{}],113:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = {
 
   snappy: {
@@ -8415,7 +9201,7 @@ module.exports = {
 
 }
 
-},{}],114:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
  const names = [
     "Acoustic Grand Piano",
     "Bright Acoustic Piano",
@@ -8555,10 +9341,14 @@ for( let name of names ) {
       this.load( names.indexOf( name ), props === undefined ? 0 : props.bank || 0 )
     }
   }
+  if( name.indexOf( ' ' ) > -1 ) {
+    const underscorename = name.replaceAll( ' ', '_' )
+    module.exports[ underscorename ] = module.exports[ name ]
+  }
 }
 
 
-},{}],115:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 module.exports = {
 
   acidBass: {
@@ -8706,7 +9496,17 @@ module.exports = {
     decay:1/8,
     panVoices:true
   },
-
+  'square.bass': {
+    waveform:'square',
+    shape:'exponential',
+    antialias:true,
+    filterModel:2,
+    cutoff:.25,
+    decay:1/4,
+    panVoices:false,
+    octave:-3,
+    gain:1
+  },
   'square.perc.long': { 
     waveform:'square', 
     shape:'exponential', 
@@ -8735,7 +9535,7 @@ module.exports = {
   }
 }
 
-},{}],116:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 const Gibberish = require( 'gibberish-dsp' )
 const serialize = require( 'serialize-javascript' )
 const Tune      = require( './external/tune-api-only.js' )
@@ -8749,6 +9549,7 @@ const Theory = {
   __Tune:Tune,
 
   Tune:null,
+  name:'Theory',
   id:null,
   type: 'Audio',
   nogibberish:true,
@@ -9206,11 +10007,11 @@ const Theory = {
 
 module.exports = Theory
 
-},{"./external/tune-api-only.js":90,"gibberish-dsp":166,"serialize-javascript":122}],117:[function(require,module,exports){
+},{"./external/tune-api-only.js":92,"gibberish-dsp":169,"serialize-javascript":126}],122:[function(require,module,exports){
 const Presets = require( './presets.js' )
 const Theory  = require( './theory.js' )
 const Gibberish = require( 'gibberish-dsp' )
-
+const seqDefaults = require( './defaults.js' )
 // Gibber ugens are essentially wrappers around underlying gibberish 
 // ugens, providing convenience methods for rapidly sequencing
 // and modulating them.
@@ -9371,9 +10172,9 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         const incr = 1/(children.length-1) * amt
         children.forEach( (c,i) => {
           if( useProp ) 
-            c.pan = (.5 - amt/2) + i * incr
+            c.pan = Math.min(.999999,(.5 - amt/2) + i * incr)
           else
-            if( obj.maxVoices.value > 1 ) obj.setpan( i, (.5-amt/2) + i * incr )
+            if( obj.maxVoices.value > 1 ) obj.setpan( i, Math.min(.999999,(.5-amt/2) + i * incr ))
         })
 
         return obj
@@ -9424,7 +10225,12 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
           ? __wrappedObject.__properties__[ propertyName ]
           : __wrappedObject[ propertyName ]
 
-        Audio.createProperty( obj, propertyName, value, null, 0, transform )
+        if( propertyName === 'octave' ) {
+          obj.octave = properties.octave || 0
+          __wrappedObject.__properties__.octave = __wrappedObject.octave = obj.octave
+        }else{
+          Audio.createProperty( obj, propertyName, value, null, 0, transform )
+        }
 
         // create per-voice version of property... what properties should be excluded?
         if( description.name.indexOf('Poly') > -1 || description.name.indexOf('Multi') > -1 || description.name.indexOf('Soundfont') > -1 ) {
@@ -9523,18 +10329,18 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             address:'addMethod',
             id:__wrappedObject.id,
             key:'notef',
-            function:`function( note, __loudness=null ){
+            function:`function( note, __loudness=null, decay=null ){
               const loudness = __loudness = null ? this.__triggerLoudness : __loudness
-              this.___note( note, loudness ) 
+              this.___note( note, loudness, decay ) 
             }`
           })
           Gibberish.worklet.port.postMessage({
             address:'addMethod',
             id:__wrappedObject.id,
             key:'notec',
-            function:`function( note, __loudness=null ){
+            function:`function( note, __loudness=null, decay=null ){
               const loudness = __loudness = null ? this.__triggerLoudness : __loudness
-              this.note( note, loudness, false ) 
+              this.note( note, loudness, decay, false ) 
             }`
           })
           // when a message is received at the address 'monkeyPatch',
@@ -9547,7 +10353,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
             address:'monkeyPatch',
             id:__wrappedObject.id,
             key:'note',
-            function:`function( note, __loudness, round=true ){ 
+            function:`function( note, __loudness, decay=null, round=true ){ 
               const octave = this.octave || 0
               let notesInOctave = 7
               const mode = Gibberish.Theory.mode
@@ -9562,7 +10368,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
               let __note = Gibberish.Theory.note( note + offset, 0, round )
 
               const loudness = __loudness = null ? this.__triggerLoudness : __loudness
-              this.___note( __note, loudness ) 
+              return this.___note( __note, loudness, decay ) 
             }`
           })
           
@@ -9680,6 +10486,13 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       set(v) {}
     })
 
+    obj.map = ( scale=1,offset=0 ) => {
+      const f = Audio.analysis.Follow({ input:obj })
+      f.multiplier = scale
+      f.offset = offset
+      return f
+    }
+
     obj.inspect = ()=> {
       console.group( 'Inspecting ' + description.name )
       const keys = Object.keys( obj.__wrapped__.__properties__ )
@@ -9696,7 +10509,11 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
       console.groupEnd()
     }
 
-    obj.out = function( scale=1, offset=0, bufferSize=null ) {
+    obj.follow = function( scale=1, offset=0, bufferSize=null ) {
+      return obj.out( scale, offset, bufferSize, true )
+    }
+
+    obj.out = function( scale=1, offset=0, bufferSize=null, continuous=null ) {
       // if the buffer size changes...
       if( bufferSize !== null ) {
         if( obj.__follow !== null ) {
@@ -9719,7 +10536,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }
       }
 
-      if( Ugen.OUTPUT === Ugen.OUTPUT_FUNCTION )
+      if( continuous === true || Ugen.OUTPUT === Ugen.OUTPUT_FUNCTION )
         return ()=> obj.__out * scale + offset
       else
         return Math.abs( obj.__out * scale ) + offset 
@@ -9790,7 +10607,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
                 target[0].connect( connection[0], connection[2] )
               }
             }else{
-              target[0].connect( Audio.Master )
+              target[0].connect( Audio.Out )
             }
           }else if( value === 0 && lengthCheck !== 0 ) {
             // ugh...
@@ -9859,7 +10676,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         }else{
           // if no fx chain, connect directly to output
           if( obj.fx.length === 0 ) {
-            __wrappedObject.connect( dest, level )
+            __wrappedObject.connect( dest || Audio.Out, level )
           }else{
             // otherwise, connect last effect in chain to output
             obj.fx[ obj.fx.length - 1 ].__wrapped__.connect( dest, level )
@@ -9904,7 +10721,7 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         if( Audio.autoConnect === true ) {
           // ensure that the ugen hasn't already been connected through the fx chain,
           // possibly through initialization of a preset
-          if( obj.fx.length === 0 ) obj.connect( Audio.Master )
+          if( obj.fx.length === 0 ) obj.connect( Audio.Out )
         }
       }
 
@@ -9958,8 +10775,63 @@ const Ugen = function( gibberishConstructor, description, Audio, shouldUsePool =
         return p
       }
     }
+
+    // create default sequencing methods
+    if( obj.seq === undefined ) {
+      obj.seq = function( values, timings, number=0, delay=0, priority=10000 ) {
+        const methodName = seqDefaults[ obj.name ] 
+        let prevSeq = obj[ methodName ].sequencers[ number ] 
+        if( prevSeq !== undefined ) { 
+          const idx = obj.__sequencers.indexOf( prevSeq )
+          obj.__sequencers.splice( idx, 1 )
+          //prevSeq.stop()
+          prevSeq.clear()
+          // removeSeq( obj, prevSeq )
+        }
+
+        let s = Audio.Core.Seq({ values, timings, target:obj/*__wrappedObject*/, key:methodName, priority })
+
+        if( typeof delay !== 'function' ) {
+          s.start( Audio.Clock.time( delay ) )
+        }else{
+          delay.seqs.push( s )
+        }
+        obj[ methodName ].sequencers[ number ] = obj[ methodName ][ number ] = s 
+        obj.__sequencers.push( s )
+
+        // return object for method chaining
+        return obj
+      }
+      obj.tidal= function( pattern, number=0, delay=0 ) {
+        const methodName = seqDefaults[ obj.name ] 
+        let prevSeq = obj[ methodName ].tidals[ number ] 
+        let s = Audio.Core.Tidal({ pattern, target:__wrappedObject, key:methodName })
+        if( s !== null ) {
+          if( prevSeq !== undefined ) { 
+            const idx = obj.__tidals.indexOf( prevSeq )
+            obj.__tidals.splice( idx, 1 )
+            prevSeq.stop()
+            prevSeq.clear()
+            // removeSeq( obj, prevSeq )
+          }
+
+          s.start( Audio.Clock.time( delay ) )
+          obj[ methodName ].tidals[ number ] = obj[ methodName ][ number ] = s 
+          obj.__tidals.push( s )
+
+          // XXX need to clean this up! this is solely here for annotations, and to 
+          // match what I did for ensembles... 
+          obj[ methodName ].__tidal = s
+        }
+
+
+        // return object for method chaining
+        return obj
+      }
+      obj.__seqDefault = seqDefaults[ obj.name ] || 'trigger'
+    }
     //console.log( `%c${description.name} created.`, 'color:white;background:#009' )
-    Audio.publish( 'new ugen', description.name + ' created'  )
+    Audio.publish( 'new ugen', description.name + ' created', obj  )
 
     return obj
   }
@@ -9987,7 +10859,7 @@ Ugen.OUTPUT = 1
 
 module.exports = Ugen
 
-},{"./presets.js":98,"./theory.js":116,"gibberish-dsp":166}],118:[function(require,module,exports){
+},{"./defaults.js":87,"./presets.js":100,"./theory.js":121,"gibberish-dsp":169}],123:[function(require,module,exports){
 const Utility = {
   rndf( min=0, max=1, number, canRepeat=true ) {
     let out = 0
@@ -10190,112 +11062,7 @@ const Utility = {
 
 module.exports = Utility
 
-},{}],119:[function(require,module,exports){
-module.exports = function( Gibber ) {
-   const gen = Gibber.Gen.make  
-
-   // will use this in a few places...
-   const beats = b => {
-     return phasor( Gibber.Utilities.btof( b ), 0, { min:0 } )
-   }
-
-   // needs to support changing values in more than one place
-   // in the graph, hence the array of __params.
-   const addProp = ( obj, prop, __params, __value ) => {
-     let value = __value
-     Object.defineProperty( obj, prop, {
-       configurable:true,
-       get() { return value },
-       set(v) {
-         value = v
-         for( let __param of __params ) {
-           __param.value = value
-         }
-       }
-     })
-   }
-
-   const WavePatterns = {
-     Beats( numBeats ) {
-       const ugen = gen( beats( numBeats ) )
-       ugen.isGen = ugen.__wrapped__.isGen = true
-       
-       return ugen 
-     },
-
-     SineR( period, gain, bias=0 ) {
-       const ugen =  gen( floor( add( bias, mul( cycle( Gibber.Utilities.btof( period ) ), gain ) ) ), ['bias', 'period', 'gain'] )
-       ugen.isGen = ugen.__wrapped__.isGen = true
-
-       return ugen
-     },
-
-     LineR( period, from=0, to=1 ) {
-       const b = beats( period )
-
-       const diff = sub( to, from )
-       const mult = mul( b, diff )
-       const adder = add( from, mult )
-       const ugen = gen( round( adder ) )
-       
-       addProp( ugen, 'from', [ ugen.p0, ugen.p4 ], from )
-       addProp( ugen, 'to', [ ugen.p3 ], to )
-       addProp( ugen, 'period', [ ugen.p1 ], period )
-
-       const oldSetter = Object.getOwnPropertyDescriptor( ugen, 'period' ).set
-       const oldGetter = Object.getOwnPropertyDescriptor( ugen, 'period' ).get
-
-       Object.defineProperty( ugen, 'period', {
-         get() { return oldGetter() },
-         set(v) {
-           oldSetter( btof(v) )
-         }
-
-       })
-       
-       ugen.isGen = ugen.__wrapped__.isGen = true
-
-       return ugen
-     },
-
-     Line( period, from=0, to=1 ) {
-       const b = beats( period )
-
-       const diff = sub( to, from )
-       const mult = mul( b, diff )
-       const adder = add( from, mult )
-       const ugen = gen( adder )
-       
-       addProp( ugen, 'from', [ ugen.p0, ugen.p4 ], from )
-       addProp( ugen, 'to', [ ugen.p3 ], to )
-       addProp( ugen, 'period', [ ugen.p1 ], period )
-
-       const oldSetter = Object.getOwnPropertyDescriptor( ugen, 'period' ).set
-       const oldGetter = Object.getOwnPropertyDescriptor( ugen, 'period' ).get
-
-       Object.defineProperty( ugen, 'period', {
-         get() { return oldGetter() },
-         set(v) {
-            oldSetter( btof(v) )
-         }
-
-       })
-
-       ugen.isGen = ugen.__wrapped__.isGen = true
-
-       return ugen
-     }
-   }
-
-   // stores names so that annotations will correctly interpret this as a gen object
-   for( let key in WavePatterns ) {
-     Gibber.Gen.names.push( key )
-   }
-
-  return WavePatterns
-}
-
-},{}],120:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
   const WavePattern = function( ugen ) {
@@ -10312,7 +11079,7 @@ module.exports = function( Gibber ) {
   return WavePattern
 }
 
-},{}],121:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -10837,7 +11604,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],122:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -11012,7 +11779,7 @@ module.exports = function serialize(obj, options) {
     });
 }
 
-},{}],123:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 let Pattern = Gibber.Pattern
@@ -11201,7 +11968,7 @@ Euclid.test = function( testKey ) {
 return Euclid
 }
 
-},{}],124:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -11284,7 +12051,7 @@ return Hex
 
 }
 
-},{}],125:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 const Gibber = {
   initialized: false,
   exportTarget: null,
@@ -11416,6 +12183,13 @@ const Gibber = {
         arr.forEach( v => v( data ) )
       }
     }
+    obj.once = function( key, fnc ) {
+      const __once = ()=> {
+        fnc()
+        obj.unsubscribe( key, __once )
+      }
+      obj.subscribe( key, __once )
+    }
   },
 
   // When a property is created, a proxy-ish object is made that is
@@ -11433,7 +12207,9 @@ const Gibber = {
       type:obj.type,
       __owner:obj,
 
-      fade( from=0, to=1, time=4, delay=0 ) {
+      fade( from=null, to=null, time=4, delay=0 ) {
+        if( from === null ) from = this.value
+        if( to   === null ) to   = this.value
         Gibber[ obj.type ].createFade( from, to, time, obj, name, delay )
         return obj
       }
@@ -11600,7 +12376,7 @@ const Gibber = {
 
 module.exports = Gibber 
 
-},{"./euclid.js":123,"./hex.js":124,"./pattern.js":126,"./seq.js":127,"./steps.js":128,"./tidal.js":129,"./triggers.js":130}],126:[function(require,module,exports){
+},{"./euclid.js":127,"./hex.js":128,"./pattern.js":130,"./seq.js":131,"./steps.js":132,"./tidal.js":133,"./triggers.js":134}],130:[function(require,module,exports){
 const patternWrapper = function( Gibber ) {
   "use strict"
 
@@ -12003,6 +12779,20 @@ const patternWrapper = function( Gibber ) {
    //
    //      return this
    //    },
+      random( ...repeats ) {
+        const filter = function( args, __ptrn ) {
+          args[2] = Math.floor( Math.random() * __ptrn.values.length )
+          args[0] = __ptrn.values[ args[2] ]
+
+          return args
+        }
+
+        fnc.filters.push( filter )
+
+        if( repeats.length > 0 ) fnc.repeat( ...repeats )
+
+        return fnc
+      },
       //  TODO how do we make this run in the audio thread?
       //  syn.note.seq( [0,1,2,3].rnd( 1/16,2, 1/3,3 )
       repeat( ...args ) {
@@ -12010,6 +12800,38 @@ const patternWrapper = function( Gibber ) {
           this.__rendered.repeat(...args)
           return this
         }
+
+        let filter = function( args, _ ) {
+          let value = args[ 0 ], phaseModifier = args[ 1 ], output = args
+          
+          //console.log( args, counts )
+          if( _.repeating === false && _.repeats[ value ] ) {
+            _.repeating = true
+            _.repeatValue = value
+            _.repeatIndex = args[2]
+          }
+          
+          if( _.repeating === true ) {
+            if( _.repeats[ _.repeatValue ].phase !== _.repeats[ _.repeatValue ].target ) {
+              output[ 0 ] = _.repeatValue            
+              output[ 1 ] = 0
+              output[ 2 ] = _.repeatIndex
+              //[ val, 1, idx ]
+              _.repeats[ _.repeatValue ].phase++
+            }else{
+              _.repeats[ _.repeatValue ].phase = 0
+              output[ 1 ] = 1
+              if( value !== _.repeatValue ) { 
+                _.repeating = false
+              }else{
+                _.repeats[ _.repeatValue ].phase++
+              }
+            }
+          }
+        
+          return output
+        }
+
         for( let i = 0; i < arguments.length; i +=2 ) {
           fnc.repeats[ arguments[ i ] ] = {
             phase: 0,
@@ -12017,38 +12839,10 @@ const patternWrapper = function( Gibber ) {
           }
         }
         
-        let repeating = false, repeatValue = null, repeatIndex = null
-        let filter = function( args ) {
-          let value = args[ 0 ], phaseModifier = args[ 1 ], output = args
-          
-          //console.log( args, counts )
-          if( repeating === false && fnc.repeats[ value ] ) {
-            repeating = true
-            repeatValue = value
-            repeatIndex = args[2]
-          }
-          
-          if( repeating === true ) {
-            if( fnc.repeats[ repeatValue ].phase !== fnc.repeats[ repeatValue ].target ) {
-              output[ 0 ] = repeatValue            
-              output[ 1 ] = 0
-              output[ 2 ] = repeatIndex
-              //[ val, 1, idx ]
-              fnc.repeats[ repeatValue ].phase++
-            }else{
-              fnc.repeats[ repeatValue ].phase = 0
-              output[ 1 ] = 1
-              if( value !== repeatValue ) { 
-                repeating = false
-              }else{
-                fnc.repeats[ repeatValue ].phase++
-              }
-            }
-          }
-        
-          return output
-        }
-      
+        fnc.repeating = false
+        fnc.repeatValue = null
+        fnc.repeatIndex = null
+
         fnc.filters.push( filter )
       
         return fnc
@@ -12502,7 +13296,7 @@ patternWrapper.transfer = function( Audio, constructorString ) {
 
 module.exports = patternWrapper
 
-},{}],127:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 const autotrig = [ 'note','chord','trigger','pickplay','notec','notef' ]
 
 module.exports = function( Gibber ) {
@@ -12799,7 +13593,7 @@ module.exports = function( Gibber ) {
 
 }
 
-},{}],128:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 module.exports = function( Gibber ) {
  
 const Steps = {
@@ -12977,8 +13771,62 @@ return Steps.create
 
 }
 
-},{}],129:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 module.exports = function( Gibber ) {
+
+  const buildAndCheckPattern = function( pattern, key, target ) {
+    try {
+      p = Gibber.Audio.Gibberish.Tidal.Pattern( pattern ) 
+    } catch(e) {
+      Gibber.publish( 'error', `Your Tidal pattern ${pattern} used invalid syntax.` )
+      return null
+    }
+
+
+    // we assume if the key is play or pickplay then some type of
+    // multisampler / ensemble is being used, and that valid tokens
+    // will also be properties of the target object
+    if( key === 'play' || key === 'pickplay' ) {
+      const tokens = [...pattern.matchAll(/[a-zA-Z]+/g)].map( v=>v[0] )
+      let tokenNotFound = false
+      tokens.forEach( t => {
+        if( t !== '~' ) {
+          if( target[ t ] === undefined ) {
+            Gibber.publish( 'error', `\nYour Tidal pattern is using a token (${t}) that can't be found on the targeted instrument.\n` )
+            tokenNotFound = true
+          }
+        }
+      })
+
+      if( tokenNotFound === true ) return null
+    }else{
+      // more common case... sequencing a number
+      // for note / trigger / some other property
+      // NOTE THAT THIS FAILS FOR PATTERNING CHORD
+      // PROGRESSIONS WITH TIDAL... this is the only 
+      // use case I think of besides ensembles where you
+      // sequence with strings.
+      const numbersRegEx = /[-]{0,1}[\d]*[.]{0,1}[\d]+/g
+      const tokens = pattern.split(' ')
+
+      //const tokens = [...pattern.matchAll( numbersRegEx )].map( v=>v[0] )
+      let tokenNotNumber = false
+      tokens.forEach( t => {
+        if( t !== '~' ) {
+          if( t.match( numbersRegEx ) === null ) {
+            tokenNotNumber = true
+            Gibber.publish( 'error', `\nYour Tidal pattern is using a token (${t}) that isn't a valid value for what you are sequencing.\n` )
+         
+          }
+        }
+      })
+
+      if( tokenNotNumber === true ) return null
+
+    }
+
+    return p
+  }
 
   const Seq = function( props ) { 
     const pattern   = props.pattern
@@ -12990,7 +13838,6 @@ module.exports = function( Gibber ) {
     let   rate      = props.rate || 1
     let   density   = props.density || 1
     let   autotrig  = false
-
 
     const render    = target.type !== undefined ? target.type.toLowerCase() : 'audio'
     //const Gibber.Audio.Gibberish = Gibber.Gibber.Audio.Gibberish !== undefined ? Gibber.Gibber.Audio.Gibberish : null
@@ -13040,31 +13887,9 @@ module.exports = function( Gibber ) {
       })
     }
 
-    let p
-    try {
-      p = Gibber.Audio.Gibberish.Tidal.Pattern( pattern ) 
-    } catch(e) {
-      Gibber.publish( 'error', `Your Tidal pattern ${pattern} used invalid syntax.` )
-      return null
-    }
-
-    if( key !== 'degree' ) {
-      const tokens = [...pattern.matchAll(/[a-zA-Z]+/g)].map( v=>v[0] )
-      let tokenNotFound = false
-      tokens.forEach( t => {
-        if( target[ t ] === undefined ) {
-          //console.error(
-          //  `%c\nYour Tidal pattern is using a token (${t}) that can't be found on the targeted instrument.`, 
-          //  `color:white;background:#900` 
-          //  ) 
-          
-          Gibber.publish( 'error', `\nYour Tidal pattern is using a token (${t}) that can't be found on the targeted instrument.\n` )
-          tokenNotFound = true
-        }
-      })
-
-      if( tokenNotFound === true ) return null
-    }
+    let p = buildAndCheckPattern( pattern, key, target )
+    
+    if( p === null ) return null
 
     const seq = Gibber.Audio.Gibberish.Tidal({ pattern, target, key, priority, filters, mainthreadonly:props.mainthreadonly })
     seq.clear = clear
@@ -13113,6 +13938,7 @@ module.exports = function( Gibber ) {
     Seq.sequencers = []
   }
   Seq.DNR = -987654321
+  Seq.check = buildAndCheckPattern
 
   let val = 1 
   Object.defineProperty( Seq, 'cps', {
@@ -13127,7 +13953,7 @@ module.exports = function( Gibber ) {
 
 }
 
-},{}],130:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 module.exports = function( Gibber ) {
 
 const Pattern = Gibber.Pattern
@@ -13169,7 +13995,7 @@ return Triggers
 
 }
 
-},{}],131:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 let ugen = require( '../ugen.js' )
 
 let analyzer = Object.create( ugen )
@@ -13181,7 +14007,7 @@ Object.assign( analyzer, {
 
 module.exports = analyzer
 
-},{"../ugen.js":202}],132:[function(require,module,exports){
+},{"../ugen.js":208}],136:[function(require,module,exports){
 module.exports = function( Gibberish ) {
   const { In, Out, SSD } = require( './singlesampledelay.js'  )( Gibberish )
 
@@ -13206,7 +14032,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./follow.dsp.js":133,"./singlesampledelay.js":134}],133:[function(require,module,exports){
+},{"./follow.dsp.js":137,"./singlesampledelay.js":138}],137:[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       ugen = require( '../ugen.js' )
@@ -13415,14 +14241,16 @@ module.exports = function( Gibberish ) {
     multiplier:1,
     abs: true,
     outputStereo:false,
-    offset:0
+    offset:0,
+    min:-Infinity,
+    max:Infinity
   }
 
   return Follow
 
 }
 
-},{"../ugen.js":202,"./analyzer.js":131,"genish.js":40}],134:[function(require,module,exports){
+},{"../ugen.js":208,"./analyzer.js":135,"genish.js":40}],138:[function(require,module,exports){
 const g = require( 'genish.js' ),
       analyzer = require( './analyzer.js' ),
       proxy    = require( '../workletProxy.js' ),
@@ -13539,7 +14367,7 @@ return { In, Out, SSD }
 
 }
 
-},{"../ugen.js":202,"../workletProxy.js":204,"./analyzer.js":131,"genish.js":40}],135:[function(require,module,exports){
+},{"../ugen.js":208,"../workletProxy.js":210,"./analyzer.js":135,"genish.js":40}],139:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -13567,7 +14395,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":202,"genish.js":40}],136:[function(require,module,exports){
+},{"../ugen.js":208,"genish.js":40}],140:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -13612,7 +14440,7 @@ module.exports = function( Gibberish ) {
   return ADSR
 }
 
-},{"../ugen.js":202,"genish.js":40}],137:[function(require,module,exports){
+},{"../ugen.js":208,"genish.js":40}],141:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 module.exports = function( Gibberish ) {
@@ -13648,7 +14476,7 @@ module.exports = function( Gibberish ) {
   return Envelopes
 }
 
-},{"./ad.js":135,"./adsr.js":136,"./ramp.js":138,"genish.js":40}],138:[function(require,module,exports){
+},{"./ad.js":139,"./adsr.js":140,"./ramp.js":142,"genish.js":40}],142:[function(require,module,exports){
 const ugen = require( '../ugen.js' ),
       g = require( 'genish.js' )
 
@@ -13682,9 +14510,9 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":202,"genish.js":40}],139:[function(require,module,exports){
+},{"../ugen.js":208,"genish.js":40}],143:[function(require,module,exports){
 arguments[4][28][0].apply(exports,arguments)
-},{"./realm.js":142,"dup":28}],140:[function(require,module,exports){
+},{"./realm.js":145,"dup":28}],144:[function(require,module,exports){
 "use strict";
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -13693,9 +14521,6 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
-function getDefaultExportFromCjs(x) {
-  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
-}
 function peg$subclass(child, parent) {
   function C() {
     this.constructor = child;
@@ -13838,18 +14663,18 @@ function peg$parse(input, options) {
   var peg$c11 = ":";
   var peg$c12 = "[";
   var peg$c13 = "]";
-  var peg$c14 = "<";
-  var peg$c15 = ">";
-  var peg$c16 = "@";
-  var peg$c17 = "!";
-  var peg$c18 = "(";
-  var peg$c19 = ")";
-  var peg$c20 = "/";
-  var peg$c21 = "*";
-  var peg$c22 = "%";
-  var peg$c23 = "?";
-  var peg$c24 = "<~";
-  var peg$c25 = "~>";
+  var peg$c14 = "{";
+  var peg$c15 = "}";
+  var peg$c16 = "%";
+  var peg$c17 = "<";
+  var peg$c18 = ">";
+  var peg$c19 = "@";
+  var peg$c20 = "!";
+  var peg$c21 = "(";
+  var peg$c22 = ")";
+  var peg$c23 = "/";
+  var peg$c24 = "*";
+  var peg$c25 = "?";
   var peg$c26 = "struct";
   var peg$c27 = "target";
   var peg$c28 = "euclid";
@@ -13891,18 +14716,18 @@ function peg$parse(input, options) {
   var peg$e18 = peg$literalExpectation(":", false);
   var peg$e19 = peg$literalExpectation("[", false);
   var peg$e20 = peg$literalExpectation("]", false);
-  var peg$e21 = peg$literalExpectation("<", false);
-  var peg$e22 = peg$literalExpectation(">", false);
-  var peg$e23 = peg$literalExpectation("@", false);
-  var peg$e24 = peg$literalExpectation("!", false);
-  var peg$e25 = peg$literalExpectation("(", false);
-  var peg$e26 = peg$literalExpectation(")", false);
-  var peg$e27 = peg$literalExpectation("/", false);
-  var peg$e28 = peg$literalExpectation("*", false);
-  var peg$e29 = peg$literalExpectation("%", false);
-  var peg$e30 = peg$literalExpectation("?", false);
-  var peg$e31 = peg$literalExpectation("<~", false);
-  var peg$e32 = peg$literalExpectation("~>", false);
+  var peg$e21 = peg$literalExpectation("{", false);
+  var peg$e22 = peg$literalExpectation("}", false);
+  var peg$e23 = peg$literalExpectation("%", false);
+  var peg$e24 = peg$literalExpectation("<", false);
+  var peg$e25 = peg$literalExpectation(">", false);
+  var peg$e26 = peg$literalExpectation("@", false);
+  var peg$e27 = peg$literalExpectation("!", false);
+  var peg$e28 = peg$literalExpectation("(", false);
+  var peg$e29 = peg$literalExpectation(")", false);
+  var peg$e30 = peg$literalExpectation("/", false);
+  var peg$e31 = peg$literalExpectation("*", false);
+  var peg$e32 = peg$literalExpectation("?", false);
   var peg$e33 = peg$literalExpectation("struct", false);
   var peg$e34 = peg$literalExpectation("target", false);
   var peg$e35 = peg$literalExpectation("euclid", false);
@@ -13922,84 +14747,85 @@ function peg$parse(input, options) {
     return parseFloat(text());
   };
   var peg$f1 = function(chars) {
-    return chars.join("");
+    return new AtomStub(chars.join(""));
   };
   var peg$f2 = function(s) {
     return s;
   };
-  var peg$f3 = function(sc) {
-    sc.arguments_.alignment = "t";
-    return sc;
+  var peg$f3 = function(s, stepsPerCycle) {
+    s.arguments_.stepsPerCycle = stepsPerCycle;
+    return s;
   };
-  var peg$f4 = function(a) {
-    return { weight: a };
+  var peg$f4 = function(a2) {
+    return a2;
   };
-  var peg$f5 = function(a) {
-    return { replicate: a };
+  var peg$f5 = function(s) {
+    s.arguments_.alignment = "slowcat";
+    return s;
   };
-  var peg$f6 = function(p, s, r) {
-    return { operator: { type_: "bjorklund", arguments_: { pulse: p, step: s, rotation: r || 0 } } };
+  var peg$f6 = function(a2) {
+    return { weight: a2 };
   };
-  var peg$f7 = function(a) {
-    return { operator: { type_: "stretch", arguments_: { amount: a } } };
+  var peg$f7 = function(a2) {
+    return { replicate: a2 };
   };
-  var peg$f8 = function(a) {
-    return { operator: { type_: "stretch", arguments_: { amount: "1/" + a } } };
+  var peg$f8 = function(p, s, r2) {
+    return { operator: { type_: "bjorklund", arguments_: { pulse: p, step: s, rotation: r2 } } };
   };
-  var peg$f9 = function(a) {
-    return { operator: { type_: "fixed-step", arguments_: { amount: a } } };
+  var peg$f9 = function(a2) {
+    return { operator: { type_: "stretch", arguments_: { amount: a2, type: "slow" } } };
   };
-  var peg$f10 = function(a) {
-    return { operator: { type_: "degradeBy", arguments_: { amount: a ? a : 0.5 } } };
+  var peg$f10 = function(a2) {
+    return { operator: { type_: "stretch", arguments_: { amount: a2, type: "fast" } } };
   };
-  var peg$f11 = function(a) {
-    return { operator: { type_: "early", arguments_: { amount: a } } };
+  var peg$f11 = function(a2) {
+    return { operator: { type_: "degradeBy", arguments_: { amount: a2 } } };
   };
-  var peg$f12 = function(a) {
-    return { operator: { type_: "late", arguments_: { amount: a } } };
-  };
-  var peg$f13 = function(s, o) {
+  var peg$f12 = function(s, o) {
     return new ElementStub(s, o);
   };
-  var peg$f14 = function(s) {
-    return new PatternStub(s, "h");
+  var peg$f13 = function(s) {
+    return new PatternStub(s, "fastcat");
+  };
+  var peg$f14 = function(tail) {
+    return { alignment: "stack", list: tail };
   };
   var peg$f15 = function(tail) {
-    return { alignment: "v", list: tail };
+    return { alignment: "rand", list: tail };
   };
-  var peg$f16 = function(tail) {
-    return { alignment: "r", list: tail };
-  };
-  var peg$f17 = function(head, tail) {
+  var peg$f16 = function(head, tail) {
     if (tail && tail.list.length > 0) {
       return new PatternStub([head, ...tail.list], tail.alignment);
     } else {
       return head;
     }
   };
+  var peg$f17 = function(head, tail) {
+    return new PatternStub(tail ? [head, ...tail.list] : [head], "polymeter");
+  };
   var peg$f18 = function(sc) {
     return sc;
   };
   var peg$f19 = function(s) {
-    return { name: "struct", args: { sequence: s } };
+    return { name: "struct", args: { mini: s } };
   };
   var peg$f20 = function(s) {
     return { name: "target", args: { name: s } };
   };
-  var peg$f21 = function(p, s, r) {
-    return { name: "bjorklund", args: { pulse: parseInt(p), step: parseInt(s) } };
+  var peg$f21 = function(p, s, r2) {
+    return { name: "bjorklund", args: { pulse: p, step: parseInt(s) } };
   };
-  var peg$f22 = function(a) {
-    return { name: "stretch", args: { amount: a } };
+  var peg$f22 = function(a2) {
+    return { name: "stretch", args: { amount: a2 } };
   };
-  var peg$f23 = function(a) {
-    return { name: "shift", args: { amount: "-" + a } };
+  var peg$f23 = function(a2) {
+    return { name: "shift", args: { amount: "-" + a2 } };
   };
-  var peg$f24 = function(a) {
-    return { name: "shift", args: { amount: a } };
+  var peg$f24 = function(a2) {
+    return { name: "shift", args: { amount: a2 } };
   };
-  var peg$f25 = function(a) {
-    return { name: "stretch", args: { amount: "1/" + a } };
+  var peg$f25 = function(a2) {
+    return { name: "stretch", args: { amount: "1/" + a2 } };
   };
   var peg$f26 = function(s) {
     return { name: "scale", args: { scale: s.join("") } };
@@ -14009,7 +14835,7 @@ function peg$parse(input, options) {
   };
   var peg$f28 = function(s, ss) {
     ss.unshift(s);
-    return new PatternStub(ss, "t");
+    return new PatternStub(ss, "slowcat");
   };
   var peg$f29 = function(sg) {
     return sg;
@@ -14580,11 +15406,11 @@ function peg$parse(input, options) {
     }
     return s0;
   }
-  function peg$parsetimeline() {
-    var s0, s2, s4, s6;
+  function peg$parsepolymeter() {
+    var s0, s2, s4, s6, s7;
     s0 = peg$currPos;
     peg$parsews();
-    if (input.charCodeAt(peg$currPos) === 60) {
+    if (input.charCodeAt(peg$currPos) === 123) {
       s2 = peg$c14;
       peg$currPos++;
     } else {
@@ -14595,10 +15421,10 @@ function peg$parse(input, options) {
     }
     if (s2 !== peg$FAILED) {
       peg$parsews();
-      s4 = peg$parsesingle_cycle();
+      s4 = peg$parsepolymeter_stack();
       if (s4 !== peg$FAILED) {
         peg$parsews();
-        if (input.charCodeAt(peg$currPos) === 62) {
+        if (input.charCodeAt(peg$currPos) === 125) {
           s6 = peg$c15;
           peg$currPos++;
         } else {
@@ -14608,9 +15434,85 @@ function peg$parse(input, options) {
           }
         }
         if (s6 !== peg$FAILED) {
+          s7 = peg$parsepolymeter_steps();
+          if (s7 === peg$FAILED) {
+            s7 = null;
+          }
           peg$parsews();
           peg$savedPos = s0;
-          s0 = peg$f3(s4);
+          s0 = peg$f3(s4, s7);
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
+    }
+    return s0;
+  }
+  function peg$parsepolymeter_steps() {
+    var s0, s1, s2;
+    s0 = peg$currPos;
+    if (input.charCodeAt(peg$currPos) === 37) {
+      s1 = peg$c16;
+      peg$currPos++;
+    } else {
+      s1 = peg$FAILED;
+      if (peg$silentFails === 0) {
+        peg$fail(peg$e23);
+      }
+    }
+    if (s1 !== peg$FAILED) {
+      s2 = peg$parseslice();
+      if (s2 !== peg$FAILED) {
+        peg$savedPos = s0;
+        s0 = peg$f4(s2);
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
+    }
+    return s0;
+  }
+  function peg$parseslow_sequence() {
+    var s0, s2, s4, s6;
+    s0 = peg$currPos;
+    peg$parsews();
+    if (input.charCodeAt(peg$currPos) === 60) {
+      s2 = peg$c17;
+      peg$currPos++;
+    } else {
+      s2 = peg$FAILED;
+      if (peg$silentFails === 0) {
+        peg$fail(peg$e24);
+      }
+    }
+    if (s2 !== peg$FAILED) {
+      peg$parsews();
+      s4 = peg$parsesequence();
+      if (s4 !== peg$FAILED) {
+        peg$parsews();
+        if (input.charCodeAt(peg$currPos) === 62) {
+          s6 = peg$c18;
+          peg$currPos++;
+        } else {
+          s6 = peg$FAILED;
+          if (peg$silentFails === 0) {
+            peg$fail(peg$e25);
+          }
+        }
+        if (s6 !== peg$FAILED) {
+          peg$parsews();
+          peg$savedPos = s0;
+          s0 = peg$f5(s4);
         } else {
           peg$currPos = s0;
           s0 = peg$FAILED;
@@ -14631,7 +15533,10 @@ function peg$parse(input, options) {
     if (s0 === peg$FAILED) {
       s0 = peg$parsesub_cycle();
       if (s0 === peg$FAILED) {
-        s0 = peg$parsetimeline();
+        s0 = peg$parsepolymeter();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseslow_sequence();
+        }
       }
     }
     return s0;
@@ -14646,18 +15551,9 @@ function peg$parse(input, options) {
         if (s0 === peg$FAILED) {
           s0 = peg$parseslice_fast();
           if (s0 === peg$FAILED) {
-            s0 = peg$parseslice_fixed_step();
+            s0 = peg$parseslice_replicate();
             if (s0 === peg$FAILED) {
-              s0 = peg$parseslice_replicate();
-              if (s0 === peg$FAILED) {
-                s0 = peg$parseslice_degrade();
-                if (s0 === peg$FAILED) {
-                  s0 = peg$parseslice_early();
-                  if (s0 === peg$FAILED) {
-                    s0 = peg$parseslice_late();
-                  }
-                }
-              }
+              s0 = peg$parseslice_degrade();
             }
           }
         }
@@ -14669,19 +15565,19 @@ function peg$parse(input, options) {
     var s0, s1, s2;
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 64) {
-      s1 = peg$c16;
+      s1 = peg$c19;
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) {
-        peg$fail(peg$e23);
+        peg$fail(peg$e26);
       }
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parsenumber();
       if (s2 !== peg$FAILED) {
         peg$savedPos = s0;
-        s0 = peg$f4(s2);
+        s0 = peg$f6(s2);
       } else {
         peg$currPos = s0;
         s0 = peg$FAILED;
@@ -14696,19 +15592,19 @@ function peg$parse(input, options) {
     var s0, s1, s2;
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 33) {
-      s1 = peg$c17;
+      s1 = peg$c20;
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) {
-        peg$fail(peg$e24);
+        peg$fail(peg$e27);
       }
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parsenumber();
       if (s2 !== peg$FAILED) {
         peg$savedPos = s0;
-        s0 = peg$f5(s2);
+        s0 = peg$f7(s2);
       } else {
         peg$currPos = s0;
         s0 = peg$FAILED;
@@ -14723,44 +15619,44 @@ function peg$parse(input, options) {
     var s0, s1, s3, s5, s7, s11, s13;
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 40) {
-      s1 = peg$c18;
+      s1 = peg$c21;
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) {
-        peg$fail(peg$e25);
+        peg$fail(peg$e28);
       }
     }
     if (s1 !== peg$FAILED) {
       peg$parsews();
-      s3 = peg$parsenumber();
+      s3 = peg$parseslice_with_modifier();
       if (s3 !== peg$FAILED) {
         peg$parsews();
         s5 = peg$parsecomma();
         if (s5 !== peg$FAILED) {
           peg$parsews();
-          s7 = peg$parsenumber();
+          s7 = peg$parseslice_with_modifier();
           if (s7 !== peg$FAILED) {
             peg$parsews();
             peg$parsecomma();
             peg$parsews();
-            s11 = peg$parsenumber();
+            s11 = peg$parseslice_with_modifier();
             if (s11 === peg$FAILED) {
               s11 = null;
             }
             peg$parsews();
             if (input.charCodeAt(peg$currPos) === 41) {
-              s13 = peg$c19;
+              s13 = peg$c22;
               peg$currPos++;
             } else {
               s13 = peg$FAILED;
               if (peg$silentFails === 0) {
-                peg$fail(peg$e26);
+                peg$fail(peg$e29);
               }
             }
             if (s13 !== peg$FAILED) {
               peg$savedPos = s0;
-              s0 = peg$f6(s3, s7, s11);
+              s0 = peg$f8(s3, s7, s11);
             } else {
               peg$currPos = s0;
               s0 = peg$FAILED;
@@ -14787,19 +15683,19 @@ function peg$parse(input, options) {
     var s0, s1, s2;
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 47) {
-      s1 = peg$c20;
+      s1 = peg$c23;
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) {
-        peg$fail(peg$e27);
+        peg$fail(peg$e30);
       }
     }
     if (s1 !== peg$FAILED) {
-      s2 = peg$parsenumber();
+      s2 = peg$parseslice();
       if (s2 !== peg$FAILED) {
         peg$savedPos = s0;
-        s0 = peg$f7(s2);
+        s0 = peg$f9(s2);
       } else {
         peg$currPos = s0;
         s0 = peg$FAILED;
@@ -14814,46 +15710,19 @@ function peg$parse(input, options) {
     var s0, s1, s2;
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 42) {
-      s1 = peg$c21;
+      s1 = peg$c24;
       peg$currPos++;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) {
-        peg$fail(peg$e28);
+        peg$fail(peg$e31);
       }
     }
     if (s1 !== peg$FAILED) {
-      s2 = peg$parsenumber();
+      s2 = peg$parseslice();
       if (s2 !== peg$FAILED) {
         peg$savedPos = s0;
-        s0 = peg$f8(s2);
-      } else {
-        peg$currPos = s0;
-        s0 = peg$FAILED;
-      }
-    } else {
-      peg$currPos = s0;
-      s0 = peg$FAILED;
-    }
-    return s0;
-  }
-  function peg$parseslice_fixed_step() {
-    var s0, s1, s2;
-    s0 = peg$currPos;
-    if (input.charCodeAt(peg$currPos) === 37) {
-      s1 = peg$c22;
-      peg$currPos++;
-    } else {
-      s1 = peg$FAILED;
-      if (peg$silentFails === 0) {
-        peg$fail(peg$e29);
-      }
-    }
-    if (s1 !== peg$FAILED) {
-      s2 = peg$parsenumber();
-      if (s2 !== peg$FAILED) {
-        peg$savedPos = s0;
-        s0 = peg$f9(s2);
+        s0 = peg$f10(s2);
       } else {
         peg$currPos = s0;
         s0 = peg$FAILED;
@@ -14868,60 +15737,8 @@ function peg$parse(input, options) {
     var s0, s1, s2;
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 63) {
-      s1 = peg$c23;
-      peg$currPos++;
-    } else {
-      s1 = peg$FAILED;
-      if (peg$silentFails === 0) {
-        peg$fail(peg$e30);
-      }
-    }
-    if (s1 !== peg$FAILED) {
-      s2 = peg$parsenumber();
-      if (s2 === peg$FAILED) {
-        s2 = null;
-      }
-      peg$savedPos = s0;
-      s0 = peg$f10(s2);
-    } else {
-      peg$currPos = s0;
-      s0 = peg$FAILED;
-    }
-    return s0;
-  }
-  function peg$parseslice_early() {
-    var s0, s1, s2;
-    s0 = peg$currPos;
-    if (input.substr(peg$currPos, 2) === peg$c24) {
-      s1 = peg$c24;
-      peg$currPos += 2;
-    } else {
-      s1 = peg$FAILED;
-      if (peg$silentFails === 0) {
-        peg$fail(peg$e31);
-      }
-    }
-    if (s1 !== peg$FAILED) {
-      s2 = peg$parsenumber();
-      if (s2 !== peg$FAILED) {
-        peg$savedPos = s0;
-        s0 = peg$f11(s2);
-      } else {
-        peg$currPos = s0;
-        s0 = peg$FAILED;
-      }
-    } else {
-      peg$currPos = s0;
-      s0 = peg$FAILED;
-    }
-    return s0;
-  }
-  function peg$parseslice_late() {
-    var s0, s1, s2;
-    s0 = peg$currPos;
-    if (input.substr(peg$currPos, 2) === peg$c25) {
       s1 = peg$c25;
-      peg$currPos += 2;
+      peg$currPos++;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) {
@@ -14930,13 +15747,11 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parsenumber();
-      if (s2 !== peg$FAILED) {
-        peg$savedPos = s0;
-        s0 = peg$f12(s2);
-      } else {
-        peg$currPos = s0;
-        s0 = peg$FAILED;
+      if (s2 === peg$FAILED) {
+        s2 = null;
       }
+      peg$savedPos = s0;
+      s0 = peg$f11(s2);
     } else {
       peg$currPos = s0;
       s0 = peg$FAILED;
@@ -14953,14 +15768,14 @@ function peg$parse(input, options) {
         s2 = null;
       }
       peg$savedPos = s0;
-      s0 = peg$f13(s1, s2);
+      s0 = peg$f12(s1, s2);
     } else {
       peg$currPos = s0;
       s0 = peg$FAILED;
     }
     return s0;
   }
-  function peg$parsesingle_cycle() {
+  function peg$parsesequence() {
     var s0, s1, s2;
     s0 = peg$currPos;
     s1 = [];
@@ -14975,7 +15790,7 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       peg$savedPos = s0;
-      s1 = peg$f14(s1);
+      s1 = peg$f13(s1);
     }
     s0 = s1;
     return s0;
@@ -14987,7 +15802,7 @@ function peg$parse(input, options) {
     s2 = peg$currPos;
     s3 = peg$parsecomma();
     if (s3 !== peg$FAILED) {
-      s4 = peg$parsesingle_cycle();
+      s4 = peg$parsesequence();
       if (s4 !== peg$FAILED) {
         s2 = s4;
       } else {
@@ -15004,7 +15819,53 @@ function peg$parse(input, options) {
         s2 = peg$currPos;
         s3 = peg$parsecomma();
         if (s3 !== peg$FAILED) {
-          s4 = peg$parsesingle_cycle();
+          s4 = peg$parsesequence();
+          if (s4 !== peg$FAILED) {
+            s2 = s4;
+          } else {
+            peg$currPos = s2;
+            s2 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+      }
+    } else {
+      s1 = peg$FAILED;
+    }
+    if (s1 !== peg$FAILED) {
+      peg$savedPos = s0;
+      s1 = peg$f14(s1);
+    }
+    s0 = s1;
+    return s0;
+  }
+  function peg$parsechoose_tail() {
+    var s0, s1, s2, s3, s4;
+    s0 = peg$currPos;
+    s1 = [];
+    s2 = peg$currPos;
+    s3 = peg$parsepipe();
+    if (s3 !== peg$FAILED) {
+      s4 = peg$parsesequence();
+      if (s4 !== peg$FAILED) {
+        s2 = s4;
+      } else {
+        peg$currPos = s2;
+        s2 = peg$FAILED;
+      }
+    } else {
+      peg$currPos = s2;
+      s2 = peg$FAILED;
+    }
+    if (s2 !== peg$FAILED) {
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        s2 = peg$currPos;
+        s3 = peg$parsepipe();
+        if (s3 !== peg$FAILED) {
+          s4 = peg$parsesequence();
           if (s4 !== peg$FAILED) {
             s2 = s4;
           } else {
@@ -15026,61 +15887,32 @@ function peg$parse(input, options) {
     s0 = s1;
     return s0;
   }
-  function peg$parsechoose_tail() {
-    var s0, s1, s2, s3, s4;
-    s0 = peg$currPos;
-    s1 = [];
-    s2 = peg$currPos;
-    s3 = peg$parsepipe();
-    if (s3 !== peg$FAILED) {
-      s4 = peg$parsesingle_cycle();
-      if (s4 !== peg$FAILED) {
-        s2 = s4;
-      } else {
-        peg$currPos = s2;
-        s2 = peg$FAILED;
-      }
-    } else {
-      peg$currPos = s2;
-      s2 = peg$FAILED;
-    }
-    if (s2 !== peg$FAILED) {
-      while (s2 !== peg$FAILED) {
-        s1.push(s2);
-        s2 = peg$currPos;
-        s3 = peg$parsepipe();
-        if (s3 !== peg$FAILED) {
-          s4 = peg$parsesingle_cycle();
-          if (s4 !== peg$FAILED) {
-            s2 = s4;
-          } else {
-            peg$currPos = s2;
-            s2 = peg$FAILED;
-          }
-        } else {
-          peg$currPos = s2;
-          s2 = peg$FAILED;
-        }
-      }
-    } else {
-      s1 = peg$FAILED;
-    }
-    if (s1 !== peg$FAILED) {
-      peg$savedPos = s0;
-      s1 = peg$f16(s1);
-    }
-    s0 = s1;
-    return s0;
-  }
   function peg$parsestack_or_choose() {
     var s0, s1, s2;
     s0 = peg$currPos;
-    s1 = peg$parsesingle_cycle();
+    s1 = peg$parsesequence();
     if (s1 !== peg$FAILED) {
       s2 = peg$parsestack_tail();
       if (s2 === peg$FAILED) {
         s2 = peg$parsechoose_tail();
       }
+      if (s2 === peg$FAILED) {
+        s2 = null;
+      }
+      peg$savedPos = s0;
+      s0 = peg$f16(s1, s2);
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
+    }
+    return s0;
+  }
+  function peg$parsepolymeter_stack() {
+    var s0, s1, s2;
+    s0 = peg$currPos;
+    s1 = peg$parsesequence();
+    if (s1 !== peg$FAILED) {
+      s2 = peg$parsestack_tail();
       if (s2 === peg$FAILED) {
         s2 = null;
       }
@@ -15092,7 +15924,7 @@ function peg$parse(input, options) {
     }
     return s0;
   }
-  function peg$parsesequence() {
+  function peg$parsemini() {
     var s0, s2, s3, s4;
     s0 = peg$currPos;
     peg$parsews();
@@ -15158,7 +15990,7 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       peg$parsews();
-      s3 = peg$parsesequence_or_operator();
+      s3 = peg$parsemini_or_operator();
       if (s3 !== peg$FAILED) {
         peg$savedPos = s0;
         s0 = peg$f19(s3);
@@ -15478,13 +16310,13 @@ function peg$parse(input, options) {
       }
       if (s3 !== peg$FAILED) {
         peg$parsews();
-        s5 = peg$parsesequence_or_operator();
+        s5 = peg$parsemini_or_operator();
         if (s5 !== peg$FAILED) {
           s6 = [];
           s7 = peg$currPos;
           s8 = peg$parsecomma();
           if (s8 !== peg$FAILED) {
-            s9 = peg$parsesequence_or_operator();
+            s9 = peg$parsemini_or_operator();
             if (s9 !== peg$FAILED) {
               peg$savedPos = s7;
               s7 = peg$f27(s5, s9);
@@ -15501,7 +16333,7 @@ function peg$parse(input, options) {
             s7 = peg$currPos;
             s8 = peg$parsecomma();
             if (s8 !== peg$FAILED) {
-              s9 = peg$parsesequence_or_operator();
+              s9 = peg$parsemini_or_operator();
               if (s9 !== peg$FAILED) {
                 peg$savedPos = s7;
                 s7 = peg$f27(s5, s9);
@@ -15545,18 +16377,18 @@ function peg$parse(input, options) {
     }
     return s0;
   }
-  function peg$parsesequence_or_group() {
+  function peg$parsemini_or_group() {
     var s0;
     s0 = peg$parsecat();
     if (s0 === peg$FAILED) {
-      s0 = peg$parsesequence();
+      s0 = peg$parsemini();
     }
     return s0;
   }
-  function peg$parsesequence_or_operator() {
+  function peg$parsemini_or_operator() {
     var s0, s1, s3, s4, s5;
     s0 = peg$currPos;
-    s1 = peg$parsesequence_or_group();
+    s1 = peg$parsemini_or_group();
     if (s1 !== peg$FAILED) {
       peg$parsews();
       s3 = [];
@@ -15587,7 +16419,7 @@ function peg$parse(input, options) {
         }
         if (s3 !== peg$FAILED) {
           s4 = peg$parsews();
-          s5 = peg$parsesequence_or_operator();
+          s5 = peg$parsemini_or_operator();
           if (s5 !== peg$FAILED) {
             peg$savedPos = s0;
             s0 = peg$f30(s1, s5);
@@ -15609,7 +16441,7 @@ function peg$parse(input, options) {
   function peg$parsesequ_or_operator_or_comment() {
     var s0, s1;
     s0 = peg$currPos;
-    s1 = peg$parsesequence_or_operator();
+    s1 = peg$parsemini_or_operator();
     if (s1 !== peg$FAILED) {
       peg$savedPos = s0;
       s1 = peg$f31(s1);
@@ -15620,7 +16452,7 @@ function peg$parse(input, options) {
     }
     return s0;
   }
-  function peg$parsesequence_definition() {
+  function peg$parsemini_definition() {
     var s0;
     s0 = peg$parsesequ_or_operator_or_comment();
     return s0;
@@ -15723,12 +16555,17 @@ function peg$parse(input, options) {
   }
   function peg$parsestatement() {
     var s0;
-    s0 = peg$parsesequence_definition();
+    s0 = peg$parsemini_definition();
     if (s0 === peg$FAILED) {
       s0 = peg$parsecommand();
     }
     return s0;
   }
+  var AtomStub = function(source) {
+    this.type_ = "atom";
+    this.source_ = source;
+    this.location_ = location();
+  };
   var PatternStub = function(source, alignment) {
     this.type_ = "pattern";
     this.arguments_ = { alignment };
@@ -15764,10 +16601,9 @@ function peg$parse(input, options) {
     );
   }
 }
-var krillParser = {
-  SyntaxError: peg$SyntaxError,
-  parse: peg$parse
-};
+function getDefaultExportFromCjs(x2) {
+  return x2 && x2.__esModule && Object.prototype.hasOwnProperty.call(x2, "default") ? x2["default"] : x2;
+}
 var fraction$1 = { exports: {} };
 /**
  * @license Fraction.js v4.2.0 05/03/2022
@@ -15797,9 +16633,9 @@ var fraction$1 = { exports: {} };
       var f = Object.create(Fraction2.prototype);
       f["s"] = n < 0 ? -1 : 1;
       n = n < 0 ? -n : n;
-      var a = gcd2(n, d);
-      f["n"] = n / a;
-      f["d"] = d / a;
+      var a2 = gcd2(n, d);
+      f["n"] = n / a2;
+      f["d"] = d / a2;
       return f;
     }
     function factorize(num) {
@@ -15824,7 +16660,7 @@ var fraction$1 = { exports: {} };
     }
     var parse = function(p1, p2) {
       var n = 0, d = 1, s = 1;
-      var v = 0, w = 0, x = 0, y = 1, z = 1;
+      var v = 0, w2 = 0, x2 = 0, y2 = 1, z = 1;
       var A = 0, B = 1;
       var C = 1, D = 1;
       var N = 1e7;
@@ -15916,35 +16752,35 @@ var fraction$1 = { exports: {} };
               A++;
             }
             if (B.length === A + 1) {
-              w = assign(B[A++], s);
+              w2 = assign(B[A++], s);
             } else if (B[A + 1] === "." || B[A] === ".") {
               if (B[A] !== ".") {
                 v = assign(B[A++], s);
               }
               A++;
               if (A + 1 === B.length || B[A + 1] === "(" && B[A + 3] === ")" || B[A + 1] === "'" && B[A + 3] === "'") {
-                w = assign(B[A], s);
-                y = Math.pow(10, B[A].length);
+                w2 = assign(B[A], s);
+                y2 = Math.pow(10, B[A].length);
                 A++;
               }
               if (B[A] === "(" && B[A + 2] === ")" || B[A] === "'" && B[A + 2] === "'") {
-                x = assign(B[A + 1], s);
+                x2 = assign(B[A + 1], s);
                 z = Math.pow(10, B[A + 1].length) - 1;
                 A += 3;
               }
             } else if (B[A + 1] === "/" || B[A + 1] === ":") {
-              w = assign(B[A], s);
-              y = assign(B[A + 2], 1);
+              w2 = assign(B[A], s);
+              y2 = assign(B[A + 2], 1);
               A += 3;
             } else if (B[A + 3] === "/" && B[A + 1] === " ") {
               v = assign(B[A], s);
-              w = assign(B[A + 2], s);
-              y = assign(B[A + 4], 1);
+              w2 = assign(B[A + 2], s);
+              y2 = assign(B[A + 4], 1);
               A += 5;
             }
             if (B.length <= A) {
-              d = y * z;
-              s = n = x + d * v + z * w;
+              d = y2 * z;
+              s = n = x2 + d * v + z * w2;
               break;
             }
           }
@@ -15959,13 +16795,13 @@ var fraction$1 = { exports: {} };
       P["d"] = Math.abs(d);
     };
     function modpow(b, e, m) {
-      var r = 1;
+      var r2 = 1;
       for (; e > 0; b = b * b % m, e >>= 1) {
         if (e & 1) {
-          r = r * b % m;
+          r2 = r2 * b % m;
         }
       }
-      return r;
+      return r2;
     }
     function cycleLen(n, d) {
       for (; d % 2 === 0; d /= 2) {
@@ -15994,27 +16830,27 @@ var fraction$1 = { exports: {} };
       }
       return 0;
     }
-    function gcd2(a, b) {
-      if (!a)
+    function gcd2(a2, b) {
+      if (!a2)
         return b;
       if (!b)
-        return a;
+        return a2;
       while (1) {
-        a %= b;
-        if (!a)
+        a2 %= b;
+        if (!a2)
           return b;
-        b %= a;
+        b %= a2;
         if (!b)
-          return a;
+          return a2;
       }
     }
-    function Fraction2(a, b) {
-      parse(a, b);
+    function Fraction2(a2, b) {
+      parse(a2, b);
       if (this instanceof Fraction2) {
-        a = gcd2(P["d"], P["n"]);
+        a2 = gcd2(P["d"], P["n"]);
         this["s"] = P["s"];
-        this["n"] = P["n"] / a;
-        this["d"] = P["d"] / a;
+        this["n"] = P["n"] / a2;
+        this["d"] = P["d"] / a2;
       } else {
         return newFraction(P["s"] * P["n"], P["d"]);
       }
@@ -16032,29 +16868,29 @@ var fraction$1 = { exports: {} };
       "neg": function() {
         return newFraction(-this["s"] * this["n"], this["d"]);
       },
-      "add": function(a, b) {
-        parse(a, b);
+      "add": function(a2, b) {
+        parse(a2, b);
         return newFraction(
           this["s"] * this["n"] * P["d"] + P["s"] * this["d"] * P["n"],
           this["d"] * P["d"]
         );
       },
-      "sub": function(a, b) {
-        parse(a, b);
+      "sub": function(a2, b) {
+        parse(a2, b);
         return newFraction(
           this["s"] * this["n"] * P["d"] - P["s"] * this["d"] * P["n"],
           this["d"] * P["d"]
         );
       },
-      "mul": function(a, b) {
-        parse(a, b);
+      "mul": function(a2, b) {
+        parse(a2, b);
         return newFraction(
           this["s"] * P["s"] * this["n"] * P["n"],
           this["d"] * P["d"]
         );
       },
-      "div": function(a, b) {
-        parse(a, b);
+      "div": function(a2, b) {
+        parse(a2, b);
         return newFraction(
           this["s"] * P["s"] * this["n"] * P["d"],
           this["d"] * P["n"]
@@ -16063,14 +16899,14 @@ var fraction$1 = { exports: {} };
       "clone": function() {
         return newFraction(this["s"] * this["n"], this["d"]);
       },
-      "mod": function(a, b) {
+      "mod": function(a2, b) {
         if (isNaN(this["n"]) || isNaN(this["d"])) {
           return new Fraction2(NaN);
         }
-        if (a === void 0) {
+        if (a2 === void 0) {
           return newFraction(this["s"] * this["n"] % this["d"], 1);
         }
-        parse(a, b);
+        parse(a2, b);
         if (0 === P["n"] && 0 === this["d"]) {
           throw Fraction2["DivisionByZero"];
         }
@@ -16079,12 +16915,12 @@ var fraction$1 = { exports: {} };
           P["d"] * this["d"]
         );
       },
-      "gcd": function(a, b) {
-        parse(a, b);
+      "gcd": function(a2, b) {
+        parse(a2, b);
         return newFraction(gcd2(P["n"], this["n"]) * gcd2(P["d"], this["d"]), P["d"] * this["d"]);
       },
-      "lcm": function(a, b) {
-        parse(a, b);
+      "lcm": function(a2, b) {
+        parse(a2, b);
         if (P["n"] === 0 && this["n"] === 0) {
           return newFraction(0, 1);
         }
@@ -16114,8 +16950,8 @@ var fraction$1 = { exports: {} };
       "inverse": function() {
         return newFraction(this["s"] * this["d"], this["n"]);
       },
-      "pow": function(a, b) {
-        parse(a, b);
+      "pow": function(a2, b) {
+        parse(a2, b);
         if (P["d"] === 1) {
           if (P["s"] < 0) {
             return newFraction(Math.pow(this["s"] * this["d"], P["n"]), Math.pow(this["n"], P["n"]));
@@ -16158,12 +16994,12 @@ var fraction$1 = { exports: {} };
         }
         return newFraction(n, d);
       },
-      "equals": function(a, b) {
-        parse(a, b);
+      "equals": function(a2, b) {
+        parse(a2, b);
         return this["s"] * this["n"] * P["d"] === P["s"] * P["n"] * this["d"];
       },
-      "compare": function(a, b) {
-        parse(a, b);
+      "compare": function(a2, b) {
+        parse(a2, b);
         var t = this["s"] * this["n"] * P["d"] - P["s"] * P["n"] * this["d"];
         return (0 < t) - (t < 0);
       },
@@ -16185,8 +17021,8 @@ var fraction$1 = { exports: {} };
         }
         return this;
       },
-      "divisible": function(a, b) {
-        parse(a, b);
+      "divisible": function(a2, b) {
+        parse(a2, b);
         return !(!(P["n"] * this["d"]) || this["n"] * P["d"] % (P["n"] * this["d"]));
       },
       "valueOf": function() {
@@ -16237,18 +17073,18 @@ var fraction$1 = { exports: {} };
       },
       "toContinued": function() {
         var t;
-        var a = this["n"];
+        var a2 = this["n"];
         var b = this["d"];
         var res = [];
-        if (isNaN(a) || isNaN(b)) {
+        if (isNaN(a2) || isNaN(b)) {
           return res;
         }
         do {
-          res.push(Math.floor(a / b));
-          t = a % b;
-          a = b;
+          res.push(Math.floor(a2 / b));
+          t = a2 % b;
+          a2 = b;
           b = t;
-        } while (a !== 1);
+        } while (a2 !== 1);
         return res;
       },
       "toString": function(dec) {
@@ -16297,56 +17133,53 @@ var fraction$1 = { exports: {} };
     }
   })();
 })(fraction$1);
-const Fraction$1 = /* @__PURE__ */ getDefaultExportFromCjs(fraction$1.exports);
-Fraction$1.prototype.sam = function() {
+const Fraction = /* @__PURE__ */ getDefaultExportFromCjs(fraction$1.exports);
+Fraction.prototype.sam = function() {
   return this.floor();
 };
-Fraction$1.prototype.nextSam = function() {
+Fraction.prototype.nextSam = function() {
   return this.sam().add(1);
 };
-Fraction$1.prototype.wholeCycle = function() {
+Fraction.prototype.wholeCycle = function() {
   return new TimeSpan(this.sam(), this.nextSam());
 };
-Fraction$1.prototype.cyclePos = function() {
+Fraction.prototype.cyclePos = function() {
   return this.sub(this.sam());
 };
-Fraction$1.prototype.lt = function(other) {
+Fraction.prototype.lt = function(other) {
   return this.compare(other) < 0;
 };
-Fraction$1.prototype.gt = function(other) {
+Fraction.prototype.gt = function(other) {
   return this.compare(other) > 0;
 };
-Fraction$1.prototype.lte = function(other) {
+Fraction.prototype.lte = function(other) {
   return this.compare(other) <= 0;
 };
-Fraction$1.prototype.gte = function(other) {
+Fraction.prototype.gte = function(other) {
   return this.compare(other) >= 0;
 };
-Fraction$1.prototype.eq = function(other) {
+Fraction.prototype.eq = function(other) {
   return this.compare(other) == 0;
 };
-Fraction$1.prototype.max = function(other) {
+Fraction.prototype.max = function(other) {
   return this.gt(other) ? this : other;
 };
-Fraction$1.prototype.min = function(other) {
+Fraction.prototype.min = function(other) {
   return this.lt(other) ? this : other;
 };
-Fraction$1.prototype.show = function() {
+Fraction.prototype.show = function() {
   return this.s * this.n + "/" + this.d;
 };
-Fraction$1.prototype.or = function(other) {
+Fraction.prototype.or = function(other) {
   return this.eq(0) ? other : this;
 };
 const fraction = (n) => {
-  if (typeof n === "number") {
-    n = String(n);
-  }
-  return Fraction$1(n);
+  return Fraction(n);
 };
 const gcd = (...fractions) => {
   return fractions.reduce((gcd2, fraction2) => gcd2.gcd(fraction2), fraction(1));
 };
-fraction._original = Fraction$1;
+fraction._original = Fraction;
 class TimeSpan {
   constructor(begin, end) {
     this.begin = fraction(begin);
@@ -16357,6 +17190,9 @@ class TimeSpan {
     var begin = this.begin;
     const end = this.end;
     const end_sam = end.sam();
+    if (begin.equals(end)) {
+      return [new TimeSpan(begin, end)];
+    }
     while (end.gt(begin)) {
       if (begin.sam().equals(end_sam)) {
         spans.push(new TimeSpan(begin, this.end));
@@ -16418,7 +17254,7 @@ class TimeSpan {
     return this.begin.equals(other.begin) && this.end.equals(other.end);
   }
   show() {
-    return this.begin.show() + " -> " + this.end.show();
+    return this.begin.show() + " \u2192 " + this.end.show();
   }
 }
 class Hap {
@@ -16463,15 +17299,35 @@ class Hap {
   equals(other) {
     return this.spanEquals(other) && this.part.equals(other.part) && this.value === other.value;
   }
-  show() {
-    return "(" + (this.whole == void 0 ? "~" : this.whole.show()) + ", " + this.part.show() + ", " + this.value + ")";
+  show(compact = false) {
+    const value = typeof this.value === "object" ? compact ? JSON.stringify(this.value).slice(1, -1).replaceAll('"', "").replaceAll(",", " ") : JSON.stringify(this.value) : this.value;
+    var spans = "";
+    if (this.whole == void 0) {
+      spans = "~" + this.part.show;
+    } else {
+      var is_whole = this.whole.begin.equals(this.part.begin) && this.whole.end.equals(this.part.end);
+      if (!this.whole.begin.equals(this.part.begin)) {
+        spans = this.whole.begin.show() + " \u21DC ";
+      }
+      if (!is_whole) {
+        spans += "(";
+      }
+      spans += this.part.show();
+      if (!is_whole) {
+        spans += ")";
+      }
+      if (!this.whole.end.equals(this.part.end)) {
+        spans += " \u21DD " + this.whole.end.show();
+      }
+    }
+    return "[ " + spans + " | " + value + " ]";
   }
-  showWhole() {
-    return `${this.whole == void 0 ? "~" : this.whole.show()}: ${typeof this.value === "object" ? JSON.stringify(this.value) : this.value}`;
+  showWhole(compact = false) {
+    return `${this.whole == void 0 ? "~" : this.whole.show()}: ${typeof this.value === "object" ? compact ? JSON.stringify(this.value).slice(1, -1).replaceAll('"', "").replaceAll(",", " ") : JSON.stringify(this.value) : this.value}`;
   }
   combineContext(b) {
-    const a = this;
-    return { ...a.context, ...b.context, locations: (a.context.locations || []).concat(b.context.locations || []) };
+    const a2 = this;
+    return { ...a2.context, ...b.context, locations: (a2.context.locations || []).concat(b.context.locations || []) };
   }
   setContext(context) {
     return new Hap(this.whole, this.part, this.value, context);
@@ -16492,7 +17348,7 @@ class State {
     return new State(this.span, controls2);
   }
 }
-const isNote = (name) => /^[a-gA-G][#b]*[0-9]$/.test(name);
+const isNote = (name) => /^[a-gA-G][#bs]*[0-9]?$/.test(name);
 const tokenizeNote = (note) => {
   var _a;
   if (typeof note !== "string") {
@@ -16505,7 +17361,7 @@ const tokenizeNote = (note) => {
   return [pc, acc, oct ? Number(oct) : void 0];
 };
 const toMidi = (note) => {
-  const [pc, acc, oct] = tokenizeNote(note);
+  const [pc, acc, oct = 3] = tokenizeNote(note);
   if (!pc) {
     throw new Error('not a note: "' + note + '"');
   }
@@ -16513,65 +17369,18 @@ const toMidi = (note) => {
   const offset = (acc == null ? void 0 : acc.split("").reduce((o, char) => o + { "#": 1, b: -1, s: 1 }[char], 0)) || 0;
   return (Number(oct) + 1) * 12 + chroma + offset;
 };
-const fromMidi = (n) => {
-  return Math.pow(2, (n - 69) / 12) * 440;
+const freqToMidi = (freq) => {
+  return 12 * Math.log(freq / 440) / Math.LN2 + 69;
 };
-const getFreq = (noteOrMidi) => {
-  if (typeof noteOrMidi === "number") {
-    return fromMidi(noteOrMidi);
-  }
-  return fromMidi(toMidi(noteOrMidi));
-};
-const midi2note = (n) => {
-  const oct = Math.floor(n / 12) - 1;
-  const pc = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"][n % 12];
-  return pc + oct;
-};
-const mod = (n, m) => (n % m + m) % m;
-const getPlayableNoteValue = (hap) => {
-  let { value: note, context } = hap;
-  if (typeof note === "object" && !Array.isArray(note)) {
-    note = note.note || note.n || note.value;
-  }
-  if (typeof note === "number" && context.type !== "frequency") {
-    note = fromMidi(hap.value);
-  } else if (typeof note === "number" && context.type === "frequency") {
-    note = hap.value;
-  } else if (typeof note !== "string" || !isNote(note)) {
-    throw new Error("not a note: " + JSON.stringify(note));
-  }
-  return note;
-};
-const getFrequency = (hap) => {
-  let { value, context } = hap;
-  if (typeof value === "object" && value.freq) {
-    return value.freq;
-  }
-  if (typeof value === "number" && context.type !== "frequency") {
-    value = fromMidi(hap.value);
-  } else if (typeof value === "string" && isNote(value)) {
-    value = fromMidi(toMidi(hap.value));
-  } else if (typeof value !== "number") {
-    throw new Error("not a note or frequency:" + value);
-  }
-  return value;
-};
+const _mod = (n, m) => (n % m + m) % m;
 const rotate = (arr, n) => arr.slice(n).concat(arr.slice(0, n));
-const pipe = (...funcs) => {
-  return funcs.reduce(
-    (f, g) => (...args) => f(g(...args)),
-    (x) => x
-  );
-};
-const compose = (...funcs) => pipe(...funcs.reverse());
-const removeUndefineds = (xs) => xs.filter((x) => x != void 0);
+const removeUndefineds = (xs) => xs.filter((x2) => x2 != void 0);
 const flatten = (arr) => [].concat(...arr);
-const id = (a) => a;
-const constant = (a, b) => a;
+const id = (a2) => a2;
 const listRange = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => i + min);
-function curry(func, overload) {
+function curry(func, overload, arity = func.length) {
   const fn = function curried(...args) {
-    if (args.length >= func.length) {
+    if (args.length >= arity) {
       return func.apply(this, args);
     } else {
       const partial = function(...args2) {
@@ -16588,11 +17397,33 @@ function curry(func, overload) {
   }
   return fn;
 }
-function unionWithObj(a, b, func) {
-  const common = Object.keys(a).filter((k) => Object.keys(b).includes(k));
-  return Object.assign({}, a, b, Object.fromEntries(common.map((k) => [k, func(a[k], b[k])])));
+function parseNumeral(numOrString) {
+  const asNumber = Number(numOrString);
+  if (!isNaN(asNumber)) {
+    return asNumber;
+  }
+  if (isNote(numOrString)) {
+    return toMidi(numOrString);
+  }
+  throw new Error(`cannot parse as numeral: "${numOrString}"`);
 }
-curry((a, b) => a * b);
+function mapArgs(fn, mapFn) {
+  return (...args) => fn(...args.map(mapFn));
+}
+function numeralArgs(fn) {
+  return mapArgs(fn, parseNumeral);
+}
+function unionWithObj(a2, b, func) {
+  if (typeof (b == null ? void 0 : b.value) === "number") {
+    const numKeys = Object.keys(a2).filter((k) => typeof a2[k] === "number");
+    const numerals = Object.fromEntries(numKeys.map((k) => [k, b.value]));
+    b = Object.assign(b, numerals);
+    delete b.value;
+  }
+  const common = Object.keys(a2).filter((k) => Object.keys(b).includes(k));
+  return Object.assign({}, a2, b, Object.fromEntries(common.map((k) => [k, func(a2[k], b[k])])));
+}
+curry((a2, b) => a2 * b);
 curry((f, anyFunctor) => anyFunctor.map(f));
 function drawLine(pat, chars = 60) {
   let cycle = 0;
@@ -16629,105 +17460,34 @@ function drawLine(pat, chars = 60) {
   }
   return lines.join("\n");
 }
-class Pattern$1 {
+const logKey = "strudel.log";
+function logger(message, type, data = {}) {
+  console.log(`%c${message}`, "background-color: black;color:white;border-radius:15px");
+  if (typeof document !== "undefined" && typeof CustomEvent !== "undefined") {
+    document.dispatchEvent(
+      new CustomEvent(logKey, {
+        detail: {
+          message,
+          type,
+          data
+        }
+      })
+    );
+  }
+}
+logger.key = logKey;
+class Pattern {
   constructor(query) {
     __publicField(this, "_Pattern", true);
     this.query = query;
   }
-  queryArc(begin, end) {
-    return this.query(new State(new TimeSpan(begin, end)));
-  }
-  _splitQueries() {
-    const pat = this;
-    const q = (state) => {
-      return flatten(state.span.spanCycles.map((subspan) => pat.query(state.setSpan(subspan))));
-    };
-    return new Pattern$1(q);
-  }
-  withQuerySpan(func) {
-    return new Pattern$1((state) => this.query(state.withSpan(func)));
-  }
-  withQueryTime(func) {
-    return new Pattern$1((state) => this.query(state.withSpan((span) => span.withTime(func))));
-  }
-  withHapSpan(func) {
-    return new Pattern$1((state) => this.query(state).map((hap) => hap.withSpan(func)));
-  }
-  withHapTime(func) {
-    return this.withHapSpan((span) => span.withTime(func));
-  }
-  _withHaps(func) {
-    return new Pattern$1((state) => func(this.query(state)));
-  }
-  _withHap(func) {
-    return this._withHaps((haps) => haps.map(func));
-  }
-  _setContext(context) {
-    return this._withHap((hap) => hap.setContext(context));
-  }
-  _withContext(func) {
-    return this._withHap((hap) => hap.setContext(func(hap.context)));
-  }
-  _stripContext() {
-    return this._withHap((hap) => hap.setContext({}));
-  }
-  withLocation(start, end) {
-    const location = {
-      start: { line: start[0], column: start[1], offset: start[2] },
-      end: { line: end[0], column: end[1], offset: end[2] }
-    };
-    return this._withContext((context) => {
-      const locations = (context.locations || []).concat([location]);
-      return { ...context, locations };
-    });
-  }
-  withMiniLocation(start, end) {
-    const offset = {
-      start: { line: start[0], column: start[1], offset: start[2] },
-      end: { line: end[0], column: end[1], offset: end[2] }
-    };
-    return this._withContext((context) => {
-      let locations = context.locations || [];
-      locations = locations.map(({ start: start2, end: end2 }) => {
-        const colOffset = start2.line === 1 ? offset.start.column : 0;
-        return {
-          start: {
-            ...start2,
-            line: start2.line - 1 + (offset.start.line - 1) + 1,
-            column: start2.column - 1 + colOffset
-          },
-          end: {
-            ...end2,
-            line: end2.line - 1 + (offset.start.line - 1) + 1,
-            column: end2.column - 1 + colOffset
-          }
-        };
-      });
-      return { ...context, locations };
-    });
-  }
   withValue(func) {
-    return new Pattern$1((state) => this.query(state).map((hap) => hap.withValue(func)));
+    return new Pattern((state) => this.query(state).map((hap) => hap.withValue(func)));
   }
   fmap(func) {
     return this.withValue(func);
   }
-  _filterHaps(hap_test) {
-    return new Pattern$1((state) => this.query(state).filter(hap_test));
-  }
-  _filterValues(value_test) {
-    return new Pattern$1((state) => this.query(state).filter((hap) => value_test(hap.value)));
-  }
-  _removeUndefineds() {
-    return this._filterValues((val) => val != void 0);
-  }
-  onsetsOnly() {
-    return this._filterHaps((hap) => hap.hasOnset());
-  }
-  discreteOnly() {
-    return this._filterHaps((hap) => hap.whole);
-  }
-  _appWhole(whole_func, pat_val) {
+  appWhole(whole_func, pat_val) {
     const pat_func = this;
     const query = function(state) {
       const hap_funcs = pat_func.query(state);
@@ -16748,7 +17508,7 @@ class Pattern$1 {
         hap_funcs.map((hap_func) => removeUndefineds(hap_vals.map((hap_val) => apply(hap_func, hap_val))))
       );
     };
-    return new Pattern$1(query);
+    return new Pattern(query);
   }
   appBoth(pat_val) {
     const whole_func = function(span_a, span_b) {
@@ -16757,7 +17517,7 @@ class Pattern$1 {
       }
       return span_a.intersection_e(span_b);
     };
-    return this._appWhole(whole_func, pat_val);
+    return this.appWhole(whole_func, pat_val);
   }
   appLeft(pat_val) {
     const pat_func = this;
@@ -16778,7 +17538,7 @@ class Pattern$1 {
       }
       return haps;
     };
-    return new Pattern$1(query);
+    return new Pattern(query);
   }
   appRight(pat_val) {
     const pat_func = this;
@@ -16799,152 +17559,55 @@ class Pattern$1 {
       }
       return haps;
     };
-    return new Pattern$1(query);
+    return new Pattern(query);
   }
-  firstCycle(with_context = false) {
-    var self = this;
-    if (!with_context) {
-      self = self._stripContext();
-    }
-    return self.query(new State(new TimeSpan(fraction(0), fraction(1))));
-  }
-  get _firstCycleValues() {
-    return this.firstCycle().map((hap) => hap.value);
-  }
-  get _showFirstCycle() {
-    return this.firstCycle().map(
-      (hap) => `${hap.value}: ${hap.whole.begin.toFraction()} - ${hap.whole.end.toFraction()}`
-    );
-  }
-  _sortHapsByPart() {
-    return this._withHaps(
-      (haps) => haps.sort(
-        (a, b) => a.part.begin.sub(b.part.begin).or(a.part.end.sub(b.part.end)).or(a.whole.begin.sub(b.whole.begin).or(a.whole.end.sub(b.whole.end)))
-      )
-    );
-  }
-  _opIn(other, func) {
-    return this.fmap(func).appLeft(reify$2(other));
-  }
-  _opOut(other, func) {
-    return this.fmap(func).appRight(reify$2(other));
-  }
-  _opMix(other, func) {
-    return this.fmap(func).appBoth(reify$2(other));
-  }
-  _opSqueeze(other, func) {
-    const otherPat = reify$2(other);
-    return this.fmap((a) => otherPat.fmap((b) => func(a)(b)))._squeezeJoin();
-  }
-  _opSqueezeOut(other, func) {
-    const thisPat = this;
-    const otherPat = reify$2(other);
-    return otherPat.fmap((a) => thisPat.fmap((b) => func(b)(a)))._squeezeJoin();
-  }
-  _opTrig(other, func) {
-    const otherPat = reify$2(other);
-    return otherPat.fmap((b) => this.fmap((a) => func(a)(b)))._trigJoin();
-  }
-  _opTrigzero(other, func) {
-    const otherPat = reify$2(other);
-    return otherPat.fmap((b) => this.fmap((a) => func(a)(b)))._TrigzeroJoin();
-  }
-  _asNumber(dropfails = false, softfail = false) {
-    return this._withHap((hap) => {
-      const asNumber = Number(hap.value);
-      if (!isNaN(asNumber)) {
-        return hap.withValue(() => asNumber);
-      }
-      const specialValue = {
-        e: Math.E,
-        pi: Math.PI
-      }[hap.value];
-      if (typeof specialValue !== "undefined") {
-        return hap.withValue(() => specialValue);
-      }
-      if (isNote(hap.value)) {
-        return new Hap(hap.whole, hap.part, toMidi(hap.value), { ...hap.context, type: "midi" });
-      }
-      if (dropfails) {
-        return void 0;
-      }
-      if (softfail) {
-        return hap;
-      }
-      throw new Error('cannot parse as number: "' + hap.value + '"');
-    });
-  }
-  round() {
-    return this._asNumber().fmap((v) => Math.round(v));
-  }
-  floor() {
-    return this._asNumber().fmap((v) => Math.floor(v));
-  }
-  ceil() {
-    return this._asNumber().fmap((v) => Math.ceil(v));
-  }
-  _toBipolar() {
-    return this.fmap((x) => x * 2 - 1);
-  }
-  _fromBipolar() {
-    return this.fmap((x) => (x + 1) / 2);
-  }
-  range(min, max) {
-    return this.mul(max - min).add(min);
-  }
-  rangex(min, max) {
-    return this.range(Math.log(min), Math.log(max)).fmap(Math.exp);
-  }
-  range2(min, max) {
-    return this._fromBipolar().range(min, max);
-  }
-  _bindWhole(choose_whole, func) {
+  bindWhole(choose_whole, func) {
     const pat_val = this;
     const query = function(state) {
-      const withWhole = function(a, b) {
+      const withWhole = function(a2, b) {
         return new Hap(
-          choose_whole(a.whole, b.whole),
+          choose_whole(a2.whole, b.whole),
           b.part,
           b.value,
-          Object.assign({}, a.context, b.context, {
-            locations: (a.context.locations || []).concat(b.context.locations || [])
+          Object.assign({}, a2.context, b.context, {
+            locations: (a2.context.locations || []).concat(b.context.locations || [])
           })
         );
       };
-      const match = function(a) {
-        return func(a.value).query(state.setSpan(a.part)).map((b) => withWhole(a, b));
+      const match = function(a2) {
+        return func(a2.value).query(state.setSpan(a2.part)).map((b) => withWhole(a2, b));
       };
-      return flatten(pat_val.query(state).map((a) => match(a)));
+      return flatten(pat_val.query(state).map((a2) => match(a2)));
     };
-    return new Pattern$1(query);
+    return new Pattern(query);
   }
   bind(func) {
-    const whole_func = function(a, b) {
-      if (a == void 0 || b == void 0) {
+    const whole_func = function(a2, b) {
+      if (a2 == void 0 || b == void 0) {
         return void 0;
       }
-      return a.intersection_e(b);
+      return a2.intersection_e(b);
     };
-    return this._bindWhole(whole_func, func);
+    return this.bindWhole(whole_func, func);
   }
   join() {
     return this.bind(id);
   }
   outerBind(func) {
-    return this._bindWhole((a, _) => a, func);
+    return this.bindWhole((a2) => a2, func);
   }
   outerJoin() {
     return this.outerBind(id);
   }
   innerBind(func) {
-    return this._bindWhole((_, b) => b, func);
+    return this.bindWhole((_, b) => b, func);
   }
   innerJoin() {
     return this.innerBind(id);
   }
-  _trigJoin(cycleZero = false) {
+  trigJoin(cycleZero = false) {
     const pat_of_pats = this;
-    return new Pattern$1((state) => {
+    return new Pattern((state) => {
       return pat_of_pats.discreteOnly().query(state).map((outer_hap) => {
         return outer_hap.value.late(cycleZero ? outer_hap.whole.begin : outer_hap.whole.begin.cyclePos()).query(state).map(
           (inner_hap) => new Hap(
@@ -16956,16 +17619,16 @@ class Pattern$1 {
       }).flat();
     });
   }
-  _TrigzeroJoin() {
-    return this._trigJoin(true);
+  trigzeroJoin() {
+    return this.trigJoin(true);
   }
-  _squeezeJoin() {
+  squeezeJoin() {
     const pat_of_pats = this;
     function query(state) {
       const haps = pat_of_pats.discreteOnly().query(state);
       function flatHap(outerHap) {
-        const pat = outerHap.value._compressSpan(outerHap.wholeOrPart().cycleArc());
-        const innerHaps = pat.query(state.setSpan(outerHap.part));
+        const inner_pat = outerHap.value._focusSpan(outerHap.wholeOrPart());
+        const innerHaps = inner_pat.query(state.setSpan(outerHap.part));
         function munge(outer, inner) {
           let whole = void 0;
           if (inner.whole && outer.whole) {
@@ -16984,195 +17647,212 @@ class Pattern$1 {
         return innerHaps.map((innerHap) => munge(outerHap, innerHap));
       }
       const result = flatten(haps.map(flatHap));
-      return result.filter((x) => x);
+      return result.filter((x2) => x2);
     }
-    return new Pattern$1(query);
+    return new Pattern(query);
   }
-  _squeezeBind(func) {
-    return this.fmap(func)._squeezeJoin();
+  squeezeBind(func) {
+    return this.fmap(func).squeezeJoin();
   }
-  _apply(func) {
-    return func(this);
+  queryArc(begin, end) {
+    return this.query(new State(new TimeSpan(begin, end)));
   }
-  layer(...funcs) {
-    return stack$1(...funcs.map((func) => func(this)));
-  }
-  _patternify(func) {
+  splitQueries() {
     const pat = this;
-    const patterned = function(...args) {
-      args = args.map((arg) => isPattern(arg) ? arg.fmap((value) => value.value || value) : arg);
-      const pat_arg = sequence$1(...args);
-      return pat_arg.fmap((arg) => func.call(pat, arg)).innerJoin();
+    const q = (state) => {
+      return flatten(state.span.spanCycles.map((subspan) => pat.query(state.setSpan(subspan))));
     };
-    return patterned;
+    return new Pattern(q);
   }
-  _fastGap(factor) {
-    const qf = function(span) {
-      const cycle = span.begin.sam();
-      const begin = cycle.add(span.begin.sub(cycle).mul(factor).min(1));
-      const end = cycle.add(span.end.sub(cycle).mul(factor).min(1));
-      return new TimeSpan(begin, end);
-    };
-    const ef = function(span) {
-      const cycle = span.begin.sam();
-      const begin = cycle.add(span.begin.sub(cycle).div(factor).min(1));
-      const end = cycle.add(span.end.sub(cycle).div(factor).min(1));
-      return new TimeSpan(begin, end);
-    };
-    return this.withQuerySpan(qf).withHapSpan(ef)._splitQueries();
+  withQuerySpan(func) {
+    return new Pattern((state) => this.query(state.withSpan(func)));
   }
-  _compress(b, e) {
-    if (b.gt(e) || b.gt(1) || e.gt(1) || b.lt(0) || e.lt(0)) {
-      return silence$1;
-    }
-    return this._fastGap(fraction(1).div(e.sub(b)))._late(b);
-  }
-  _compressSpan(span) {
-    return this._compress(span.begin, span.end);
-  }
-  _fast(factor) {
-    const fastQuery = this.withQueryTime((t) => t.mul(factor));
-    return fastQuery.withHapTime((t) => t.div(factor));
-  }
-  _slow(factor) {
-    return this._fast(fraction(1).div(factor));
-  }
-  _inside(factor, f) {
-    return f(this._slow(factor))._fast(factor);
-  }
-  _outside(factor, f) {
-    return f(this._fast(factor))._slow(factor);
-  }
-  _ply(factor) {
-    return this.fmap((x) => pure$1(x)._fast(factor))._squeezeJoin();
-  }
-  _chop(n) {
-    const slices = Array.from({ length: n }, (x, i) => i);
-    const slice_objects = slices.map((i) => ({ begin: i / n, end: (i + 1) / n }));
-    const func = function(o) {
-      return sequence$1(slice_objects.map((slice_o) => Object.assign({}, o, slice_o)));
-    };
-    return this._squeezeBind(func);
-  }
-  _striate(n) {
-    const slices = Array.from({ length: n }, (x, i) => i);
-    const slice_objects = slices.map((i) => ({ begin: i / n, end: (i + 1) / n }));
-    const slicePat = slowcat$1(...slice_objects);
-    return this.set(slicePat)._fast(n);
-  }
-  _cpm(cpm) {
-    return this._fast(cpm / 60);
-  }
-  _early(offset) {
-    offset = fraction(offset);
-    return this.withQueryTime((t) => t.add(offset)).withHapTime((t) => t.sub(offset));
-  }
-  _late(offset) {
-    offset = fraction(offset);
-    return this._early(fraction(0).sub(offset));
-  }
-  _zoom(s, e) {
-    e = fraction(e);
-    s = fraction(s);
-    const d = e.sub(s);
-    return this.withQuerySpan((span) => span.withCycle((t) => t.mul(d).add(s))).withHapSpan((span) => span.withCycle((t) => t.sub(s).div(d)))._splitQueries();
-  }
-  _zoomArc(a) {
-    return this.zoom(a.begin, a.end);
-  }
-  _linger(t) {
-    if (t == 0) {
-      return silence$1;
-    } else if (t < 0) {
-      return this._zoom(t.add(1), 1)._slow(t);
-    }
-    return this._zoom(0, t)._slow(t);
-  }
-  _color(color) {
-    return this._withContext((context) => ({ ...context, color }));
-  }
-  log() {
-    return this._withHap((e) => {
-      var _a;
-      return e.setContext({ ...e.context, logs: (((_a = e.context) == null ? void 0 : _a.logs) || []).concat([e.show()]) });
+  withQuerySpanMaybe(func) {
+    const pat = this;
+    return new Pattern((state) => {
+      const newState = state.withSpan(func);
+      if (!newState.span) {
+        return [];
+      }
+      return pat.query(newState);
     });
   }
-  drawLine() {
-    console.log(drawLine(this));
-    return this;
+  withQueryTime(func) {
+    return new Pattern((state) => this.query(state.withSpan((span) => span.withTime(func))));
   }
-  _segment(rate) {
-    return this.struct(pure$1(true)._fast(rate));
+  withHapSpan(func) {
+    return new Pattern((state) => this.query(state).map((hap) => hap.withSpan(func)));
   }
-  invert() {
-    return this.fmap((x) => !x);
+  withHapTime(func) {
+    return this.withHapSpan((span) => span.withTime(func));
   }
-  inv() {
-    return this.invert();
+  withHaps(func) {
+    return new Pattern((state) => func(this.query(state)));
   }
-  when(binary_pat, func) {
-    const true_pat = binary_pat._filterValues(id);
-    const false_pat = binary_pat._filterValues((val) => !val);
-    const with_pat = true_pat.fmap((_) => (y) => y).appRight(func(this));
-    const without_pat = false_pat.fmap((_) => (y) => y).appRight(this);
-    return stack$1(with_pat, without_pat);
+  withHap(func) {
+    return this.withHaps((haps) => haps.map(func));
   }
-  off(time_pat, func) {
-    return stack$1(this, func(this.late(time_pat)));
+  setContext(context) {
+    return this.withHap((hap) => hap.setContext(context));
   }
-  every(n, func) {
-    const pat = this;
-    const pats = Array(n - 1).fill(pat);
-    pats.unshift(func(pat));
-    return slowcatPrime(...pats);
+  withContext(func) {
+    return this.withHap((hap) => hap.setContext(func(hap.context)));
   }
-  brak() {
-    return this.when(slowcat$1(false, true), (x) => fastcat(x, silence$1)._late(0.25));
+  stripContext() {
+    return this.withHap((hap) => hap.setContext({}));
   }
-  rev() {
-    const pat = this;
-    const query = function(state) {
-      const span = state.span;
-      const cycle = span.begin.sam();
-      const next_cycle = span.begin.nextSam();
-      const reflect = function(to_reflect) {
-        const reflected = to_reflect.withTime((time2) => cycle.add(next_cycle.sub(time2)));
-        const tmp = reflected.begin;
-        reflected.begin = reflected.end;
-        reflected.end = tmp;
-        return reflected;
-      };
-      const haps = pat.query(state.setSpan(reflect(span)));
-      return haps.map((hap) => hap.withSpan(reflect));
+  withLocation(start, end) {
+    const location = {
+      start: { line: start[0], column: start[1], offset: start[2] },
+      end: { line: end[0], column: end[1], offset: end[2] }
     };
-    return new Pattern$1(query)._splitQueries();
+    return this.withContext((context) => {
+      const locations = (context.locations || []).concat([location]);
+      return { ...context, locations };
+    });
   }
-  palindrome() {
-    return this.every(2, rev);
+  withMiniLocation(start, end) {
+    const offset = {
+      start: { line: start[0], column: start[1], offset: start[2] },
+      end: { line: end[0], column: end[1], offset: end[2] }
+    };
+    return this.withContext((context) => {
+      let locations = context.locations || [];
+      locations = locations.map(({ start: start2, end: end2 }) => {
+        const colOffset = start2.line === 1 ? offset.start.column : 0;
+        return {
+          start: {
+            ...start2,
+            line: start2.line - 1 + (offset.start.line - 1) + 1,
+            column: start2.column - 1 + colOffset
+          },
+          end: {
+            ...end2,
+            line: end2.line - 1 + (offset.start.line - 1) + 1,
+            column: end2.column - 1 + colOffset
+          }
+        };
+      });
+      return { ...context, locations };
+    });
   }
-  juxBy(by, func) {
-    by /= 2;
-    const elem_or = function(dict, key, dflt) {
-      if (key in dict) {
-        return dict[key];
+  filterHaps(hap_test) {
+    return new Pattern((state) => this.query(state).filter(hap_test));
+  }
+  filterValues(value_test) {
+    return new Pattern((state) => this.query(state).filter((hap) => value_test(hap.value)));
+  }
+  removeUndefineds() {
+    return this.filterValues((val) => val != void 0);
+  }
+  onsetsOnly() {
+    return this.filterHaps((hap) => hap.hasOnset());
+  }
+  discreteOnly() {
+    return this.filterHaps((hap) => hap.whole);
+  }
+  defragmentHaps() {
+    const pat = this.discreteOnly();
+    return pat.withHaps((haps) => {
+      const result = [];
+      for (var i = 0; i < haps.length; ++i) {
+        var searching = true;
+        var a2 = haps[i];
+        while (searching) {
+          const a_value = JSON.stringify(haps[i].value);
+          var found = false;
+          for (var j = i + 1; j < haps.length; j++) {
+            const b = haps[j];
+            if (a2.whole.equals(b.whole)) {
+              if (a2.part.begin.eq(b.part.end)) {
+                if (a_value === JSON.stringify(b.value)) {
+                  a2 = new Hap(a2.whole, new TimeSpan(b.part.begin, a2.part.end), a2.value);
+                  haps.splice(j, 1);
+                  found = true;
+                  break;
+                }
+              } else if (b.part.begin.eq(a2.part.end)) {
+                if (a_value == JSON.stringify(b.value)) {
+                  a2 = new Hap(a2.whole, new TimeSpan(a2.part.begin, b.part.end), a2.value);
+                  haps.splice(j, 1);
+                  found = true;
+                  break;
+                }
+              }
+            }
+          }
+          searching = found;
+        }
+        result.push(a2);
       }
-      return dflt;
-    };
-    const left = this.withValue((val) => Object.assign({}, val, { pan: elem_or(val, "pan", 0.5) - by }));
-    const right = this.withValue((val) => Object.assign({}, val, { pan: elem_or(val, "pan", 0.5) + by }));
-    return stack$1(left, func(right));
+      return result;
+    });
   }
-  _jux(func) {
-    return this.juxBy(1, func);
+  firstCycle(with_context = false) {
+    var self = this;
+    if (!with_context) {
+      self = self.stripContext();
+    }
+    return self.query(new State(new TimeSpan(fraction(0), fraction(1))));
+  }
+  get firstCycleValues() {
+    return this.firstCycle().map((hap) => hap.value);
+  }
+  get showFirstCycle() {
+    return this.firstCycle().map(
+      (hap) => `${hap.value}: ${hap.whole.begin.toFraction()} - ${hap.whole.end.toFraction()}`
+    );
+  }
+  sortHapsByPart() {
+    return this.withHaps(
+      (haps) => haps.sort(
+        (a2, b) => a2.part.begin.sub(b.part.begin).or(a2.part.end.sub(b.part.end)).or(a2.whole.begin.sub(b.whole.begin).or(a2.whole.end.sub(b.whole.end)))
+      )
+    );
+  }
+  asNumber() {
+    return this.fmap(parseNumeral);
+  }
+  _opIn(other, func) {
+    return this.fmap(func).appLeft(reify(other));
+  }
+  _opOut(other, func) {
+    return this.fmap(func).appRight(reify(other));
+  }
+  _opMix(other, func) {
+    return this.fmap(func).appBoth(reify(other));
+  }
+  _opSqueeze(other, func) {
+    const otherPat = reify(other);
+    return this.fmap((a2) => otherPat.fmap((b) => func(a2)(b))).squeezeJoin();
+  }
+  _opSqueezeOut(other, func) {
+    const thisPat = this;
+    const otherPat = reify(other);
+    return otherPat.fmap((a2) => thisPat.fmap((b) => func(b)(a2))).squeezeJoin();
+  }
+  _opTrig(other, func) {
+    const otherPat = reify(other);
+    return otherPat.fmap((b) => this.fmap((a2) => func(a2)(b))).trigJoin();
+  }
+  _opTrigzero(other, func) {
+    const otherPat = reify(other);
+    return otherPat.fmap((b) => this.fmap((a2) => func(a2)(b))).trigzeroJoin();
+  }
+  layer(...funcs) {
+    return stack(...funcs.map((func) => func(this)));
+  }
+  superimpose(...funcs) {
+    return this.stack(...funcs.map((func) => func(this)));
   }
   stack(...pats) {
-    return stack$1(this, ...pats);
+    return stack(this, ...pats);
   }
   sequence(...pats) {
-    return sequence$1(this, ...pats);
+    return sequence(this, ...pats);
   }
   seq(...pats) {
-    return sequence$1(this, ...pats);
+    return sequence(this, ...pats);
   }
   cat(...pats) {
     return cat(this, ...pats);
@@ -17181,224 +17861,205 @@ class Pattern$1 {
     return fastcat(this, ...pats);
   }
   slowcat(...pats) {
-    return slowcat$1(this, ...pats);
+    return slowcat(this, ...pats);
   }
-  superimpose(...funcs) {
-    return this.stack(...funcs.map((func) => func(this)));
-  }
-  stutWith(times, time2, func) {
-    return stack$1(...listRange(0, times - 1).map((i) => func(this.late(fraction(time2).mul(i)), i)));
-  }
-  stut(times, feedback, time2) {
-    return this.stutWith(times, time2, (pat, i) => pat.velocity(Math.pow(feedback, i)));
-  }
-  _echoWith(times, time2, func) {
-    return stack$1(...listRange(0, times - 1).map((i) => func(this.late(fraction(time2).mul(i)), i)));
-  }
-  _echo(times, time2, feedback) {
-    return this._echoWith(times, time2, (pat, i) => pat.velocity(Math.pow(feedback, i)));
-  }
-  iter(times, back = false) {
-    return slowcat$1(...listRange(0, times - 1).map((i) => back ? this.late(i / times) : this.early(i / times)));
-  }
-  iterBack(times) {
-    return this.iter(times, true);
-  }
-  _chunk(n, func, back = false) {
-    const binary = Array(n - 1).fill(false);
-    binary.unshift(true);
-    const binary_pat = sequence$1(...binary).iter(n, back);
-    return this.when(binary_pat, func);
-  }
-  _chunkBack(n, func) {
-    return this._chunk(n, func, true);
-  }
-  _bypass(on2) {
-    on2 = Boolean(parseInt(on2));
-    return on2 ? silence$1 : this;
-  }
-  hush() {
-    return silence$1;
-  }
-  _duration(value) {
-    return this.withHapSpan((span) => new TimeSpan(span.begin, span.begin.add(value)));
-  }
-  _legato(value) {
-    return this.withHapSpan((span) => new TimeSpan(span.begin, span.begin.add(span.end.sub(span.begin).mul(value))));
-  }
-  _velocity(velocity) {
-    return this._withContext((context) => ({ ...context, velocity: (context.velocity || 1) * velocity }));
-  }
-  _loopAt(factor, cps = 1) {
-    return this.speed(1 / factor * cps).unit("c").slow(factor);
-  }
-  onTrigger(onTrigger) {
-    return this._withHap((hap) => hap.setContext({ ...hap.context, onTrigger }));
-  }
-  log(func = id) {
-    return this._withHap(
+  onTrigger(onTrigger, dominant = true) {
+    return this.withHap(
       (hap) => hap.setContext({
         ...hap.context,
         onTrigger: (...args) => {
-          if (hap.context.onTrigger) {
+          if (!dominant && hap.context.onTrigger) {
             hap.context.onTrigger(...args);
           }
-          console.log(func(...args));
-        }
+          onTrigger(...args);
+        },
+        dominantTrigger: dominant
       })
     );
+  }
+  log(func = (_, hap) => `[hap] ${hap.showWhole(true)}`) {
+    return this.onTrigger((...args) => logger(func(...args)), false);
   }
   logValues(func = id) {
     return this.log((_, hap) => func(hap.value));
   }
-}
-function _composeOp(a, b, func) {
-  function _nonFunctionObject(x) {
-    return x instanceof Object && !(x instanceof Function);
+  drawLine() {
+    console.log(drawLine(this));
+    return this;
   }
-  if (_nonFunctionObject(a) || _nonFunctionObject(b)) {
-    if (!_nonFunctionObject(a)) {
-      a = { value: a };
+}
+function groupHapsBy(eq, haps) {
+  let groups = [];
+  haps.forEach((hap) => {
+    const match = groups.findIndex(([other]) => eq(hap, other));
+    if (match === -1) {
+      groups.push([hap]);
+    } else {
+      groups[match].push(hap);
+    }
+  });
+  return groups;
+}
+const congruent = (a2, b) => a2.spanEquals(b);
+Pattern.prototype.collect = function() {
+  return this.withHaps(
+    (haps) => groupHapsBy(congruent, haps).map((_haps) => new Hap(_haps[0].whole, _haps[0].part, _haps, {}))
+  );
+};
+Pattern.prototype.arpWith = function(func) {
+  return this.collect().fmap((v) => reify(func(v))).squeezeJoin().withHap((h2) => new Hap(h2.whole, h2.part, h2.value.value, h2.combineContext(h2.value)));
+};
+Pattern.prototype.arp = function(pat) {
+  return this.arpWith((haps) => pat.fmap((i) => haps[i % haps.length]));
+};
+function _composeOp(a2, b, func) {
+  function _nonFunctionObject(x2) {
+    return x2 instanceof Object && !(x2 instanceof Function);
+  }
+  if (_nonFunctionObject(a2) || _nonFunctionObject(b)) {
+    if (!_nonFunctionObject(a2)) {
+      a2 = { value: a2 };
     }
     if (!_nonFunctionObject(b)) {
       b = { value: b };
     }
-    return unionWithObj(a, b, func);
+    return unionWithObj(a2, b, func);
   }
-  return func(a, b);
+  return func(a2, b);
 }
 (function() {
-  const num = (pat) => pat._asNumber();
-  const numOrString = (pat) => pat._asNumber(false, true);
   const composers = {
-    set: [(a, b) => b],
-    keep: [(a, b) => a],
-    keepif: [(a, b) => b ? a : void 0],
-    add: [(a, b) => a + b, numOrString],
-    sub: [(a, b) => a - b, num],
-    mul: [(a, b) => a * b, num],
-    div: [(a, b) => a / b, num],
-    mod: [mod, num],
-    pow: [Math.pow, num],
-    _and: [(a, b) => a & b, num],
-    _or: [(a, b) => a | b, num],
-    _xor: [(a, b) => a ^ b, num],
-    _lshift: [(a, b) => a << b, num],
-    _rshift: [(a, b) => a >> b, num],
-    lt: [(a, b) => a < b],
-    gt: [(a, b) => a > b],
-    lte: [(a, b) => a <= b],
-    gte: [(a, b) => a >= b],
-    eq: [(a, b) => a == b],
-    eqt: [(a, b) => a === b],
-    ne: [(a, b) => a != b],
-    net: [(a, b) => a !== b],
-    and: [(a, b) => a && b],
-    or: [(a, b) => a || b],
-    func: [(a, b) => b(a)]
+    set: [(a2, b) => b],
+    keep: [(a2) => a2],
+    keepif: [(a2, b) => b ? a2 : void 0],
+    add: [numeralArgs((a2, b) => a2 + b)],
+    sub: [numeralArgs((a2, b) => a2 - b)],
+    mul: [numeralArgs((a2, b) => a2 * b)],
+    div: [numeralArgs((a2, b) => a2 / b)],
+    mod: [numeralArgs(_mod)],
+    pow: [numeralArgs(Math.pow)],
+    band: [numeralArgs((a2, b) => a2 & b)],
+    bor: [numeralArgs((a2, b) => a2 | b)],
+    bxor: [numeralArgs((a2, b) => a2 ^ b)],
+    blshift: [numeralArgs((a2, b) => a2 << b)],
+    brshift: [numeralArgs((a2, b) => a2 >> b)],
+    lt: [(a2, b) => a2 < b],
+    gt: [(a2, b) => a2 > b],
+    lte: [(a2, b) => a2 <= b],
+    gte: [(a2, b) => a2 >= b],
+    eq: [(a2, b) => a2 == b],
+    eqt: [(a2, b) => a2 === b],
+    ne: [(a2, b) => a2 != b],
+    net: [(a2, b) => a2 !== b],
+    and: [(a2, b) => a2 && b],
+    or: [(a2, b) => a2 || b],
+    func: [(a2, b) => b(a2)]
   };
+  const hows = ["In", "Out", "Mix", "Squeeze", "SqueezeOut", "Trig", "Trigzero"];
   for (const [what, [op, preprocess]] of Object.entries(composers)) {
-    for (const how of ["In", "Out", "Mix", "Squeeze", "SqueezeOut", "Trig", "Trigzero"]) {
-      Pattern$1.prototype[what + how] = function(...other) {
-        var pat = this;
-        other = sequence$1(other);
-        if (preprocess) {
-          pat = preprocess(pat);
-          other = preprocess(other);
+    Pattern.prototype["_" + what] = function(value) {
+      return this.fmap((x2) => op(x2, value));
+    };
+    Object.defineProperty(Pattern.prototype, what, {
+      get: function() {
+        const pat = this;
+        const wrapper = (...other) => pat[what]["in"](...other);
+        for (const how of hows) {
+          wrapper[how.toLowerCase()] = function(...other) {
+            var howpat = pat;
+            other = sequence(other);
+            if (preprocess) {
+              howpat = preprocess(howpat);
+              other = preprocess(other);
+            }
+            var result;
+            if (what === "keepif") {
+              result = howpat["_op" + how](other, (a2) => (b) => op(a2, b));
+              result = result.removeUndefineds();
+            } else {
+              result = howpat["_op" + how](other, (a2) => (b) => _composeOp(a2, b, op));
+            }
+            return result;
+          };
         }
-        var result = pat["_op" + how](other, (a) => (b) => _composeOp(a, b, op));
-        if (what === "keepif") {
-          result = result._removeUndefineds();
-        }
-        return result;
+        wrapper.squeezein = wrapper.squeeze;
+        return wrapper;
+      }
+    });
+    for (const how of hows) {
+      Pattern.prototype[how.toLowerCase()] = function(...args) {
+        return this.set[how.toLowerCase()](args);
       };
-      if (how === "Squeeze") {
-        Pattern$1.prototype[what + "SqueezeIn"] = Pattern$1.prototype[what + how];
-      }
-      if (how === "In") {
-        Pattern$1.prototype[what] = Pattern$1.prototype[what + how];
-      } else {
-        if (what === "set") {
-          Pattern$1.prototype[how.toLowerCase()] = Pattern$1.prototype[what + how];
-        }
-      }
     }
   }
-  Pattern$1.prototype.struct = Pattern$1.prototype.keepifOut;
-  Pattern$1.prototype.structAll = Pattern$1.prototype.keepOut;
-  Pattern$1.prototype.mask = Pattern$1.prototype.keepifIn;
-  Pattern$1.prototype.maskAll = Pattern$1.prototype.keepIn;
-  Pattern$1.prototype.reset = Pattern$1.prototype.keepifTrig;
-  Pattern$1.prototype.resetAll = Pattern$1.prototype.keepTrig;
-  Pattern$1.prototype.restart = Pattern$1.prototype.keepifTrigzero;
-  Pattern$1.prototype.restartAll = Pattern$1.prototype.keepTrigzero;
+  Pattern.prototype.struct = function(...args) {
+    return this.keepif.out(...args);
+  };
+  Pattern.prototype.structAll = function(...args) {
+    return this.keep.out(...args);
+  };
+  Pattern.prototype.mask = function(...args) {
+    return this.keepif.in(...args);
+  };
+  Pattern.prototype.maskAll = function(...args) {
+    return this.keep.in(...args);
+  };
+  Pattern.prototype.reset = function(...args) {
+    return this.keepif.trig(...args);
+  };
+  Pattern.prototype.resetAll = function(...args) {
+    return this.keep.trig(...args);
+  };
+  Pattern.prototype.restart = function(...args) {
+    return this.keepif.trigzero(...args);
+  };
+  Pattern.prototype.restartAll = function(...args) {
+    return this.keep.trigzero(...args);
+  };
 })();
-Pattern$1.prototype.patternified = [
-  "apply",
-  "chop",
-  "color",
-  "cpm",
-  "duration",
-  "early",
-  "fast",
-  "jux",
-  "late",
-  "legato",
-  "linger",
-  "ply",
-  "segment",
-  "striate",
-  "slow",
-  "velocity"
-];
-Pattern$1.prototype.factories = {
-  pure: pure$1,
-  stack: stack$1,
-  slowcat: slowcat$1,
+const polyrhythm = stack;
+const pr = stack;
+Pattern.prototype.factories = {
+  pure,
+  stack,
+  slowcat,
   fastcat,
   cat,
-  timeCat: timeCat$1,
-  sequence: sequence$1,
+  timeCat,
+  sequence,
   seq,
   polymeter,
   pm,
   polyrhythm,
   pr
 };
-const silence$1 = new Pattern$1((_) => []);
-function pure$1(value) {
+const silence = new Pattern(() => []);
+function pure(value) {
   function query(state) {
     return state.span.spanCycles.map((subspan) => new Hap(fraction(subspan.begin).wholeCycle(), subspan, value));
   }
-  return new Pattern$1(query);
+  return new Pattern(query);
 }
 function isPattern(thing) {
-  const is = thing instanceof Pattern$1 || thing._Pattern;
-  if (!thing instanceof Pattern$1) {
-    console.warn(
-      `Found Pattern that fails "instanceof Pattern" check.
-      This may happen if you are using multiple versions of @strudel.cycles/core. 
-      Please check by running "npm ls @strudel.cycles/core".`
-    );
-  }
+  const is = thing instanceof Pattern || (thing == null ? void 0 : thing._Pattern);
   return is;
 }
-function reify$2(thing) {
+function reify(thing) {
   if (isPattern(thing)) {
     return thing;
   }
-  return pure$1(thing);
+  return pure(thing);
 }
-function stack$1(...pats) {
-  pats = pats.map((pat) => Array.isArray(pat) ? sequence$1(...pat) : reify$2(pat));
+function stack(...pats) {
+  pats = pats.map((pat) => Array.isArray(pat) ? sequence(...pat) : reify(pat));
   const query = (state) => flatten(pats.map((pat) => pat.query(state)));
-  return new Pattern$1(query);
+  return new Pattern(query);
 }
-function slowcat$1(...pats) {
-  pats = pats.map((pat) => Array.isArray(pat) ? sequence$1(...pat) : reify$2(pat));
+function slowcat(...pats) {
+  pats = pats.map((pat) => Array.isArray(pat) ? sequence(...pat) : reify(pat));
   const query = function(state) {
     const span = state.span;
-    const pat_n = mod(span.begin.sam(), pats.length);
+    const pat_n = _mod(span.begin.sam(), pats.length);
     const pat = pats[pat_n];
     if (!pat) {
       return [];
@@ -17406,56 +18067,56 @@ function slowcat$1(...pats) {
     const offset = span.begin.floor().sub(span.begin.div(pats.length).floor());
     return pat.withHapTime((t) => t.add(offset)).query(state.setSpan(span.withTime((t) => t.sub(offset))));
   };
-  return new Pattern$1(query)._splitQueries();
+  return new Pattern(query).splitQueries();
 }
 function slowcatPrime(...pats) {
-  pats = pats.map(reify$2);
+  pats = pats.map(reify);
   const query = function(state) {
     const pat_n = Math.floor(state.span.begin) % pats.length;
     const pat = pats[pat_n];
     return (pat == null ? void 0 : pat.query(state)) || [];
   };
-  return new Pattern$1(query)._splitQueries();
+  return new Pattern(query).splitQueries();
 }
 function fastcat(...pats) {
-  return slowcat$1(...pats)._fast(pats.length);
+  return slowcat(...pats)._fast(pats.length);
 }
 function cat(...pats) {
-  return slowcat$1(...pats);
+  return slowcat(...pats);
 }
-function timeCat$1(...timepats) {
-  const total = timepats.map((a) => a[0]).reduce((a, b) => a.add(b), fraction(0));
+function timeCat(...timepats) {
+  const total = timepats.map((a2) => a2[0]).reduce((a2, b) => a2.add(b), fraction(0));
   let begin = fraction(0);
   const pats = [];
   for (const [time2, pat] of timepats) {
     const end = begin.add(time2);
-    pats.push(reify$2(pat)._compress(begin.div(total), end.div(total)));
+    pats.push(reify(pat)._compress(begin.div(total), end.div(total)));
     begin = end;
   }
-  return stack$1(...pats);
+  return stack(...pats);
 }
-function sequence$1(...pats) {
+function sequence(...pats) {
   return fastcat(...pats);
 }
 function seq(...pats) {
   return fastcat(...pats);
 }
-function _sequenceCount(x) {
-  if (Array.isArray(x)) {
-    if (x.length == 0) {
-      return [silence$1, 0];
+function _sequenceCount(x2) {
+  if (Array.isArray(x2)) {
+    if (x2.length == 0) {
+      return [silence, 0];
     }
-    if (x.length == 1) {
-      return _sequenceCount(x[0]);
+    if (x2.length == 1) {
+      return _sequenceCount(x2[0]);
     }
-    return [fastcat(...x.map((a) => _sequenceCount(a)[0])), x.length];
+    return [fastcat(...x2.map((a2) => _sequenceCount(a2)[0])), x2.length];
   }
-  return [reify$2(x), 1];
+  return [reify(x2), 1];
 }
 function polymeterSteps(steps, ...args) {
-  const seqs = args.map((a) => _sequenceCount(a));
+  const seqs = args.map((a2) => _sequenceCount(a2));
   if (seqs.length == 0) {
-    return silence$1;
+    return silence;
   }
   if (steps == 0) {
     steps = seqs[0][1];
@@ -17463,7 +18124,7 @@ function polymeterSteps(steps, ...args) {
   const pats = [];
   for (const seq2 of seqs) {
     if (seq2[1] == 0) {
-      next;
+      continue;
     }
     if (steps == seq2[1]) {
       pats.push(seq2[0]);
@@ -17471,7 +18132,7 @@ function polymeterSteps(steps, ...args) {
       pats.push(seq2[0]._fast(fraction(steps).div(fraction(seq2[1]))));
     }
   }
-  return stack$1(...pats);
+  return stack(...pats);
 }
 function polymeter(...args) {
   return polymeterSteps(0, ...args);
@@ -17479,122 +18140,329 @@ function polymeter(...args) {
 function pm(...args) {
   polymeter(...args);
 }
-function polyrhythm(...xs) {
-  const seqs = xs.map((a) => sequence$1(a));
-  if (seqs.length == 0) {
-    return silence$1;
+curry((a2, b) => reify(b).mask(a2));
+curry((a2, b) => reify(b).struct(a2));
+curry((a2, b) => reify(b).superimpose(...a2));
+curry((a2, b) => reify(b).set(a2));
+curry((a2, b) => reify(b).keep(a2));
+curry((a2, b) => reify(b).keepif(a2));
+curry((a2, b) => reify(b).add(a2));
+curry((a2, b) => reify(b).sub(a2));
+curry((a2, b) => reify(b).mul(a2));
+curry((a2, b) => reify(b).div(a2));
+curry((a2, b) => reify(b).mod(a2));
+curry((a2, b) => reify(b).pow(a2));
+curry((a2, b) => reify(b).band(a2));
+curry((a2, b) => reify(b).bor(a2));
+curry((a2, b) => reify(b).bxor(a2));
+curry((a2, b) => reify(b).blshift(a2));
+curry((a2, b) => reify(b).brshift(a2));
+curry((a2, b) => reify(b).lt(a2));
+curry((a2, b) => reify(b).gt(a2));
+curry((a2, b) => reify(b).lte(a2));
+curry((a2, b) => reify(b).gte(a2));
+curry((a2, b) => reify(b).eq(a2));
+curry((a2, b) => reify(b).eqt(a2));
+curry((a2, b) => reify(b).ne(a2));
+curry((a2, b) => reify(b).net(a2));
+curry((a2, b) => reify(b).and(a2));
+curry((a2, b) => reify(b).or(a2));
+curry((a2, b) => reify(b).func(a2));
+function register(name, func) {
+  if (Array.isArray(name)) {
+    const result = {};
+    for (const name_item of name) {
+      result[name_item] = register(name_item, func);
+    }
+    return result;
   }
-  return stack$1(...seqs);
-}
-function pr(args) {
-  polyrhythm(args);
-}
-const add = curry((a, pat) => pat.add(a));
-const chop = curry((a, pat) => pat.chop(a));
-const chunk = curry((a, pat) => pat.chunk(a));
-const chunkBack = curry((a, pat) => pat.chunkBack(a));
-const div = curry((a, pat) => pat.div(a));
-const early = curry((a, pat) => pat.early(a));
-const echo = curry((a, b, c, pat) => pat.echo(a, b, c));
-const every = curry((i, f, pat) => pat.every(i, f));
-const fast = curry((a, pat) => pat.fast(a));
-const inv = (pat) => pat.inv();
-const invert = (pat) => pat.invert();
-const iter = curry((a, pat) => pat.iter(a));
-const iterBack = curry((a, pat) => pat.iter(a));
-const jux = curry((f, pat) => pat.jux(f));
-const juxBy = curry((by, f, pat) => pat.juxBy(by, f));
-const late = curry((a, pat) => pat.late(a));
-const linger = curry((a, pat) => pat.linger(a));
-const mask = curry((a, pat) => pat.mask(a));
-const mul = curry((a, pat) => pat.mul(a));
-const off = curry((t, f, pat) => pat.off(t, f));
-const ply = curry((a, pat) => pat.ply(a));
-const range = curry((a, b, pat) => pat.range(a, b));
-const range2 = curry((a, b, pat) => pat.range2(a, b));
-const rev = (pat) => pat.rev();
-const slow = curry((a, pat) => pat.slow(a));
-const struct = curry((a, pat) => pat.struct(a));
-const sub = curry((a, pat) => pat.sub(a));
-const superimpose = curry((array, pat) => pat.superimpose(...array));
-const set = curry((a, pat) => pat.set(a));
-const when = curry((binary, f, pat) => pat.when(binary, f));
-Pattern$1.prototype.composable = { fast, slow, early, late, superimpose };
-function makeComposable(func) {
-  Object.entries(Pattern$1.prototype.composable).forEach(([functionName, composable]) => {
-    func[functionName] = (...args) => {
-      const composition = compose(func, composable(...args));
-      return makeComposable(composition);
+  const arity = func.length;
+  var pfunc;
+  pfunc = function(...args) {
+    args = args.map(reify);
+    const pat = args[args.length - 1];
+    if (arity === 1) {
+      return func(pat);
+    }
+    const [left, ...right] = args.slice(0, -1);
+    let mapFn = (...args2) => {
+      Array(arity - 1).fill().map((_, i) => {
+        var _a;
+        return (_a = args2[i]) != null ? _a : void 0;
+      });
+      return func(...args2, pat);
     };
-  });
-  return func;
+    mapFn = curry(mapFn, null, arity - 1);
+    return right.reduce((acc, p) => acc.appLeft(p), left.fmap(mapFn)).innerJoin();
+  };
+  Pattern.prototype[name] = function(...args) {
+    args = args.map(reify);
+    if (arity === 2 && args.length !== 1) {
+      args = [sequence(...args)];
+    } else if (arity !== args.length + 1) {
+      throw new Error(`.${name}() expects ${arity - 1} inputs but got ${args.length}.`);
+    }
+    return pfunc(...args, this);
+  };
+  if (arity > 1) {
+    Pattern.prototype["_" + name] = function(...args) {
+      return func(...args, this);
+    };
+  }
+  return curry(pfunc, null, arity);
 }
-const patternify2 = (f) => (pata, patb, pat) => pata.fmap((a) => (b) => f.call(pat, a, b)).appLeft(patb).innerJoin();
-const patternify3 = (f) => (pata, patb, patc, pat) => pata.fmap((a) => (b) => (c) => f.call(pat, a, b, c)).appLeft(patb).appLeft(patc).innerJoin();
-const patternify4 = (f) => (pata, patb, patc, patd, pat) => pata.fmap((a) => (b) => (c) => (d) => f.call(pat, a, b, c, d)).appLeft(patb).appLeft(patc).appLeft(patd).innerJoin();
-Pattern$1.prototype.echo = function(...args) {
-  args = args.map(reify$2);
-  return patternify3(Pattern$1.prototype._echo)(...args, this);
-};
-Pattern$1.prototype.echoWith = function(...args) {
-  args = args.map(reify$2);
-  return patternify3(Pattern$1.prototype._echoWith)(...args, this);
-};
-Pattern$1.prototype.chunk = function(...args) {
-  args = args.map(reify$2);
-  return patternify2(Pattern$1.prototype._chunk)(...args, this);
-};
-Pattern$1.prototype.chunkBack = function(...args) {
-  args = args.map(reify$2);
-  return patternify2(Pattern$1.prototype._chunkBack)(...args, this);
-};
-Pattern$1.prototype.loopAt = function(...args) {
-  args = args.map(reify$2);
-  return patternify2(Pattern$1.prototype._loopAt)(...args, this);
-};
-Pattern$1.prototype.zoom = function(...args) {
-  args = args.map(reify$2);
-  return patternify2(Pattern$1.prototype._zoom)(...args, this);
-};
-Pattern$1.prototype.compress = function(...args) {
-  args = args.map(reify$2);
-  return patternify2(Pattern$1.prototype._compress)(...args, this);
-};
-Pattern$1.prototype.outside = function(...args) {
-  args = args.map(reify$2);
-  return patternify2(Pattern$1.prototype._outside)(...args, this);
-};
-Pattern$1.prototype.inside = function(...args) {
-  args = args.map(reify$2);
-  return patternify2(Pattern$1.prototype._inside)(...args, this);
-};
-Pattern$1.prototype.bootstrap = function() {
-  const bootstrapped = Object.fromEntries(
-    Object.entries(Pattern$1.prototype.composable).map(([functionName, composable]) => {
-      if (Pattern$1.prototype[functionName]) {
-        Pattern$1.prototype[functionName] = makeComposable(Pattern$1.prototype[functionName]);
-      }
-      return [functionName, curry(composable, makeComposable)];
-    })
+register("round", function(pat) {
+  return pat.asNumber().fmap((v) => Math.round(v));
+});
+register("floor", function(pat) {
+  return pat.asNumber().fmap((v) => Math.floor(v));
+});
+register("ceil", function(pat) {
+  return pat.asNumber().fmap((v) => Math.ceil(v));
+});
+register("toBipolar", function(pat) {
+  return pat.fmap((x2) => x2 * 2 - 1);
+});
+register("fromBipolar", function(pat) {
+  return pat.fmap((x2) => (x2 + 1) / 2);
+});
+register("range", function(min, max, pat) {
+  return pat.mul(max - min).add(min);
+});
+register("rangex", function(min, max, pat) {
+  return pat._range(Math.log(min), Math.log(max)).fmap(Math.exp);
+});
+register("range2", function(min, max, pat) {
+  return pat.fromBipolar()._range(min, max);
+});
+register("compress", function(b, e, pat) {
+  if (b.gt(e) || b.gt(1) || e.gt(1) || b.lt(0) || e.lt(0)) {
+    return silence;
+  }
+  return pat._fastGap(fraction(1).div(e.sub(b)))._late(b);
+});
+register(["compressSpan", "compressspan"], function(span, pat) {
+  return pat._compress(span.begin, span.end);
+});
+register(["fastGap", "fastgap"], function(factor, pat) {
+  const qf = function(span) {
+    const cycle = span.begin.sam();
+    const bpos = span.begin.sub(cycle).mul(factor).min(1);
+    const epos = span.end.sub(cycle).mul(factor).min(1);
+    if (bpos >= 1) {
+      return void 0;
+    }
+    return new TimeSpan(cycle.add(bpos), cycle.add(epos));
+  };
+  const ef = function(hap) {
+    const begin = hap.part.begin;
+    const end = hap.part.end;
+    const cycle = begin.sam();
+    const beginPos = begin.sub(cycle).div(factor).min(1);
+    const endPos = end.sub(cycle).div(factor).min(1);
+    const newPart = new TimeSpan(cycle.add(beginPos), cycle.add(endPos));
+    const newWhole = !hap.whole ? void 0 : new TimeSpan(
+      newPart.begin.sub(begin.sub(hap.whole.begin).div(factor)),
+      newPart.end.add(hap.whole.end.sub(end).div(factor))
+    );
+    return new Hap(newWhole, newPart, hap.value, hap.context);
+  };
+  return pat.withQuerySpanMaybe(qf).withHap(ef).splitQueries();
+});
+register("focus", function(b, e, pat) {
+  return pat._fast(fraction(1).div(e.sub(b))).late(b.cyclePos());
+});
+register(["focusSpan", "focusspan"], function(span, pat) {
+  return pat._focus(span.begin, span.end);
+});
+register("ply", function(factor, pat) {
+  return pat.fmap((x2) => pure(x2)._fast(factor)).squeezeJoin();
+});
+register(["fast", "density"], function(factor, pat) {
+  factor = fraction(factor);
+  const fastQuery = pat.withQueryTime((t) => t.mul(factor));
+  return fastQuery.withHapTime((t) => t.div(factor));
+});
+register(["slow", "sparsity"], function(factor, pat) {
+  return pat._fast(fraction(1).div(factor));
+});
+register("inside", function(factor, f, pat) {
+  return f(pat._slow(factor))._fast(factor);
+});
+register("outside", function(factor, f, pat) {
+  return f(pat._fast(factor))._slow(factor);
+});
+register("lastOf", function(n, func, pat) {
+  const pats = Array(n - 1).fill(pat);
+  pats.push(func(pat));
+  return slowcatPrime(...pats);
+});
+register(["firstOf", "every"], function(n, func, pat) {
+  const pats = Array(n - 1).fill(pat);
+  pats.unshift(func(pat));
+  return slowcatPrime(...pats);
+});
+register("apply", function(func, pat) {
+  return func(pat);
+});
+register("cpm", function(cpm, pat) {
+  return pat._fast(cpm / 60);
+});
+register("early", function(offset, pat) {
+  offset = fraction(offset);
+  return pat.withQueryTime((t) => t.add(offset)).withHapTime((t) => t.sub(offset));
+});
+register("late", function(offset, pat) {
+  offset = fraction(offset);
+  return pat._early(fraction(0).sub(offset));
+});
+register("zoom", function(s, e, pat) {
+  e = fraction(e);
+  s = fraction(s);
+  const d = e.sub(s);
+  return pat.withQuerySpan((span) => span.withCycle((t) => t.mul(d).add(s))).withHapSpan((span) => span.withCycle((t) => t.sub(s).div(d))).splitQueries();
+});
+register(["zoomArc", "zoomarc"], function(a2, pat) {
+  return pat.zoom(a2.begin, a2.end);
+});
+register("linger", function(t, pat) {
+  if (t == 0) {
+    return silence;
+  } else if (t < 0) {
+    return pat._zoom(t.add(1), 1)._slow(t);
+  }
+  return pat._zoom(0, t)._slow(t);
+});
+register("segment", function(rate, pat) {
+  return pat.struct(pure(true)._fast(rate));
+});
+register(["invert", "inv"], function(pat) {
+  return pat.fmap((x2) => !x2);
+});
+register("when", function(on, func, pat) {
+  return on ? func(pat) : pat;
+});
+register("off", function(time_pat, func, pat) {
+  return stack(pat, func(pat.late(time_pat)));
+});
+register("brak", function(pat) {
+  return pat.when(slowcat(false, true), (x2) => fastcat(x2, silence)._late(0.25));
+});
+const rev = register("rev", function(pat) {
+  const query = function(state) {
+    const span = state.span;
+    const cycle = span.begin.sam();
+    const next_cycle = span.begin.nextSam();
+    const reflect = function(to_reflect) {
+      const reflected = to_reflect.withTime((time2) => cycle.add(next_cycle.sub(time2)));
+      const tmp = reflected.begin;
+      reflected.begin = reflected.end;
+      reflected.end = tmp;
+      return reflected;
+    };
+    const haps = pat.query(state.setSpan(reflect(span)));
+    return haps.map((hap) => hap.withSpan(reflect));
+  };
+  return new Pattern(query).splitQueries();
+});
+register("hush", function(pat) {
+  return silence;
+});
+register("palindrome", function(pat) {
+  return pat.every(2, rev);
+});
+register(["juxBy", "juxby"], function(by, func, pat) {
+  by /= 2;
+  const elem_or = function(dict, key, dflt) {
+    if (key in dict) {
+      return dict[key];
+    }
+    return dflt;
+  };
+  const left = pat.withValue((val) => Object.assign({}, val, { pan: elem_or(val, "pan", 0.5) - by }));
+  const right = pat.withValue((val) => Object.assign({}, val, { pan: elem_or(val, "pan", 0.5) + by }));
+  return stack(left, func(right));
+});
+register("jux", function(func, pat) {
+  return pat._juxBy(1, func, pat);
+});
+register(["stutWith", "stutwith"], function(times, time2, func, pat) {
+  return stack(...listRange(0, times - 1).map((i) => func(pat.late(fraction(time2).mul(i)), i)));
+});
+register("stut", function(times, feedback, time2, pat) {
+  return pat._stutWith(times, time2, (pat2, i) => pat2.velocity(Math.pow(feedback, i)));
+});
+register(["echoWith", "echowith"], function(times, time2, func, pat) {
+  return stack(...listRange(0, times - 1).map((i) => func(pat.late(fraction(time2).mul(i)), i)));
+});
+register("echo", function(times, time2, feedback, pat) {
+  return pat._echoWith(times, time2, (pat2, i) => pat2.velocity(Math.pow(feedback, i)));
+});
+const _iter = function(times, pat, back = false) {
+  times = fraction(times);
+  return slowcat(
+    ...listRange(0, times.sub(1)).map(
+      (i) => back ? pat.late(fraction(i).div(times)) : pat.early(fraction(i).div(times))
+    )
   );
-  this.patternified.forEach((prop) => {
-    Pattern$1.prototype[prop] = function(...args) {
-      return this._patternify(Pattern$1.prototype["_" + prop])(...args);
-    };
-  });
-  return bootstrapped;
 };
-Pattern$1.prototype.define = (name, func, options = {}) => {
-  if (options.composable) {
-    Pattern$1.prototype.composable[name] = func;
-  }
-  if (options.patternified) {
-    Pattern$1.prototype.patternified = Pattern$1.prototype.patternified.concat([name]);
-  }
-  Pattern$1.prototype.bootstrap();
+register("iter", function(times, pat) {
+  return _iter(times, pat, false);
+});
+register(["iterBack", "iterback"], function(times, pat) {
+  return _iter(times, pat, true);
+});
+const _chunk = function(n, func, pat, back = false) {
+  const binary = Array(n - 1).fill(false);
+  binary.unshift(true);
+  const binary_pat = _iter(n, sequence(...binary), back);
+  return pat.when(binary_pat, func);
 };
-Pattern$1.prototype.define("hush", (pat) => pat.hush(), { patternified: false, composable: true });
-Pattern$1.prototype.define("bypass", (pat) => pat.bypass(on), { patternified: true, composable: true });
+register("chunk", function(n, func, pat) {
+  return _chunk(n, func, pat, false);
+});
+register(["chunkBack", "chunkback"], function(n, func, pat) {
+  return _chunk(n, func, pat, true);
+});
+register("bypass", function(on, pat) {
+  on = Boolean(parseInt(on));
+  return on ? silence : this;
+});
+register("duration", function(value, pat) {
+  return pat.withHapSpan((span) => new TimeSpan(span.begin, span.begin.add(value)));
+});
+register(["color", "colour"], function(color, pat) {
+  return pat.withContext((context) => ({ ...context, color }));
+});
+register("velocity", function(velocity, pat) {
+  return pat.withContext((context) => ({ ...context, velocity: (context.velocity || 1) * velocity }));
+});
+register("legato", function(value, pat) {
+  return pat.withHapSpan((span) => new TimeSpan(span.begin, span.begin.add(span.end.sub(span.begin).mul(value))));
+});
+register("chop", function(n, pat) {
+  const slices = Array.from({ length: n }, (x2, i) => i);
+  const slice_objects = slices.map((i) => ({ begin: i / n, end: (i + 1) / n }));
+  const func = function(o) {
+    return sequence(slice_objects.map((slice_o) => Object.assign({}, o, slice_o)));
+  };
+  return pat.squeezeBind(func);
+});
+register("striate", function(n, pat) {
+  const slices = Array.from({ length: n }, (x2, i) => i);
+  const slice_objects = slices.map((i) => ({ begin: i / n, end: (i + 1) / n }));
+  const slicePat = slowcat(...slice_objects);
+  return pat.set(slicePat)._fast(n);
+});
+const _loopAt = function(factor, pat, cps = 1) {
+  return pat.speed(1 / factor * cps).unit("c").slow(factor);
+};
+register(["loopAt", "loopat"], function(factor, pat) {
+  return _loopAt(factor, pat, 1);
+});
+register(["loopAtCps", "loopatcps"], function(factor, cps, pat) {
+  return _loopAt(factor, pat, cps);
+});
 const controls = {};
 const generic_params = [
   ["s", "s", "sound"],
@@ -17612,6 +18480,7 @@ const generic_params = [
     "attack",
     "a pattern of numbers to specify the attack time (in seconds) of an envelope applied to each sample."
   ],
+  ["f", "bank", "selects sound bank to use"],
   ["f", "decay", ""],
   ["f", "sustain", ""],
   [
@@ -17637,7 +18506,6 @@ const generic_params = [
     "the same as `begin`, but cuts the end off samples, shortening them; e.g. `0.75` to cut off the last quarter of each sample."
   ],
   ["f", "loop", "loops the sample (from `begin` to `end`) the specified number of times."],
-  ["f", "legato", "controls the amount of overlap between two adjacent sounds"],
   [
     "f",
     "crush",
@@ -17744,12 +18612,16 @@ const generic_params = [
   ["f", "rate", "used in SuperDirt softsynths as a control rate or 'speed'"],
   ["f", "slide", ""],
   ["f", "semitone", ""],
-  ["f", "velocity", ""],
   ["f", "voice", ""],
   ["f", "room", "a pattern of numbers from 0 to 1. Sets the level of reverb."],
   [
     "f",
     "size",
+    "a pattern of numbers from 0 to 1. Sets the perceptual size (reverb time) of the `room` to be used in reverb."
+  ],
+  [
+    "f",
+    "roomsize",
     "a pattern of numbers from 0 to 1. Sets the perceptual size (reverb time) of the `room` to be used in reverb."
   ],
   [
@@ -17832,7 +18704,7 @@ const generic_params = [
   ["f", "cps", ""],
   ["f", "clip", ""]
 ];
-const _name = (name, ...pats) => sequence$1(...pats).withValue((x) => ({ [name]: x }));
+const _name = (name, ...pats) => sequence(...pats).withValue((x2) => ({ [name]: x2 }));
 const _setter = (func, name) => function(...pats) {
   if (!pats.length) {
     return this.fmap((value) => ({ [name]: value }));
@@ -17841,14 +18713,14 @@ const _setter = (func, name) => function(...pats) {
 };
 generic_params.forEach(([type, name, description]) => {
   controls[name] = (...pats) => _name(name, ...pats);
-  Pattern$1.prototype[name] = _setter(controls[name], name);
+  Pattern.prototype[name] = _setter(controls[name], name);
 });
 controls.createParam = (name) => {
   const func = (...pats) => _name(name, ...pats);
-  Pattern$1.prototype[name] = _setter(func, name);
+  Pattern.prototype[name] = _setter(func, name);
   return (...pats) => _name(name, ...pats);
 };
-controls.createParams = (...names) => names.reduce((acc, name) => Object.assign(acc, { [name]: createParam(name) }), {});
+controls.createParams = (...names) => names.reduce((acc, name) => Object.assign(acc, { [name]: controls.createParam(name) }), {});
 function bjorklund(slots, pulses) {
   var pattern = [], count = [], remainder = [pulses], divisor = slots - pulses, level = 0, build_pattern = function(lv) {
     if (lv == -1) {
@@ -17856,7 +18728,7 @@ function bjorklund(slots, pulses) {
     } else if (lv == -2) {
       pattern.push(1);
     } else {
-      for (var x = 0; x < count[lv]; x++) {
+      for (var x2 = 0; x2 < count[lv]; x2++) {
         build_pattern(lv - 1);
       }
       if (remainder[lv]) {
@@ -17880,62 +18752,65 @@ var bjork = function(m, k) {
   else
     return bjorklund(k, m);
 };
-const euclid = (pulses, steps, rotation = 0) => {
+const _euclidRot = function(pulses, steps, rotation) {
   const b = bjork(steps, pulses);
   if (rotation) {
     return rotate(b, -rotation);
   }
   return b;
 };
-Pattern$1.prototype.euclid = function(pulses, steps, rotation = 0) {
-  return this.struct(euclid(pulses, steps, rotation));
-};
-Pattern$1.prototype.euclidLegato = function(pulses, steps, rotation = 0) {
-  const bin_pat = euclid(pulses, steps, rotation);
+register("euclid", function(pulses, steps, pat) {
+  return pat.struct(_euclidRot(steps, pulses, 0));
+});
+register(["euclidrot", "euclidRot"], function(pulses, steps, rotation, pat) {
+  return pat.struct(_euclidRot(steps, pulses, rotation));
+});
+const _euclidLegato = function(pulses, steps, rotation, pat) {
+  const bin_pat = _euclidRot(pulses, steps, rotation);
   const firstOne = bin_pat.indexOf(1);
   const gapless = rotate(bin_pat, firstOne).join("").split("1").slice(1).map((s) => [s.length + 1, true]);
-  return this.struct(timeCat$1(...gapless)).late(fraction(firstOne).div(steps));
+  return pat.struct(timeCat(...gapless)).late(fraction(firstOne).div(steps));
 };
-function steady(value) {
-  return new Pattern$1((state) => [new Hap(void 0, state.span, value)]);
-}
+register(["euclidLegato"], function(pulses, steps, pat) {
+  return _euclidLegato(pulses, steps, 0, pat);
+});
+register(["euclidLegatoRot"], function(pulses, steps, rotation, pat) {
+  return _euclidLegato(pulses, steps, rotation, pat);
+});
 const signal = (func) => {
   const query = (state) => [new Hap(void 0, state.span, func(state.span.midpoint()))];
-  return new Pattern$1(query);
+  return new Pattern(query);
 };
 const isaw = signal((t) => 1 - t % 1);
-const isaw2 = isaw._toBipolar();
+const isaw2 = isaw.toBipolar();
 const saw = signal((t) => t % 1);
-const saw2 = saw._toBipolar();
+const saw2 = saw.toBipolar();
 const sine2 = signal((t) => Math.sin(Math.PI * 2 * t));
-const sine = sine2._fromBipolar();
-const cosine = sine._early(fraction(1).div(4));
-const cosine2 = sine2._early(fraction(1).div(4));
+const sine = sine2.fromBipolar();
+sine._early(fraction(1).div(4));
+sine2._early(fraction(1).div(4));
 const square = signal((t) => Math.floor(t * 2 % 2));
-const square2 = square._toBipolar();
-const tri = fastcat(isaw, saw);
-const tri2 = fastcat(isaw2, saw2);
+square.toBipolar();
+fastcat(isaw, saw);
+fastcat(isaw2, saw2);
 const time = signal(id);
-const xorwise = (x) => {
-  const a = x << 13 ^ x;
-  const b = a >> 17 ^ a;
+const xorwise = (x2) => {
+  const a2 = x2 << 13 ^ x2;
+  const b = a2 >> 17 ^ a2;
   return b << 5 ^ b;
 };
-const _frac = (x) => x - Math.trunc(x);
-const timeToIntSeed = (x) => xorwise(Math.trunc(_frac(x / 300) * 536870912));
-const intSeedToRand = (x) => x % 536870912 / 536870912;
-const timeToRand = (x) => Math.abs(intSeedToRand(timeToIntSeed(x)));
+const _frac = (x2) => x2 - Math.trunc(x2);
+const timeToIntSeed = (x2) => xorwise(Math.trunc(_frac(x2 / 300) * 536870912));
+const intSeedToRand = (x2) => x2 % 536870912 / 536870912;
+const timeToRand = (x2) => Math.abs(intSeedToRand(timeToIntSeed(x2)));
 const rand = signal(timeToRand);
-const rand2 = rand._toBipolar();
-const _brandBy = (p) => rand.fmap((x) => x < p);
-const brandBy = (pPat) => reify$2(pPat).fmap(_brandBy).innerJoin();
-const brand = _brandBy(0.5);
-const _irand = (i) => rand.fmap((x) => Math.trunc(x * i));
-const irand = (ipat) => reify$2(ipat).fmap(_irand).innerJoin();
+rand.toBipolar();
+const _brandBy = (p) => rand.fmap((x2) => x2 < p);
+_brandBy(0.5);
 const __chooseWith = (pat, xs) => {
-  xs = xs.map(reify$2);
+  xs = xs.map(reify);
   if (xs.length == 0) {
-    return silence$1;
+    return silence;
   }
   return pat.range(0, xs.length).fmap((i) => xs[Math.floor(i)]);
 };
@@ -17945,111 +18820,71 @@ const chooseWith = (pat, xs) => {
 const chooseInWith = (pat, xs) => {
   return __chooseWith(pat, xs).innerJoin();
 };
-const choose = (...xs) => chooseWith(rand, xs);
-Pattern$1.prototype.choose = function(...xs) {
+Pattern.prototype.choose = function(...xs) {
   return chooseWith(this, xs);
 };
-Pattern$1.prototype.choose2 = function(...xs) {
-  return chooseWith(this._fromBipolar(), xs);
+Pattern.prototype.choose2 = function(...xs) {
+  return chooseWith(this.fromBipolar(), xs);
 };
 const chooseCycles = (...xs) => chooseInWith(rand.segment(1), xs);
-const randcat = chooseCycles;
-const _wchooseWith = function(pat, ...pairs) {
-  const values = pairs.map((pair) => reify$2(pair[0]));
-  const weights = [];
-  let accum = 0;
-  for (const pair of pairs) {
-    accum += pair[1];
-    weights.push(accum);
-  }
-  const total = accum;
-  const match = function(r) {
-    const find = r * total;
-    return values[weights.findIndex((x) => x > find, weights)];
-  };
-  return pat.fmap(match);
-};
-const wchooseWith = (...args) => _wchooseWith(...args).outerJoin();
-const wchoose = (...pairs) => wchooseWith(rand, ...pairs);
-const wchooseCycles = (...pairs) => _wchooseWith(rand, ...pairs).innerJoin();
 const perlinWith = (pat) => {
   const pata = pat.fmap(Math.floor);
   const patb = pat.fmap((t) => Math.floor(t) + 1);
-  const smootherStep = (x) => 6 * x ** 5 - 15 * x ** 4 + 10 * x ** 3;
-  const interp = (x) => (a) => (b) => a + smootherStep(x) * (b - a);
+  const smootherStep = (x2) => 6 * x2 ** 5 - 15 * x2 ** 4 + 10 * x2 ** 3;
+  const interp = (x2) => (a2) => (b) => a2 + smootherStep(x2) * (b - a2);
   return pat.sub(pata).fmap(interp).appBoth(pata.fmap(timeToRand)).appBoth(patb.fmap(timeToRand));
 };
-const perlin = perlinWith(time);
-Pattern$1.prototype._degradeByWith = function(withPat, x) {
-  return this.fmap((a) => (_) => a).appLeft(withPat._filterValues((v) => v > x));
-};
-Pattern$1.prototype._degradeBy = function(x) {
-  return this._degradeByWith(rand, x);
-};
-Pattern$1.prototype.degrade = function() {
-  return this._degradeBy(0.5);
-};
-Pattern$1.prototype._undegradeBy = function(x) {
-  return this._degradeByWith(
-    rand.fmap((r) => 1 - r),
-    x
+perlinWith(time.fmap((v) => Number(v)));
+register(
+  "degradeByWith",
+  (withPat, x2, pat) => pat.fmap((a2) => (_) => a2).appLeft(withPat.filterValues((v) => v > x2))
+);
+register("degradeBy", function(x2, pat) {
+  return pat._degradeByWith(rand, x2);
+});
+register("degrade", (pat) => pat._degradeBy(0.5));
+register("undegradeBy", function(x2, pat) {
+  return pat._degradeByWith(
+    rand.fmap((r2) => 1 - r2),
+    x2
   );
-};
-Pattern$1.prototype.undegrade = function() {
-  return this._undegradeBy(0.5);
-};
-Pattern$1.prototype._sometimesBy = function(x, func) {
-  return stack$1(this._degradeBy(x), func(this._undegradeBy(1 - x)));
-};
-Pattern$1.prototype.sometimesBy = function(patx, func) {
-  const pat = this;
-  return reify$2(patx).fmap((x) => pat._sometimesBy(x, func)).innerJoin();
-};
-Pattern$1.prototype._sometimesByPre = function(x, func) {
-  return stack$1(this._degradeBy(x), func(this).undegradeBy(1 - x));
-};
-Pattern$1.prototype.sometimesByPre = function(patx, func) {
-  const pat = this;
-  return reify$2(patx).fmap((x) => pat._sometimesByPre(x, func)).innerJoin();
-};
-Pattern$1.prototype.sometimes = function(func) {
-  return this._sometimesBy(0.5, func);
-};
-Pattern$1.prototype.sometimesPre = function(func) {
-  return this._sometimesByPre(0.5, func);
-};
-Pattern$1.prototype._someCyclesBy = function(x, func) {
-  return stack$1(
-    this._degradeByWith(rand._segment(1), x),
-    func(this._degradeByWith(rand.fmap((r) => 1 - r)._segment(1), 1 - x))
-  );
-};
-Pattern$1.prototype.someCyclesBy = function(patx, func) {
-  const pat = this;
-  return reify$2(patx).fmap((x) => pat._someCyclesBy(x, func)).innerJoin();
-};
-Pattern$1.prototype.someCycles = function(func) {
-  return this._someCyclesBy(0.5, func);
-};
-Pattern$1.prototype.often = function(func) {
-  return this.sometimesBy(0.75, func);
-};
-Pattern$1.prototype.rarely = function(func) {
-  return this.sometimesBy(0.25, func);
-};
-Pattern$1.prototype.almostNever = function(func) {
-  return this.sometimesBy(0.1, func);
-};
-Pattern$1.prototype.almostAlways = function(func) {
-  return this.sometimesBy(0.9, func);
-};
-Pattern$1.prototype.never = function(func) {
-  return this;
-};
-Pattern$1.prototype.always = function(func) {
-  return func(this);
-};
-Pattern$1.prototype.patternified.push("degradeBy", "undegradeBy");
+});
+register("undegrade", (pat) => pat._undegradeBy(0.5));
+register("sometimesBy", function(patx, func, pat) {
+  return reify(patx).fmap((x2) => stack(pat._degradeBy(x2), func(pat._undegradeBy(1 - x2)))).innerJoin();
+});
+register("sometimes", function(func, pat) {
+  return pat._sometimesBy(0.5, func);
+});
+register("someCyclesBy", function(patx, func, pat) {
+  return reify(patx).fmap(
+    (x2) => stack(
+      pat._degradeByWith(rand._segment(1), x2),
+      func(pat._degradeByWith(rand.fmap((r2) => 1 - r2)._segment(1), 1 - x2))
+    )
+  ).innerJoin();
+});
+register("someCycles", function(func, pat) {
+  return pat._someCyclesBy(0.5, func);
+});
+register("often", function(func, pat) {
+  return pat.sometimesBy(0.75, func);
+});
+register("rarely", function(func, pat) {
+  return pat.sometimesBy(0.25, func);
+});
+register("almostNever", function(func, pat) {
+  return pat.sometimesBy(0.1, func);
+});
+register("almostAlways", function(func, pat) {
+  return pat.sometimesBy(0.9, func);
+});
+register("never", function(_, pat) {
+  return pat;
+});
+register("always", function(func, pat) {
+  return func(pat);
+});
 let synth;
 try {
   synth = window == null ? void 0 : window.speechSynthesis;
@@ -18057,7 +18892,7 @@ try {
   console.warn("cannot use window: not in browser?");
 }
 let allVoices = synth == null ? void 0 : synth.getVoices();
-function speak(words, lang, voice) {
+function triggerSpeech(words, lang, voice) {
   synth.cancel();
   const utterance = new SpeechSynthesisUtterance(words);
   utterance.lang = lang;
@@ -18070,22 +18905,253 @@ function speak(words, lang, voice) {
   }
   speechSynthesis.speak(utterance);
 }
-Pattern$1.prototype._speak = function(lang, voice) {
-  return this._withHap((hap) => {
-    const onTrigger = (time2, hap2) => {
-      speak(hap2.value, lang, voice);
-    };
-    return hap.setContext({ ...hap.context, onTrigger });
+register("speak", function(lang, voice, pat) {
+  return pat.onTrigger((_, hap) => {
+    triggerSpeech(hap.value, lang, voice);
   });
+});
+function getTime() {
+  {
+    throw new Error("no time set! use setTime to define a time source");
+  }
+}
+const getDrawContext = (id2 = "test-canvas") => {
+  let canvas = document.querySelector("#" + id2);
+  if (!canvas) {
+    canvas = document.createElement("canvas");
+    canvas.id = id2;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style = "pointer-events:none;width:100%;height:100%;position:fixed;top:0;left:0;z-index:5";
+    document.body.prepend(canvas);
+  }
+  return canvas.getContext("2d");
 };
-Pattern$1.prototype.speak = function(lang, voice) {
-  return patternify2(Pattern$1.prototype._speak)(reify(lang), reify(voice), this);
+Pattern.prototype.draw = function(callback, { from, to, onQuery }) {
+  if (window.strudelAnimation) {
+    cancelAnimationFrame(window.strudelAnimation);
+  }
+  const ctx = getDrawContext();
+  let cycle, events = [];
+  const animate = (time2) => {
+    const t = getTime();
+    if (from !== void 0 && to !== void 0) {
+      const currentCycle = Math.floor(t);
+      if (cycle !== currentCycle) {
+        cycle = currentCycle;
+        const begin = currentCycle + from;
+        const end = currentCycle + to;
+        setTimeout(() => {
+          events = this.query(new State(new TimeSpan(begin, end))).filter(Boolean).filter((event) => event.part.begin.equals(event.whole.begin));
+          onQuery == null ? void 0 : onQuery(events);
+        }, 0);
+      }
+    }
+    callback(ctx, events, t, time2);
+    window.strudelAnimation = requestAnimationFrame(animate);
+  };
+  requestAnimationFrame(animate);
+  return this;
 };
-const gist = (route, cache = true) => fetch(`https://gist.githubusercontent.com/${route}?cachebust=${cache ? "" : Date.now()}`).then((res) => res.text()).then((code) => eval(code));
-console.log(
-  "%c // \u{1F300} @strudel.cycles/core loaded \u{1F300}",
-  "background-color: black;color:white;padding:4px;border-radius:15px"
-);
+const { createParams } = controls;
+let clearColor = "#22222210";
+Pattern.prototype.animate = function({ callback, sync = false, smear: smear2 = 0.5 } = {}) {
+  window.frame && cancelAnimationFrame(window.frame);
+  const ctx = getDrawContext();
+  const { clientWidth: ww, clientHeight: wh } = ctx.canvas;
+  let smearPart = smear2 === 0 ? "99" : Number((1 - smear2) * 100).toFixed(0);
+  smearPart = smearPart.length === 1 ? `0${smearPart}` : smearPart;
+  clearColor = `#200010${smearPart}`;
+  const render = (t) => {
+    let frame;
+    t = Math.round(t);
+    frame = this.slow(1e3).queryArc(t, t);
+    ctx.fillStyle = clearColor;
+    ctx.fillRect(0, 0, ww, wh);
+    frame.forEach((f) => {
+      let { x: x2, y: y2, w: w2, h: h2, s, r: r2, a: a2 = 0, fill: fill2 = "darkseagreen" } = f.value;
+      w2 *= ww;
+      h2 *= wh;
+      if (r2 !== void 0 && a2 !== void 0) {
+        const radians = a2 * 2 * Math.PI;
+        const [cx, cy] = [(ww - w2) / 2, (wh - h2) / 2];
+        x2 = cx + Math.cos(radians) * r2 * cx;
+        y2 = cy + Math.sin(radians) * r2 * cy;
+      } else {
+        x2 *= ww - w2;
+        y2 *= wh - h2;
+      }
+      const val = { ...f.value, x: x2, y: y2, w: w2, h: h2 };
+      ctx.fillStyle = fill2;
+      if (s === "rect") {
+        ctx.fillRect(x2, y2, w2, h2);
+      } else if (s === "ellipse") {
+        ctx.beginPath();
+        ctx.ellipse(x2 + w2 / 2, y2 + h2 / 2, w2 / 2, h2 / 2, 0, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      callback && callback(ctx, val, f);
+    });
+    window.frame = requestAnimationFrame(render);
+  };
+  window.frame = requestAnimationFrame(render);
+  return silence;
+};
+const { x, y, w, h: h$1, a, r, fill, smear } = createParams("x", "y", "w", "h", "a", "r", "fill", "smear");
+register("rescale", function(f, pat) {
+  return pat.mul(x(f).w(f).y(f).h(f));
+});
+register("moveXY", function(dx, dy, pat) {
+  return pat.add(x(dx).y(dy));
+});
+register("zoomIn", function(f, pat) {
+  const d = pure(1).sub(f).div(2);
+  return pat.rescale(f).move(d, d);
+});
+const scale = (normalized, min, max) => normalized * (max - min) + min;
+const getValue = (e) => {
+  let { value } = e;
+  if (typeof e.value !== "object") {
+    value = { value };
+  }
+  let { note, n, freq, s } = value;
+  if (freq) {
+    return freqToMidi(freq);
+  }
+  note = note != null ? note : n;
+  if (typeof note === "string") {
+    return toMidi(note);
+  }
+  if (typeof note === "number") {
+    return note;
+  }
+  if (s) {
+    return "_" + s;
+  }
+  return value;
+};
+Pattern.prototype.pianoroll = function({
+  cycles = 4,
+  playhead = 0.5,
+  overscan = 1,
+  flipTime = 0,
+  flipValues = 0,
+  hideNegative = false,
+  inactive = "#7491D2",
+  active = "#FFCA28",
+  background = "transparent",
+  smear: smear2 = 0,
+  playheadColor = "white",
+  minMidi = 10,
+  maxMidi = 90,
+  autorange = 0,
+  timeframe: timeframeProp,
+  fold = 0,
+  vertical = 0
+} = {}) {
+  const ctx = getDrawContext();
+  const w2 = ctx.canvas.width;
+  const h2 = ctx.canvas.height;
+  let from = -cycles * playhead;
+  let to = cycles * (1 - playhead);
+  if (timeframeProp) {
+    console.warn("timeframe is deprecated! use from/to instead");
+    from = 0;
+    to = timeframeProp;
+  }
+  const timeAxis = vertical ? h2 : w2;
+  const valueAxis = vertical ? w2 : h2;
+  let timeRange = vertical ? [timeAxis, 0] : [0, timeAxis];
+  const timeExtent = to - from;
+  const valueRange = vertical ? [0, valueAxis] : [valueAxis, 0];
+  let valueExtent = maxMidi - minMidi + 1;
+  let barThickness = valueAxis / valueExtent;
+  let foldValues = [];
+  flipTime && timeRange.reverse();
+  flipValues && valueRange.reverse();
+  this.draw(
+    (ctx2, events, t) => {
+      ctx2.fillStyle = background;
+      ctx2.globalAlpha = 1;
+      if (!smear2) {
+        ctx2.clearRect(0, 0, w2, h2);
+        ctx2.fillRect(0, 0, w2, h2);
+      }
+      const inFrame = (event) => (!hideNegative || event.whole.begin >= 0) && event.whole.begin <= t + to && event.whole.end >= t + from;
+      events.filter(inFrame).forEach((event) => {
+        var _a, _b, _c;
+        const isActive = event.whole.begin <= t && event.whole.end > t;
+        ctx2.fillStyle = ((_a = event.context) == null ? void 0 : _a.color) || inactive;
+        ctx2.strokeStyle = ((_b = event.context) == null ? void 0 : _b.color) || active;
+        ctx2.globalAlpha = (_c = event.context.velocity) != null ? _c : 1;
+        const timePx = scale((event.whole.begin - (flipTime ? to : from)) / timeExtent, ...timeRange);
+        let durationPx = scale(event.duration / timeExtent, 0, timeAxis);
+        const value = getValue(event);
+        const valuePx = scale(
+          fold ? foldValues.indexOf(value) / foldValues.length : (Number(value) - minMidi) / valueExtent,
+          ...valueRange
+        );
+        let margin = 0;
+        const offset = scale(t / timeExtent, ...timeRange);
+        let coords;
+        if (vertical) {
+          coords = [
+            valuePx + 1 - (flipValues ? barThickness : 0),
+            timeAxis - offset + timePx + margin + 1 - (flipTime ? 0 : durationPx),
+            barThickness - 2,
+            durationPx - 2
+          ];
+        } else {
+          coords = [
+            timePx - offset + margin + 1 - (flipTime ? durationPx : 0),
+            valuePx + 1 - (flipValues ? 0 : barThickness),
+            durationPx - 2,
+            barThickness - 2
+          ];
+        }
+        isActive ? ctx2.strokeRect(...coords) : ctx2.fillRect(...coords);
+      });
+      ctx2.globalAlpha = 1;
+      const playheadPosition = scale(-from / timeExtent, ...timeRange);
+      ctx2.strokeStyle = playheadColor;
+      ctx2.beginPath();
+      if (vertical) {
+        ctx2.moveTo(0, playheadPosition);
+        ctx2.lineTo(valueAxis, playheadPosition);
+      } else {
+        ctx2.moveTo(playheadPosition, 0);
+        ctx2.lineTo(playheadPosition, valueAxis);
+      }
+      ctx2.stroke();
+    },
+    {
+      from: from - overscan,
+      to: to + overscan,
+      onQuery: (events) => {
+        const { min, max, values } = events.reduce(
+          ({ min: min2, max: max2, values: values2 }, e) => {
+            const v = getValue(e);
+            return {
+              min: v < min2 ? v : min2,
+              max: v > max2 ? v : max2,
+              values: values2.includes(v) ? values2 : [...values2, v]
+            };
+          },
+          { min: Infinity, max: -Infinity, values: [] }
+        );
+        if (autorange) {
+          minMidi = min;
+          maxMidi = max;
+          valueExtent = maxMidi - minMidi + 1;
+        }
+        foldValues = values.sort((a2, b) => String(a2).localeCompare(String(b)));
+        barThickness = fold ? valueAxis / foldValues.length : valueAxis / valueExtent;
+      }
+    }
+  );
+  return this;
+};
+logger("\u{1F300} @strudel.cycles/core loaded \u{1F300}");
 if (globalThis._strudelLoaded) {
   console.warn(
     `@strudel.cycles/core was loaded more than once...
@@ -18094,135 +19160,35 @@ Please check with "npm ls @strudel.cycles/core".`
   );
 }
 globalThis._strudelLoaded = true;
-const strudel = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  Fraction: fraction,
-  gist,
-  Hap,
-  Pattern: Pattern$1,
-  silence: silence$1,
-  pure: pure$1,
-  isPattern,
-  reify: reify$2,
-  stack: stack$1,
-  slowcat: slowcat$1,
-  slowcatPrime,
-  fastcat,
-  cat,
-  timeCat: timeCat$1,
-  sequence: sequence$1,
-  seq,
-  polymeterSteps,
-  polymeter,
-  pm,
-  polyrhythm,
-  pr,
-  add,
-  chop,
-  chunk,
-  chunkBack,
-  div,
-  early,
-  echo,
-  every,
-  fast,
-  inv,
-  invert,
-  iter,
-  iterBack,
-  jux,
-  juxBy,
-  late,
-  linger,
-  mask,
-  mul,
-  off,
-  ply,
-  range,
-  range2,
-  rev,
-  slow,
-  struct,
-  sub,
-  superimpose,
-  set,
-  when,
-  makeComposable,
-  patternify2,
-  patternify3,
-  patternify4,
-  steady,
-  signal,
-  isaw,
-  isaw2,
-  saw,
-  saw2,
-  sine2,
-  sine,
-  cosine,
-  cosine2,
-  square,
-  square2,
-  tri,
-  tri2,
-  time,
-  rand,
-  rand2,
-  _brandBy,
-  brandBy,
-  brand,
-  _irand,
-  irand,
-  __chooseWith,
-  chooseWith,
-  chooseInWith,
-  choose,
-  chooseCycles,
-  randcat,
-  wchoose,
-  wchooseCycles,
-  perlinWith,
-  perlin,
-  State,
-  TimeSpan,
-  isNote,
-  tokenizeNote,
-  toMidi,
-  fromMidi,
-  getFreq,
-  midi2note,
-  mod,
-  getPlayableNoteValue,
-  getFrequency,
-  rotate,
-  pipe,
-  compose,
-  removeUndefineds,
-  flatten,
-  id,
-  constant,
-  listRange,
-  curry
-}, Symbol.toStringTag, { value: "Module" }));
-const { pure, Pattern, Fraction, stack, slowcat, sequence, timeCat, silence, reify: reify$1 } = strudel;
-var _seedState = 0;
-const randOffset = 2e-4;
-function _nextSeed() {
-  return _seedState++;
-}
-const applyOptions = (parent) => (pat, i) => {
+const applyOptions = (parent, code) => (pat, i) => {
   const ast = parent.source_[i];
   const options = ast.options_;
   const operator = options == null ? void 0 : options.operator;
   if (operator) {
     switch (operator.type_) {
-      case "stretch":
-        const speed = Fraction(operator.arguments_.amount).inverse();
-        return reify$1(pat).fast(speed);
+      case "stretch": {
+        const legalTypes = ["fast", "slow"];
+        const { type, amount } = operator.arguments_;
+        if (!legalTypes.includes(type)) {
+          throw new Error(`mini: stretch: type must be one of ${legalTypes.join("|")} but got ${type}`);
+        }
+        return reify(pat)[type](patternifyAST(amount, code));
+      }
       case "bjorklund":
-        return pat.euclid(operator.arguments_.pulse, operator.arguments_.step, operator.arguments_.rotation);
+        if (operator.arguments_.rotation) {
+          const p1 = patternifyAST(operator.arguments_.pulse, code), p2 = patternifyAST(operator.arguments_.step, code), p3 = patternifyAST(operator.arguments_.rotation, code);
+          p1.ast = operator.arguments_.pulse;
+          p2.ast = operator.arguments_.step;
+          p3.ast = operator.arguments_.rotation;
+          return pat.euclidRot(p1, p2, p3);
+        } else {
+          const p1 = patternifyAST(operator.arguments_.pulse, code), p2 = patternifyAST(operator.arguments_.step, code);
+          p1.ast = operator.arguments_.pulse;
+          p2.ast = operator.arguments_.step;
+          return pat.euclid(p1, p2);
+        }
       case "degradeBy":
-        return reify$1(pat)._degradeByWith(rand.early(randOffset * _nextSeed()).segment(1), operator.arguments_.amount);
+        return reify(pat).degradeBy(operator.arguments_.amount === null ? 0.5 : operator.arguments_.amount);
     }
     console.warn(`operator "${operator.type_}" not implemented`);
   }
@@ -18238,91 +19204,85 @@ const applyOptions = (parent) => (pat, i) => {
   return pat;
 };
 function resolveReplications(ast) {
-  ast.source_ = ast.source_.map((child) => {
-    const { replicate, ...options } = child.options_ || {};
-    if (replicate) {
-      return {
-        ...child,
-        options_: { ...options, weight: replicate },
-        source_: {
-          type_: "pattern",
-          arguments_: {
-            alignment: "h"
-          },
-          source_: [
-            {
-              type_: "element",
-              source_: child.source_,
-              location_: child.location_,
-              options_: {
-                operator: {
-                  type_: "stretch",
-                  arguments_: { amount: Fraction(replicate).inverse().toString() }
-                }
-              }
-            }
-          ]
-        }
-      };
-    }
-    return child;
-  });
+  ast.source_ = flatten(
+    ast.source_.map((child) => {
+      const { replicate, ...options } = child.options_ || {};
+      if (!replicate) {
+        return [child];
+      }
+      delete child.options_.replicate;
+      return Array(replicate).fill(child);
+    })
+  );
 }
-function patternifyAST(ast) {
-  let p;
+function patternifyAST(ast, code) {
   switch (ast.type_) {
-    case "pattern":
+    case "pattern": {
       resolveReplications(ast);
-      const children = ast.source_.map(patternifyAST).map(applyOptions(ast));
+      const children = ast.source_.map((child) => patternifyAST(child, code)).map(applyOptions(ast, code));
       const alignment = ast.arguments_.alignment;
-      if (alignment === "v") {
+      if (alignment === "stack") {
         return stack(...children);
       }
-      if (alignment === "r") {
-        return chooseInWith(rand.early(randOffset * _nextSeed()).segment(1), children);
+      if (alignment === "polymeter") {
+        const stepsPerCycle = ast.arguments_.stepsPerCycle ? patternifyAST(ast.arguments_.stepsPerCycle, code).fmap((x2) => fraction(x2)) : pure(fraction(children.length > 0 ? children[0].__weight : 1));
+        const aligned = children.map((child) => child.fast(stepsPerCycle.fmap((x2) => x2.div(child.__weight || 1))));
+        return stack(...aligned);
+      }
+      if (alignment === "rand") {
+        return chooseCycles(...children);
       }
       const weightedChildren = ast.source_.some((child) => {
         var _a;
         return !!((_a = child.options_) == null ? void 0 : _a.weight);
       });
-      if (!weightedChildren && alignment === "t") {
+      if (!weightedChildren && alignment === "slowcat") {
         return slowcat(...children);
       }
       if (weightedChildren) {
-        const pat = timeCat(...ast.source_.map((child, i) => {
+        const weightSum = ast.source_.reduce((sum, child) => {
+          var _a;
+          return sum + (((_a = child.options_) == null ? void 0 : _a.weight) || 1);
+        }, 0);
+        const pat2 = timeCat(...ast.source_.map((child, i) => {
           var _a;
           return [((_a = child.options_) == null ? void 0 : _a.weight) || 1, children[i]];
         }));
-        if (alignment === "t") {
-          const weightSum = ast.source_.reduce((sum, child) => {
-            var _a;
-            return sum + (((_a = child.options_) == null ? void 0 : _a.weight) || 1);
-          }, 0);
-          return pat._slow(weightSum);
+        if (alignment === "slowcat") {
+          return pat2._slow(weightSum);
         }
-        return pat;
+        pat2.__weight = weightSum;
+        return pat2;
       }
-      return sequence(...children);
-    case "element":
+      const pat = sequence(...children);
+      pat.ast = ast;
+      pat.__weight = children.length;
+      return pat;
+    }
+    case "element": {
+      const pat = patternifyAST(ast.source_, code);
+      pat.ast = ast;
+      return pat;
+    }
+    case "atom": {
       if (ast.source_ === "~") {
         return silence;
       }
-      if (typeof ast.source_ !== "object") {
-        if (!ast.location_) {
-          console.warn("no location for", ast);
-          return ast.source_;
-        }
-        const { start, end } = ast.location_;
-        const value = !isNaN(Number(ast.source_)) ? Number(ast.source_) : ast.source_;
-        return pure(value).withLocation([start.line, start.column, start.offset], [end.line, end.column, end.offset]);
+      if (!ast.location_) {
+        console.warn("no location for", ast);
+        return ast.source_;
       }
-      p = patternifyAST(ast.source_);
-      p.ast = ast;
-      return p;
+      const { start, end } = ast.location_;
+      const value = !isNaN(Number(ast.source_)) ? Number(ast.source_) : ast.source_;
+      const actual = code == null ? void 0 : code.split("").slice(start.offset, end.offset).join("");
+      const [offsetStart = 0, offsetEnd = 0] = actual ? actual.split(ast.source_).map((p) => p.split("").filter((c) => c === " ").length) : [];
+      return pure(value).withLocation(
+        [start.line, start.column + offsetStart, start.offset + offsetStart],
+        [start.line, end.column - offsetEnd, end.offset - offsetEnd]
+      );
+    }
     case "stretch":
-      p = patternifyAST(ast.source_).slow(ast.arguments_.amount);
-      p.ast = ast;
-      return p;
+      return patternifyAST(ast.source_, code).slow(patternifyAST(ast.arguments_.amount, code));
     default:
       console.warn(`node type "${ast.type_}" not implemented -> returning silence`);
       return silence;
@@ -18330,150 +19290,36 @@ function patternifyAST(ast) {
 }
 const mini = (...strings) => {
   const pats = strings.map((str) => {
-    const ast = krillParser.parse(`"${str}"`);
-    const p = patternifyAST(ast);
-    p.ast = ast;
-    return p;
+    const code = `"${str}"`;
+    const ast = peg$parse(code);
+    const pat = patternifyAST(ast, code);
+    pat.ast = ast;
+    return pat;
   });
   const s = sequence(...pats);
   s.ast = pats.map((_pat) => _pat.ast);
   return s;
 };
 const h = (string) => {
-  const ast = krillParser.parse(string);
-  const p = patternifyAST(ast);
-  p.ast = ast;
-  return p;
+  const ast = peg$parse(string);
+  const pat = patternifyAST(ast, string);
+  pat.ast = ast;
+  return pat;
 };
-Pattern.prototype.define("mini", mini, { composable: true });
-Pattern.prototype.define("m", mini, { composable: true });
-Pattern.prototype.define("h", h, { composable: true });
 function minify(thing) {
   if (typeof thing === "string") {
     return mini(thing);
   }
-  return reify$1(thing);
+  return reify(thing);
 }
+exports.SyntaxError = peg$SyntaxError;
 exports.h = h;
 exports.mini = mini;
 exports.minify = minify;
+exports.parse = peg$parse;
 exports.patternifyAST = patternifyAST;
 
-},{}],141:[function(require,module,exports){
-/*
- * https://github.com/antimatter15/heapqueue.js/blob/master/heapqueue.js
- *
- * This implementation is very loosely based off js-priority-queue
- * by Adam Hooper from https://github.com/adamhooper/js-priority-queue
- *
- * The js-priority-queue implementation seemed a teensy bit bloated
- * with its require.js dependency and multiple storage strategies
- * when all but one were strongly discouraged. So here is a kind of
- * condensed version of the functionality with only the features that
- * I particularly needed.
- *
- * Using it is pretty simple, you just create an instance of HeapQueue
- * while optionally specifying a comparator as the argument:
- *
- * var heapq = new HeapQueue();
- *
- * //IF NEGATIVE, RETURN A
- *
- * var customq = new HeapQueue(function(a, b){
- *   // if b > a, return negative
- *   // means that it spits out the smallest item first
- *   return a - b;
- * });
- *
- * Note that in this case, the default comparator is identical to
- * the comparator which is used explicitly in the second queue.
- *
- * Once you've initialized the heapqueue, you can plop some new
- * elements into the queue with the push method (vaguely reminiscent
- * of typical javascript arays)
- *
- * heapq.push(42);
- * heapq.push("kitten");
- *
- * The push method returns the new number of elements of the queue.
- *
- * You can push anything you'd like onto the queue, so long as your
- * comparator function is capable of handling it. The default
- * comparator is really stupid so it won't be able to handle anything
- * other than an number by default.
- *
- * You can preview the smallest item by using peek.
- *
- * heapq.push(-9999);
- * heapq.peek(); // ==> -9999
- *
- * The useful complement to to the push method is the pop method,
- * which returns the smallest item and then removes it from the
- * queue.
- *
- * heapq.push(1);
- * heapq.push(2);
- * heapq.push(3);
- * heapq.pop(); // ==> 1
- * heapq.pop(); // ==> 2
- * heapq.pop(); // ==> 3
- */
-const HeapQueue = function(cmp){
-  this.cmp = (cmp || function(a, b){ return a - b; });
-  this.length = 0;
-  this.data = [];
-}
-HeapQueue.prototype.peek = function(){
-  return this.data[0];
-};
-HeapQueue.prototype.push = function(value){
-  this.data.push(value);
-
-  var pos = this.data.length - 1,
-  parent, x;
-
-  while(pos > 0){
-    parent = (pos - 1) >>> 1;
-    if(this.cmp(this.data[pos], this.data[parent]) < 0){
-      x = this.data[parent];
-      this.data[parent] = this.data[pos];
-      this.data[pos] = x;
-      pos = parent;
-    }else break;
-  }
-  return this.length++;
-};
-HeapQueue.prototype.pop = function(){
-  var last_val = this.data.pop(),
-  ret = this.data[0];
-  if(this.data.length > 0){
-    this.data[0] = last_val;
-    var pos = 0,
-    last = this.data.length - 1,
-    left, right, minIndex, x;
-    while(1){
-      left = (pos << 1) + 1;
-      right = left + 1;
-      minIndex = pos;
-      if(left <= last && this.cmp(this.data[left], this.data[minIndex]) < 0) minIndex = left;
-      if(right <= last && this.cmp(this.data[right], this.data[minIndex]) < 0) minIndex = right;
-      if(minIndex !== pos){
-        x = this.data[minIndex];
-        this.data[minIndex] = this.data[pos];
-        this.data[pos] = x;
-        pos = minIndex;
-      }else break;
-    }
-  } else {
-    ret = last_val;
-  }
-  this.length--;
-  return ret;
-};
-
-module.exports = HeapQueue
-
-},{}],142:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 
 /**
  * Copyright 2018 Google LLC
@@ -18519,7 +19365,7 @@ module.exports = function Realm (scope, parentElement) {
   this.exec = win.$hook.call(scope, scope, console);
 }
 
-},{}],143:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 const __proxy = require( './workletProxy.js' )
 const effectProto = require( './fx/effect.js' )
 
@@ -18527,10 +19373,13 @@ module.exports = function( Gibberish ) {
   const proxy = __proxy( Gibberish )
   
   const factory = function( ugen, graph, __name, values, cb=null, shouldProxy = true ) {
-    if( Gibberish.mode === 'processor' )
-      ugen.callback = cb === null ? Gibberish.genish.gen.createCallback( graph, Gibberish.memory, false, true ) : cb
-    else
+    if( Gibberish.mode === 'processor' ) {
+      ugen.callback = cb === null 
+        ? Gibberish.genish.gen.createCallback( graph, Gibberish.memory, false, true ) 
+        : cb
+    }else{
       ugen.callback = { out:[] }
+    }
 
     let name = Array.isArray( __name ) ? __name[ __name.length - 1 ] : __name
 
@@ -18680,7 +19529,7 @@ module.exports = function( Gibberish ) {
   return factory
 }
 
-},{"./fx/effect.js":158,"./workletProxy.js":204}],144:[function(require,module,exports){
+},{"./fx/effect.js":161,"./workletProxy.js":210}],147:[function(require,module,exports){
 let g = require( 'genish.js' )
  
 // constructor for schroeder allpass filters
@@ -18697,7 +19546,7 @@ let allPass = function( _input, length=500, feedback=.5 ) {
 
 module.exports = allPass
 
-},{"genish.js":40}],145:[function(require,module,exports){
+},{"genish.js":40}],148:[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -18861,7 +19710,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":148,"genish.js":40}],146:[function(require,module,exports){
+},{"./filter.js":151,"genish.js":40}],149:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 ) {
@@ -18880,7 +19729,7 @@ let combFilter = function( _input, combLength, damping=.5*.4, feedbackCoeff=.84 
 
 module.exports = combFilter
 
-},{"genish.js":40}],147:[function(require,module,exports){
+},{"genish.js":40}],150:[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -19090,7 +19939,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./filter.js":148,"genish.js":40}],148:[function(require,module,exports){
+},{"./filter.js":151,"genish.js":40}],151:[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let filter = Object.create( ugen )
@@ -19101,7 +19950,7 @@ Object.assign( filter, {
 
 module.exports = filter
 
-},{"../ugen.js":202}],149:[function(require,module,exports){
+},{"../ugen.js":208}],152:[function(require,module,exports){
 let g = require( 'genish.js' ),
     filter = require( './filter.js' )
 
@@ -19171,7 +20020,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":148,"genish.js":40}],150:[function(require,module,exports){
+},{"./filter.js":151,"genish.js":40}],153:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const g = Gibberish.genish
@@ -19196,7 +20045,7 @@ module.exports = function( Gibberish ) {
 
       switch( props.filterModel ) {
         case 1:
-          filteredOsc = g.zd24( input, g.min( g.in('Q'), .9999 ), cutoff, 0 ) // g.max(.005, g.min( cutoff, 1 ) ) )
+          filteredOsc = g.zd24( input, g.in('Q'), cutoff, 0 ) // g.max(.005, g.min( cutoff, 1 ) ) )
           break;
         case 2:
           filteredOsc = g.diodeZDF( input, g.min( g.in('Q'), .9999 ), cutoff, saturation, isStereo ) 
@@ -19235,7 +20084,7 @@ return filters
 
 }
 
-},{"./allpass.js":144,"./biquad.dsp.js":145,"./combfilter.js":146,"./diodeFilterZDF.js":147,"./filter24.js":149,"./ladder.dsp.js":151,"./svf.js":152}],151:[function(require,module,exports){
+},{"./allpass.js":147,"./biquad.dsp.js":148,"./combfilter.js":149,"./diodeFilterZDF.js":150,"./filter24.js":152,"./ladder.dsp.js":154,"./svf.js":155}],154:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       filterProto = require( './filter.js' )
 
@@ -19329,7 +20178,8 @@ module.exports = function( Gibberish ) {
         out.isStereo = isStereo
       }
 
-      filter.graph = Gibberish.genish.zd24( genish.in('input'), genish.in('Q'), genish.in('cutoff'), isStereo ) 
+      // cutoff frequency limit handled near top of makeChannel function
+      filter.graph = Gibberish.genish.zd24( genish.in('input'), genish.min( 1, genish.in('Q') ), genish.in('cutoff'), isStereo ) 
     } 
 
     filter.__createGraph()
@@ -19355,7 +20205,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":148,"genish.js":40}],152:[function(require,module,exports){
+},{"./filter.js":151,"genish.js":40}],155:[function(require,module,exports){
 const g = require( 'genish.js' ),
       filter = require( './filter.js' )
 
@@ -19433,7 +20283,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./filter.js":148,"genish.js":40}],153:[function(require,module,exports){
+},{"./filter.js":151,"genish.js":40}],156:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -19511,7 +20361,7 @@ return BitCrusher
 
 }
 
-},{"./effect.js":158,"genish.js":40}],154:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],157:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -19636,7 +20486,7 @@ module.exports = function( Gibberish ) {
   return Shuffler 
 }
 
-},{"./effect.js":158,"genish.js":40}],155:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],158:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
   
@@ -19733,7 +20583,7 @@ return __Chorus
 
 }
 
-},{"./effect.js":158,"genish.js":40}],156:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],159:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -19805,7 +20655,7 @@ return Delay
 
 }
 
-},{"./effect.js":158,"genish.js":40}],157:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],160:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -19892,7 +20742,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./effect.js":158,"genish.js":40}],158:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],161:[function(require,module,exports){
 let ugen = require( '../ugen.js' )()
 
 let effect = Object.create( ugen )
@@ -19904,7 +20754,7 @@ Object.assign( effect, {
 
 module.exports = effect
 
-},{"../ugen.js":202}],159:[function(require,module,exports){
+},{"../ugen.js":208}],162:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const effects = {
@@ -19935,7 +20785,7 @@ return effects
 
 }
 
-},{"./bitCrusher.js":153,"./bufferShuffler.js":154,"./chorus.js":155,"./delay.js":156,"./distortion.dsp.js":157,"./flanger.js":160,"./freeverb.js":161,"./ringMod.js":162,"./tremolo.js":163,"./vibrato.js":164,"./wavefolder.dsp.js":165}],160:[function(require,module,exports){
+},{"./bitCrusher.js":156,"./bufferShuffler.js":157,"./chorus.js":158,"./delay.js":159,"./distortion.dsp.js":160,"./flanger.js":163,"./freeverb.js":164,"./ringMod.js":165,"./tremolo.js":166,"./vibrato.js":167,"./wavefolder.dsp.js":168}],163:[function(require,module,exports){
 let g = require( 'genish.js' ),
     proto = require( './effect.js' )
 
@@ -20026,7 +20876,7 @@ return Flanger
 
 }
 
-},{"./effect.js":158,"genish.js":40}],161:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],164:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -20134,7 +20984,7 @@ return Freeverb
 }
 
 
-},{"./effect.js":158,"genish.js":40}],162:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],165:[function(require,module,exports){
 let g = require( 'genish.js' ),
     effect = require( './effect.js' )
 
@@ -20199,7 +21049,7 @@ return RingMod
 
 }
 
-},{"./effect.js":158,"genish.js":40}],163:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],166:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -20272,7 +21122,7 @@ return Tremolo
 
 }
 
-},{"./effect.js":158,"genish.js":40}],164:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],167:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -20359,7 +21209,7 @@ return Vibrato
 
 }
 
-},{"./effect.js":158,"genish.js":40}],165:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],168:[function(require,module,exports){
 const g = require( 'genish.js' ),
       effect = require( './effect.js' )
 
@@ -20456,7 +21306,8 @@ module.exports = function( Gibberish ) {
 
       const input = g.in( 'input' ),
             gain  = g.in( 'gain' ),
-            postgain = g.in( 'postgain' )
+            postgain = g.in( 'postgain' ),
+            bias  = g.in( 'bias' )
 
       let lout
       {
@@ -20464,9 +21315,9 @@ module.exports = function( Gibberish ) {
 
         const linput = isStereo ? input[0] * gain : input * gain
         lout = linput * .333
-        lout = wavestage( wavestage( wavestage( wavestage( lout ) ) ) )
+        lout = wavestage( wavestage( wavestage( wavestage( bias + lout ) ) ) )
         lout = lout * .6
-        lout = g.tanh( lout ) * postgain
+        lout = g.dcblock( g.tanh( lout ) * postgain )
       }
 
       wavefolder.graph = lout
@@ -20477,9 +21328,9 @@ module.exports = function( Gibberish ) {
           'use jsdsp'
           const rinput = isStereo ? input[1] * gain : input * gain
           rout = rinput * .333
-          rout = wavestage( wavestage( wavestage( wavestage( rout ) ) ) )
+          rout = wavestage( wavestage( wavestage( wavestage( bias + rout ) ) ) )
           rout = rout * .6
-          rout = g.tanh( rout ) * postgain
+          rout = g.dcblock( g.tanh( rout ) * postgain )
         }
 
         wavefolder.graph = [ lout, rout ]
@@ -20502,14 +21353,15 @@ module.exports = function( Gibberish ) {
   Wavefolder.defaults = {
     input:0,
     gain:2,
-    postgain:1
+    postgain:1,
+    bias:0
   }
 
   return [ Wavefolder, wavestage ]
 
 }
 
-},{"./effect.js":158,"genish.js":40}],166:[function(require,module,exports){
+},{"./effect.js":161,"genish.js":40}],169:[function(require,module,exports){
 let MemoryHelper = require( 'memory-helper' ),
     genish       = require( 'genish.js' )
     
@@ -20747,15 +21599,22 @@ let Gibberish = {
         this.callbackUgens.push( v.callback )
     })
 
-    this.callbackNames = this.callbackUgens.map( v => v.ugenName )
 
     callbackBody.push( '\n\treturn ' + lastLine.split( '=' )[0].split( ' ' )[1] )
 
     if( this.debug === true ) console.log( 'callback:\n', callbackBody.join('\n') )
     
+    // XXX added unshift 'input' here
+    this.callbackNames = this.callbackUgens.map( v => v.ugenName )
     this.callbackNames.push( 'mem' )
+    this.callbackNames.push( 'input' )
+    
+    // ... and here
     this.callbackUgens.push( this.memory.heap )
-    this.callback = Function( ...this.callbackNames, callbackBody.join( '\n' ) )//.bind( null, ...this.callbackUgens )
+    // XXX added 0 to represent mic input
+    this.callbackUgens.push( 0 )
+
+    this.callback = Function( ...this.callbackNames, callbackBody.join( '\n' ) )
     this.callback.out = []
 
     if( this.oncallback ) this.oncallback( this.callback )
@@ -20801,7 +21660,6 @@ let Gibberish = {
     if( block === undefined ) block = []
     if( ugen === undefined ) return block
 
-
     let dirtyIdx = Gibberish.dirtyUgens.indexOf( ugen )
 
     let memo = Gibberish.memoed[ ugen.ugenName ]
@@ -20817,18 +21675,26 @@ let Gibberish = {
       }
 
       let line = `\tconst v_${ugen.id} = ` 
-      if( !ugen.isop ) line += `${ugen.ugenName}( `
 
-      // must get array so we can keep track of length for comma insertion
-      const keys = ugen.isop === true || ugen.type === 'bus'  
-        ? Object.keys( ugen.inputs ) 
-        : [...ugen.inputNames ] 
+      // ugens can have custom callback strings so that they
+      // bypass codegen. currently Input is the only one that does this,
+      // it simply accepts the worklet input as its argument.
+      if( ugen.callbackString !== undefined ) {
+        line += ugen.callbackString
+      }else{
+        if( !ugen.isop ) line += `${ugen.ugenName}( `
 
-      line = ugen.isop === true 
-        ? Gibberish.__processBinop( ugen, line, block, keys ) 
-        : Gibberish.__processNonBinop( ugen, line, block, keys )
+        // must get array so we can keep track of length for comma insertion
+        const keys = ugen.isop === true || ugen.type === 'bus'  
+          ? Object.keys( ugen.inputs ) 
+          : [...ugen.inputNames ] 
 
-      line = Gibberish.__addLineEnding( line, ugen, keys )
+        line = ugen.isop === true 
+          ? Gibberish.__processBinop( ugen, line, block, keys ) 
+          : Gibberish.__processNonBinop( ugen, line, block, keys )
+
+        line = Gibberish.__addLineEnding( line, ugen, keys )
+      }
 
       block.push( line )
       
@@ -21015,7 +21881,7 @@ Gibberish.utilities = require( './utilities.js' )( Gibberish )
 
 module.exports = Gibberish
 
-},{"./analysis/analyzer.js":131,"./analysis/analyzers.js":132,"./envelopes/envelopes.js":137,"./factory.js":143,"./filters/filters.js":150,"./fx/effect.js":158,"./fx/effects.js":159,"./instruments/instrument.js":173,"./instruments/instruments.js":174,"./instruments/polyMixin.js":179,"./instruments/polytemplate.js":180,"./misc/binops.js":186,"./misc/bus.js":187,"./misc/bus2.js":188,"./misc/monops.js":189,"./misc/panner.js":190,"./misc/time.js":191,"./oscillators/oscillators.js":194,"./scheduling/scheduler.js":198,"./scheduling/seq2.js":199,"./scheduling/sequencer.js":200,"./scheduling/tidal.js":201,"./ugen.js":202,"./utilities.js":203,"./workletProxy.js":204,"genish.js":40,"memory-helper":205}],167:[function(require,module,exports){
+},{"./analysis/analyzer.js":135,"./analysis/analyzers.js":136,"./envelopes/envelopes.js":141,"./factory.js":146,"./filters/filters.js":153,"./fx/effect.js":161,"./fx/effects.js":162,"./instruments/instrument.js":179,"./instruments/instruments.js":180,"./instruments/polyMixin.js":185,"./instruments/polytemplate.js":186,"./misc/binops.js":192,"./misc/bus.js":193,"./misc/bus2.js":194,"./misc/monops.js":195,"./misc/panner.js":196,"./misc/time.js":197,"./oscillators/oscillators.js":200,"./scheduling/scheduler.js":204,"./scheduling/seq2.js":205,"./scheduling/sequencer.js":206,"./scheduling/tidal.js":207,"./ugen.js":208,"./utilities.js":209,"./workletProxy.js":210,"genish.js":40,"memory-helper":212}],170:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -21085,7 +21951,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":173,"genish.js":40}],168:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],171:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' ),
       __wavefold   = require( '../fx/wavefolder.dsp.js' )
@@ -21149,6 +22015,8 @@ module.exports = function( Gibberish ) {
         // XXX ugly, ugly hack
         if(  props.filterModel !== 2 ) complexWithGain = complexWithGain * saturation
     
+        complexWithGain = g.dcblock( complexWithGain )
+
         if( syn.panVoices === true ) { 
           panner = g.pan( complexWithGain, complexWithGain, g.in( 'pan' ) ) 
           syn.graph = [ panner.left, panner.right ]
@@ -21211,7 +22079,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../fx/wavefolder.dsp.js":165,"./instrument.js":173,"genish.js":40}],169:[function(require,module,exports){
+},{"../fx/wavefolder.dsp.js":168,"./instrument.js":179,"genish.js":40}],172:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21228,14 +22096,27 @@ module.exports = function( Gibberish ) {
     const props = Object.assign( {}, Conga.defaults, argumentProps )
 
     const trigger = g.bang(),
+          Loudness = g.mul( triggerLoudness,loudness ),
           impulse = g.mul( trigger, 60 ),
-          _decay =  g.sub( .101, g.div( decay, 10 ) ), // create range of .001 - .099
+          _decay =  g.sub( .101, g.div( g.min( decay, 1), 10 ) ), // create range of .001 - .099
           bpf = g.svf( impulse, frequency, _decay, 2, false ),
-          out = g.mul( bpf, g.mul( g.mul( triggerLoudness,loudness ), gain ) )
+          out = g.mul( bpf, g.mul( Loudness, gain ) )
     
-    conga.isStereo = false
     conga.env = trigger
-    return Gibberish.factory( conga, out, ['instruments','conga'], props  )
+
+    if( props.panVoices === true ) {  
+      const panner = g.pan( bpf, bpf, g.in( 'pan' ) )
+      conga.graph = [ 
+        g.mul( panner.left, gain, Loudness ), 
+        g.mul( panner.right, gain, Loudness ) 
+      ]
+      conga.isStereo = true
+    }else{
+      conga.graph = out//g.mul( filteredOsc, g.in('gain'), Loudness )
+      conga.isStereo = false
+    }
+
+    return Gibberish.factory( conga, conga.graph, ['instruments','conga'], props  )
   }
   
   Conga.defaults = {
@@ -21243,16 +22124,18 @@ module.exports = function( Gibberish ) {
     frequency:190,
     decay: .85,
     loudness: 1,
-    __triggerLoudness:1
+    pan:.5,
+    __triggerLoudness:1,
+    panVoices:false
   }
 
-  const PolyConga = Gibberish.PolyTemplate( Conga, ['gain','frequency','decay','loudness','__triggerLoudness' ] ) 
+  const PolyConga = Gibberish.PolyTemplate( Conga, ['gain','frequency','decay','loudness','__triggerLoudness', 'pan' ] ) 
   PolyConga.defaults = Conga.defaults
 
   return [ Conga, PolyConga ]
 }
 
-},{"./instrument.js":173,"genish.js":40}],170:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],173:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21296,7 +22179,429 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":173,"genish.js":40}],171:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],174:[function(require,module,exports){
+const g = require( 'genish.js' ),
+      instrument = require( './instrument.js' )
+
+const genish = g
+
+module.exports = function( Gibberish ) {
+  const proto = Object.create( instrument )
+  const memo = {}
+  
+  Object.assign( proto, {
+    pickFile( sample ) {
+      this.currentSample = sample
+    },
+    pick( __idx ) {
+      const idx = Math.floor( __idx )
+      const keys = Object.keys( this.samplers )
+      const key = keys[ idx ]
+      this.currentSample = key
+    },
+    pickplay( __idx, rate=null, length=null, start=null ) {
+      const idx = Math.floor( __idx )
+      const keys = Object.keys( this.samplers )
+      const key = keys[ idx ]
+      this.currentSample = key
+      return this.trigger( null, rate, length, start )
+    },
+    note( rate ) {
+      //this.rate = rate
+      return this.trigger( null, rate )
+    },
+    setpan( num=0, value=.5 ) {
+      if( Gibberish.mode === 'processor' ) {
+        const voice = this.voices[ num ]
+        // set voice buffer length
+        //g.gen.memory.heap.set( [ value ], voice.pan.memory.values.idx )
+        voice.pan = value
+      }
+    },
+    setrate( num=0, value=1 ) {
+      if( Gibberish.mode === 'processor' ) {
+        const voice = this.voices[ num ]
+        // set voice buffer length
+        //g.gen.memory.heap.set( [ value ], voice.rate.memory.values.idx )
+        voice.rate = value
+        voice.envrate = 1024 / g.gen.memory.heap[ voice.bufferLength.memory.values.idx ]
+        
+        const samplerRate = typeof this.rate === 'object' ? 1 : this.rate
+        const dir = Math.sign( voice.rate ) === Math.sign( samplerRate ) ? 1 : 0
+
+        if( dir === 1 ) {
+          // trigger the bang assigned to the reset property of the 
+          // counter object representing phase for the voice
+          voice.trigger()
+        }else{
+          // reset the value of the phase counter to the 
+          // end of the sample for reverse playback
+          voice.phase.value = sampler.dataLength - 1
+        }
+        
+      }
+    },
+    trigger( volume=null, rate=null, length=null, start = null ) {
+      'no jsdsp'
+      if( volume !== null ) this.__triggerLoudness = volume
+
+      let voice = null
+      if( Gibberish.mode === 'processor' ) {
+        const sampler = this.samplers[ this.currentSample ]
+
+        // if sample isn't loaded...
+        if( sampler === undefined ) return
+
+        voice = this.__getVoice__()
+
+        // set voice buffer length
+        g.gen.memory.heap[ voice.bufferLength.memory.values.idx ] = sampler.dataLength
+
+        // set voice data index
+        g.gen.memory.heap[ voice.bufferLoc.memory.values.idx ] = sampler.dataIdx
+
+        
+        // assume voice plays forward if no rate is provided
+        // global rate for sampler can still be used to reverse
+        voice.rate   = rate   !== null ? rate   : 1
+        voice.length = length !== null ? length : 1
+        voice.start  = start  !== null ? start  : 0
+
+        // determine direction voice will play at by checking sign
+        // of voice.rate and sampler.rate. If both are the same,
+        // then the direction will be forward, as they are multiplied
+        // ... two positives or two negatives will both create a 
+        // positive value
+
+        // assume positive value if a modulation is applied to rate
+        //const samplerRate = typeof this.rate === 'object' ? 1 : this.rate
+        const dir = Math.sign( voice.rate )// === Math.sign( samplerRate ) ? 1 : 0
+
+        if( dir === 1 ) {
+          // trigger the bang assigned to the reset property of the 
+          // counter object representing phase for the voice, and
+          // it's also attached to each voice's envelope.
+          voice.trigger()
+        }else{
+          // must set phase values of both 
+          // grain reader and envelope
+          voice.envphase.value = 0
+          voice.phase.value = (start+length)*sampler.dataLength 
+        }
+      }
+
+      return voice
+    },
+    __getVoiceStatic__() {
+      return this.voices[ this.voiceCount % this.voices.length ]
+    },
+    __getVoice__() {
+      const v = this.voices[ this.voiceCount % this.voices.length ]
+      this.voiceCount++
+      return v
+    },
+  })
+
+  const Sampler = inputProps => {
+    const syn = Object.create( proto )
+    const props = Object.assign( { onload:null, voiceCount:0, files:[] }, Sampler.defaults, inputProps )
+    const env = g.env({ length:1024, type:props.env, alpha:props.envalpha })
+
+    syn.isStereo = props.isStereo !== undefined ? props.isStereo : false
+
+    const start = g.in( 'start' ), length = g.in( 'length' ),
+          rate = g.in( 'rate' ), shouldLoop = g.in( 'loops' ),
+          loudness = g.in( 'loudness' ),
+          triggerLoudness = g.in( '__triggerLoudness' ),
+          // rate storage is used to determine whether we're playing
+          // the sample forward or in reverse, for use in the 'trigger' method.
+          rateStorage = g.data([0], 1, { meta:true })
+
+    Object.assign( syn, props )
+
+    if( Gibberish.mode === 'worklet' ) {
+      syn.__meta__ = {
+        address:'add',
+        name: ['instruments', 'Grains'],
+        properties: JSON.stringify(props), 
+        id: syn.id
+      }
+
+      Gibberish.worklet.ugens.set( syn.id, syn )
+
+      Gibberish.worklet.port.postMessage( syn.__meta__ )
+    }
+
+    const voices = []
+    for( let i = 0; i < syn.maxVoices; i++ ) {
+
+      const voice = {
+        bufferLength: g.data( [1], 1, { meta:true }),
+        bufferLoc:    g.data( [1], 1, { meta:true }),
+        bang: g.bang(),
+        // XXX how do I change this from main thread?
+        __pan: g.data( [.5], 1, { meta:true }),
+        __rate: g.data( [1], 1, { meta:true }),
+        __envrate:g.data([1],1, { meta:true }),
+        __start: g.data( [0], 1, { meta:true }),
+        __length: g.data( [1], 1, { meta:true }),
+        __shouldLoop: g.data( [1], 1, { meta:true }),
+        __loudness:  g.data( [1], 1, { meta:true }),
+        __cutoff:  g.data( [.5], 1, { meta:true }),
+        __Q:  g.data( [.25], 1, { meta:true }),
+
+        get Q() { 
+          return g.gen.memory.heap[ this.__Q.memory.values.idx   ]
+        },
+        set Q( v ) {
+          g.gen.memory.heap[ this.__Q.memory.values.idx ] = v
+        },
+        get loudness() { 
+          return g.gen.memory.heap[ this.__loudness.memory.values.idx   ]
+        },
+        set loudness( v ) {
+          g.gen.memory.heap[ this.__loudness.memory.values.idx ] = v
+        },
+        get cutoff() { 
+          return g.gen.memory.heap[ this.__cutoff.memory.values.idx   ]
+        },
+        set cutoff( v ) {
+          g.gen.memory.heap[ this.__cutoff.memory.values.idx ] = v
+        },
+        set pan(v) {
+          g.gen.memory.heap[ this.__pan.memory.values.idx ] = v
+        },
+        set rate(v) {
+          g.gen.memory.heap[ this.__rate.memory.values.idx ] = v
+        },
+        get rate() {
+          return g.gen.memory.heap[ this.__rate.memory.values.idx ]
+        },
+        set envrate(v) {
+          g.gen.memory.heap[ this.__envrate.memory.values.idx ] = v
+        },
+        get envrate() {
+          return g.gen.memory.heap[ this.__envrate.memory.values.idx ]
+        },
+
+        set start(v) {
+          g.gen.memory.heap[ this.__start.memory.values.idx ] = v
+        },
+        get start() {
+          return g.gen.memory.heap[ this.__start.memory.values.idx ]
+        },
+        set length(v) {
+          'no jsdsp'
+          g.gen.memory.heap[ this.__length.memory.values.idx ] = v
+
+          // *** must also set rate for indexing of envelope ***
+          // get length of sample being played
+          const len = g.gen.memory.heap[ this.bufferLength.memory.values.idx ]
+          // all envelopes are 1024 samples long
+          const envrate = 1024 / (len * v)
+
+          //console.log( 'envrate:', envrate, len, v )
+          // rate is accounted for in the increment for the envphase counter
+          g.gen.memory.heap[ this.__envrate.memory.values.idx ] = envrate
+        },
+        get length() {
+          return g.gen.memory.heap[ this.__length.memory.values.idx ]
+        },
+      }
+      'use jsdsp'
+
+      voice.envphase = g.counter( 
+        //.0005,
+        //voice.__envrate[0] * 2,
+        g.abs(rate * voice.__rate[0] * voice.__envrate[0]),  
+        0,
+        1023, 
+        voice.bang,
+        0, // was shouldLoop 
+        { shouldWrap:false, initialValue:9999999 }
+      )
+
+      voice.envpeek = g.peek( env, voice.envphase, { mode:'samples' })
+      voice.end = (voice.__start[0]+start+voice.__length[0]) * voice.bufferLength[0]
+
+      voice.phase = g.counter( 
+        rate * voice.__rate[0], 
+        (voice.__start[0]+start) * voice.bufferLength[0],
+        voice.end,
+        voice.bang,
+        0, // was shouldLoop 
+        { shouldWrap:true, initialValue:9999999 }
+      )
+
+      voice.trigger = voice.bang.trigger
+
+      // XXX the start values must be added together, because if multiplying 
+      // and one is zero then their product will always be zero. obvi not obvi.
+      const grainstart = (voice.__start[0]+start) * voice.bufferLength[0]
+      const grainend   = (voice.__start[0]+start+voice.__length[0]) * voice.bufferLength[0]
+      const grainread  = g.peekDyn( 
+          voice.bufferLoc[0], 
+          voice.bufferLength[0],
+          voice.phase,
+          { mode:'samples' }
+        )
+ 
+      voice.graph = g.ifelse(
+        // if phase is greater than start and less than end... 
+        g.and( 
+          g.gte( voice.phase, grainstart ), 
+          g.lte( voice.phase, grainend )
+        ),
+        // ...read data and mul by envelope
+        grainread * voice.envpeek, 
+        // ...else return 0
+        0
+      ) 
+      * loudness 
+      * voice.__loudness[0] 
+
+      voice.graph = Gibberish.genish.biquad( voice.graph, voice.__cutoff[0], voice.__Q[0], 2, false )
+      const pan = g.pan( voice.graph, voice.graph, voice.__pan[0] )
+      voice.graph = [ pan.left, pan.right ]
+
+      voices.push( voice )
+    }
+
+    // load in sample data
+    const samplers = {}
+
+    // bound to individual sampler objects in loadSample function
+    syn.loadBuffer = function( buffer, onload ) {
+      // main thread: when sample is loaded, copy it over message port
+      // processor thread: onload is called via messageport handler, and
+      // passed in the new buffer to be copied.
+      if( Gibberish.mode === 'worklet' ) {
+        const memIdx = Gibberish.memory.alloc( this.data.buffer.length, true )
+
+        Gibberish.worklet.port.postMessage({
+          address:'copy_multi',
+          id:     syn.id,
+          buffer: this.data.buffer,
+          filename: this.filename
+        })
+
+        if( typeof onload === 'function' ) onload( this, buffer )
+
+      }else if( Gibberish.mode === 'processor' ) {
+        this.data.buffer = buffer 
+
+        // set data memory spec before issuing memory request
+        this.dataLength = this.data.memory.values.length = this.data.dim = this.data.buffer.length
+
+        // request memory to copy the bufer over
+        g.gen.requestMemory( this.data.memory, false )
+        g.gen.memory.heap.set( this.data.buffer, this.data.memory.values.idx )
+
+        // set location of buffer (does not work)
+        this.dataIdx = this.data.memory.values.idx
+
+        syn.currentSample = this.filename
+      }
+    }
+
+    syn.loadSample = function( filename, __onload, buffer=null ) {
+      'use jsdsp'
+
+      const sampler = samplers[ filename ] = {
+        dataLength: null,
+        dataIdx: null,
+        buffer: null,
+        filename
+      }
+
+      const onload = syn.loadBuffer.bind( sampler ) 
+      // passing a filename to data will cause it to be loaded in the main thread
+      // onload will then be called to pass the buffer over the messageport. In the
+      // processor thread, make a placeholder until data is available.
+      if( Gibberish.mode === 'worklet' ) {
+        sampler.data = g.data( buffer !== null ? buffer : filename, 1, { onload })
+
+        // check to see if a promise is returned; a valid
+        // data object is only return if the file has been
+        // previously loaded and the corresponding buffer has
+        // been cached.
+        if( sampler.data instanceof Promise ) {
+          sampler.data.then( d => {
+            sampler.data = d
+            memo[ filename ] = sampler.data 
+            onload( sampler, __onload )
+          })
+        }else{
+          // using a cached data buffer, no need
+          // for asynchronous loading.
+          memo[ filename ] = sampler
+          onload( sampler, __onload )
+        }     
+      }else{
+        sampler.data = g.data( new Float32Array(), 1, { onload, filename })
+        sampler.data.onload = onload
+      } 
+    }
+
+    props.files.forEach( filename => syn.loadSample( filename ) )
+
+    syn.__createGraph = function() {
+      'use jsdsp'
+      
+      const graphs = voices.map( voice => voice.graph )
+      const left = g.add( ...voices.map( voice => voice.graph[0] ) )
+      const right = g.add( ...voices.map( voice => voice.graph[1] ) )
+      const gain = g.in( 'gain' )
+      syn.graph = [ left * gain, right * gain ]
+
+      if( syn.panVoices === true ) { 
+        const panner = g.pan( syn.graph[0], syn.graph[1], g.in( 'pan' ) ) 
+        syn.graph = [ panner.left, panner.right ]
+      }
+    }
+
+    syn.__createGraph()
+
+    const out = Gibberish.factory( 
+      syn,
+      syn.graph,
+      ['instruments','filtergrains'], 
+      props 
+    ) 
+
+    Gibberish.preventProxy = true
+    Gibberish.proxyEnabled = false
+
+    out.voices = voices
+    out.samplers = samplers
+
+    Gibberish.proxyEnabled = true
+    Gibberish.preventProxy = false
+
+    return out
+  }
+
+  Sampler.defaults = {
+    gain: 1,
+    pan: .5,
+    rate: 1,
+    panVoices:false,
+    shouldLoop:false,
+    loops: 0,
+    start:0,
+    end:1,
+    bufferLength:-999999999,
+    loudness:1,
+    maxVoices:5,
+    env:'triangular',
+    envalpha:5,
+    __triggerLoudness:1
+  }
+
+  return Sampler
+}
+
+},{"./instrument.js":179,"genish.js":40}],175:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -21427,7 +22732,414 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":173,"genish.js":40}],172:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],176:[function(require,module,exports){
+const g = require( 'genish.js' ),
+      instrument = require( './instrument.js' )
+
+const genish = g
+
+module.exports = function( Gibberish ) {
+  const proto = Object.create( instrument )
+  const memo = {}
+  
+  Object.assign( proto, {
+    pickFile( sample ) {
+      this.currentSample = sample
+    },
+    pick( __idx ) {
+      const idx = Math.floor( __idx )
+      const keys = Object.keys( this.samplers )
+      const key = keys[ idx ]
+      this.currentSample = key
+    },
+    pickplay( __idx, rate=null, length=null, start=null ) {
+      const idx = Math.floor( __idx )
+      const keys = Object.keys( this.samplers )
+      const key = keys[ idx ]
+      this.currentSample = key
+      return this.trigger( null, rate, length, start )
+    },
+    note( rate ) {
+      //this.rate = rate
+      return this.trigger( null, rate )
+    },
+    setpan( num=0, value=.5 ) {
+      if( Gibberish.mode === 'processor' ) {
+        const voice = this.voices[ num ]
+        // set voice buffer length
+        //g.gen.memory.heap.set( [ value ], voice.pan.memory.values.idx )
+        voice.pan = value
+      }
+    },
+    setrate( num=0, value=1 ) {
+      if( Gibberish.mode === 'processor' ) {
+        const voice = this.voices[ num ]
+        // set voice buffer length
+        //g.gen.memory.heap.set( [ value ], voice.rate.memory.values.idx )
+        voice.rate = value
+        voice.envrate = 1024 / g.gen.memory.heap[ voice.bufferLength.memory.values.idx ]
+        
+        const samplerRate = typeof this.rate === 'object' ? 1 : this.rate
+        const dir = Math.sign( voice.rate ) === Math.sign( samplerRate ) ? 1 : 0
+
+        if( dir === 1 ) {
+          // trigger the bang assigned to the reset property of the 
+          // counter object representing phase for the voice
+          voice.trigger()
+        }else{
+          // reset the value of the phase counter to the 
+          // end of the sample for reverse playback
+          voice.phase.value = sampler.dataLength - 1
+        }
+        
+      }
+    },
+    trigger( volume=null, rate=null, length=null, start = null ) {
+      'no jsdsp'
+      if( volume !== null ) this.__triggerLoudness = volume
+
+      let voice = null
+      if( Gibberish.mode === 'processor' ) {
+        const sampler = this.samplers[ this.currentSample ]
+
+        // if sample isn't loaded...
+        if( sampler === undefined ) return
+
+        voice = this.__getVoice__()
+
+        // set voice buffer length
+        g.gen.memory.heap[ voice.bufferLength.memory.values.idx ] = sampler.dataLength
+
+        // set voice data index
+        g.gen.memory.heap[ voice.bufferLoc.memory.values.idx ] = sampler.dataIdx
+
+        
+        // assume voice plays forward if no rate is provided
+        // global rate for sampler can still be used to reverse
+        voice.rate   = rate   !== null ? rate   : 1
+        voice.length = length !== null ? length : 1
+        voice.start  = start  !== null ? start  : 0
+
+        // determine direction voice will play at by checking sign
+        // of voice.rate and sampler.rate. If both are the same,
+        // then the direction will be forward, as they are multiplied
+        // ... two positives or two negatives will both create a 
+        // positive value
+
+        // assume positive value if a modulation is applied to rate
+        //const samplerRate = typeof this.rate === 'object' ? 1 : this.rate
+        const dir = Math.sign( voice.rate )// === Math.sign( samplerRate ) ? 1 : 0
+
+        if( dir === 1 ) {
+          // trigger the bang assigned to the reset property of the 
+          // counter object representing phase for the voice, and
+          // it's also attached to each voice's envelope.
+          voice.trigger()
+        }else{
+          // must set phase values of both 
+          // grain reader and envelope
+          voice.envphase.value = 0
+          voice.phase.value = (start+length)*sampler.dataLength 
+        }
+      }
+
+      return voice
+    },
+    __getVoiceStatic__() {
+      return this.voices[ this.voiceCount % this.voices.length ]
+    },
+    __getVoice__() {
+      const v = this.voices[ this.voiceCount % this.voices.length ]
+      this.voiceCount++
+      return v
+    },
+  })
+
+  const Sampler = inputProps => {
+    const syn = Object.create( proto )
+    const props = Object.assign( { onload:null, voiceCount:0, files:[] }, Sampler.defaults, inputProps )
+    const env = g.env({ length:1024, type:props.env, alpha:props.envalpha })
+
+    syn.isStereo = props.isStereo !== undefined ? props.isStereo : false
+
+    const start = g.in( 'start' ), length = g.in( 'length' ),
+          rate = g.in( 'rate' ), shouldLoop = g.in( 'loops' ),
+          loudness = g.in( 'loudness' ),
+          triggerLoudness = g.in( '__triggerLoudness' ),
+          // rate storage is used to determine whether we're playing
+          // the sample forward or in reverse, for use in the 'trigger' method.
+          rateStorage = g.data([0], 1, { meta:true })
+
+    Object.assign( syn, props )
+
+    if( Gibberish.mode === 'worklet' ) {
+      syn.__meta__ = {
+        address:'add',
+        name: ['instruments', 'Grains'],
+        properties: JSON.stringify(props), 
+        id: syn.id
+      }
+
+      Gibberish.worklet.ugens.set( syn.id, syn )
+
+      Gibberish.worklet.port.postMessage( syn.__meta__ )
+    }
+
+    const voices = []
+    for( let i = 0; i < syn.maxVoices; i++ ) {
+
+      const voice = {
+        bufferLength: g.data( [1], 1, { meta:true }),
+        bufferLoc:    g.data( [1], 1, { meta:true }),
+        bang: g.bang(),
+        // XXX how do I change this from main thread?
+        __pan: g.data( [.5], 1, { meta:true }),
+        __rate: g.data( [1], 1, { meta:true }),
+        __envrate:g.data([1],1, { meta:true }),
+        __start: g.data( [0], 1, { meta:true }),
+        __length: g.data( [1], 1, { meta:true }),
+        __shouldLoop: g.data( [1], 1, { meta:true }),
+        __loudness:  g.data( [1], 1, { meta:true }),
+
+        get loudness() { 
+          return g.gen.memory.heap[ this.__loudness.memory.values.idx   ]
+        },
+        set loudness( v ) {
+          g.gen.memory.heap[ this.__loudness.memory.values.idx ] = v
+        },
+        set pan(v) {
+          g.gen.memory.heap[ this.__pan.memory.values.idx ] = v
+        },
+        set rate(v) {
+          g.gen.memory.heap[ this.__rate.memory.values.idx ] = v
+        },
+        get rate() {
+          return g.gen.memory.heap[ this.__rate.memory.values.idx ]
+        },
+        set envrate(v) {
+          g.gen.memory.heap[ this.__envrate.memory.values.idx ] = v
+        },
+        get envrate() {
+          return g.gen.memory.heap[ this.__envrate.memory.values.idx ]
+        },
+
+        set start(v) {
+          g.gen.memory.heap[ this.__start.memory.values.idx ] = v
+        },
+        get start() {
+          return g.gen.memory.heap[ this.__start.memory.values.idx ]
+        },
+        set length(v) {
+          'no jsdsp'
+          g.gen.memory.heap[ this.__length.memory.values.idx ] = v
+
+          // *** must also set rate for indexing of envelope ***
+          // get length of sample being played
+          const len = g.gen.memory.heap[ this.bufferLength.memory.values.idx ]
+          // all envelopes are 1024 samples long
+          const envrate = 1024 / (len * v)
+
+          //console.log( 'envrate:', envrate, len, v )
+          // rate is accounted for in the increment for the envphase counter
+          g.gen.memory.heap[ this.__envrate.memory.values.idx ] = envrate
+        },
+        get length() {
+          return g.gen.memory.heap[ this.__length.memory.values.idx ]
+        },
+      }
+      'use jsdsp'
+
+      voice.envphase = g.counter( 
+        //.0005,
+        //voice.__envrate[0] * 2,
+        g.abs(rate * voice.__rate[0] * voice.__envrate[0]),  
+        0,
+        1023, 
+        voice.bang,
+        0, // was shouldLoop 
+        { shouldWrap:false, initialValue:9999999 }
+      )
+
+      voice.envpeek = g.peek( env, voice.envphase, { mode:'samples' })
+      voice.end = (voice.__start[0]+start+voice.__length[0]) * voice.bufferLength[0]
+
+      voice.phase = g.counter( 
+        rate * voice.__rate[0], 
+        (voice.__start[0]+start) * voice.bufferLength[0],
+        voice.end,
+        voice.bang,
+        0, // was shouldLoop 
+        { shouldWrap:true, initialValue:9999999 }
+      )
+
+      voice.trigger = voice.bang.trigger
+
+      // XXX the start values must be added together, because if multiplying 
+      // and one is zero then their product will always be zero. obvi not obvi.
+      const grainstart = (voice.__start[0]+start) * voice.bufferLength[0]
+      const grainend   = (voice.__start[0]+start+voice.__length[0]) * voice.bufferLength[0]
+      const grainread  = g.peekDyn( 
+          voice.bufferLoc[0], 
+          voice.bufferLength[0],
+          voice.phase,
+          { mode:'samples' }
+        )
+ 
+      voice.graph = g.ifelse(
+        // if phase is greater than start and less than end... 
+        g.and( 
+          g.gte( voice.phase, grainstart ), 
+          g.lte( voice.phase, grainend )
+        ),
+        // ...read data and mul by envelope
+        grainread * voice.envpeek, 
+        // ...else return 0
+        0
+      ) 
+      * loudness 
+      * voice.__loudness[0] 
+
+      const pan = g.pan( voice.graph, voice.graph, voice.__pan[0] )
+      voice.graph = [ pan.left, pan.right ]
+
+      voices.push( voice )
+    }
+
+    // load in sample data
+    const samplers = {}
+
+    // bound to individual sampler objects in loadSample function
+    syn.loadBuffer = function( buffer, onload ) {
+      // main thread: when sample is loaded, copy it over message port
+      // processor thread: onload is called via messageport handler, and
+      // passed in the new buffer to be copied.
+      if( Gibberish.mode === 'worklet' ) {
+        const memIdx = Gibberish.memory.alloc( this.data.buffer.length, true )
+
+        Gibberish.worklet.port.postMessage({
+          address:'copy_multi',
+          id:     syn.id,
+          buffer: this.data.buffer,
+          filename: this.filename
+        })
+
+        if( typeof onload === 'function' ) onload( this, buffer )
+
+      }else if( Gibberish.mode === 'processor' ) {
+        this.data.buffer = buffer 
+
+        // set data memory spec before issuing memory request
+        this.dataLength = this.data.memory.values.length = this.data.dim = this.data.buffer.length
+
+        // request memory to copy the bufer over
+        g.gen.requestMemory( this.data.memory, false )
+        g.gen.memory.heap.set( this.data.buffer, this.data.memory.values.idx )
+
+        // set location of buffer (does not work)
+        this.dataIdx = this.data.memory.values.idx
+
+        syn.currentSample = this.filename
+      }
+    }
+
+    syn.loadSample = function( filename, __onload, buffer=null ) {
+      'use jsdsp'
+
+      const sampler = samplers[ filename ] = {
+        dataLength: null,
+        dataIdx: null,
+        buffer: null,
+        filename
+      }
+
+      const onload = syn.loadBuffer.bind( sampler ) 
+      // passing a filename to data will cause it to be loaded in the main thread
+      // onload will then be called to pass the buffer over the messageport. In the
+      // processor thread, make a placeholder until data is available.
+      if( Gibberish.mode === 'worklet' ) {
+        sampler.data = g.data( buffer !== null ? buffer : filename, 1, { onload })
+
+        // check to see if a promise is returned; a valid
+        // data object is only return if the file has been
+        // previously loaded and the corresponding buffer has
+        // been cached.
+        if( sampler.data instanceof Promise ) {
+          sampler.data.then( d => {
+            sampler.data = d
+            memo[ filename ] = sampler.data 
+            onload( sampler, __onload )
+          })
+        }else{
+          // using a cached data buffer, no need
+          // for asynchronous loading.
+          memo[ filename ] = sampler
+          onload( sampler, __onload )
+        }     
+      }else{
+        sampler.data = g.data( new Float32Array(), 1, { onload, filename })
+        sampler.data.onload = onload
+      } 
+    }
+
+    props.files.forEach( filename => syn.loadSample( filename ) )
+
+    syn.__createGraph = function() {
+      'use jsdsp'
+      
+      const graphs = voices.map( voice => voice.graph )
+      const left = g.add( ...voices.map( voice => voice.graph[0] ) )
+      const right = g.add( ...voices.map( voice => voice.graph[1] ) )
+      const gain = g.in( 'gain' )
+      syn.graph = [ left * gain, right * gain ]
+
+      if( syn.panVoices === true ) { 
+        const panner = g.pan( syn.graph[0], syn.graph[1], g.in( 'pan' ) ) 
+        syn.graph = [ panner.left, panner.right ]
+      }
+    }
+
+    syn.__createGraph()
+
+    const out = Gibberish.factory( 
+      syn,
+      syn.graph,
+      ['instruments','grains'], 
+      props 
+    ) 
+
+    Gibberish.preventProxy = true
+    Gibberish.proxyEnabled = false
+
+    out.voices = voices
+    out.samplers = samplers
+
+    Gibberish.proxyEnabled = true
+    Gibberish.preventProxy = false
+
+    return out
+  }
+
+  Sampler.defaults = {
+    gain: 1,
+    pan: .5,
+    rate: 1,
+    panVoices:false,
+    shouldLoop:false,
+    loops: 0,
+    start:0,
+    end:1,
+    bufferLength:-999999999,
+    loudness:1,
+    maxVoices:5,
+    env:'triangular',
+    envalpha:5,
+    __triggerLoudness:1
+  }
+
+  return Sampler
+}
+
+},{"./instrument.js":179,"genish.js":40}],177:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21454,7 +23166,7 @@ module.exports = function( Gibberish ) {
         s5 = Gibberish.oscillators.factory( 'square', g.mul( baseFreq,2.5028 ) ),
         s6 = Gibberish.oscillators.factory( 'square', g.mul( baseFreq,2.6637 ) ),
         sum = g.add( s1,s2,s3,s4,s5,s6 ),
-        eg = g.decay( g.mul( decay, g.gen.samplerate * 2 ), { initValue:0 }), 
+        eg = g.decay( g.mul( g.max(.005,decay), g.gen.samplerate * 2 ), { initValue:0 }), 
         bpf = g.svf( sum, bpfCutoff, .5, 2, false ),
         envBpf = g.mul( bpf, eg ),
         hpf = g.filter24( envBpf, 0, hpfCutoff, 0 ),
@@ -21481,7 +23193,105 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":173,"genish.js":40}],173:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],178:[function(require,module,exports){
+const ugen    = require( '../ugen.js' )(),
+      __proxy = require( '../workletProxy.js' )
+
+/* we need to:
+ * 1. create the mediastream node and connect it as an input to our worklet
+ * 2. change the callback to (optionally?) include an input
+ * 3. use custom codegen in instrument to access input stream in callback
+ *
+ * look at misc/bus2 for example of how to create custom callback that
+ * doesn't use genish
+ *
+ * could we also use ugen.block to just insert a static line of code?
+ * maybe we could add getter/setter so that it can't be overridden?
+ *
+ * concern: we could just add 'input' as input to our callback function
+ */
+
+const Audio = {
+  __hasInput: false,
+  input:      null,
+  ctx:        null,
+
+  start( Gibberish ) {
+    console.log( 'connecting audio input...' )
+
+    const p = new Promise( resolve => {
+      if( Audio.input === null ) {
+        console.log( 'start?' )
+        navigator.mediaDevices.getUserMedia({ audio:true, video:false })
+          .then( stream => {
+            console.log( 'audio input connected' )
+            Audio.input = Gibberish.ctx.createMediaStreamSource( stream )
+            Audio.__hasInput = true
+
+            resolve( Audio.input )
+          })
+          .catch( err => { 
+            console.log( 'error opening audio input:', err )
+          })
+      }else{
+        resolve( Audio.input )
+      }
+    })
+    return p
+  }
+}
+  
+module.exports = function( Gibberish ) {
+
+  const Input = __props => {
+    const input = Object.create( ugen )
+    const proxy = __proxy( Gibberish )
+    const output = new Float64Array( 1 )
+    const props = Object.assign({}, Input.defaults, __props )
+
+    let phase = 0
+
+    if( Audio.input === null ) Audio.start( Gibberish )
+
+    Object.assign( input, {
+      callback( buffer ) {
+        output[0] = buffer[ phase++ % buffer.length ]
+        return output
+      },
+
+      id : Gibberish.factory.getUID(),
+      dirty : false,
+      type : 'ugen',
+      isStereo: false,
+      __properties__:props
+    })
+
+    input.ugenName = input.callback.ugenName = 'input_' + input.id
+    input.callbackString = input.ugenName + '( input );'
+
+    const out = input.__useProxy__ === true ? proxy( ['Input'], props, input ) : input
+
+    /*
+    let gain = 1
+    Object.defineProperty( out, 'gain', {
+      get() { return gain },
+      set(v){ 
+        gain = v
+        out.inputs[ out.inputs.length - 1 ] = gain
+        Gibberish.dirty( out )
+      }
+    })
+    */
+
+    return out
+  }
+
+  Input.defaults = { gain:1, __useProxy__:true }
+
+  return Input 
+}
+
+},{"../ugen.js":208,"../workletProxy.js":210}],179:[function(require,module,exports){
 const ugen = require('../ugen.js')();
 
 const instrument = Object.create(ugen);
@@ -21510,30 +23320,33 @@ Object.assign(instrument, {
     }
 
     if (loudness !== null) {
-      this.__triggerLoudness = loudness;
+      this.__triggerLoudness = loudness >= 0 ? loudness : 0;
     }
 
     this.env.trigger();
+
+    return this
   },
 
   trigger(loudness = 1) {
     if (isNaN(loudness)) {
       throw Error(`A non-number was passed to trigger() on ${this.ugenName}; this value will be ignored and the envelope will not be triggered.`);
     } else {
-      this.__triggerLoudness = loudness;
+      this.__triggerLoudness = loudness >= 0 ? loudness : 0;
       this.env.trigger();
     }
+
+    return this
   }
 
 });
 
 module.exports = instrument
 
-},{"../ugen.js":202}],174:[function(require,module,exports){
+},{"../ugen.js":208}],180:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
 const instruments = {
-  Kick        : require( './kick.js' )( Gibberish ),
   Clave       : require( './conga.js' )( Gibberish )[0], // clave is same as conga with different defaults, see below
   Hat         : require( './hat.js' )( Gibberish ),
   Snare       : require( './snare.js' )( Gibberish ),
@@ -21541,19 +23354,25 @@ const instruments = {
   Tom         : require( './tom.js' )( Gibberish ),
   Clap        : require( './clap.dsp.js' )( Gibberish ),
   Multisampler: require( './multisampler.dsp.js' )( Gibberish ),
-  Soundfont   : require( './soundfont.js' )( Gibberish )
+  Grains      : require( './grains.dsp.js' )( Gibberish ),
+  //Grains      : require( './grains.new.dsp.js' )( Gibberish ),
+  Filtergrains: require( './filtergrains.dsp.js' )( Gibberish ),
+  Soundfont   : require( './soundfont.js' )( Gibberish ),
+  Input       : require( './input.js' )( Gibberish )
 }
 
 instruments.Clave.defaults.frequency = 2500
 instruments.Clave.defaults.decay = .5;
 
+// browserify needs semi-colons for this
 [ instruments.Synth, instruments.PolySynth ]     = require( './synth.dsp.js' )( Gibberish );
 [ instruments.Complex, instruments.PolyComplex]  = require( './complex.dsp.js' )( Gibberish );
 [ instruments.Monosynth, instruments.PolyMono ]  = require( './monosynth.dsp.js' )( Gibberish );
 [ instruments.FM, instruments.PolyFM ]           = require( './fm.dsp.js' )( Gibberish );
 [ instruments.Sampler, instruments.PolySampler ] = require( './sampler.js' )( Gibberish );
 [ instruments.Karplus, instruments.PolyKarplus ] = require( './karplusstrong.js' )( Gibberish );
-[ instruments.Conga, instruments.PolyConga ]     = require( './conga.js' )( Gibberish )
+[ instruments.Kick, instruments.PolyKick ]       = require( './kick.js' )( Gibberish );
+[ instruments.Conga, instruments.PolyConga ]     = require( './conga.js' )( Gibberish );
 
 instruments.export = target => {
   for( let key in instruments ) {
@@ -21567,7 +23386,7 @@ return instruments
 
 }
 
-},{"./clap.dsp.js":167,"./complex.dsp.js":168,"./conga.js":169,"./cowbell.js":170,"./fm.dsp.js":171,"./hat.js":172,"./karplusstrong.js":175,"./kick.js":176,"./monosynth.dsp.js":177,"./multisampler.dsp.js":178,"./sampler.js":181,"./snare.js":182,"./soundfont.js":183,"./synth.dsp.js":184,"./tom.js":185}],175:[function(require,module,exports){
+},{"./clap.dsp.js":170,"./complex.dsp.js":171,"./conga.js":172,"./cowbell.js":173,"./filtergrains.dsp.js":174,"./fm.dsp.js":175,"./grains.dsp.js":176,"./hat.js":177,"./input.js":178,"./karplusstrong.js":181,"./kick.js":182,"./monosynth.dsp.js":183,"./multisampler.dsp.js":184,"./sampler.js":187,"./snare.js":188,"./soundfont.js":189,"./synth.dsp.js":190,"./tom.js":191}],181:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -21588,13 +23407,24 @@ module.exports = function( Gibberish ) {
           feedback = g.history(),
           frequency = g.in('frequency'),
           glide = g.max( 1, g.in( 'glide' ) ),
-          slidingFrequency = g.slide( frequency, glide, glide ),
-          delay = g.delay( g.add( impulse, feedback.out ), g.div( sampleRate, slidingFrequency )),
+          // ensures lookup index is within size of table (2048)
+          // but only at 48 kHz and lower!!! e.g. 48000 / 25 = 1920
+          slidingFrequency = g.max( 25, g.slide( frequency, glide, glide )),
+          // interpolation creates better pitch but adds lowpass filtering effect
+          // https://stackoverflow.com/questions/6675445
+          delay = g.delay( 
+            g.add( impulse, feedback.out ), 
+            // subtract one for delay compensation, otherwise pitches
+            // get sketchy in higher registers
+            g.sub( g.div( sampleRate, slidingFrequency ), 1 ),
+            { size:2048, interp:'linear' }
+          ),
           decayed = g.mul( delay, g.t60( g.mul( g.in('decay'), slidingFrequency ) ) ),
           damped =  g.mix( decayed, feedback.out, g.in('damping') ),
           n = g.noise(),
           blendValue = g.switch( g.gt( n, g.in('blend') ), -1, 1 ), 
-          withGain = g.mul( g.mul( blendValue, damped ), g.mul( g.mul( g.in('loudness'), g.in('__triggerLoudness') ), g .in('gain') ) )
+          withGain = g.mul( g.mul( blendValue, damped ), g.mul( g.mul( g.in('loudness'), g.in('__triggerLoudness') ), g .in('gain') ) ),
+          withBlock = g.dcblock( withGain )
 
     feedback.in( damped )
 
@@ -21612,11 +23442,11 @@ module.exports = function( Gibberish ) {
     })
 
     if( properties.panVoices ) {  
-      const panner = g.pan( withGain, withGain, g.in( 'pan' ) )
+      const panner = g.pan( withBlock, withBlock, g.in( 'pan' ) )
       syn = Gibberish.factory( syn, [panner.left, panner.right], ['instruments','karplus'], props  )
       syn.isStereo = true
     }else{
-      syn = Gibberish.factory( syn, withGain, ['instruments','karplus'], props )
+      syn = Gibberish.factory( syn, withBlock, ['instruments','karplus'], props )
       syn.isStereo = false 
     }
 
@@ -21626,7 +23456,7 @@ module.exports = function( Gibberish ) {
   Karplus.defaults = {
     decay: .97,
     damping:.2,
-    gain: .15,
+    gain: 1,
     frequency:220,
     pan: .5,
     glide:1,
@@ -21659,7 +23489,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":173,"genish.js":40}],176:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],182:[function(require,module,exports){
 let g = require( 'genish.js' ),
     instrument = require( './instrument.js' )
 
@@ -21680,19 +23510,31 @@ module.exports = function( Gibberish ) {
     
     // create initial property set
     const props = Object.assign( {}, Kick.defaults, inputProps )
-    Object.assign( kick, props )
 
     // create DSP graph
     const trigger = g.bang(),
           impulse = g.mul( trigger, 60 ),
-          scaledDecay = g.sub( 1.005, decay ), // -> range { .005, 1.005 }
+          scaledDecay = g.sub( 1.005, g.min( decay, .99999) ), // -> range { .005, 1.005 }
           scaledTone = g.add( 50, g.mul( tone, g.mul(4000, Loudness ) ) ), // -> range { 50, 4050 }
           bpf = g.svf( impulse, frequency, scaledDecay, 2, false ),
-          lpf = g.svf( bpf, scaledTone, .5, 0, false ),
-          graph = g.mul( lpf, g.mul( gain, Loudness ) )
-    
+          lpf = g.svf( bpf, scaledTone, .5, 0, false )
+          //kick = g.mul( lpf, g.mul( gain, Loudness ) )
+
+
+    if( props.panVoices === true ) {  
+      const panner = g.pan( lpf, lpf, g.in( 'pan' ) )
+      kick.graph = [ 
+        g.mul( panner.left, gain, Loudness ), 
+        g.mul( panner.right, gain, Loudness ) 
+      ]
+      kick.isStereo = true
+    }else{
+      kick.graph = g.mul( lpf, g.mul( gain, Loudness ) )
+      kick.isStereo = false
+    }
+
     kick.env = trigger
-    const out = Gibberish.factory( kick, graph, ['instruments','kick'], props  )
+    const out = Gibberish.factory( kick, kick.graph, ['instruments','kick'], props  )
 
     return out
   }
@@ -21703,14 +23545,22 @@ module.exports = function( Gibberish ) {
     tone: .25,
     decay:.9,
     loudness:1,
-    __triggerLoudness:1
+    __triggerLoudness:1,
+    pan:.5,
+    panVoices:false
   }
 
-  return Kick
+  const PolyKick = Gibberish.PolyTemplate( 
+    Kick, 
+    [ 'gain','frequency','tone','decay','loudness','__triggerLoudness', 'pan']
+  ) 
 
+  PolyKick.defaults = Kick.defaults
+
+  return [ Kick, PolyKick ]
 }
 
-},{"./instrument.js":173,"genish.js":40}],177:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],183:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' ),
       feedbackOsc = require( '../oscillators/fmfeedbackosc.js' )
@@ -21834,7 +23684,7 @@ module.exports = function( Gibberish ) {
   return [ Mono, PolyMono ]
 }
 
-},{"../oscillators/fmfeedbackosc.js":193,"./instrument.js":173,"genish.js":40}],178:[function(require,module,exports){
+},{"../oscillators/fmfeedbackosc.js":199,"./instrument.js":179,"genish.js":40}],184:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -21889,17 +23739,16 @@ module.exports = function( Gibberish ) {
       if( Gibberish.mode === 'processor' ) {
         const sampler = this.samplers[ this.currentSample ]
 
-        // if sample isn't loaded...
-        if( sampler === undefined ) return
-
         voice = this.__getVoice__()
+
+        // if sample isn't loaded...
+        if( sampler === undefined ) return voice
 
         // set voice buffer length
         g.gen.memory.heap[ voice.bufferLength.memory.values.idx ] = sampler.dataLength
 
         // set voice data index
         g.gen.memory.heap[ voice.bufferLoc.memory.values.idx ] = sampler.dataIdx
-
         
         // assume voice plays forward if no rate is provided
         // global rate for sampler can still be used to reverse
@@ -21929,7 +23778,8 @@ module.exports = function( Gibberish ) {
       return voice
     },
     __getVoice__() {
-      return this.voices[ this.voiceCount++ % this.voices.length ]
+      const v =  this.voices[ this.voiceCount++ % this.voices.length ]
+      return v
     },
   })
 
@@ -21974,6 +23824,8 @@ module.exports = function( Gibberish ) {
         // XXX how do I change this from main thread?
         __pan: g.data( [.5], 1, { meta:true }),
         __rate: g.data( [1], 1, { meta:true }),
+        __start: g.data( [0], 1, { meta:true }),
+        __end: g.data( [1], 1, { meta:true }),
         __shouldLoop: g.data( [1], 1, { meta:true }),
         __loudness:  g.data( [1], 1, { meta:true }),
         get loudness() { 
@@ -21991,12 +23843,24 @@ module.exports = function( Gibberish ) {
         get rate() {
           return g.gen.memory.heap[ this.__rate.memory.values.idx ]
         },
+        set start(v) {
+          g.gen.memory.heap[ this.__start.memory.values.idx ] = v
+        },
+        get start() {
+          return g.gen.memory.heap[ this.__start.memory.values.idx ]
+        },
+        set end(v) {
+          g.gen.memory.heap[ this.__end.memory.values.idx ] = v
+        },
+        get end() {
+          return g.gen.memory.heap[ this.__end.memory.values.idx ]
+        },
       }
 
       voice.phase = g.counter( 
         rate * voice.__rate[0], 
-        start * voice.bufferLength[0],
-        end * voice.bufferLength[0], 
+        (voice.__start[0]+start) * voice.bufferLength[0],
+        (voice.__end[0]*end) * voice.bufferLength[0], 
         voice.bang,
         shouldLoop, 
         { shouldWrap:false, initialValue:9999999 }
@@ -22007,8 +23871,8 @@ module.exports = function( Gibberish ) {
       voice.graph = g.ifelse(
         // if phase is greater than start and less than end... 
         g.and( 
-          g.gte( voice.phase, start * voice.bufferLength[0] ), 
-          g.lt(  voice.phase, end   * voice.bufferLength[0] ) 
+          g.gte( voice.phase, (voice.__start[0]*start) * voice.bufferLength[0] ), 
+          g.lt(  voice.phase, (voice.__end[0]*end)     * voice.bufferLength[0] ) 
         ),
         // ...read data
         voice.peek = g.peekDyn( 
@@ -22161,16 +24025,16 @@ module.exports = function( Gibberish ) {
   return Sampler
 }
 
-},{"./instrument.js":173,"genish.js":40}],179:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],185:[function(require,module,exports){
 // XXX TOO MANY GLOBAL GIBBERISH VALUES
 
 const Gibberish = require( '../index.js' )
 
 module.exports = {
   note( freq ) {
+    let voice = this.__getVoice__()
     // will be sent to processor node via proxy method...
     if( Gibberish.mode !== 'worklet' ) {
-      let voice = this.__getVoice__()
       //Object.assign( voice, this.properties )
       //if( gain === undefined ) gain = this.gain
       //voice.gain = gain
@@ -22179,28 +24043,30 @@ module.exports = {
       this.__runVoice__( voice, this )
       this.triggerNote = freq
     }
+    return voice
   },
 
   // XXX this is not particularly satisfying...
   // must check for both notes and chords
   trigger( loudness ) {
+    if( loudness < 0 ) loudness = 0
+
     if( this.triggerChord !== null ) {
       this.triggerChord.forEach( v => {
         let voice = this.__getVoice__()
-        Object.assign( voice, this.properties )
         voice.note( v, loudness )
         this.__runVoice__( voice, this )
       })
     }else if( this.triggerNote !== null ) {
       let voice = this.__getVoice__()
-      Object.assign( voice, this.properties )
       voice.note( this.triggerNote, loudness )
       this.__runVoice__( voice, this )
+      return voice
     }else{
       let voice = this.__getVoice__()
-      Object.assign( voice, this.properties )
       voice.trigger( loudness )
       this.__runVoice__( voice, this )
+      return voice
     }
   },
 
@@ -22229,6 +24095,13 @@ module.exports = {
     //Gibberish.blockCallbacks.push( envCheck )
   },
 
+  // get the next voice that will be used, in order to 
+  // set property values before it is triggered. voiceCount
+  // isn't incremented.
+  __getVoiceStatic__() {
+    return this.voices[ this.voiceCount % this.voices.length ]
+  },
+
   __getVoice__() {
     return this.voices[ this.voiceCount++ % this.voices.length ]
   },
@@ -22249,7 +24122,7 @@ module.exports = {
   triggerNote:null
 }
 
-},{"../index.js":166}],180:[function(require,module,exports){
+},{"../index.js":169}],186:[function(require,module,exports){
 /*
  * This files creates a factory generating polysynth constructors.
  */
@@ -22362,7 +24235,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../workletProxy.js":204,"genish.js":40}],181:[function(require,module,exports){
+},{"../workletProxy.js":210,"genish.js":40}],187:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -22587,7 +24460,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"./instrument.js":173,"genish.js":40}],182:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],188:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
   
@@ -22638,7 +24511,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":173,"genish.js":40}],183:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],189:[function(require,module,exports){
 /*fetch( '0000_Aspirin_sf2_file.json' )
 .then( res => res.json() )
 .then( json => {
@@ -22656,6 +24529,8 @@ genish.utilities.ctx.decodeAudioData( ab, buffer => {
 _d = data( __ab )
 play( peek( _d, phasor(1,0,{min:0}) ) )
 */
+
+const SHOULD_SUSTAIN = false
 
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
@@ -22693,36 +24568,45 @@ module.exports = function( Gibberish ) {
       this.currentSample = key
       return this.trigger()
     },
-    __note( rate, loudness=null ) {
+    __note( rate, loudness=null, decay=null ) {
       // soundfont measures pitch in cents
       // originalPitch = findMidiForHz( hz ) * 100 // (100 cents per midi index)
       // rate = Math.pow(2, (100.0 * pitch - originalPitch) / 1200.0) // 1200 cents per octave
-      return this.trigger( loudness, rate )
+      return this.trigger( loudness, rate, decay )
     },
-    note( freq, loudness=null ) {
+    note( freq, loudness=null, decay=null ) {
       'no jsdsp'
       const midinote = 69 + 12 * Math.log2( freq/440 )
-      this.midinote( midinote, loudness )
+      return this.midinote( midinote, loudness, decay )
     },
     midipick( midinote, loudness ) {
+      if( this.zones === undefined ) return
       // loop through zones to find correct sample #
-      let idx = 0, pitch = 0
+      let idx = 0, pitch = 0 
+
       for( let zone of this.zones ) {
-        if( midinote >= zone.keyRangeLow && midinote <= zone.keyRangeHigh ) {
+        const inzone  = midinote >= zone.keyRangeLow && midinote <= zone.keyRangeHigh 
+
+        // in case floating-point "midinote" falls between two zones, which are integers
+        const rounded = midinote - zone.keyRangeHigh < 1
+        
+        if( inzone || rounded ) { 
           pitch = zone.originalPitch
-          break;
+          break
         }
+
         idx++
       }
+
       this.pick( idx )
       return pitch
     },
-    midinote( midinote, loudness=null ) {
+    midinote( midinote, loudness=null, decay=null ) {
       'no jsdsp'
       const samplePitch = this.midipick( midinote )
       const pitch = Math.pow( 2, (100 * midinote - samplePitch ) / 1200 ) 
       //const pitch = 1//Math.pow( 2, (samplePitch ) ) 
-      this.__note( pitch, loudness )
+      return this.__note( pitch, loudness, decay )
     }, 
     midichord( frequencies ) {
       if( Gibberish !== undefined && Gibberish.mode !== 'worklet' ) {
@@ -22730,9 +24614,26 @@ module.exports = function( Gibberish ) {
         this.triggerChord = frequencies
       }
     },
-    chord( frequencies ) {
+    chord( frequencies, loudnesses=null, durations=null ) {
       if( Gibberish !== undefined && Gibberish.mode !== 'worklet' ) {
-        frequencies.forEach( v => this.note( v ) )
+        if( loudnesses === null && durations === null ) {
+          frequencies.forEach( v => this.note( v ) )
+        }else if( durations === null ) {
+          frequencies.forEach( (v,i) => 
+            this.note( 
+              v, 
+              typeof loudnesses === 'object' ? loudnesses[i] : loudnesses 
+            )
+          )
+        }else{
+          frequencies.forEach( (v,i) => 
+            this.note( 
+              v, 
+              typeof loudnesses === 'object' ? loudnesses[i] : loudnesses, 
+              typeof durations  === 'object' ? durations[i]  : durations
+            ) 
+          )
+        }
         this.triggerChord = frequencies
       }
     },
@@ -22753,7 +24654,7 @@ module.exports = function( Gibberish ) {
         voice.rate = value
       }
     },
-    trigger( volume=null, rate=null ) {
+    trigger( volume=null, rate=null, decay=null ) {
       'no jsdsp'
       //if( volume !== null ) this.__triggerLoudness = volume
 
@@ -22762,23 +24663,56 @@ module.exports = function( Gibberish ) {
         const sampler = this.samplers[ this.currentSample ]
 
         // if sample isn't loaded...
-        if( sampler === undefined ) return
+        if( sampler === undefined ) {
+          console.warn( 'no sampler found...', sampler, this.currentSample, this.samplers )
+          return {}
+        }
 
         voice = this.__getVoice__()
 
+        const sampleRateRatio = Gibberish.ctx.sampleRate / sampler.zone.sampleRate
+        const loopStart = sampler.zone.loopStart * sampleRateRatio
+        const loopEnd   = sampler.zone.loopEnd   * sampleRateRatio
+
+        if( rate !== null ) {
+          voice.rate = rate
+        }
+        voice.decay = decay !== null ? decay : 1
+
         // set voice buffer length
-        g.gen.memory.heap[ voice.bufferLength.memory.values.idx ] = sampler.dataLength
+        g.gen.memory.heap[ voice.bufferLength.memory.values.idx ] = sampler.dataLength 
 
         // set voice data index
         g.gen.memory.heap[ voice.bufferLoc.memory.values.idx ] = sampler.dataIdx
 
-        g.gen.memory.heap[ voice.__loopStart.memory.values.idx ] = sampler.zone.loopStart
-        g.gen.memory.heap[ voice.__loopEnd.memory.values.idx   ] = sampler.zone.loopEnd
+        g.gen.memory.heap[ voice.__playing.memory.values.idx   ] = 1
+        g.gen.memory.heap[ voice.__loopStart.memory.values.idx ] = loopStart
+        g.gen.memory.heap[ voice.__loopEnd.memory.values.idx   ] = loopEnd
 
         if( volume !== null )
-          g.gen.memory.heap[ voice.loudness.memory.values.idx   ] = volume
+          g.gen.memory.heap[ voice.__loudness.memory.values.idx ] = volume
 
-        if( rate !== null ) voice.rate = rate 
+        if( voice.cb !== null ) 
+          Gibberish.scheduler.remove( voice.cb )
+
+        // don't trigger this immediately if sustain
+        // is being attempted
+        if( !SHOULD_SUSTAIN ) voice.__decay.trigger()
+
+        // XXX re-enable callback for sustain
+        // have to also set it up in envelope later in code
+
+        if( SHOULD_SUSTAIN ) {
+          voice.cb = ()=> {
+            voice.__decay.trigger() 
+          }
+          
+          Gibberish.scheduler.add( 
+            this.sustain, 
+            voice.cb,
+            0
+          )
+        }
         
         voice.trigger()
       }
@@ -22800,6 +24734,8 @@ module.exports = function( Gibberish ) {
     const start = g.in( 'start' ), end = g.in( 'end' ), 
           rate = g.in( 'rate' ), shouldLoop = g.in( 'loops' ),
           loudness = g.in( 'loudness' ),
+          sustain  = g.in( 'sustain' ),
+          decay    = g.in( 'decay' ),
           triggerLoudness = g.in( '__triggerLoudness' ),
           // rate storage is used to determine whether we're playing
           // the sample forward or in reverse, for use in the 'trigger' method.
@@ -22826,18 +24762,23 @@ module.exports = function( Gibberish ) {
       'use jsdsp'
 
       const voice = {
+        bang:         g.bang(),
         bufferLength: g.data( [1], 1, { meta:true }),
         bufferLoc:    g.data( [1], 1, { meta:true }),
-        bang: g.bang(),
-        // XXX how do I change this from main thread?
-        __pan: g.data( [.5], 1, { meta:true }),
-        __rate: g.data( [1], 1, { meta:true }),
-        __shouldLoop: g.data( [1], 1, { meta:true }),
-        __loopStart: g.data( [1], 1, { meta:true }),
-        __loopEnd:   g.data( [1], 1, { meta:true }),
-        __loudness:  g.data( [1], 1, { meta:true }),
+        __pan:        g.data( [.5], 1, { meta:true }),
+        __playing:    g.data( [0],  1, { meta:true }),
+        __decaying:   g.data( [0],  1, { meta:true }),
+        __rate:       g.data( [1],  1, { meta:true }),
+        __decayV:     g.data( [1],  1, { meta:true }),
+        __shouldLoop: g.data( [1],  1, { meta:true }),
+        __loopStart:  g.data( [1],  1, { meta:true }),
+        __loopEnd:    g.data( [1],  1, { meta:true }),
+        __loudness:   g.data( [1],  1, { meta:true }),
+
+        cb: null,
+
         get loudness() { 
-          return g.gen.memory.heap[ this.__loudness.memory.values.idx   ]
+          return g.gen.memory.heap[ this.__loudness.memory.values.idx ]
         },
         set loudness( v ) {
           g.gen.memory.heap[ this.__loudness.memory.values.idx ] = v
@@ -22848,76 +24789,72 @@ module.exports = function( Gibberish ) {
         set rate(v) {
           g.gen.memory.heap[ this.__rate.memory.values.idx ] = v
         },
+        set decay(v) {
+          g.gen.memory.heap[ this.__decayV.memory.values.idx ] = v
+        },
       }
+
+      voice.__decay = g.decay( decay * voice.__decayV[0] )
 
       voice.phase = g.counter( 
         rate * voice.__rate[0], 
-        start * voice.bufferLength[0],
-        end * voice.bufferLength[0], 
+        0,
+        Infinity,
         voice.bang,
-        shouldLoop, 
+        0, 
         { shouldWrap:false, initialValue:9999999 }
+      )
+
+      const phaseOffset = voice.phase - voice.__loopStart[0]
+      const loopLength  = 1 + voice.__loopEnd[0] - voice.__loopStart[0]
+      const loopPos     = phaseOffset % loopLength
+      const loopPhase   = voice.__loopStart[0] + loopPos 
+
+      const phase = g.ifelse( 
+        g.and( 
+          voice.__playing[0], 
+          g.lt( voice.phase, voice.__loopStart[0] ) 
+        ), 
+
+        voice.phase,
+
+        loopPhase
+        //g.ifelse( 
+        //  voice.__decaying[0],
+        //  loopPhase,//voice.phase,
+        //  loopPhase
+        //)
       )
 
       voice.trigger = voice.bang.trigger
 
-      voice.graph = g.ifelse(
-        // if phase is greater than start and less than end... 
-        g.and( 
-          g.gte( voice.phase, start * voice.bufferLength[0] ), 
-          g.lt(  voice.phase, end   * voice.bufferLength[0] ) 
-        ),
-        // ...read data
-        voice.peek = g.peekDyn( 
-          voice.bufferLoc[0], 
-          voice.bufferLength[0],
-          voice.phase,
-          { mode:'samples' }
-        ),
-        // ...else return 0
-        0
-      ) 
-      * loudness 
-      * voice.__loudness[0] 
+      const state = g.peekDyn( 
+        voice.bufferLoc[0],  
+        voice.bufferLength[0],
+        phase,
 
-      // start of attempt to loop sustain...
-      //voice.graph = g.ifelse(
-      //  // if phase is greater than start and less than end... 
-      //  g.and( 
-      //    g.gte( voice.phase, start * voice.bufferLength[0] ), 
-      //    g.lt(  voice.phase, end   * voice.bufferLength[0] ) 
-      //  ),
-      //  // ...read data
-      //  voice.peek = g.peekDyn( 
-      //    voice.bufferLoc[0], 
-      //    voice.bufferLength[0],
-      //    voice.phase,
-      //    { mode:'samples' }
-      //  ),
-      //  // ...else return 0
-      //  g.ifelse(
-      //    g.and(
-      //      voice.__shouldLoop[0],
-      //      g.gt( voice.phase, voice.__loopEnd[0] )
-      //    ),
-      //    g.peekDyn( 
-      //      voice.bufferLoc[0], 
-      //      voice.bufferLength[0],
-      //      g.add( 
-      //        voice.__loopStart[0],
-      //        g.mod(
-      //          voice.phase,
-      //          //g.sub( voice.phase, voice.__loopStart[0] ),
-      //          g.sub( voice.__loopEnd[0], voice.__loopStart[0] )
-      //        )
-      //      ),
-      //      { mode:'samples' }
-      //    ),
-      //    0
-      //  )
-      //) 
-      //* loudness 
-      //* triggerLoudness 
+        { mode:'samples' }
+      )
+
+      // XXX giving up on sustain for now
+      // it works for some samples but causes glitches/clicks in others
+      // when the decay is triggered and i have no idea why
+        
+      const env = SHOULD_SUSTAIN 
+        ? g.ifelse(
+          // if voice is playing and phase is less than sustain 
+            g.lt( voice.phase, sustain ),
+            1,
+            voice.__decay
+          )
+        : voice.__decay
+      
+      
+      voice.graph = state 
+        * env
+        * voice.__playing[0]
+        * loudness 
+        * voice.__loudness[0]
       
       const pan = g.pan( voice.graph, voice.graph, voice.__pan[0] )
       voice.graph = [ pan.left, pan.right ]
@@ -23025,7 +24962,7 @@ module.exports = function( Gibberish ) {
           __soundNumber = 0
           console.warn( `The ${soundNumber} Soundfont can't be found. Using Piano instead.` )
         }
-        soundNumber = __soundNumber
+        soundNumber = __soundNumber   
       }
 
       let num = (soundNumber) + '0'
@@ -23096,6 +25033,8 @@ module.exports = function( Gibberish ) {
     end:1,
     bufferLength:-999999999,
     loudness:1,
+    sustain: 44100,
+    decay: 44100,
     maxVoices:5, 
     __triggerLoudness:1
   }
@@ -23239,7 +25178,7 @@ module.exports = function( Gibberish ) {
   return Soundfont
 }
 
-},{"./instrument.js":173,"genish.js":40}],184:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],190:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -23359,7 +25298,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"./instrument.js":173,"genish.js":40}],185:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],191:[function(require,module,exports){
 const g = require( 'genish.js' ),
       instrument = require( './instrument.js' )
 
@@ -23410,7 +25349,7 @@ module.exports = function( Gibberish ) {
   return Tom
 }
 
-},{"./instrument.js":173,"genish.js":40}],186:[function(require,module,exports){
+},{"./instrument.js":179,"genish.js":40}],192:[function(require,module,exports){
 const ugenproto = require( '../ugen.js' )(),
      __proxy     = require( '../workletProxy.js' ),
      g = require( 'genish.js' )
@@ -23526,7 +25465,7 @@ module.exports = function( Gibberish ) {
   return Binops
 }
 
-},{"../ugen.js":202,"../workletProxy.js":204,"genish.js":40}],187:[function(require,module,exports){
+},{"../ugen.js":208,"../workletProxy.js":210,"genish.js":40}],193:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )(),
     __proxy= require( '../workletProxy.js' )
@@ -23617,7 +25556,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":202,"../workletProxy.js":204,"genish.js":40}],188:[function(require,module,exports){
+},{"../ugen.js":208,"../workletProxy.js":210,"genish.js":40}],194:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       __proxy = require( '../workletProxy.js' )
@@ -23633,6 +25572,7 @@ module.exports = function( Gibberish ) {
     create( __props ) {
 
       if( bufferL === undefined ) {
+        // XXX I guess this is to setup wavetables if they're not created?
         const p = g.pan()
         
         // copy memory... otherwise the wavetables don't have memory indices.
@@ -23756,7 +25696,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":202,"../workletProxy.js":204,"genish.js":40}],189:[function(require,module,exports){
+},{"../ugen.js":208,"../workletProxy.js":210,"genish.js":40}],195:[function(require,module,exports){
 const  g    = require( 'genish.js'  ),
        ugen = require( '../ugen.js' )()
 
@@ -23777,6 +25717,10 @@ module.exports = function( Gibberish ) {
       
       const __out = Gibberish.factory( abs, graph, ['monops','abs'], Object.assign({}, Monops.defaults, { inputs:[input], isop:true }) )
 
+      __out.isop = true
+
+      console.log( __out )
+
       return __out
     },
 
@@ -23784,15 +25728,19 @@ module.exports = function( Gibberish ) {
       const pow = Object.create( ugen )
       const graph = g.pow( g.in('input'), g.in('exponent') )
       
-      Gibberish.factory( pow, graph, ['monops','pow'], Object.assign({}, Monops.defaults, { inputs:[input], exponent, isop:true }) )
+      const __out =  Gibberish.factory( pow, graph, ['monops','pow'], Object.assign({}, Monops.defaults, { inputs:[input], exponent, isop:true }) )
 
-      return pow
+      __out.isop = true
+
+      return __out
     },
     Clamp( input, min, max ) {
       const clamp = Object.create( ugen )
       const graph = g.clamp( g.in('input'), g.in('min'), g.in('max') )
       
       const __out = Gibberish.factory( clamp, graph, ['monops','clamp'], Object.assign({}, Monops.defaults, { inputs:[input], isop:true, min, max }) )
+
+      __out.isop = true
 
       return __out
     },
@@ -23818,7 +25766,7 @@ module.exports = function( Gibberish ) {
   return Monops
 }
 
-},{"../ugen.js":202,"genish.js":40}],190:[function(require,module,exports){
+},{"../ugen.js":208,"genish.js":40}],196:[function(require,module,exports){
 const g = require( 'genish.js' )
 
 const ugen = require( '../ugen.js' )()
@@ -23855,7 +25803,7 @@ return Panner
 
 }
 
-},{"../ugen.js":202,"genish.js":40}],191:[function(require,module,exports){
+},{"../ugen.js":208,"genish.js":40}],197:[function(require,module,exports){
 module.exports = function( Gibberish ) {
 
   const Time = {
@@ -23884,7 +25832,7 @@ module.exports = function( Gibberish ) {
   return Time
 }
 
-},{}],192:[function(require,module,exports){
+},{}],198:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       ssd = genish.history,
       noise = genish.noise
@@ -23905,7 +25853,7 @@ module.exports = function() {
   return out
 }
 
-},{"genish.js":40}],193:[function(require,module,exports){
+},{"genish.js":40}],199:[function(require,module,exports){
 let g = require( 'genish.js' )
 
 let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
@@ -23981,7 +25929,7 @@ let feedbackOsc = function( frequency, filter, pulsewidth=.5, argumentProps ) {
 
 module.exports = feedbackOsc
 
-},{"genish.js":40}],194:[function(require,module,exports){
+},{"genish.js":40}],200:[function(require,module,exports){
 const g = require( 'genish.js' ),
       ugen = require( '../ugen.js' )(),
       feedbackOsc = require( './fmfeedbackosc.js' ),
@@ -24160,7 +26108,7 @@ module.exports = function( Gibberish ) {
 
 }
 
-},{"../ugen.js":202,"./brownnoise.dsp.js":192,"./fmfeedbackosc.js":193,"./pinknoise.dsp.js":195,"./polyblep.dsp.js":196,"./wavetable.js":197,"genish.js":40}],195:[function(require,module,exports){
+},{"../ugen.js":208,"./brownnoise.dsp.js":198,"./fmfeedbackosc.js":199,"./pinknoise.dsp.js":201,"./polyblep.dsp.js":202,"./wavetable.js":203,"genish.js":40}],201:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       ssd = genish.history,
       data = genish.data,
@@ -24187,7 +26135,7 @@ module.exports = function() {
 
 }
 
-},{"genish.js":40}],196:[function(require,module,exports){
+},{"genish.js":40}],202:[function(require,module,exports){
 const genish = require( 'genish.js' )
 const g = genish
 
@@ -24260,7 +26208,7 @@ const polyBlep = function( __frequency, argumentProps ) {
 
 module.exports = polyBlep 
 
-},{"genish.js":40}],197:[function(require,module,exports){
+},{"genish.js":40}],203:[function(require,module,exports){
 let g = require( 'genish.js' ),
     ugen = require( '../ugen.js' )()
 
@@ -24294,19 +26242,36 @@ module.exports = function( Gibberish ) {
   return Wavetable
 }
 
-},{"../ugen.js":202,"genish.js":40}],198:[function(require,module,exports){
-const Queue = require( '../external/priorityqueue.js' )
+},{"../ugen.js":208,"genish.js":40}],204:[function(require,module,exports){
+//const Queue = require( '../external/priorityqueue.js' )
+const HeapQueue = function() {
+  const obj = {
+    cmp( a,b ) { return a.time - b.time },
+    data: [],
+    push( o ) {
+      obj.data.push( o )
+      obj.data.sort( obj.cmp )
+    },
+    peek() { return obj.data[0] },
+    pop() { 
+      obj.data.shift()
+      obj.data.sort( obj.cmp )
+    }
+  }
+
+  return obj
+}
 
 let Gibberish = null
 
 const Scheduler = {
   phase: 0,
 
-  queue: new Queue( ( a, b ) => {
+  queue: HeapQueue( ( a, b ) => {
     if( a.time === b.time ) { 
       return a.priority < b.priority ? -1 : a.priority > b.priority ? 1 : 0;
     }else{
-      return a.time - b.time //a.time.minus( b.time )
+      return a.time - b.time
     }
   }),
 
@@ -24328,12 +26293,23 @@ const Scheduler = {
     return this.phase
   },
 
+  remove( __func ) {
+    for( let i = 0; i < this.queue.data.length; i++ ) {
+      const func = this.queue.data[i].func
+      if( func === __func ) {
+        this.queue.data.splice( i, 1 )
+        break
+      }
+    }
+  },
+
   tick( usingSync = false ) {
     if( this.shouldSync === usingSync ) {
-      if( this.queue.length ) {
+      if( this.queue.data.length ) {
         let next = this.queue.peek()
 
         if( isNaN( next.time ) ) {
+          console.log( 'invalid time:', next )
           this.queue.pop()
         }
         
@@ -24343,7 +26319,10 @@ const Scheduler = {
           next = this.queue.peek()
 
           // XXX this happens when calling sequencer.stop()... why?
-          if( next === undefined ) break
+          if( next === undefined ) {
+            console.log( 'undefined next', this.queue )
+            break
+          }
         }
       }
 
@@ -24375,7 +26354,7 @@ Object.defineProperty( Scheduler, 'shouldSync', {
 
 module.exports = Scheduler
 
-},{"../external/priorityqueue.js":141}],199:[function(require,module,exports){
+},{}],205:[function(require,module,exports){
 const g = require( 'genish.js' ),
       __proxy = require( '../workletProxy.js' ),
       ugen = require( '../ugen.js' )()
@@ -24589,7 +26568,7 @@ module.exports = function( Gibberish ) {
 }
 
 
-},{"../ugen.js":202,"../workletProxy.js":204,"genish.js":40}],200:[function(require,module,exports){
+},{"../ugen.js":208,"../workletProxy.js":210,"genish.js":40}],206:[function(require,module,exports){
 (function (global){
 const __proxy = require( '../workletProxy.js' )
 
@@ -24733,6 +26712,10 @@ const Sequencer = props => {
       if( Gibberish.mode === 'processor' ) {
         if( seq.__isRunning === true && !isNaN( timing ) && seq.autotrig === false ) {
           timing += floatError
+          //while( floatError > 1 ) {
+          //  timing += 1
+          //  floatError -= 1
+          //}
           Gibberish.scheduler.add( timing, seq.tick, seq.priority )
           floatError = timing - Math.floor( timing )
         }
@@ -24841,7 +26824,7 @@ return Sequencer
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../workletProxy.js":204}],201:[function(require,module,exports){
+},{"../workletProxy.js":210}],207:[function(require,module,exports){
 const __proxy = require( '../workletProxy.js' ),
       mini    = require( '../external/mini.js' )
 
@@ -24858,6 +26841,10 @@ module.exports = function( Gibberish ) {
       __pattern: mini.mini( props.pattern ),
       //Pattern( props.pattern, { addLocations:true, addUID:true, enclose:true }),
       __events: null,
+
+      addFilter( filter ) {
+        seq.filters.push( filter )
+      },
 
       tick(priority) {
         let startTime
@@ -24887,8 +26874,10 @@ module.exports = function( Gibberish ) {
             // make sure we should trigger sound
             if( !event.hasOnset() ) continue
 
+            const idx = event.context.locations.length - 1
+
             let value = event.value,
-                uid   = event.context.locations[0].start.column 
+                uid   = event.context.locations[ idx ].start.column 
 
             //console.log( 'evt', uid, event.context.locations )
 
@@ -24978,11 +26967,7 @@ module.exports = function( Gibberish ) {
       },
 
       set(patternString) {
-        seq.__pattern = Pattern(patternString, {
-          addLocations: true,
-          addUID: true,
-          enclose: true
-        });
+        seq.__pattern = Sequencer.Pattern(patternString);
       }
 
     };
@@ -25056,7 +27041,7 @@ module.exports = function( Gibberish ) {
 };
 
 
-},{"../external/mini.js":140,"../workletProxy.js":204}],202:[function(require,module,exports){
+},{"../external/mini.js":144,"../workletProxy.js":210}],208:[function(require,module,exports){
 let Gibberish = null
 
 const __ugen = function( __Gibberish ) {
@@ -25203,7 +27188,7 @@ const __ugen = function( __Gibberish ) {
 
 module.exports = __ugen
 
-},{}],203:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 const genish = require( 'genish.js' ),
       AWPF = require( './external/audioworklet-polyfill.js' )
 
@@ -25526,7 +27511,7 @@ return utilities
 
 }
 
-},{"./external/audioworklet-polyfill.js":139,"genish.js":40}],204:[function(require,module,exports){
+},{"./external/audioworklet-polyfill.js":143,"genish.js":40}],210:[function(require,module,exports){
 const serialize = require('serialize-javascript')
 
 module.exports = function( Gibberish ) {
@@ -25685,105 +27670,13 @@ return __proxy
 
 }
 
-},{"serialize-javascript":206}],205:[function(require,module,exports){
-'use strict';
-
-var MemoryHelper = {
-  create: function create() {
-    var size = arguments.length <= 0 || arguments[0] === undefined ? 4096 : arguments[0];
-    var memtype = arguments.length <= 1 || arguments[1] === undefined ? Float32Array : arguments[1];
-
-    var helper = Object.create(this);
-
-    Object.assign(helper, {
-      heap: new memtype(size),
-      list: {},
-      freeList: {}
-    });
-
-    return helper;
-  },
-  alloc: function alloc(amount) {
-    var idx = -1;
-
-    if (amount > this.heap.length) {
-      throw Error('Allocation request is larger than heap size of ' + this.heap.length);
-    }
-
-    for (var key in this.freeList) {
-      var candidateSize = this.freeList[key];
-
-      if (candidateSize >= amount) {
-        idx = key;
-
-        this.list[idx] = amount;
-
-        if (candidateSize !== amount) {
-          var newIndex = idx + amount,
-              newFreeSize = void 0;
-
-          for (var _key in this.list) {
-            if (_key > newIndex) {
-              newFreeSize = _key - newIndex;
-              this.freeList[newIndex] = newFreeSize;
-            }
-          }
-        }
-        
-        break;
-      }
-    }
-    
-    if( idx !== -1 ) delete this.freeList[ idx ]
-
-    if (idx === -1) {
-      var keys = Object.keys(this.list),
-          lastIndex = void 0;
-
-      if (keys.length) {
-        // if not first allocation...
-        lastIndex = parseInt(keys[keys.length - 1]);
-
-        idx = lastIndex + this.list[lastIndex];
-      } else {
-        idx = 0;
-      }
-
-      this.list[idx] = amount;
-    }
-
-    if (idx + amount >= this.heap.length) {
-      throw Error('No available blocks remain sufficient for allocation request.');
-    }
-    return idx;
-  },
-  free: function free(index) {
-    if (typeof this.list[index] !== 'number') {
-      throw Error('Calling free() on non-existing block.');
-    }
-
-    this.list[index] = 0;
-
-    var size = 0;
-    for (var key in this.list) {
-      if (key > index) {
-        size = key - index;
-        break;
-      }
-    }
-
-    this.freeList[index] = size;
-  }
-};
-
-module.exports = MemoryHelper;
-
-},{}],206:[function(require,module,exports){
-arguments[4][122][0].apply(exports,arguments)
-},{"dup":122}],207:[function(require,module,exports){
+},{"serialize-javascript":211}],211:[function(require,module,exports){
+arguments[4][126][0].apply(exports,arguments)
+},{"dup":126}],212:[function(require,module,exports){
 'use strict'
 
 let MemoryHelper = {
+  
   create( sizeOrBuffer=4096, memtype=Float32Array ) {
     let helper = Object.create( this )
 
@@ -25792,7 +27685,12 @@ let MemoryHelper = {
     Object.assign( helper, {
       heap: new memtype( sizeOrBuffer ),
       list: {},
-      freeList: {}
+      freeList: {},
+
+      // if useTail is true, will force MemoryHelper to allocate at end of the
+      // heap and skip any freed memory blocks. Useful to force a contiguous
+      // block of memory
+      useTail:false,
     })
 
     return helper
@@ -25805,27 +27703,29 @@ let MemoryHelper = {
       throw Error( 'Allocation request is larger than heap size of ' + this.heap.length )
     }
 
-    for( let key in this.freeList ) {
-      let candidate = this.freeList[ key ]
+    if( this.useTail === false ) {
+      for( let key in this.freeList ) {
+        let candidate = this.freeList[ key ]
 
-      if( candidate.size >= size ) {
-        idx = key
+        if( candidate.size >= size ) {
+          idx = key
 
-        this.list[ idx ] = { size, immutable, references:1 }
+          this.list[ idx ] = { size, immutable, references:1 }
 
-        if( candidate.size !== size ) {
-          let newIndex = idx + size,
-              newFreeSize
+          if( candidate.size !== size ) {
+            let newIndex = idx + size,
+                newFreeSize
 
-          for( let key in this.list ) {
-            if( key > newIndex ) {
-              newFreeSize = key - newIndex
-              this.freeList[ newIndex ] = newFreeSize
+            for( let key in this.list ) {
+              if( key > newIndex ) {
+                newFreeSize = key - newIndex
+                this.freeList[ newIndex ] = newFreeSize
+              }
             }
           }
-        }
 
-        break
+          break
+        }
       }
     }
 
@@ -25849,6 +27749,25 @@ let MemoryHelper = {
     if( idx + size >= this.heap.length ) {
       throw Error( 'No available blocks remain sufficient for allocation request.' )
     }
+
+    return idx
+  },
+
+  // this returns the next index that will be use by 
+  // memory helper, unless there are freed blcoks available.  
+  // if the useTail property is set to true this will return
+  // the next block index regardless of any freed blocks.
+  getLastUsedIndex() {
+    let keys = Object.keys( this.list ),
+        idx = 0,
+        lastIndex
+
+    if( keys.length ) { // if not first allocation...
+      lastIndex = parseInt( keys[ keys.length - 1 ] )
+
+      idx = lastIndex + this.list[ lastIndex ].size
+    }
+
     return idx
   },
 
@@ -25885,5 +27804,5 @@ let MemoryHelper = {
 
 module.exports = MemoryHelper
 
-},{}]},{},[94])(94)
+},{}]},{},[96])(96)
 });
