@@ -25,7 +25,7 @@ const Presets = {
           output.__presetInit__ = preset.presetInit 
         } 
       }else{
-        if( description.name === 'Sampler' || description.name === 'Multisampler' ) {
+        if( description.name === 'Sampler' || description.name === 'Multisampler'  || description.name === 'Grains' ) {
           console.log( 'loading samples ' + args[0] )
           output.__presetInit__ = function() { this.load( args[0] ) }
         }else{
@@ -55,12 +55,15 @@ const Presets = {
     Monosynth:    require( './presets/monosynth_presets.js' ),
     PolyMono:     require( './presets/monosynth_presets.js' ),
     Snare:        require( './presets/snare_presets.js' ),
+    Cowbell:      require( './presets/cowbell_presets.js' ),
     Kick:         require( './presets/kick_presets.js' ),
     Hat:          require( './presets/hat_presets.js' ),
     EDrums:       require( './presets/edrums_presets.js' ),
     Drums:        require( './presets/drums_presets.js' ),
     Multisampler: require( './presets/multisampler.js' ),
-    Soundfont:    require( './presets/soundfont_presets.js' )
+    Grains:       require( './presets/grains.js' ),
+    Soundfont:    require( './presets/soundfont_presets.js' ),
+    Karplus:      require( './presets/karplus_presets.js' )
   },
 
   effects: {
@@ -81,5 +84,8 @@ Presets.instruments.Sampler   = Presets.instruments.Multisampler
 Presets.instruments.PolySynth = Presets.instruments.Synth
 Presets.instruments.PolyFM    = Presets.instruments.FM
 Presets.instruments.PolyMono  = Presets.instruments.Monosynth
+Presets.instruments.PolyKick  = Presets.instruments.Kick
+Presets.instruments.PolyKarplus  = Presets.instruments.Karplus
+Presets.instruments.PolyComplex  = Presets.instruments.Complex
 
 module.exports = Presets
