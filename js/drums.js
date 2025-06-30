@@ -68,10 +68,10 @@ module.exports = function( __Audio ) {
 
     const temp = Audio.autoConnect
     Audio.autoConnect = false
-    const k  = Audio.instruments.Sampler({ files:['./resources/audiofiles/kick.wav' ] })
-    const s  = Audio.instruments.Sampler({ files:['./resources/audiofiles/snare.wav' ] })
-    const ch = Audio.instruments.Sampler({ files:['./resources/audiofiles/hat.wav' ] })
-    const oh = Audio.instruments.Sampler({ files:['./resources/audiofiles/openhat.wav' ] })
+    const k  = Audio.instruments.Sampler({ files:[Drums.prefix + '/resources/audiofiles/kick.wav' ] })
+    const s  = Audio.instruments.Sampler({ files:[Drums.prefix + '/resources/audiofiles/snare.wav' ] })
+    const ch = Audio.instruments.Sampler({ files:[Drums.prefix + '/resources/audiofiles/hat.wav' ] })
+    const oh = Audio.instruments.Sampler({ files:[Drums.prefix + '/resources/audiofiles/openhat.wav' ] })
     Audio.autoConnect = temp
 
     const drums = Audio.Ensemble({
@@ -122,6 +122,7 @@ module.exports = function( __Audio ) {
     drums.name = 'Drums'
     return drums
   }
+  Drums.prefix = '.'
 
   const EDrums = function(  ...args ) {
     const temp = Audio.autoConnect
