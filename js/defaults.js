@@ -19,6 +19,7 @@ module.exports = {
   PolyMono:  'note',
   PolyComplex:'note',
   Multisampler:'pickplay',
+  Grains:'pickplay',
   PolyConga: 'note',
   PolyTom:   'note',
   PolyKarplus:'note'
