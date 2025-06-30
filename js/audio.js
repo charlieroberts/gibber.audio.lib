@@ -302,6 +302,7 @@ const Audio = {
             }
           }
           
+          let floatError = 0
           global.recursions[name] = function( ...args ) {
             let __nexttime__ = fnc(...args)
             if( __nexttime__ === -987654321 ) {
@@ -312,8 +313,18 @@ const Audio = {
               __nexttime__ = 1
             }
             if( __nexttime__ && __nexttime__ > 0 ) {
+              
+              const t = Clock.time( __nexttime__ )
+              let newTime = Math.floor(t)
+              floatError += t - newTime
+
+              while( floatError >= 1 ) {
+                newTime += 1
+                floatError -= 1
+              }
+
               Gibberish.scheduler.add(
-                Clock.time( __nexttime__ ),
+                newTime,
                 // bad hack to force the function to be found when looking
                 // for recursion replacement, include function name in string
                 // at top of function
@@ -359,7 +370,9 @@ const Audio = {
               : `'${dict[ key ]}'` )
             .join(',')
           }]
-          ;global.recursions['${name}'] = function ${name} (${keys}) {
+          ;
+          let floatError = 0;
+          global.recursions['${name}'] = function ${name} (${keys}) {
             let __nexttime__ = ( ${code} )(${keys})
 
             if( __nexttime__ === -987654321 ) {
@@ -370,8 +383,16 @@ const Audio = {
               __nexttime__ = 1
             }
             if( __nexttime__ && __nexttime__ > 0 ) {
+              const t = Clock.time( __nexttime__ )
+              let newTime = Math.floor(t)
+              floatError += t - newTime
+
+              while( floatError >= 1 ) {
+                newTime += 1
+                floatError -= 1
+              }
               Gibberish.scheduler.add(
-                Clock.time( __nexttime__ ),
+                newTime,
                 (${keys})=>{
                   global.recursions['${name}'](...objs)
                 },
