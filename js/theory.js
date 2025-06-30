@@ -11,6 +11,7 @@ const Theory = {
   __Tune:Tune,
 
   Tune:null,
+  name:'Theory',
   id:null,
   type: 'Audio',
   nogibberish:true,
