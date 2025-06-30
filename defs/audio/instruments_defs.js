@@ -8,6 +8,7 @@ const defs = [
   require( './instruments/monosynth_def.js' ),
   require( './instruments/synth_def.js' ),
 
+  require( './instruments/clave_def.js' ),
   require( './instruments/clap_def.js' ),
   require( './instruments/cowbell_def.js' ),
   require( './instruments/kick_def.js' ),
