@@ -162,6 +162,9 @@ const Instruments = {
     PolyTom:{
       methods:[ 'chord','note','trigger' ],
     },
+    PolyKick:{
+      methods:[ 'note','trigger' ],
+    },
   },
   
 }
