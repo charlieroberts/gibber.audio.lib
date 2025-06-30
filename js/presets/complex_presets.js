@@ -4,7 +4,19 @@ module.exports = {
     gain:1,
     decay:1/5,
     pregain:4,
+    postgain:4,
     description:'a short, clean sounding preset with a minimum of distortion/wavefolding.'
+  },
+  'bass': {
+    bias:.15,
+    gain:1,
+    decay:1,
+    pregain:4,
+    postgain:15,
+    filterMult:4,
+    Q:.75,
+    octave:-3,
+    description:'a relatively clean, percussive bass.'
   },
   
   'perc': {

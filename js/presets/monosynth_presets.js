@@ -19,6 +19,23 @@ module.exports = {
     filterModel:1,
     filterMode:1
   },
+  arpy2: {
+    attack: audio=> audio.Clock.ms(1),
+    decay:1/32,
+    presetInit: function( audio ) {
+      this.delay = audio.effects.Delay({ delay:audio.Clock.time(1/8), feedback:.5, wetdry:.25 }) 
+      this.fx.push( this.delay )
+    },
+    panVoices:true,
+    gain:.3,
+    octave2:0,
+    octave3:0,
+    cutoff:.35,
+    glide:1,
+    filterModel:1,
+    filterMult:3,
+    Q:.5,
+  },
 
   lead : {
     presetInit : function( audio ) { this.fx.push( audio.effects.Delay({ time:1/6, feedback:.65 }) )  },
@@ -143,6 +160,18 @@ module.exports = {
     Q:.5,
     gain:.35
   },
+
+  bass3: {
+    attack: audio => audio.Clock.ms(1),
+    decay:1/4,
+    gain:.5,
+    glide:10, shape:'exponential',  detune2:-.505, octave:-3,
+    cutoff:.35,
+    filterMult:3.5,
+    waveform:'pwm',
+    pulsewidth:.25,
+    detune3:.005
+  },
   
   edgy: {
     decay:1/8,
@@ -236,6 +265,18 @@ module.exports = {
     filterMult:0,
     detune2:.01,
     detune3:-.01 
+  },
+
+  supersaw: {
+    attack:1/4096,
+    decay:1/8, 
+    cutoff:2, 
+    filterMult:4,
+    antialias:true,
+    useADSR:false,
+    gain:.25,
+    detune2:.005,
+    detune3:-.005
   },
 
   shinybass2: {

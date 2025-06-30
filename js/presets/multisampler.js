@@ -1,10 +1,25 @@
 module.exports = {
 
+  '808': {
+    files:[
+      'resources/audiofiles/dirt/808bd/BD0050.WAV',
+      'resources/audiofiles/dirt/808sd/SD0050.WAV',
+      'resources/audiofiles/dirt/808/CH.WAV',
+      'resources/audiofiles/dirt/808/MA.WAV',
+      'resources/audiofiles/dirt/808/CL.WAV',
+      'resources/audiofiles/dirt/808/CP.WAV',
+      'resources/audiofiles/dirt/808/CB.WAV',
+      'resources/audiofiles/dirt/808oh/OH10.WAV',
+      'resources/audiofiles/dirt/808cy/CY0025.WAV',
+    ],
+    presetInit() { this.length = 9 }
+  },
   drums: { 
     files:[
       'resources/audiofiles/kick.wav',
       'resources/audiofiles/hat.wav',
       'resources/audiofiles/snare.wav',
+      'resources/audiofiles/hat.wav',
       'resources/audiofiles/openhat.wav'
     ],
     presetInit() {
@@ -59,6 +74,18 @@ module.exports = {
     ],
     presetInit() {
       this.length = 22
+    }
+  },
+  breaks: {
+    files:[
+      './resources/audiofiles/breaks.120bpm/188553__mika55__120bpm-drum-loop.wav',
+      './resources/audiofiles/breaks.120bpm/381956__waveplaysfx__drumloop-120-bpm-edm-drum-loop-023.wav',
+      './resources/audiofiles/breaks.120bpm/404052__theflakesmaster__dance-beat.wav',
+      './resources/audiofiles/breaks.120bpm/474932__disquantic__ragga-tech-drums-by-dsqt-120-bpm.wav',
+      './resources/audiofiles/breaks.120bpm/515673__akustika__120-disco80.wav',
+    ],
+    presetInit() {
+      this.length = 5
     }
   },
   cr7030: {
@@ -169,5 +196,12 @@ module.exports = {
       'resources/audiofiles/kicks/249291__netr-si__kick-52.wav',
     ],
     presetInit() { this.length = 90 }
-  }
+  },
+  trumpet: {
+    files:[
+      'resources/audiofiles/trumpet.wav'
+    ],
+    presetInit() { this.length = 1 }
+  },
+
 }

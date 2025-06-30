@@ -137,5 +137,9 @@ for( let name of names ) {
       this.load( names.indexOf( name ), props === undefined ? 0 : props.bank || 0 )
     }
   }
+  if( name.indexOf( ' ' ) > -1 ) {
+    const underscorename = name.replaceAll( ' ', '_' )
+    module.exports[ underscorename ] = module.exports[ name ]
+  }
 }
 
