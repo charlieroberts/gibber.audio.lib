@@ -5,6 +5,7 @@ const serialize = require( 'serialize-javascript' )
 const Clock = {
   __beatCount:0,
   id:null,
+  name:'Clock',
   nogibberish:true,
   bpm:140,
   __lastBPM:140,
@@ -41,72 +42,77 @@ const Clock = {
   init:function( Gen, Audio ) {
     // needed so that when the clock is re-initialized (for example, after clearing)
     // gibber won't try and serialized its sequencer
-    this.seq = null
+    if( this.seq === null ) {
 
-    const clockFunc = ()=> {
-      Gibberish.worklet.port.postMessage({
-        address: 'beat',
-        value: this.beatCount
-      }) 
+      this.clockFunc = ()=> {
+        Gibberish.worklet.port.postMessage({
+          address: 'beat',
+          value: this.beatCount
+        }) 
 
-      if( this.beatCount++ % 4 === 0 ) {
-        Gibberish.processor.playQueue()//.forEach( f => { f() } )
+        if( this.beatCount++ % 4 === 0 ) {
+          Gibberish.processor.playQueue()//.forEach( f => { f() } )
+        }
+      }
+
+      if( Gibberish.mode === 'worklet' ) {
+        this.id = Gibberish.utilities.getUID()
+        this.audioClock = null
+        this.__rate = null
+
+        Gibberish.worklet.port.postMessage({
+          address:'add',
+          properties:serialize( Clock ),
+          id:this.id,
+          post: 'store'    
+        })
+        
+        let bpm = this.__lastBPM
+        Object.defineProperty( this, 'bpm', {
+          get() { return bpm },
+          set(v){ 
+            bpm = v
+            if( Gibberish.mode === 'worklet' ) {
+              this.__lastBPM = v
+              if( Audio.Gibber.Tidal !== undefined ) Audio.Gibber.Tidal.cps = bpm/120/2
+              if( Audio.phase !== undefined ) Audio.phase.bpm = bpm
+
+              // watch out! always using same id here...
+              Gibberish.worklet.port.postMessage({
+                address:'set',
+                object:3,
+                name:'bpm',
+                value:bpm 
+              }) 
+            }
+          }
+        })
+
+        this.audioClock = Gen.make( Gen.ugens.abs(1) )
+        //this.__rate = this.audioClock.__p0 
+
+        Object.defineProperty( this, 'rate', {
+          configurable:true,
+          get() { return this.audioClock },
+          set(v){
+            this.audioClock.p0 = v
+          }
+        })
+
+        //Gibberish.worklet.port.postMessage({
+        //  address:'set',
+        //  value: Gen.make( Gen.ugens.abs(1) ),
+        //  object:this.id,
+        //  name:'audioClock'
+        //})
+
+        this.bpm = this.__lastBPM
       }
     }
 
-    if( Gibberish.mode === 'worklet' ) {
-      this.id = Gibberish.utilities.getUID()
-      this.audioClock = null
-      this.__rate = null
-
-      Gibberish.worklet.port.postMessage({
-        address:'add',
-        properties:serialize( Clock ),
-        id:this.id,
-        post: 'store'    
-      })
-      
-      let bpm = this.__lastBPM
-      Object.defineProperty( this, 'bpm', {
-        get() { return bpm },
-        set(v){ 
-          bpm = v
-          if( Gibberish.mode === 'worklet' ) {
-            this.__lastBPM = v
-            if( Audio.Gibber.Tidal !== undefined ) Audio.Gibber.Tidal.cps = bpm/120/2
-            Gibberish.worklet.port.postMessage({
-              address:'set',
-              object:this.id,
-              name:'bpm',
-              value:bpm 
-            }) 
-          }
-        }
-      })
-
-      this.audioClock = Gen.make( Gen.ugens.abs(1) )
-      //this.__rate = this.audioClock.__p0 
-
-      Object.defineProperty( this, 'rate', {
-        configurable:true,
-        get() { return this.audioClock },
-        set(v){
-          this.audioClock.p0 = v
-        }
-      })
-
-      //Gibberish.worklet.port.postMessage({
-      //  address:'set',
-      //  value: Gen.make( Gen.ugens.abs(1) ),
-      //  object:this.id,
-      //  name:'audioClock'
-      //})
-
-      this.bpm = this.__lastBPM
-    }
-
     if( Gibberish.mode === 'processor' )
-      this.seq = Gibberish.Sequencer.make( [ clockFunc ], [ ()=>Gibberish.Clock.time( 1/4 ) ] ).start()
+      this.seq = Gibberish.Sequencer.make( [ this.clockFunc ], [ ()=>Gibberish.Clock.time( 1/4 ) ] ).start()
+    
 
   },
 
