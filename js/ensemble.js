@@ -12,7 +12,7 @@ module.exports = function( Audio ) {
       const args = dict.args
       cp[ key ] = {
         play: function( ...args ) { 
-          Gibberish.worklet.ugens.get( this.target )[ this.method ]( ...args ) 
+          return Gibberish.worklet.ugens.get( this.target )[ this.method ]( ...args ) 
         },
         target:target.id,
         method,
@@ -32,9 +32,9 @@ module.exports = function( Audio ) {
     cp.play = function( __key ) {
       const key = isNaN(__key) ? __key : parseInt( __key ) 
       if( Gibberish.mode === 'processor' ) {
-        Gibberish.worklet.ugens.get( this[ key ].target )[ this[ key ].method ]( ...this[ key ].args )
+        return Gibberish.worklet.ugens.get( this[ key ].target )[ this[ key ].method ]( ...this[ key ].args )
       }else{
-        props[ key ].target[ this[ key ].method ]( ...this[ key ].args )
+        return props[ key ].target[ this[ key ].method ]( ...this[ key ].args )
       }
     }
 
@@ -86,6 +86,7 @@ module.exports = function( Audio ) {
       return ens
     }
 
+    ens.__seqDefault = 'play'
     return ens
   }
 
